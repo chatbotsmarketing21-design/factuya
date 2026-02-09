@@ -5,6 +5,12 @@ from utils.auth import get_current_user_id
 import os
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
+from dotenv import load_dotenv
+from pathlib import Path
+
+# Load environment variables
+ROOT_DIR = Path(__file__).parent.parent
+load_dotenv(ROOT_DIR / '.env')
 
 router = APIRouter(prefix="/invoices", tags=["Invoices"])
 
