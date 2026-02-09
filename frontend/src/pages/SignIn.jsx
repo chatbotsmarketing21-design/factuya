@@ -6,20 +6,37 @@ import { Label } from '../components/ui/label';
 import { Card } from '../components/ui/card';
 import { ArrowLeft } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import { useAuth } from '../context/AuthContext';
 
 const SignIn = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    toast({
-      title: "Sign In Successful",
-      description: "Welcome back to Invoice Home!",
-    });
-    navigate('/dashboard');
+    setLoading(true);
+    
+    const result = await login(email, password);
+    
+    if (result.success) {
+      toast({
+        title: "Sign In Successful",
+        description: "Welcome back to Invoice Home!",
+      });
+      navigate('/dashboard');
+    } else {
+      toast({
+        title: "Sign In Failed",
+        description: result.error || "Invalid email or password",
+        variant: "destructive"
+      });
+    }
+    
+    setLoading(false);
   };
 
   return (
@@ -89,8 +106,12 @@ const SignIn = () => {
               </a>
             </div>
 
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
-              Sign In
+            <Button 
+              type="submit" 
+              className="w-full bg-blue-600 hover:bg-blue-700"
+              disabled={loading}
+            >
+              {loading ? 'Signing In...' : 'Sign In'}
             </Button>
           </form>
 
