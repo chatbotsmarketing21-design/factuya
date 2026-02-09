@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { mockInvoice, getTemplateById } from '../mock/invoiceData';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { getTemplateById } from '../mock/invoiceData';
+import { invoiceAPI, profileAPI } from '../services/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -8,19 +9,101 @@ import { Textarea } from '../components/ui/textarea';
 import { Card } from '../components/ui/card';
 import { ArrowLeft, Plus, Trash2, Download, Send, Save } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import { useAuth } from '../context/AuthContext';
 import InvoicePreview from '../components/InvoicePreview';
 
 const InvoiceCreator = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const templateId = parseInt(searchParams.get('template')) || 1;
   const { toast } = useToast();
-  const [invoice, setInvoice] = useState(mockInvoice);
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
   const [template, setTemplate] = useState(getTemplateById(templateId));
+  const [invoice, setInvoice] = useState({
+    number: '',
+    date: new Date().toISOString().split('T')[0],
+    dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    status: 'draft',
+    from: {
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      city: '',
+      state: '',
+      zip: '',
+      country: ''
+    },
+    to: {
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      city: '',
+      state: '',
+      zip: '',
+      country: ''
+    },
+    items: [
+      {
+        description: '',
+        quantity: 1,
+        rate: 0,
+        amount: 0
+      }
+    ],
+    subtotal: 0,
+    taxRate: 10,
+    tax: 0,
+    total: 0,
+    notes: 'Thank you for your business!',
+    terms: 'Payment due within 30 days',
+    template: templateId
+  });
+
+  useEffect(() => {
+    loadCompanyInfo();
+    generateInvoiceNumber();
+  }, []);
 
   useEffect(() => {
     setInvoice(prev => ({ ...prev, template: templateId }));
     setTemplate(getTemplateById(templateId));
   }, [templateId]);
+
+  const loadCompanyInfo = async () => {
+    try {
+      const response = await profileAPI.getCompany();
+      const companyInfo = response.data;
+      setInvoice(prev => ({
+        ...prev,
+        from: {
+          name: companyInfo.name || '',
+          email: companyInfo.email || '',
+          phone: companyInfo.phone || '',
+          address: companyInfo.address || '',
+          city: companyInfo.city || '',
+          state: companyInfo.state || '',
+          zip: companyInfo.zip || '',
+          country: companyInfo.country || ''
+        }
+      }));
+    } catch (error) {
+      console.error('Failed to load company info:', error);
+    }
+  };
+
+  const generateInvoiceNumber = async () => {
+    try {
+      const response = await invoiceAPI.getAll();
+      const invoiceCount = response.data.length;
+      const newNumber = String(invoiceCount + 1).padStart(3, '0');
+      setInvoice(prev => ({ ...prev, number: newNumber }));
+    } catch (error) {
+      setInvoice(prev => ({ ...prev, number: '001' }));
+    }
+  };
 
   const updateInvoice = (field, value) => {
     setInvoice(prev => ({ ...prev, [field]: value }));
@@ -56,7 +139,6 @@ const InvoiceCreator = () => {
 
   const addItem = () => {
     const newItem = {
-      id: invoice.items.length + 1,
       description: '',
       quantity: 1,
       rate: 0,
@@ -90,11 +172,33 @@ const InvoiceCreator = () => {
     recalculateTotal(invoice.items, newRate);
   };
 
-  const handleSave = () => {
-    toast({
-      title: "Invoice Saved",
-      description: "Your invoice has been saved successfully.",
-    });
+  const handleSave = async () => {
+    if (!invoice.to.name || invoice.items.length === 0 || !invoice.items[0].description) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in client name and at least one item.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await invoiceAPI.create(invoice);
+      toast({
+        title: "Invoice Saved",
+        description: "Your invoice has been saved successfully.",
+      });
+      navigate('/dashboard');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error.response?.data?.detail || "Failed to save invoice",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDownload = () => {
@@ -118,10 +222,10 @@ const InvoiceCreator = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Link to="/templates">
+              <Link to="/dashboard">
                 <Button variant="ghost" size="sm">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Change Template
+                  Back to Dashboard
                 </Button>
               </Link>
               <div className="flex items-center">
@@ -130,17 +234,18 @@ const InvoiceCreator = () => {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" onClick={handleSave}>
-                <Save className="w-4 h-4 mr-2" />
-                Save
-              </Button>
+              <Link to="/templates">
+                <Button variant="outline" size="sm">
+                  Change Template
+                </Button>
+              </Link>
               <Button variant="outline" size="sm" onClick={handleDownload}>
                 <Download className="w-4 h-4 mr-2" />
                 Download PDF
               </Button>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={handleSend}>
-                <Send className="w-4 h-4 mr-2" />
-                Send Invoice
+              <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={handleSave} disabled={loading}>
+                <Save className="w-4 h-4 mr-2" />
+                {loading ? 'Saving...' : 'Save Invoice'}
               </Button>
             </div>
           </div>
@@ -259,11 +364,12 @@ const InvoiceCreator = () => {
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Bill To (Client)</h2>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="toName">Client Name</Label>
+                  <Label htmlFor="toName">Client Name *</Label>
                   <Input
                     id="toName"
                     value={invoice.to.name}
                     onChange={(e) => updateTo('name', e.target.value)}
+                    required
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -333,7 +439,7 @@ const InvoiceCreator = () => {
               </div>
               <div className="space-y-4">
                 {invoice.items.map((item, index) => (
-                  <div key={item.id} className="border border-gray-200 rounded-lg p-4">
+                  <div key={index} className="border border-gray-200 rounded-lg p-4">
                     <div className="flex justify-between items-start mb-3">
                       <span className="text-sm font-medium text-gray-500">Item {index + 1}</span>
                       {invoice.items.length > 1 && (
@@ -349,11 +455,12 @@ const InvoiceCreator = () => {
                     </div>
                     <div className="space-y-3">
                       <div>
-                        <Label>Description</Label>
+                        <Label>Description *</Label>
                         <Input
                           value={item.description}
                           onChange={(e) => updateItem(index, 'description', e.target.value)}
                           placeholder="Service or product description"
+                          required
                         />
                       </div>
                       <div className="grid grid-cols-3 gap-3">
