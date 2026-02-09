@@ -5,6 +5,7 @@ import Templates from "./pages/Templates";
 import InvoiceCreator from "./pages/InvoiceCreator";
 import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 import { Toaster } from "./components/ui/toaster";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -17,6 +18,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/signin" element={<SignIn />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/templates" element={<Templates />} />
             <Route
               path="/create"
