@@ -6,20 +6,38 @@ import InvoiceCreator from "./pages/InvoiceCreator";
 import Dashboard from "./pages/Dashboard";
 import SignIn from "./pages/SignIn";
 import { Toaster } from "./components/ui/toaster";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/templates" element={<Templates />} />
-          <Route path="/create" element={<InvoiceCreator />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/signin" element={<SignIn />} />
-        </Routes>
-      </BrowserRouter>
-      <Toaster />
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/signin" element={<SignIn />} />
+            <Route path="/templates" element={<Templates />} />
+            <Route
+              path="/create"
+              element={
+                <ProtectedRoute>
+                  <InvoiceCreator />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+        <Toaster />
+      </AuthProvider>
     </div>
   );
 }
