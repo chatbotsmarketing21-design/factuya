@@ -4,6 +4,12 @@ from models.user import UserCreate, UserLogin, UserInDB, UserResponse, AuthRespo
 from utils.auth import hash_password, verify_password, create_access_token, get_current_user_id
 import os
 from motor.motor_asyncio import AsyncIOMotorClient
+from dotenv import load_dotenv
+from pathlib import Path
+
+# Load environment variables
+ROOT_DIR = Path(__file__).parent.parent
+load_dotenv(ROOT_DIR / '.env')
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
