@@ -47,8 +47,8 @@ const SignIn = () => {
           <div className="flex items-center justify-between">
             <Link to="/">
               <div className="flex items-center cursor-pointer">
-                <span className="text-2xl font-bold text-gray-900">invoice </span>
-                <span className="text-2xl font-bold text-yellow-400 bg-yellow-400 text-gray-900 px-2 ml-1">home</span>
+                <span className="text-2xl font-bold text-gray-900">Factu</span>
+                <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
               </div>
             </Link>
             <Link to="/">
@@ -65,13 +65,13 @@ const SignIn = () => {
       <div className="flex-1 flex items-center justify-center py-12 px-4">
         <Card className="w-full max-w-md p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-            <p className="text-gray-600">Sign in to your Invoice Home account</p>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Bienvenido de Nuevo</h1>
+            <p className="text-gray-600">Inicia sesión en tu cuenta de FactuYa!</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="email">Email Address</Label>
+              <Label htmlFor="email">Correo Electrónico</Label>
               <Input
                 id="email"
                 type="email"
@@ -84,7 +84,7 @@ const SignIn = () => {
             </div>
 
             <div>
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Contraseña</Label>
               <Input
                 id="password"
                 type="password"
@@ -99,27 +99,27 @@ const SignIn = () => {
             <div className="flex items-center justify-between">
               <label className="flex items-center">
                 <input type="checkbox" className="mr-2" />
-                <span className="text-sm text-gray-600">Remember me</span>
+                <span className="text-sm text-gray-600">Recordarme</span>
               </label>
-              <a href="#" className="text-sm text-blue-600 hover:text-blue-700">
-                Forgot password?
+              <a href="#" className="text-sm text-lime-600 hover:text-lime-700">
+                ¿Olvidaste tu contraseña?
               </a>
             </div>
 
             <Button 
               type="submit" 
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full bg-lime-500 hover:bg-lime-600 text-white"
               disabled={loading}
             >
-              {loading ? 'Signing In...' : 'Sign In'}
+              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <Link to="/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
-                Sign up for free
+              ¿No tienes cuenta?{' '}
+              <Link to="/signup" className="text-lime-600 hover:text-lime-700 font-semibold">
+                Regístrate gratis
               </Link>
             </p>
           </div>
