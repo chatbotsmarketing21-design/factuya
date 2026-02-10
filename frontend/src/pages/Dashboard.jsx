@@ -405,7 +405,7 @@ const Dashboard = () => {
                             size="sm" 
                             title="Eliminar" 
                             className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                            onClick={() => handleDelete(invoice.id)}
+                            onClick={(event) => handleDelete(invoice.id, event)}
                           >
                             <Trash2 className="w-4 h-4" />
                           </Button>
