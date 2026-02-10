@@ -13,7 +13,15 @@ import {
   TableRow,
 } from '../components/ui/table';
 import { Badge } from '../components/ui/badge';
-import { Plus, Search, Eye, Download, Send, Edit, Trash2, FileText, LogOut } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../components/ui/dropdown-menu';
+import { Plus, Search, Eye, Download, Send, Edit, Trash2, FileText, LogOut, MoreVertical, CheckCircle, Clock, XCircle, FileEdit } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 
