@@ -279,9 +279,38 @@ const Dashboard = () => {
                       <TableCell>{invoice.dueDate}</TableCell>
                       <TableCell className="font-semibold">${invoice.total.toFixed(2)}</TableCell>
                       <TableCell>
-                        <Badge className={getStatusColor(invoice.status)}>
-                          {invoice.status.toUpperCase()}
-                        </Badge>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <Badge className={getStatusColor(invoice.status) + " cursor-pointer"}>
+                                {invoice.status === 'paid' ? 'PAGADA' : 
+                                 invoice.status === 'pending' ? 'PENDIENTE' : 
+                                 invoice.status === 'overdue' ? 'VENCIDA' : 
+                                 'BORRADOR'}
+                              </Badge>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Cambiar Estado</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'draft')}>
+                              <FileEdit className="w-4 h-4 mr-2 text-gray-600" />
+                              Borrador
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'pending')}>
+                              <Clock className="w-4 h-4 mr-2 text-yellow-600" />
+                              Pendiente
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'paid')}>
+                              <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
+                              Pagada
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'overdue')}>
+                              <XCircle className="w-4 h-4 mr-2 text-red-600" />
+                              Vencida
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
