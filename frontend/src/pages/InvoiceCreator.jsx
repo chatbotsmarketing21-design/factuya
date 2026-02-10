@@ -415,10 +415,10 @@ const InvoiceCreator = () => {
           <div className="space-y-6">
             {/* Invoice Details */}
             <Card className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Invoice Details</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Detalles de la Factura</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="number">Invoice Number</Label>
+                  <Label htmlFor="number">Número de Factura</Label>
                   <Input
                     id="number"
                     value={invoice.number}
@@ -427,7 +427,7 @@ const InvoiceCreator = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="date">Invoice Date</Label>
+                  <Label htmlFor="date">Fecha de Factura</Label>
                   <Input
                     id="date"
                     type="date"
@@ -436,7 +436,7 @@ const InvoiceCreator = () => {
                   />
                 </div>
                 <div className="col-span-2">
-                  <Label htmlFor="dueDate">Due Date</Label>
+                  <Label htmlFor="dueDate">Fecha de Vencimiento</Label>
                   <Input
                     id="dueDate"
                     type="date"
@@ -505,7 +505,7 @@ const InvoiceCreator = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="fromEmail">Email</Label>
+                    <Label htmlFor="fromEmail">Correo Electrónico</Label>
                     <Input
                       id="fromEmail"
                       type="email"
@@ -514,7 +514,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="fromPhone">Phone</Label>
+                    <Label htmlFor="fromPhone">Teléfono</Label>
                     <Input
                       id="fromPhone"
                       value={invoice.from.phone}
@@ -523,7 +523,7 @@ const InvoiceCreator = () => {
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="fromAddress">Address</Label>
+                  <Label htmlFor="fromAddress">Dirección</Label>
                   <Input
                     id="fromAddress"
                     value={invoice.from.address}
@@ -532,7 +532,7 @@ const InvoiceCreator = () => {
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="fromCity">City</Label>
+                    <Label htmlFor="fromCity">Ciudad</Label>
                     <Input
                       id="fromCity"
                       value={invoice.from.city}
@@ -540,7 +540,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="fromState">State</Label>
+                    <Label htmlFor="fromState">Estado/Provincia</Label>
                     <Input
                       id="fromState"
                       value={invoice.from.state}
@@ -548,7 +548,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="fromZip">ZIP</Label>
+                    <Label htmlFor="fromZip">Código Postal</Label>
                     <Input
                       id="fromZip"
                       value={invoice.from.zip}
