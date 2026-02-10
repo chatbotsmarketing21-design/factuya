@@ -49,8 +49,28 @@ const Dashboard = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [checkingPayment, setCheckingPayment] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode');
+    return saved ? JSON.parse(saved) : false;
+  });
   const { toast } = useToast();
   const { logout, user } = useAuth();
+
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    const newMode = !darkMode;
+    setDarkMode(newMode);
+    localStorage.setItem('darkMode', JSON.stringify(newMode));
+    if (newMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    toast({
+      title: newMode ? "Modo Oscuro Activado" : "Modo Claro Activado",
+      description: `El tema ha sido cambiado a modo ${newMode ? 'oscuro' : 'claro'}`,
+    });
+  };
 
   // Poll payment status when returning from Stripe
   const pollPaymentStatus = useCallback(async (sessionId, attempts = 0) => {
