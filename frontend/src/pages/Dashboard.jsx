@@ -265,7 +265,7 @@ const Dashboard = () => {
             <Card className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Total Invoices</p>
+                  <p className="text-sm text-gray-600">Total de Facturas</p>
                   <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalInvoices}</p>
                 </div>
                 <div className="bg-purple-100 p-3 rounded-full">
@@ -305,7 +305,7 @@ const Dashboard = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <Input
                 type="text"
-                placeholder="Search invoices by client name or number..."
+                placeholder="Buscar facturas por nombre de cliente o número..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -317,12 +317,12 @@ const Dashboard = () => {
         {/* Invoices Table */}
         <Card>
           <div className="p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">All Invoices</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Todas las Facturas</h2>
             {filteredInvoices.length === 0 ? (
               <div className="text-center py-12">
                 <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-xl text-gray-600 mb-2">No invoices yet</p>
-                <p className="text-gray-500 mb-4">Create your first invoice to get started</p>
+                <p className="text-xl text-gray-600 mb-2">Aún no hay facturas</p>
+                <p className="text-gray-500 mb-4">Crea tu primera factura para comenzar</p>
                 <Link to="/create">
                   <Button className="bg-lime-500 hover:bg-lime-600 text-white">
                     <Plus className="w-4 h-4 mr-2" />
@@ -334,13 +334,13 @@ const Dashboard = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Invoice #</TableHead>
-                    <TableHead>Client</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Due Date</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>Factura #</TableHead>
+                    <TableHead>Cliente</TableHead>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Vencimiento</TableHead>
+                    <TableHead>Monto</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead className="text-right">Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
