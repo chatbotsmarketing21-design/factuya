@@ -31,8 +31,8 @@ const Templates = () => {
                 </Button>
               </Link>
               <div className="flex items-center">
-                <span className="text-2xl font-bold text-gray-900">invoice </span>
-                <span className="text-2xl font-bold text-yellow-400 bg-yellow-400 text-gray-900 px-2 ml-1">home</span>
+                <span className="text-2xl font-bold text-gray-900">Factu</span>
+                <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
               </div>
             </div>
             <Link to="/dashboard">

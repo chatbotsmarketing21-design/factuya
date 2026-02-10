@@ -229,8 +229,8 @@ const InvoiceCreator = () => {
                 </Button>
               </Link>
               <div className="flex items-center">
-                <span className="text-xl font-bold text-gray-900">invoice </span>
-                <span className="text-xl font-bold text-yellow-400 bg-yellow-400 text-gray-900 px-2 ml-1">home</span>
+                <span className="text-xl font-bold text-gray-900">Factu</span>
+                <span className="text-xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -243,9 +243,9 @@ const InvoiceCreator = () => {
                 <Download className="w-4 h-4 mr-2" />
                 Download PDF
               </Button>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={handleSave} disabled={loading}>
+              <Button size="sm" className="bg-lime-500 hover:bg-lime-600 text-white" onClick={handleSave} disabled={loading}>
                 <Save className="w-4 h-4 mr-2" />
-                {loading ? 'Saving...' : 'Save Invoice'}
+                {loading ? 'Guardando...' : 'Guardar Factura'}
               </Button>
             </div>
           </div>
