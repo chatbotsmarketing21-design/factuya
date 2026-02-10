@@ -75,11 +75,11 @@ const InvoicePreview = ({ invoice, template }) => {
             </thead>
             <tbody>
               {invoice.items.map((item, index) => (
-                <tr key={item.id} className="border-b border-gray-200">
+                <tr key={index} className="border-b border-gray-200">
                   <td className="py-3 text-gray-900">{item.description}</td>
                   <td className="py-3 text-center text-gray-700">{item.quantity}</td>
-                  <td className="py-3 text-right text-gray-700">${item.rate.toFixed(2)}</td>
-                  <td className="py-3 text-right font-semibold text-gray-900">${item.amount.toFixed(2)}</td>
+                  <td className="py-3 text-right text-gray-700">${(parseFloat(item.rate) || 0).toFixed(2)}</td>
+                  <td className="py-3 text-right font-semibold text-gray-900">${(parseFloat(item.amount) || 0).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
