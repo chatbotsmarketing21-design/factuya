@@ -1,5 +1,6 @@
 from fastapi import HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
+from datetime import datetime, timezone, timedelta
 import os
 
 async def check_can_create_invoice(user_id: str, db):
@@ -7,8 +8,20 @@ async def check_can_create_invoice(user_id: str, db):
     # Get user's subscription
     subscription = await db.subscriptions.find_one({"userId": user_id})
     
+    # Auto-create trial subscription if none exists
     if not subscription:
-        return False, "No subscription found"
+        trial_end = datetime.now(timezone.utc) + timedelta(days=999)
+        new_subscription = {
+            "userId": user_id,
+            "planId": "trial",
+            "status": "trialing",
+            "currentPeriodEnd": trial_end,
+            "trialInvoicesUsed": 0,
+            "maxTrialInvoices": 10,
+            "createdAt": datetime.now(timezone.utc)
+        }
+        await db.subscriptions.insert_one(new_subscription)
+        subscription = new_subscription
     
     status = subscription.get("status", "trialing")
     
