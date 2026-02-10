@@ -39,8 +39,8 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <span className="text-2xl font-bold text-gray-900">invoice </span>
-              <span className="text-2xl font-bold text-yellow-400 bg-yellow-400 text-gray-900 px-2 ml-1">home</span>
+              <span className="text-2xl font-bold text-gray-900">Factu</span>
+              <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
             </div>
             <div className="flex items-center gap-4">
               <Link to="/signin">
@@ -49,8 +49,8 @@ const Home = () => {
                 </Button>
               </Link>
               <Link to="/create">
-                <Button className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold">
-                  Create Invoice
+                <Button className="bg-lime-500 hover:bg-lime-600 text-white font-semibold">
+                  Crear Factura
                 </Button>
               </Link>
             </div>
@@ -66,8 +66,8 @@ const Home = () => {
               100 Free Invoice Templates | Print & Email Invoices
             </h1>
             <Link to="/create">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white text-xl px-12 py-6 rounded-lg mt-8">
-                Create Invoice Now!
+              <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white text-xl px-12 py-6 rounded-lg mt-8">
+                ¡Crear Factura Ahora!
               </Button>
             </Link>
           </div>
@@ -137,8 +137,8 @@ const Home = () => {
             Join thousands of businesses using Invoice Home
           </p>
           <Link to="/create">
-            <Button size="lg" className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold text-xl px-12 py-6 rounded-lg">
-              Get Started - It's Free
+            <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white font-semibold text-xl px-12 py-6 rounded-lg">
+              Comenzar - Es Gratis
             </Button>
           </Link>
         </div>
@@ -149,8 +149,8 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-white font-semibold mb-4">Invoice Home</h3>
-              <p className="text-sm">Professional invoicing for small businesses and freelancers.</p>
+              <h3 className="text-white font-semibold mb-4">FactuYa!</h3>
+              <p className="text-sm">Facturación profesional para pequeñas empresas y freelancers.</p>
             </div>
             <div>
               <h4 className="text-white font-semibold mb-4">Product</h4>
@@ -178,7 +178,7 @@ const Home = () => {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-            <p>&copy; 2025 Invoice Home Clone. All rights reserved.</p>
+            <p>&copy; 2025 FactuYa! Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>
