@@ -62,7 +62,7 @@ const SignUp = () => {
     if (result.success) {
       toast({
         title: "¡Registro Exitoso!",
-        description: "Tu cuenta ha sido creada. Bienvenido a Invoice Home!",
+        description: "Tu cuenta ha sido creada. ¡Bienvenido a FactuYa!",
       });
       navigate('/dashboard');
     } else {
@@ -84,8 +84,8 @@ const SignUp = () => {
           <div className="flex items-center justify-between">
             <Link to="/">
               <div className="flex items-center cursor-pointer">
-                <span className="text-2xl font-bold text-gray-900">invoice </span>
-                <span className="text-2xl font-bold text-yellow-400 bg-yellow-400 text-gray-900 px-2 ml-1">home</span>
+                <span className="text-2xl font-bold text-gray-900">Factu</span>
+                <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
               </div>
             </Link>
             <Link to="/">
@@ -178,7 +178,7 @@ const SignUp = () => {
 
             <Button 
               type="submit" 
-              className="w-full bg-blue-600 hover:bg-blue-700"
+              className="w-full bg-lime-500 hover:bg-lime-600 text-white"
               disabled={loading}
             >
               {loading ? 'Creando cuenta...' : 'Crear Cuenta Gratis'}
@@ -188,7 +188,7 @@ const SignUp = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               ¿Ya tienes una cuenta?{' '}
-              <Link to="/signin" className="text-blue-600 hover:text-blue-700 font-semibold">
+              <Link to="/signin" className="text-lime-600 hover:text-lime-700 font-semibold">
                 Inicia sesión
               </Link>
             </p>
