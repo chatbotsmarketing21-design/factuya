@@ -69,9 +69,46 @@ const InvoiceCreator = () => {
   });
 
   useEffect(() => {
-    loadCompanyInfo();
-    generateInvoiceNumber();
-  }, []);
+    if (invoiceId) {
+      // Modo edición - cargar factura existente
+      loadInvoice(invoiceId);
+    } else {
+      // Modo creación - cargar info de empresa y generar número
+      loadCompanyInfo();
+      generateInvoiceNumber();
+    }
+  }, [invoiceId]);
+
+  const loadInvoice = async (id) => {
+    try {
+      setLoading(true);
+      const response = await invoiceAPI.getById(id);
+      const invoiceData = response.data;
+      
+      setInvoice({
+        ...invoiceData,
+        from: invoiceData.fromAddress || invoiceData.from,
+        to: invoiceData.toAddress || invoiceData.to
+      });
+      
+      setIsEditMode(true);
+      
+      toast({
+        title: "Factura Cargada",
+        description: "Ahora puedes editar la factura",
+      });
+    } catch (error) {
+      console.error('Error loading invoice:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo cargar la factura",
+        variant: "destructive"
+      });
+      navigate('/dashboard');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     setInvoice(prev => ({ ...prev, template: templateId }));
