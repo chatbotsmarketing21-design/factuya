@@ -176,6 +176,50 @@ const InvoiceCreator = () => {
     recalculateTotal(invoice.items, newRate);
   };
 
+  const handleLogoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validar que sea una imagen
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Error",
+          description: "Por favor selecciona un archivo de imagen válido",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Validar tamaño (máximo 2MB)
+      if (file.size > 2 * 1024 * 1024) {
+        toast({
+          title: "Error",
+          description: "El logo no debe superar los 2MB",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Convertir a base64
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setInvoice(prev => ({ ...prev, logo: reader.result }));
+        toast({
+          title: "¡Logo cargado!",
+          description: "El logo se ha agregado a tu factura",
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeLogo = () => {
+    setInvoice(prev => ({ ...prev, logo: '' }));
+    toast({
+      title: "Logo eliminado",
+      description: "El logo ha sido removido de la factura",
+    });
+  };
+
   const handleSave = async () => {
     if (!invoice.to.name || invoice.items.length === 0 || !invoice.items[0].description) {
       toast({
