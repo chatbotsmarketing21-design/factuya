@@ -262,8 +262,8 @@ const InvoiceCreator = () => {
   const handleSave = async () => {
     if (!invoice.to.name || invoice.items.length === 0 || !invoice.items[0].description) {
       toast({
-        title: "Validation Error",
-        description: "Please fill in client name and at least one item.",
+        title: "Error de Validación",
+        description: "Por favor completa el nombre del cliente y al menos un item.",
         variant: "destructive"
       });
       return;
@@ -271,16 +271,28 @@ const InvoiceCreator = () => {
 
     try {
       setLoading(true);
-      await invoiceAPI.create(invoice);
-      toast({
-        title: "Invoice Saved",
-        description: "Your invoice has been saved successfully.",
-      });
+      
+      if (isEditMode && invoiceId) {
+        // Actualizar factura existente
+        await invoiceAPI.update(invoiceId, invoice);
+        toast({
+          title: "¡Factura Actualizada!",
+          description: "Los cambios han sido guardados exitosamente.",
+        });
+      } else {
+        // Crear nueva factura
+        await invoiceAPI.create(invoice);
+        toast({
+          title: "¡Factura Guardada!",
+          description: "Tu factura ha sido creada exitosamente.",
+        });
+      }
+      
       navigate('/dashboard');
     } catch (error) {
       toast({
         title: "Error",
-        description: error.response?.data?.detail || "Failed to save invoice",
+        description: error.response?.data?.detail || "No se pudo guardar la factura",
         variant: "destructive"
       });
     } finally {
