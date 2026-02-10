@@ -358,12 +358,35 @@ const Dashboard = () => {
                     Configuración
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuLabel>Opciones</DropdownMenuLabel>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <User className="w-4 h-4 mr-2" />
+                    Perfil
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/subscription')}>
                     <CreditCard className="w-4 h-4 mr-2" />
                     Mi Suscripción
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/change-password')}>
+                    <Key className="w-4 h-4 mr-2" />
+                    Cambiar Contraseña
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuLabel>Apariencia</DropdownMenuLabel>
+                  <DropdownMenuItem onClick={toggleDarkMode}>
+                    {darkMode ? (
+                      <>
+                        <Sun className="w-4 h-4 mr-2" />
+                        Modo Claro
+                      </>
+                    ) : (
+                      <>
+                        <Moon className="w-4 h-4 mr-2" />
+                        Modo Oscuro
+                      </>
+                    )}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
