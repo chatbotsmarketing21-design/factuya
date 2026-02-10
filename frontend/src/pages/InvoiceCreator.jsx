@@ -433,6 +433,45 @@ const InvoiceCreator = () => {
                 <span className="text-xl font-bold text-gray-900">Factu</span>
                 <span className="text-xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
               </div>
+              
+              {/* Selector de Tipo de Documento */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="gap-2"
+                    style={{ borderColor: getDocumentInfo(invoice.documentType).color, color: getDocumentInfo(invoice.documentType).color }}
+                  >
+                    {getDocumentInfo(invoice.documentType).icon}
+                    {getDocumentInfo(invoice.documentType).name}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  <DropdownMenuLabel>Tipo de Documento</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => changeDocumentType('invoice')}>
+                    <FileText className="w-4 h-4 mr-2 text-blue-600" />
+                    FACTURA
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => changeDocumentType('proforma')}>
+                    <FileCheck className="w-4 h-4 mr-2 text-purple-600" />
+                    FACTURA PROFORMA
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => changeDocumentType('quotation')}>
+                    <Calculator className="w-4 h-4 mr-2 text-green-600" />
+                    COTIZACIÓN
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => changeDocumentType('bill')}>
+                    <DollarSign className="w-4 h-4 mr-2 text-orange-600" />
+                    CUENTA DE COBRO
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => changeDocumentType('receipt')}>
+                    <Receipt className="w-4 h-4 mr-2 text-cyan-600" />
+                    RECIBO
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <div className="flex items-center gap-3">
               <Link to="/templates">
