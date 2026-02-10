@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import List, Optional
 from models.invoice import InvoiceCreate, InvoiceUpdate, InvoiceInDB, InvoiceListItem, InvoiceStats
 from utils.auth import get_current_user_id
+from utils.subscription_check import check_can_create_invoice, increment_trial_invoice_count
 import os
 from motor.motor_asyncio import AsyncIOMotorClient
 from datetime import datetime
@@ -96,6 +97,15 @@ async def create_invoice(
     user_id: str = Depends(get_current_user_id)
 ):
     """Create a new invoice"""
+    # Check if user can create invoice
+    can_create, message = await check_can_create_invoice(user_id, db)
+    
+    if not can_create:
+        raise HTTPException(
+            status_code=403, 
+            detail=message
+        )
+    
     # Get user's company info as default "from" address
     user = await db.users.find_one({"id": user_id})
     if not user:
@@ -107,6 +117,9 @@ async def create_invoice(
     
     invoice_in_db = InvoiceInDB(**invoice_dict)
     await db.invoices.insert_one(invoice_in_db.dict(by_alias=True))
+    
+    # Increment trial count if applicable
+    await increment_trial_invoice_count(user_id, db)
     
     return invoice_in_db
 
