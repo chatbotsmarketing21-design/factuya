@@ -29,13 +29,23 @@ async def check_can_create_invoice(user_id: str, db):
     if status == "active":
         return True, "Active subscription"
     
-    # Trial - check limit
+    # Trial - check limit by counting ACTUAL invoices in database
     if status == "trialing":
-        invoices_used = subscription.get("trialInvoicesUsed", 0)
         max_trial = subscription.get("maxTrialInvoices", 10)  # Default 10
         
-        if invoices_used < max_trial:
-            return True, f"Trial: {max_trial - invoices_used} remaining"
+        # Count REAL invoices from database (more reliable than counter)
+        actual_invoice_count = await db.invoices.count_documents({"userId": user_id})
+        
+        # Update the counter to match reality
+        if actual_invoice_count != subscription.get("trialInvoicesUsed", 0):
+            await db.subscriptions.update_one(
+                {"userId": user_id},
+                {"$set": {"trialInvoicesUsed": actual_invoice_count}}
+            )
+        
+        if actual_invoice_count < max_trial:
+            remaining = max_trial - actual_invoice_count
+            return True, f"Trial: {remaining} remaining"
         else:
             return False, "Trial limit reached. Please subscribe."
     
@@ -46,7 +56,9 @@ async def increment_trial_invoice_count(user_id: str, db):
     subscription = await db.subscriptions.find_one({"userId": user_id})
     
     if subscription and subscription.get("status") == "trialing":
+        # Count actual invoices and update
+        actual_count = await db.invoices.count_documents({"userId": user_id})
         await db.subscriptions.update_one(
             {"userId": user_id},
-            {"$inc": {"trialInvoicesUsed": 1}}
+            {"$set": {"trialInvoicesUsed": actual_count}}
         )
