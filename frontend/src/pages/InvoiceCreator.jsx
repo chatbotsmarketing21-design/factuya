@@ -71,9 +71,11 @@ const InvoiceCreator = () => {
       }
     ],
     subtotal: 0,
-    taxRate: 10,
+    taxRate: 0,
+    taxName: '',
     tax: 0,
     total: 0,
+    hasTax: false,
     notes: 'Thank you for your business!',
     terms: 'Payment due within 30 days',
     template: templateId
