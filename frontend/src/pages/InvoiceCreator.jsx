@@ -857,6 +857,15 @@ const InvoiceCreator = () => {
           </div>
         </div>
       </div>
+
+      {/* Subscription Dialog */}
+      <SubscriptionDialog 
+        open={showSubscriptionDialog} 
+        onOpenChange={setShowSubscriptionDialog}
+        onSuccess={() => {
+          setShowSubscriptionDialog(false);
+        }}
+      />
     </div>
   );
 };
