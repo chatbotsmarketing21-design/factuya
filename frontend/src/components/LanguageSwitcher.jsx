@@ -1,1 +1,41 @@
-import React from 'react';\nimport { useTranslation } from 'react-i18next';\nimport { Button } from './ui/button';\nimport {\n  DropdownMenu,\n  DropdownMenuContent,\n  DropdownMenuItem,\n  DropdownMenuTrigger,\n} from './ui/dropdown-menu';\nimport { Globe } from 'lucide-react';\n\nconst LanguageSwitcher = () => {\n  const { i18n } = useTranslation();\n\n  const changeLanguage = (lng) => {\n    i18n.changeLanguage(lng);\n  };\n\n  const currentLanguage = i18n.language === 'es' ? 'Español' : 'English';\n\n  return (\n    <DropdownMenu>\n      <DropdownMenuTrigger asChild>\n        <Button variant=\"ghost\" size=\"sm\" className=\"gap-2\">\n          <Globe className=\"w-4 h-4\" />\n          {currentLanguage}\n        </Button>\n      </DropdownMenuTrigger>\n      <DropdownMenuContent align=\"end\">\n        <DropdownMenuItem onClick={() => changeLanguage('es')}>\n          🇪🇸 Español\n        </DropdownMenuItem>\n        <DropdownMenuItem onClick={() => changeLanguage('en')}>\n          🇺🇸 English\n        </DropdownMenuItem>\n      </DropdownMenuContent>\n    </DropdownMenu>\n  );\n};\n\nexport default LanguageSwitcher;
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button } from './ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+import { Globe } from 'lucide-react';
+
+const LanguageSwitcher = () => {
+  const { i18n } = useTranslation();
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+  };
+
+  const currentLanguage = i18n.language === 'es' ? 'Español' : 'English';
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="sm" className="gap-2">
+          <Globe className="w-4 h-4" />
+          {currentLanguage}
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => changeLanguage('es')}>
+          ES Español
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => changeLanguage('en')}>
+          EN English
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+export default LanguageSwitcher;
