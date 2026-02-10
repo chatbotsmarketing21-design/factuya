@@ -9,6 +9,8 @@ import SignUp from "./pages/SignUp";
 import SubscriptionPanel from "./pages/SubscriptionPanel";
 import Profile from "./pages/Profile";
 import ChangePassword from "./pages/ChangePassword";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import { Toaster } from "./components/ui/toaster";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
