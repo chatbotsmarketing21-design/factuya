@@ -235,15 +235,16 @@ const Dashboard = () => {
               )}
             </div>
             <div className="flex items-center gap-3">
+              <LanguageSwitcher />
               <Link to="/create">
                 <Button className="bg-lime-500 hover:bg-lime-600 text-white">
                   <Plus className="w-4 h-4 mr-2" />
-                  Nueva Factura
+                  {t('dashboard.newInvoice')}
                 </Button>
               </Link>
               <Button variant="outline" onClick={handleLogout}>
                 <LogOut className="w-4 h-4 mr-2" />
-                Logout
+                {t('nav.logout')}
               </Button>
             </div>
           </div>
