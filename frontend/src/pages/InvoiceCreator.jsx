@@ -22,6 +22,7 @@ const InvoiceCreator = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [template, setTemplate] = useState(getTemplateById(templateId));
+  const invoicePreviewRef = useRef(null);
   const [invoice, setInvoice] = useState({
     number: '',
     date: new Date().toISOString().split('T')[0],
