@@ -79,20 +79,25 @@ const Dashboard = () => {
       event.preventDefault();
     }
     
-    const confirmed = window.confirm('¿Estás seguro de que deseas eliminar esta factura?');
-    console.log('User confirmed:', confirmed);
+    // Abrir el diálogo de confirmación
+    setInvoiceToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!invoiceToDelete) return;
     
-    if (!confirmed) {
-      return;
-    }
+    console.log('Confirmando eliminación de:', invoiceToDelete);
 
     try {
-      console.log('Attempting to delete invoice:', id);
-      await invoiceAPI.delete(id);
+      console.log('Attempting to delete invoice:', invoiceToDelete);
+      await invoiceAPI.delete(invoiceToDelete);
       toast({
         title: "¡Éxito!",
         description: "Factura eliminada exitosamente"
       });
+      setDeleteDialogOpen(false);
+      setInvoiceToDelete(null);
       loadData();
     } catch (error) {
       console.error('Error deleting invoice:', error);
@@ -101,6 +106,8 @@ const Dashboard = () => {
         description: "No se pudo eliminar la factura",
         variant: "destructive"
       });
+      setDeleteDialogOpen(false);
+      setInvoiceToDelete(null);
     }
   };
 
