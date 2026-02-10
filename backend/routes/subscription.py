@@ -32,21 +32,21 @@ async def get_subscription_status(user_id: str = Depends(get_current_user_id)):
     
     if not subscription:
         # Create trial subscription for new user
-        trial_end = datetime.utcnow() + timedelta(days=999)  # Unlimited trial with 3 invoices
+        trial_end = datetime.utcnow() + timedelta(days=999)  # Unlimited trial with 10 invoices
         new_subscription = Subscription(
             userId=user_id,
             planId="trial",
             status="trialing",
             currentPeriodEnd=trial_end,
             trialInvoicesUsed=0,
-            maxTrialInvoices=3
+            maxTrialInvoices=10  # 10 facturas gratis
         )
         await db.subscriptions.insert_one(new_subscription.dict())
         subscription = new_subscription.dict()
     
     status = subscription.get("status", "trialing")
     invoices_used = subscription.get("trialInvoicesUsed", 0)
-    max_trial = subscription.get("maxTrialInvoices", 3)
+    max_trial = subscription.get("maxTrialInvoices", 10)  # Default 10
     
     # Check if user can create invoices
     can_create = False
