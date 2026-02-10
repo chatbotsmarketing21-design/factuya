@@ -19,6 +19,7 @@ import { ArrowLeft, Plus, Trash2, Download, Send, Save, FileText, FileCheck, Cal
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 import InvoicePreview from '../components/InvoicePreview';
+import SubscriptionDialog from '../components/SubscriptionDialog';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
