@@ -341,11 +341,16 @@ const InvoiceCreator = () => {
       
       navigate('/dashboard');
     } catch (error) {
-      toast({
-        title: "Error",
-        description: error.response?.data?.detail || "No se pudo guardar la factura",
-        variant: "destructive"
-      });
+      // Si el error es 403 (límite alcanzado), mostrar diálogo de suscripción
+      if (error.response?.status === 403) {
+        setShowSubscriptionDialog(true);
+      } else {
+        toast({
+          title: "Error",
+          description: error.response?.data?.detail || "No se pudo guardar la factura",
+          variant: "destructive"
+        });
+      }
     } finally {
       setLoading(false);
     }
