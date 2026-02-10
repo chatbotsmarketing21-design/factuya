@@ -11,6 +11,7 @@ from routes.auth import router as auth_router
 from routes.invoices import router as invoices_router
 from routes.profile import router as profile_router
 from routes.subscription import router as subscription_router
+from routes.password_reset import router as password_reset_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
