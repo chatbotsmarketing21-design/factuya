@@ -188,7 +188,11 @@ class TestInvoices:
         })
         if response.status_code == 200:
             token = response.json()["token"]
-            return {"Authorization": f"Bearer {token}"}
+            headers = {"Authorization": f"Bearer {token}"}
+            # IMPORTANT: Must call subscription status to initialize subscription
+            # This is a known issue - subscription should be created on registration
+            requests.get(f"{BASE_URL}/api/subscription/status", headers=headers)
+            return headers
         pytest.skip("Could not create test user for invoice tests")
     
     @pytest.fixture
