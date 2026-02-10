@@ -355,22 +355,42 @@ const Dashboard = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <Button variant="ghost" size="sm" title="View">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            title="Ver"
+                            onClick={() => handleView(invoice.id)}
+                          >
                             <Eye className="w-4 h-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" title="Edit">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            title="Editar"
+                            onClick={() => handleEdit(invoice.id)}
+                          >
                             <Edit className="w-4 h-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" title="Download">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            title="Descargar PDF"
+                            onClick={() => handleDownloadPDF(invoice.id)}
+                          >
                             <Download className="w-4 h-4" />
                           </Button>
-                          <Button variant="ghost" size="sm" title="Send">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            title="Enviar Email"
+                            onClick={() => handleSendEmail(invoice)}
+                          >
                             <Send className="w-4 h-4" />
                           </Button>
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            title="Delete" 
+                            title="Eliminar" 
                             className="text-red-600 hover:text-red-700 hover:bg-red-50"
                             onClick={() => handleDelete(invoice.id)}
                           >
