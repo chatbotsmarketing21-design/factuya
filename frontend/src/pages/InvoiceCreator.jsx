@@ -222,9 +222,9 @@ const InvoiceCreator = () => {
     recalculateTotal(newItems, invoice.taxRate);
   };
 
-  const recalculateTotal = (items, taxRate) => {
+  const recalculateTotal = (items, taxRate, hasTax = invoice.hasTax) => {
     const subtotal = items.reduce((sum, item) => sum + item.amount, 0);
-    const tax = (subtotal * taxRate) / 100;
+    const tax = hasTax ? (subtotal * taxRate) / 100 : 0;
     const total = subtotal + tax;
     
     setInvoice(prev => ({
