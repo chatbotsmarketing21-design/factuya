@@ -91,15 +91,15 @@ const InvoicePreview = ({ invoice, template }) => {
           <div className="w-64 space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Subtotal:</span>
-              <span className="font-semibold text-gray-900">${invoice.subtotal.toFixed(2)}</span>
+              <span className="font-semibold text-gray-900">${(parseFloat(invoice.subtotal) || 0).toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Tax ({invoice.taxRate}%):</span>
-              <span className="font-semibold text-gray-900">${invoice.tax.toFixed(2)}</span>
+              <span className="font-semibold text-gray-900">${(parseFloat(invoice.tax) || 0).toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-lg font-bold pt-2 border-t-2" style={{ borderColor: template.color }}>
               <span>Total:</span>
-              <span style={{ color: template.color }}>${invoice.total.toFixed(2)}</span>
+              <span style={{ color: template.color }}>${(parseFloat(invoice.total) || 0).toFixed(2)}</span>
             </div>
           </div>
         </div>
