@@ -42,6 +42,10 @@ const InvoiceCreator = () => {
   const [loading, setLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
+  const [showTaxDialog, setShowTaxDialog] = useState(false);
+  const [tempTaxName, setTempTaxName] = useState('IVA');
+  const [tempTaxRate, setTempTaxRate] = useState(19);
+  const [isCompoundTax, setIsCompoundTax] = useState(false);
   const [template, setTemplate] = useState(getTemplateById(templateId));
   const invoicePreviewRef = useRef(null);
   const [invoice, setInvoice] = useState({
