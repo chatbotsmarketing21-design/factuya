@@ -612,7 +612,9 @@ const InvoiceCreator = () => {
 
           {/* Preview Panel */}
           <div className="lg:sticky lg:top-24 h-fit">
-            <InvoicePreview invoice={invoice} template={template} />
+            <div ref={invoicePreviewRef}>
+              <InvoicePreview invoice={invoice} template={template} />
+            </div>
           </div>
         </div>
       </div>
