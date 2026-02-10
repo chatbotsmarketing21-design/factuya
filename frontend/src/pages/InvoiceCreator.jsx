@@ -398,10 +398,54 @@ const InvoiceCreator = () => {
 
             {/* From Section */}
             <Card className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">From (Your Company)</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">De (Tu Empresa)</h2>
               <div className="space-y-4">
+                {/* Logo Upload Section */}
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                  <Label className="text-base font-semibold mb-3 block">Logo de la Empresa</Label>
+                  {invoice.logo ? (
+                    <div className="flex items-center gap-4">
+                      <img 
+                        src={invoice.logo} 
+                        alt="Logo" 
+                        className="h-20 w-20 object-contain border border-gray-200 rounded"
+                      />
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-600 mb-2">Logo cargado exitosamente</p>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={removeLogo}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Eliminar Logo
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-sm text-gray-600 mb-3">
+                        Sube el logo de tu empresa (JPG, PNG - máx 2MB)
+                      </p>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoUpload}
+                        className="block w-full text-sm text-gray-500
+                          file:mr-4 file:py-2 file:px-4
+                          file:rounded-lg file:border-0
+                          file:text-sm file:font-semibold
+                          file:bg-lime-50 file:text-lime-700
+                          hover:file:bg-lime-100
+                          cursor-pointer"
+                      />
+                    </div>
+                  )}
+                </div>
+
                 <div>
-                  <Label htmlFor="fromName">Company Name</Label>
+                  <Label htmlFor="fromName">Nombre de la Empresa</Label>
                   <Input
                     id="fromName"
                     value={invoice.from.name}
