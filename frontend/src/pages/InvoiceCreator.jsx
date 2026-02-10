@@ -931,6 +931,62 @@ const InvoiceCreator = () => {
           setShowSubscriptionDialog(false);
         }}
       />
+
+      {/* Tax Dialog */}
+      <Dialog open={showTaxDialog} onOpenChange={setShowTaxDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Añadir Impuesto</DialogTitle>
+            <DialogDescription>
+              Añadir impuesto nuevo
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="taxName">Nombre del impuesto</Label>
+                <Input
+                  id="taxName"
+                  value={tempTaxName}
+                  onChange={(e) => setTempTaxName(e.target.value)}
+                  placeholder="IVA"
+                />
+              </div>
+              <div>
+                <Label htmlFor="taxRate">Porcentaje (%)</Label>
+                <Input
+                  id="taxRate"
+                  type="number"
+                  value={tempTaxRate}
+                  onChange={(e) => setTempTaxRate(e.target.value)}
+                  placeholder="19"
+                  min="0"
+                  max="100"
+                  step="0.1"
+                />
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="compoundTax"
+                checked={isCompoundTax}
+                onCheckedChange={setIsCompoundTax}
+              />
+              <Label htmlFor="compoundTax" className="text-sm text-gray-600">
+                ¿Impuesto compuesto?
+              </Label>
+            </div>
+          </div>
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            <Button onClick={handleSaveTax} className="bg-lime-500 hover:bg-lime-600 text-white">
+              Guardar impuesto
+            </Button>
+            <Button variant="ghost" onClick={() => setShowTaxDialog(false)}>
+              Cerrar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
