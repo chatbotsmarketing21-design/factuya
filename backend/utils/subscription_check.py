@@ -19,7 +19,7 @@ async def check_can_create_invoice(user_id: str, db):
     # Trial - check limit
     if status == "trialing":
         invoices_used = subscription.get("trialInvoicesUsed", 0)
-        max_trial = subscription.get("maxTrialInvoices", 3)
+        max_trial = subscription.get("maxTrialInvoices", 10)  # Default 10
         
         if invoices_used < max_trial:
             return True, f"Trial: {max_trial - invoices_used} remaining"
