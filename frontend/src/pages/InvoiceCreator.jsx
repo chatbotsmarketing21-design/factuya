@@ -292,12 +292,16 @@ const InvoiceCreator = () => {
             <div className="flex items-center gap-3">
               <Link to="/templates">
                 <Button variant="outline" size="sm">
-                  Change Template
+                  Cambiar Plantilla
                 </Button>
               </Link>
               <Button variant="outline" size="sm" onClick={handleDownload}>
                 <Download className="w-4 h-4 mr-2" />
-                Download PDF
+                Descargar PDF
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleSend}>
+                <Send className="w-4 h-4 mr-2" />
+                Enviar Email
               </Button>
               <Button size="sm" className="bg-lime-500 hover:bg-lime-600 text-white" onClick={handleSave} disabled={loading}>
                 <Save className="w-4 h-4 mr-2" />
