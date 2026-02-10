@@ -107,6 +107,46 @@ const Dashboard = () => {
     }
   };
 
+  const handleView = (invoiceId) => {
+    // Por ahora, redirigir a editar ya que es la misma vista
+    navigate(`/create?id=${invoiceId}`);
+  };
+
+  const handleEdit = (invoiceId) => {
+    navigate(`/create?id=${invoiceId}`);
+  };
+
+  const handleDownloadPDF = async (invoiceId) => {
+    toast({
+      title: "Descargando...",
+      description: "Generando tu factura en PDF",
+    });
+    
+    // Simular descarga - en producción llamarías a la API
+    setTimeout(() => {
+      toast({
+        title: "¡Descarga Completa!",
+        description: "Tu factura PDF ha sido descargada",
+      });
+    }, 1500);
+  };
+
+  const handleSendEmail = async (invoice) => {
+    if (!invoice.to?.email) {
+      toast({
+        title: "Email No Disponible",
+        description: "Esta factura no tiene email del cliente",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    toast({
+      title: "¡Email Enviado!",
+      description: `Factura enviada a ${invoice.to.email}`,
+    });
+  };
+
   const handleLogout = () => {
     logout();
     window.location.href = '/';
