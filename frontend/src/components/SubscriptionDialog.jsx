@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
 import { subscriptionAPI } from '../services/subscriptionApi';
 import { Button } from './ui/button';
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -12,16 +10,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from './ui/alert-dialog';
-import { Loader2, CreditCard, Check } from 'lucide-react';
+import { Loader2, CreditCard, Check, AlertCircle } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
-
-// Stripe publishable key (reemplazar con tu clave real)
-const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY || 'pk_test_dummy_key');
-const STRIPE_PRICE_ID = process.env.REACT_APP_STRIPE_PRICE_ID || 'price_dummy_id';
 
 const SubscriptionDialog = ({ open, onOpenChange, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
+  const [error, setError] = useState(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -32,41 +27,34 @@ const SubscriptionDialog = ({ open, onOpenChange, onSuccess }) => {
 
   const loadSubscriptionStatus = async () => {
     try {
+      setError(null);
       const response = await subscriptionAPI.getStatus();
       setSubscriptionStatus(response.data);
-    } catch (error) {
-      console.error('Error loading subscription:', error);
+    } catch (err) {
+      console.error('Error loading subscription:', err);
+      setError('No se pudo cargar la información de suscripción');
     }
   };
 
   const handleSubscribe = async () => {
     try {
       setLoading(true);
+      setError(null);
       
-      const response = await subscriptionAPI.createCheckoutSession({
-        priceId: STRIPE_PRICE_ID,
-        successUrl: `${window.location.origin}/dashboard?payment=success`,
-        cancelUrl: `${window.location.origin}/dashboard?payment=canceled`
-      });
-
-      // Redirigir a Stripe Checkout
-      const stripe = await stripePromise;
-      const { error } = await stripe.redirectToCheckout({
-        sessionId: response.data.sessionId
-      });
-
-      if (error) {
-        toast({
-          title: "Error",
-          description: error.message,
-          variant: "destructive"
-        });
+      const response = await subscriptionAPI.createCheckoutSession();
+      
+      // Redirigir directamente a la URL de Stripe Checkout
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      } else {
+        throw new Error('No se recibió la URL de pago');
       }
-    } catch (error) {
-      console.error('Error creating checkout:', error);
+    } catch (err) {
+      console.error('Error creating checkout:', err);
+      setError(err.response?.data?.detail || 'No se pudo iniciar el proceso de pago. Por favor intenta de nuevo.');
       toast({
         title: "Error",
-        description: "No se pudo iniciar el proceso de pago. Por favor intenta de nuevo.",
+        description: err.response?.data?.detail || "No se pudo iniciar el proceso de pago",
         variant: "destructive"
       });
     } finally {
@@ -76,12 +64,19 @@ const SubscriptionDialog = ({ open, onOpenChange, onSuccess }) => {
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="max-w-md">
+      <AlertDialogContent className="max-w-md" data-testid="subscription-dialog">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-2xl font-bold text-center">
             ¡Mejora a Premium!
           </AlertDialogTitle>
           <AlertDialogDescription className="text-center pt-4">
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4 flex items-center gap-2">
+                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                <p className="text-red-700 text-sm">{error}</p>
+              </div>
+            )}
+
             {subscriptionStatus && (
               <div className="space-y-4">
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
@@ -125,13 +120,20 @@ const SubscriptionDialog = ({ open, onOpenChange, onSuccess }) => {
                 </p>
               </div>
             )}
+
+            {!subscriptionStatus && !error && (
+              <div className="flex justify-center py-8">
+                <Loader2 className="w-8 h-8 animate-spin text-lime-500" />
+              </div>
+            )}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="flex-col sm:flex-col gap-2">
           <Button
             onClick={handleSubscribe}
-            disabled={loading}
+            disabled={loading || !subscriptionStatus}
             className="w-full bg-lime-500 hover:bg-lime-600 text-white text-lg py-6"
+            data-testid="subscribe-button"
           >
             {loading ? (
               <>
@@ -145,7 +147,7 @@ const SubscriptionDialog = ({ open, onOpenChange, onSuccess }) => {
               </>
             )}
           </Button>
-          <AlertDialogCancel className="w-full" disabled={loading}>
+          <AlertDialogCancel className="w-full" disabled={loading} data-testid="cancel-subscription-dialog">
             Cancelar
           </AlertDialogCancel>
         </AlertDialogFooter>
