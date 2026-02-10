@@ -69,26 +69,28 @@ const SubscriptionDialog = ({ open, onOpenChange, onSuccess }) => {
           <AlertDialogTitle className="text-2xl font-bold text-center">
             ¡Mejora a Premium!
           </AlertDialogTitle>
-          <AlertDialogDescription className="text-center pt-4">
+        </AlertDialogHeader>
+        
+        <div className="text-center pt-4">
             {error && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4 flex items-center gap-2">
                 <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
-                <p className="text-red-700 text-sm">{error}</p>
+                <span className="text-red-700 text-sm">{error}</span>
               </div>
             )}
 
             {subscriptionStatus && (
               <div className="space-y-4">
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                  <p className="text-gray-700 font-medium">
+                  <span className="text-gray-700 font-medium">
                     Has usado <span className="text-yellow-600 font-bold">{subscriptionStatus.invoicesUsed}</span> de tus <span className="font-bold">{subscriptionStatus.maxInvoices}</span> facturas gratuitas
-                  </p>
+                  </span>
                 </div>
 
                 <div className="bg-lime-50 border-2 border-lime-500 rounded-lg p-6">
                   <div className="text-center mb-4">
-                    <p className="text-3xl font-bold text-gray-900">$5<span className="text-lg font-normal text-gray-600">/mes</span></p>
-                    <p className="text-sm text-gray-600 mt-1">Plan Premium</p>
+                    <span className="text-3xl font-bold text-gray-900">$5<span className="text-lg font-normal text-gray-600">/mes</span></span>
+                    <span className="text-sm text-gray-600 mt-1 block">Plan Premium</span>
                   </div>
 
                   <div className="space-y-3 text-left">
@@ -115,9 +117,9 @@ const SubscriptionDialog = ({ open, onOpenChange, onSuccess }) => {
                   </div>
                 </div>
 
-                <p className="text-xs text-gray-500 text-center">
+                <span className="text-xs text-gray-500 text-center block">
                   Pago seguro procesado por Stripe. Puedes cancelar en cualquier momento.
-                </p>
+                </span>
               </div>
             )}
 
@@ -126,8 +128,7 @@ const SubscriptionDialog = ({ open, onOpenChange, onSuccess }) => {
                 <Loader2 className="w-8 h-8 animate-spin text-lime-500" />
               </div>
             )}
-          </AlertDialogDescription>
-        </AlertDialogHeader>
+        </div>
         <AlertDialogFooter className="flex-col sm:flex-col gap-2">
           <Button
             onClick={handleSubscribe}
