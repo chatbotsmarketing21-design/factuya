@@ -13,9 +13,17 @@ const InvoicePreview = ({ invoice, template }) => {
               <p className="text-gray-600 mt-2">#{invoice.number}</p>
             </div>
             <div className="text-right">
-              <div className="w-24 h-24 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">
-                LOGO
-              </div>
+              {invoice.logo ? (
+                <img 
+                  src={invoice.logo} 
+                  alt="Company Logo" 
+                  className="h-24 w-24 object-contain"
+                />
+              ) : (
+                <div className="w-24 h-24 bg-gray-200 rounded flex items-center justify-center text-gray-400 text-xs">
+                  LOGO
+                </div>
+              )}
             </div>
           </div>
         </div>
