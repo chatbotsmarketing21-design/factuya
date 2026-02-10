@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { getTemplateById } from '../mock/invoiceData';
 import { invoiceAPI, profileAPI } from '../services/api';
@@ -11,6 +11,8 @@ import { ArrowLeft, Plus, Trash2, Download, Send, Save } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 import InvoicePreview from '../components/InvoicePreview';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 const InvoiceCreator = () => {
   const [searchParams] = useSearchParams();
