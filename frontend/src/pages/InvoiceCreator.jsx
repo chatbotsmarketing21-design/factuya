@@ -401,7 +401,7 @@ const InvoiceCreator = () => {
               </Button>
               <Button size="sm" className="bg-lime-500 hover:bg-lime-600 text-white" onClick={handleSave} disabled={loading}>
                 <Save className="w-4 h-4 mr-2" />
-                {loading ? 'Guardando...' : 'Guardar Factura'}
+                {loading ? 'Guardando...' : isEditMode ? 'Actualizar Factura' : 'Guardar Factura'}
               </Button>
             </div>
           </div>
