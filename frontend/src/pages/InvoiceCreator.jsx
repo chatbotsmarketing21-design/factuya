@@ -18,9 +18,11 @@ const InvoiceCreator = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const templateId = parseInt(searchParams.get('template')) || 1;
+  const invoiceId = searchParams.get('id'); // ID de factura para editar
   const { toast } = useToast();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [template, setTemplate] = useState(getTemplateById(templateId));
   const invoicePreviewRef = useRef(null);
   const [invoice, setInvoice] = useState({
