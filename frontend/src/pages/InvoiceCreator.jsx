@@ -32,6 +32,7 @@ const InvoiceCreator = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
   const [template, setTemplate] = useState(getTemplateById(templateId));
   const invoicePreviewRef = useRef(null);
   const [invoice, setInvoice] = useState({
