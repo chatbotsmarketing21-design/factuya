@@ -436,13 +436,18 @@ const Dashboard = () => {
                 </TableHeader>
                 <TableBody>
                   {filteredInvoices.map((invoice) => (
-                    <TableRow key={invoice.id}>
+                    <TableRow 
+                      key={invoice.id}
+                      className="cursor-pointer hover:bg-lime-50 transition-colors"
+                      onClick={() => handleView(invoice.id)}
+                      data-testid={`invoice-row-${invoice.id}`}
+                    >
                       <TableCell className="font-medium">{invoice.number}</TableCell>
                       <TableCell>{invoice.clientName}</TableCell>
                       <TableCell>{invoice.date}</TableCell>
                       <TableCell>{invoice.dueDate}</TableCell>
                       <TableCell className="font-semibold">${invoice.total.toFixed(2)}</TableCell>
-                      <TableCell>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -476,16 +481,8 @@ const Dashboard = () => {
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-2">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            title="Ver"
-                            onClick={() => handleView(invoice.id)}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
                           <Button 
                             variant="ghost" 
                             size="sm" 
