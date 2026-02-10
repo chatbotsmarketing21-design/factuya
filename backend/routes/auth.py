@@ -97,3 +97,34 @@ async def get_current_user(user_id: str = Depends(get_current_user_id)):
         name=user["name"],
         companyInfo=user.get("companyInfo")
     )
+
+from pydantic import BaseModel
+
+class ChangePasswordRequest(BaseModel):
+    currentPassword: str
+    newPassword: str
+
+@router.post("/change-password")
+async def change_password(request: ChangePasswordRequest, user_id: str = Depends(get_current_user_id)):
+    """Change user password"""
+    # Find user
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    
+    # Verify current password
+    if not verify_password(request.currentPassword, user["password"]):
+        raise HTTPException(status_code=400, detail="La contraseña actual es incorrecta")
+    
+    # Validate new password
+    if len(request.newPassword) < 6:
+        raise HTTPException(status_code=400, detail="La nueva contraseña debe tener al menos 6 caracteres")
+    
+    # Update password
+    new_hashed_password = hash_password(request.newPassword)
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"password": new_hashed_password}}
+    )
+    
+    return {"message": "Contraseña actualizada correctamente"}
