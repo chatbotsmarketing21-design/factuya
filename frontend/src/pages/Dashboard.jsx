@@ -41,6 +41,8 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const { toast } = useToast();
   const { logout, user } = useAuth();
 
