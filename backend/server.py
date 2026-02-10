@@ -37,6 +37,7 @@ api_router.include_router(auth_router)
 api_router.include_router(invoices_router)
 api_router.include_router(profile_router)
 api_router.include_router(subscription_router)
+api_router.include_router(password_reset_router)
 
 # Include the router in the main app
 app.include_router(api_router)
