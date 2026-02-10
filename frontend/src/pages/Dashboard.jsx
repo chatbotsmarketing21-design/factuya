@@ -113,8 +113,8 @@ const Dashboard = () => {
             <div className="flex items-center gap-4">
               <Link to="/">
                 <div className="flex items-center cursor-pointer">
-                  <span className="text-2xl font-bold text-gray-900">invoice </span>
-                  <span className="text-2xl font-bold text-yellow-400 bg-yellow-400 text-gray-900 px-2 ml-1">home</span>
+                  <span className="text-2xl font-bold text-gray-900">Factu</span>
+                  <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
                 </div>
               </Link>
               {user && (
@@ -123,9 +123,9 @@ const Dashboard = () => {
             </div>
             <div className="flex items-center gap-3">
               <Link to="/create">
-                <Button className="bg-blue-600 hover:bg-blue-700">
+                <Button className="bg-lime-500 hover:bg-lime-600 text-white">
                   <Plus className="w-4 h-4 mr-2" />
-                  New Invoice
+                  Nueva Factura
                 </Button>
               </Link>
               <Button variant="outline" onClick={handleLogout}>
@@ -214,9 +214,9 @@ const Dashboard = () => {
                 <p className="text-xl text-gray-600 mb-2">No invoices yet</p>
                 <p className="text-gray-500 mb-4">Create your first invoice to get started</p>
                 <Link to="/create">
-                  <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Button className="bg-lime-500 hover:bg-lime-600 text-white">
                     <Plus className="w-4 h-4 mr-2" />
-                    Create Invoice
+                    Crear Factura
                   </Button>
                 </Link>
               </div>
