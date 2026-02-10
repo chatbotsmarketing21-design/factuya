@@ -204,18 +204,71 @@ const InvoiceCreator = () => {
     }
   };
 
-  const handleDownload = () => {
-    toast({
-      title: "Download Started",
-      description: "Your invoice PDF is being generated.",
-    });
+  const handleDownload = async () => {
+    try {
+      if (!invoicePreviewRef.current) {
+        toast({
+          title: "Error",
+          description: "No se pudo generar el PDF",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      toast({
+        title: "Generando PDF...",
+        description: "Por favor espera un momento",
+      });
+
+      // Capturar el preview como imagen
+      const canvas = await html2canvas(invoicePreviewRef.current, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save(`Factura_${invoice.number}_${invoice.to.name}.pdf`);
+
+      toast({
+        title: "¡Descarga Completa!",
+        description: "Tu factura PDF ha sido descargada",
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo generar el PDF. Intenta de nuevo.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleSend = () => {
+    if (!invoice.to.email) {
+      toast({
+        title: "Email Requerido",
+        description: "Por favor ingresa el email del cliente para enviar la factura",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Simular envío de email
     toast({
-      title: "Invoice Sent",
-      description: "Your invoice has been sent via email.",
+      title: "¡Factura Enviada!",
+      description: `La factura ha sido enviada a ${invoice.to.email}`,
     });
+    
+    // En una implementación real, aquí llamarías a una API para enviar el email
+    // Por ejemplo: await invoiceAPI.sendEmail(invoice.id, invoice.to.email);
   };
 
   return (
