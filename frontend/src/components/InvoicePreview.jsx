@@ -2,14 +2,40 @@ import React from 'react';
 import { Card } from './ui/card';
 
 const InvoicePreview = ({ invoice, template }) => {
+  const getDocumentTitle = (type) => {
+    const titles = {
+      invoice: 'INVOICE',
+      proforma: 'PROFORMA INVOICE',
+      quotation: 'QUOTATION',
+      bill: 'BILL',
+      receipt: 'RECEIPT'
+    };
+    return titles[type] || 'INVOICE';
+  };
+
+  const getDocumentColor = (type) => {
+    const colors = {
+      invoice: '#2563eb',
+      proforma: '#7c3aed',
+      quotation: '#059669',
+      bill: '#ea580c',
+      receipt: '#0891b2'
+    };
+    return colors[type] || template.color;
+  };
+
+  const documentColor = getDocumentColor(invoice.documentType || 'invoice');
+
   return (
     <Card className="p-8 bg-white shadow-lg">
       <div className="space-y-6">
         {/* Header */}
-        <div className="border-b pb-6" style={{ borderColor: template.color }}>
+        <div className="border-b pb-6" style={{ borderColor: documentColor }}>
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-4xl font-bold" style={{ color: template.color }}>INVOICE</h1>
+              <h1 className="text-4xl font-bold" style={{ color: documentColor }}>
+                {getDocumentTitle(invoice.documentType || 'invoice')}
+              </h1>
               <p className="text-gray-600 mt-2">#{invoice.number}</p>
             </div>
             <div className="text-right">
