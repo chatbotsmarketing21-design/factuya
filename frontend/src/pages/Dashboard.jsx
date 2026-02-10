@@ -50,21 +50,50 @@ const Dashboard = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this invoice?')) {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar esta factura?')) {
       return;
     }
 
     try {
       await invoiceAPI.delete(id);
       toast({
-        title: "Success",
-        description: "Invoice deleted successfully"
+        title: "Éxito",
+        description: "Factura eliminada exitosamente"
       });
       loadData();
     } catch (error) {
       toast({
         title: "Error",
-        description: "Failed to delete invoice",
+        description: "No se pudo eliminar la factura",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleStatusChange = async (invoiceId, newStatus) => {
+    try {
+      // Buscar la factura completa
+      const invoiceResponse = await invoiceAPI.getById(invoiceId);
+      const invoiceData = invoiceResponse.data;
+      
+      // Actualizar solo el estado
+      await invoiceAPI.update(invoiceId, {
+        ...invoiceData,
+        status: newStatus
+      });
+      
+      toast({
+        title: "¡Estado Actualizado!",
+        description: `La factura ahora está marcada como ${newStatus === 'paid' ? 'Pagada' : newStatus === 'pending' ? 'Pendiente' : newStatus === 'overdue' ? 'Vencida' : 'Borrador'}`,
+      });
+      
+      // Recargar datos
+      loadData();
+    } catch (error) {
+      console.error('Error updating status:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo actualizar el estado",
         variant: "destructive"
       });
     }
