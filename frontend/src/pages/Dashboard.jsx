@@ -34,12 +34,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
-import { Plus, Search, Eye, Download, Send, Edit, Trash2, FileText, LogOut, MoreVertical, CheckCircle, Clock, XCircle, FileEdit } from 'lucide-react';
+import { Plus, Search, Eye, Download, Send, Edit, Trash2, FileText, LogOut, MoreVertical, CheckCircle, Clock, XCircle, FileEdit, Loader2, CreditCard } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
   const [invoices, setInvoices] = useState([]);
   const [stats, setStats] = useState(null);
@@ -47,8 +48,80 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
+  const [checkingPayment, setCheckingPayment] = useState(false);
   const { toast } = useToast();
   const { logout, user } = useAuth();
+
+  // Poll payment status when returning from Stripe
+  const pollPaymentStatus = useCallback(async (sessionId, attempts = 0) => {
+    const maxAttempts = 5;
+    const pollInterval = 2000;
+
+    if (attempts >= maxAttempts) {
+      setCheckingPayment(false);
+      toast({
+        title: "Verificación de pago",
+        description: "No se pudo verificar el estado del pago. Por favor revisa tu correo para confirmar.",
+        variant: "destructive"
+      });
+      // Clean URL params
+      setSearchParams({});
+      return;
+    }
+
+    try {
+      const response = await subscriptionAPI.getCheckoutStatus(sessionId);
+      const data = response.data;
+
+      if (data.paymentStatus === 'paid') {
+        setCheckingPayment(false);
+        toast({
+          title: "¡Pago exitoso!",
+          description: "Tu suscripción Premium está activa. ¡Ahora tienes facturas ilimitadas!",
+        });
+        // Clean URL params
+        setSearchParams({});
+        return;
+      } else if (data.status === 'expired') {
+        setCheckingPayment(false);
+        toast({
+          title: "Sesión expirada",
+          description: "La sesión de pago ha expirado. Por favor intenta de nuevo.",
+          variant: "destructive"
+        });
+        setSearchParams({});
+        return;
+      }
+
+      // Continue polling if still pending
+      setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), pollInterval);
+    } catch (error) {
+      console.error('Error checking payment status:', error);
+      if (attempts < maxAttempts - 1) {
+        setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), pollInterval);
+      } else {
+        setCheckingPayment(false);
+        setSearchParams({});
+      }
+    }
+  }, [toast, setSearchParams]);
+
+  // Check for payment return from Stripe
+  useEffect(() => {
+    const payment = searchParams.get('payment');
+    const sessionId = searchParams.get('session_id');
+
+    if (payment === 'success' && sessionId) {
+      setCheckingPayment(true);
+      pollPaymentStatus(sessionId);
+    } else if (payment === 'canceled') {
+      toast({
+        title: "Pago cancelado",
+        description: "Has cancelado el proceso de pago. Puedes intentarlo cuando quieras.",
+      });
+      setSearchParams({});
+    }
+  }, [searchParams, pollPaymentStatus, toast, setSearchParams]);
 
   useEffect(() => {
     loadData();
