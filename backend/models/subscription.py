@@ -22,7 +22,7 @@ class Subscription(BaseModel):
     currentPeriodEnd: datetime
     cancelAtPeriodEnd: bool = False
     trialInvoicesUsed: int = 0
-    maxTrialInvoices: int = 3
+    maxTrialInvoices: int = 10  # 10 facturas gratis
     createdAt: datetime = Field(default_factory=datetime.utcnow)
     updatedAt: datetime = Field(default_factory=datetime.utcnow)
 
