@@ -100,7 +100,7 @@ const InvoicePreview = ({ invoice, template }) => {
         <div>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b-2" style={{ borderColor: template.color }}>
+              <tr className="border-b-2" style={{ borderColor: documentColor }}>
                 <th className="text-left py-2 font-semibold text-gray-700">Description</th>
                 <th className="text-center py-2 font-semibold text-gray-700">Qty</th>
                 <th className="text-right py-2 font-semibold text-gray-700">Rate</th>
