@@ -115,9 +115,16 @@ const SignIn = () => {
                 <input type="checkbox" className="mr-2" />
                 <span className="text-sm text-gray-600">Recordarme</span>
               </label>
-              <a href="#" className="text-sm text-lime-600 hover:text-lime-700">
+              <button 
+                type="button"
+                onClick={() => toast({
+                  title: "Recuperar Contraseña",
+                  description: "Por favor contacta a soporte para restablecer tu contraseña: soporte@factuya.com",
+                })}
+                className="text-sm text-lime-600 hover:text-lime-700 hover:underline"
+              >
                 ¿Olvidaste tu contraseña?
-              </a>
+              </button>
             </div>
 
             <Button 
