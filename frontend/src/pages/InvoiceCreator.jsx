@@ -561,10 +561,10 @@ const InvoiceCreator = () => {
 
             {/* To Section */}
             <Card className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Bill To (Client)</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Para (Cliente)</h2>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="toName">Client Name *</Label>
+                  <Label htmlFor="toName">Nombre del Cliente *</Label>
                   <Input
                     id="toName"
                     value={invoice.to.name}
@@ -574,7 +574,7 @@ const InvoiceCreator = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="toEmail">Email</Label>
+                    <Label htmlFor="toEmail">Correo Electrónico</Label>
                     <Input
                       id="toEmail"
                       type="email"
@@ -583,7 +583,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="toPhone">Phone</Label>
+                    <Label htmlFor="toPhone">Teléfono</Label>
                     <Input
                       id="toPhone"
                       value={invoice.to.phone}
@@ -592,7 +592,7 @@ const InvoiceCreator = () => {
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="toAddress">Address</Label>
+                  <Label htmlFor="toAddress">Dirección</Label>
                   <Input
                     id="toAddress"
                     value={invoice.to.address}
@@ -601,7 +601,7 @@ const InvoiceCreator = () => {
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="toCity">City</Label>
+                    <Label htmlFor="toCity">Ciudad</Label>
                     <Input
                       id="toCity"
                       value={invoice.to.city}
@@ -609,7 +609,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="toState">State</Label>
+                    <Label htmlFor="toState">Estado/Provincia</Label>
                     <Input
                       id="toState"
                       value={invoice.to.state}
@@ -617,7 +617,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="toZip">ZIP</Label>
+                    <Label htmlFor="toZip">Código Postal</Label>
                     <Input
                       id="toZip"
                       value={invoice.to.zip}
@@ -631,10 +631,10 @@ const InvoiceCreator = () => {
             {/* Items Section */}
             <Card className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Items / Services</h2>
+                <h2 className="text-2xl font-bold text-gray-900">Items / Servicios</h2>
                 <Button onClick={addItem} size="sm">
                   <Plus className="w-4 h-4 mr-2" />
-                  Add Item
+                  Agregar Item
                 </Button>
               </div>
               <div className="space-y-4">
@@ -655,7 +655,7 @@ const InvoiceCreator = () => {
                     </div>
                     <div className="space-y-3">
                       <div>
-                        <Label>Description *</Label>
+                        <Label>Descripción *</Label>
                         <Input
                           value={item.description}
                           onChange={(e) => updateItem(index, 'description', e.target.value)}
@@ -665,7 +665,7 @@ const InvoiceCreator = () => {
                       </div>
                       <div className="grid grid-cols-3 gap-3">
                         <div>
-                          <Label>Quantity</Label>
+                          <Label>Cantidad</Label>
                           <Input
                             type="number"
                             value={item.quantity}
@@ -674,7 +674,7 @@ const InvoiceCreator = () => {
                           />
                         </div>
                         <div>
-                          <Label>Rate ($)</Label>
+                          <Label>Precio ($)</Label>
                           <Input
                             type="number"
                             value={item.rate}
@@ -684,7 +684,7 @@ const InvoiceCreator = () => {
                           />
                         </div>
                         <div>
-                          <Label>Amount ($)</Label>
+                          <Label>Monto ($)</Label>
                           <Input
                             value={item.amount.toFixed(2)}
                             disabled
@@ -728,10 +728,10 @@ const InvoiceCreator = () => {
 
             {/* Notes and Terms */}
             <Card className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Additional Information</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Información Adicional</h2>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="notes">Notes</Label>
+                  <Label htmlFor="notes">Notas</Label>
                   <Textarea
                     id="notes"
                     value={invoice.notes}
@@ -741,7 +741,7 @@ const InvoiceCreator = () => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="terms">Terms & Conditions</Label>
+                  <Label htmlFor="terms">Términos y Condiciones</Label>
                   <Textarea
                     id="terms"
                     value={invoice.terms}
