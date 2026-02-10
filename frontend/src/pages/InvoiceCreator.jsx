@@ -848,22 +848,37 @@ const InvoiceCreator = () => {
                   <span className="text-gray-700">Subtotal:</span>
                   <span className="font-semibold text-lg">${invoice.subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-700">Tax:</span>
-                    <Input
-                      type="number"
-                      value={invoice.taxRate}
-                      onChange={(e) => updateTaxRate(e.target.value)}
-                      className="w-20 h-8 text-sm"
-                      min="0"
-                      max="100"
-                      step="0.1"
-                    />
-                    <span className="text-gray-700">%</span>
+                
+                {/* Tax Section */}
+                {invoice.hasTax ? (
+                  <div className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-700">{invoice.taxName || 'Impuesto'} ({invoice.taxRate}%):</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleRemoveTax}
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50 h-6 px-2"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </Button>
+                    </div>
+                    <span className="font-semibold text-lg">${invoice.tax.toFixed(2)}</span>
                   </div>
-                  <span className="font-semibold text-lg">${invoice.tax.toFixed(2)}</span>
-                </div>
+                ) : (
+                  <div className="flex justify-center">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleAddTax}
+                      className="text-lime-600 border-lime-300 hover:bg-lime-50"
+                    >
+                      <Percent className="w-4 h-4 mr-2" />
+                      Añadir Impuesto
+                    </Button>
+                  </div>
+                )}
+
                 <div className="flex justify-between items-center text-xl font-bold border-t pt-3">
                   <span>Total:</span>
                   <span className="text-blue-600">${invoice.total.toFixed(2)}</span>
