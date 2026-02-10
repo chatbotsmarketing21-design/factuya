@@ -323,6 +323,12 @@ const Dashboard = () => {
             </div>
             <div className="flex items-center gap-3">
               <LanguageSwitcher />
+              <Link to="/subscription">
+                <Button variant="ghost" size="sm" className="text-lime-600 hover:text-lime-700 hover:bg-lime-50">
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Mi Suscripción
+                </Button>
+              </Link>
               <Link to="/create">
                 <Button className="bg-lime-500 hover:bg-lime-600 text-white">
                   <Plus className="w-4 h-4 mr-2" />
