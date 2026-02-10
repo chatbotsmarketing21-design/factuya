@@ -268,6 +268,46 @@ const InvoiceCreator = () => {
     });
   };
 
+  const getDocumentInfo = (type) => {
+    const documentTypes = {
+      invoice: {
+        name: 'FACTURA',
+        icon: <FileText className="w-4 h-4" />,
+        color: '#2563eb'
+      },
+      proforma: {
+        name: 'FACTURA PROFORMA',
+        icon: <FileCheck className="w-4 h-4" />,
+        color: '#7c3aed'
+      },
+      quotation: {
+        name: 'COTIZACIÓN',
+        icon: <Calculator className="w-4 h-4" />,
+        color: '#059669'
+      },
+      bill: {
+        name: 'CUENTA DE COBRO',
+        icon: <DollarSign className="w-4 h-4" />,
+        color: '#ea580c'
+      },
+      receipt: {
+        name: 'RECIBO',
+        icon: <Receipt className="w-4 h-4" />,
+        color: '#0891b2'
+      }
+    };
+    return documentTypes[type] || documentTypes.invoice;
+  };
+
+  const changeDocumentType = (type) => {
+    setInvoice(prev => ({ ...prev, documentType: type }));
+    const docInfo = getDocumentInfo(type);
+    toast({
+      title: "Tipo de Documento Cambiado",
+      description: `Ahora estás creando: ${docInfo.name}`,
+    });
+  };
+
   const handleSave = async () => {
     if (!invoice.to.name || invoice.items.length === 0 || !invoice.items[0].description) {
       toast({
