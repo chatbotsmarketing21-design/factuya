@@ -26,6 +26,7 @@ import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [invoices, setInvoices] = useState([]);
   const [stats, setStats] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
