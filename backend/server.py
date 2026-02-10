@@ -10,6 +10,7 @@ from pathlib import Path
 from routes.auth import router as auth_router
 from routes.invoices import router as invoices_router
 from routes.profile import router as profile_router
+from routes.subscription import router as subscription_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -34,6 +35,7 @@ async def root():
 api_router.include_router(auth_router)
 api_router.include_router(invoices_router)
 api_router.include_router(profile_router)
+api_router.include_router(subscription_router)
 
 # Include the router in the main app
 app.include_router(api_router)
