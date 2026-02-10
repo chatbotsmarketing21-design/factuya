@@ -241,6 +241,41 @@ const InvoiceCreator = () => {
     recalculateTotal(invoice.items, newRate);
   };
 
+  const handleAddTax = () => {
+    setShowTaxDialog(true);
+  };
+
+  const handleSaveTax = () => {
+    const newRate = parseFloat(tempTaxRate) || 0;
+    setInvoice(prev => ({
+      ...prev,
+      taxRate: newRate,
+      taxName: tempTaxName,
+      hasTax: true
+    }));
+    recalculateTotal(invoice.items, newRate, true);
+    setShowTaxDialog(false);
+    toast({
+      title: "Impuesto Añadido",
+      description: `${tempTaxName} (${newRate}%) ha sido agregado a la factura`,
+    });
+  };
+
+  const handleRemoveTax = () => {
+    setInvoice(prev => ({
+      ...prev,
+      taxRate: 0,
+      taxName: '',
+      hasTax: false,
+      tax: 0,
+      total: prev.subtotal
+    }));
+    toast({
+      title: "Impuesto Eliminado",
+      description: "El impuesto ha sido removido de la factura",
+    });
+  };
+
   const handleLogoUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
