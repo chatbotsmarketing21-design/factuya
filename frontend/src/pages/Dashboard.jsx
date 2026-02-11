@@ -470,14 +470,14 @@ const Dashboard = () => {
         </Card>
 
         {/* Invoices Table */}
-        <Card>
+        <Card className="dark:bg-card">
           <div className="p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('dashboard.allInvoices')}</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">{t('dashboard.allInvoices')}</h2>
             {filteredInvoices.length === 0 ? (
               <div className="text-center py-12">
-                <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-xl text-gray-600 mb-2">{t('dashboard.noInvoices')}</p>
-                <p className="text-gray-500 mb-4">{t('dashboard.createFirst')}</p>
+                <FileText className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <p className="text-xl text-gray-600 dark:text-gray-300 mb-2">{t('dashboard.noInvoices')}</p>
+                <p className="text-gray-500 dark:text-gray-400 mb-4">{t('dashboard.createFirst')}</p>
                 <Link to="/create">
                   <Button className="bg-lime-500 hover:bg-lime-600 text-white">
                     <Plus className="w-4 h-4 mr-2" />
@@ -488,26 +488,26 @@ const Dashboard = () => {
             ) : (
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>{t('table.invoiceNumber')}</TableHead>
-                    <TableHead>{t('table.client')}</TableHead>
-                    <TableHead>{t('table.date')}</TableHead>
-                    <TableHead>{t('table.dueDate')}</TableHead>
-                    <TableHead>{t('table.amount')}</TableHead>
-                    <TableHead>{t('table.status')}</TableHead>
-                    <TableHead className="text-right">{t('table.actions')}</TableHead>
+                  <TableRow className="dark:border-border">
+                    <TableHead className="dark:text-gray-300">{t('table.invoiceNumber')}</TableHead>
+                    <TableHead className="dark:text-gray-300">{t('table.client')}</TableHead>
+                    <TableHead className="dark:text-gray-300">{t('table.date')}</TableHead>
+                    <TableHead className="dark:text-gray-300">{t('table.dueDate')}</TableHead>
+                    <TableHead className="dark:text-gray-300">{t('table.amount')}</TableHead>
+                    <TableHead className="dark:text-gray-300">{t('table.status')}</TableHead>
+                    <TableHead className="text-right dark:text-gray-300">{t('table.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredInvoices.map((invoice) => (
                     <TableRow 
                       key={invoice.id}
-                      className="cursor-pointer hover:bg-lime-50 transition-colors"
+                      className="cursor-pointer hover:bg-lime-50 dark:hover:bg-lime-900/20 transition-colors dark:border-border"
                       onClick={() => handleView(invoice.id)}
                       data-testid={`invoice-row-${invoice.id}`}
                     >
-                      <TableCell className="font-medium">{invoice.number}</TableCell>
-                      <TableCell>{invoice.clientName}</TableCell>
+                      <TableCell className="font-medium dark:text-white">{invoice.number}</TableCell>
+                      <TableCell className="dark:text-gray-300">{invoice.clientName}</TableCell>
                       <TableCell>{invoice.date}</TableCell>
                       <TableCell>{invoice.dueDate}</TableCell>
                       <TableCell className="font-semibold">${invoice.total.toFixed(2)}</TableCell>
