@@ -223,5 +223,32 @@
     "errorLoading": "Could not load subscription information",
     "errorCheckout": "Could not start the payment process",
     "errorCanceling": "Could not cancel subscription"
+  },
+  "changePassword": {
+    "title": "Change Password",
+    "back": "Back",
+    "updatePassword": "Update Password",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Your current password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Minimum 6 characters",
+    "confirmPassword": "Confirm New Password",
+    "confirmPasswordPlaceholder": "Repeat new password",
+    "weak": "Weak",
+    "medium": "Medium",
+    "strong": "Strong",
+    "req6Chars": "Minimum 6 characters",
+    "reqUppercase": "One uppercase letter",
+    "reqNumber": "One number",
+    "passwordsNoMatch": "Passwords do not match",
+    "passwordsMatch": "Passwords match",
+    "changeButton": "Change Password",
+    "updating": "Updating...",
+    "success": "Password Updated!",
+    "successDesc": "Your password has been changed successfully",
+    "minLength": "New password must be at least 6 characters",
+    "noMatch": "New passwords do not match",
+    "mustBeDifferent": "New password must be different from current password",
+    "errorChanging": "Could not change password"
   }
 }
