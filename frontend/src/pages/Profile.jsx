@@ -4,6 +4,13 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card } from '../components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 import { ArrowLeft, User, Building, Mail, Phone, MapPin, Save, Loader2 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
@@ -18,6 +25,7 @@ const Profile = () => {
   const [profile, setProfile] = useState({
     name: '',
     email: '',
+    gender: '',
     companyInfo: {
       name: '',
       email: '',
