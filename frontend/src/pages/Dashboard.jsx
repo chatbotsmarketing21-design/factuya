@@ -408,7 +408,7 @@ const Dashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600">{t('dashboard.totalRevenue')}</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-2">${stats.totalRevenue.toFixed(2)}</p>
+                  <p className="text-3xl font-bold text-gray-900 mt-2">${stats.totalRevenue.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                 </div>
                 <div className="bg-blue-100 p-3 rounded-full">
                   <FileText className="w-6 h-6 text-blue-600" />
