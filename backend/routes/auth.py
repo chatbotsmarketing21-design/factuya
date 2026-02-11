@@ -95,6 +95,7 @@ async def get_current_user(user_id: str = Depends(get_current_user_id)):
         id=user["id"],
         email=user["email"],
         name=user["name"],
+        gender=user.get("gender"),
         companyInfo=user.get("companyInfo")
     )
 
