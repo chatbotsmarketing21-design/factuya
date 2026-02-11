@@ -406,25 +406,25 @@ const Dashboard = () => {
         {/* Stats */}
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card className="p-6">
+            <Card className="p-6 dark:bg-card">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">{t('dashboard.totalRevenue')}</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-2">${stats.totalRevenue.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalRevenue')}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">${stats.totalRevenue.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                 </div>
-                <div className="bg-blue-100 p-3 rounded-full">
-                  <FileText className="w-6 h-6 text-blue-600" />
+                <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
+                  <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
             </Card>
-            <Card className="p-6">
+            <Card className="p-6 dark:bg-card">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">{t('dashboard.totalInvoices')}</p>
-                  <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalInvoices}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalInvoices')}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{stats.totalInvoices}</p>
                 </div>
-                <div className="bg-purple-100 p-3 rounded-full">
-                  <FileText className="w-6 h-6 text-purple-600" />
+                <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full">
+                  <FileText className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                 </div>
               </div>
             </Card>
