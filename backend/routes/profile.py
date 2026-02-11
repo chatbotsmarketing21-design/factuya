@@ -22,6 +22,7 @@ db = client[os.environ['DB_NAME']]
 class ProfileUpdate(BaseModel):
     name: str
     email: str
+    gender: Optional[str] = None  # "male" or "female"
     companyInfo: Optional[CompanyInfo] = None
 
 class LogoUpdate(BaseModel):
