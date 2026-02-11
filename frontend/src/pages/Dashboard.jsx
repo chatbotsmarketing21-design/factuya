@@ -314,26 +314,26 @@ const Dashboard = () => {
   // Payment verification overlay
   if (checkingPayment) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-background">
         <div className="text-center">
           <Loader2 className="w-12 h-12 animate-spin text-lime-500 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Verificando tu pago...</h2>
-          <p className="text-gray-600">Por favor espera un momento</p>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Verificando tu pago...</h2>
+          <p className="text-gray-600 dark:text-gray-400">Por favor espera un momento</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-100 dark:bg-background">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-white dark:bg-card border-b border-gray-200 dark:border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link to="/">
                 <div className="flex items-center cursor-pointer">
-                  <span className="text-2xl font-bold text-gray-900">Factu</span>
+                  <span className="text-2xl font-bold text-gray-900 dark:text-white">Factu</span>
                   <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
                 </div>
               </Link>
