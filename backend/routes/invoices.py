@@ -20,6 +20,62 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
+# Document type prefixes
+DOCUMENT_PREFIXES = {
+    "invoice": "FAC",
+    "proforma": "PRO", 
+    "quotation": "COT",
+    "receipt": "REC",
+    "bill": "COB"
+}
+
+@router.get("/next-number/{document_type}")
+async def get_next_invoice_number(
+    document_type: str,
+    user_id: str = Depends(get_current_user_id)
+):
+    """Get the next invoice number for a document type"""
+    # Validate document type
+    if document_type not in DOCUMENT_PREFIXES:
+        raise HTTPException(status_code=400, detail="Tipo de documento inválido")
+    
+    prefix = DOCUMENT_PREFIXES[document_type]
+    
+    # Find or create counter for this user and document type
+    counter = await db.invoice_counters.find_one({
+        "userId": user_id,
+        "documentType": document_type
+    })
+    
+    if counter:
+        next_number = counter["lastNumber"] + 1
+    else:
+        # Check if user has existing invoices of this type to continue sequence
+        existing = await db.invoices.find({
+            "userId": user_id,
+            "documentType": document_type
+        }).sort("createdAt", -1).limit(1).to_list(1)
+        
+        if existing and existing[0].get("number", "").startswith(prefix):
+            # Extract number from existing invoice
+            try:
+                last_num = int(existing[0]["number"].split("-")[1])
+                next_number = last_num + 1
+            except:
+                next_number = 1
+        else:
+            next_number = 1
+    
+    # Format number with leading zeros (001, 002, etc.)
+    formatted_number = f"{prefix}-{next_number:03d}"
+    
+    return {
+        "number": formatted_number,
+        "nextSequence": next_number,
+        "prefix": prefix,
+        "documentType": document_type
+    }
+
 @router.get("", response_model=List[InvoiceListItem])
 async def get_invoices(
     user_id: str = Depends(get_current_user_id),
