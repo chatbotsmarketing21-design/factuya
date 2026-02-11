@@ -49,6 +49,7 @@ const Profile = () => {
       setProfile({
         name: response.data.name || '',
         email: response.data.email || '',
+        gender: response.data.gender || '',
         companyInfo: response.data.companyInfo || {
           name: '',
           email: '',
