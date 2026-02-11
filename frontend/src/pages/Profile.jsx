@@ -102,7 +102,7 @@ const Profile = () => {
         description: "Tu información ha sido guardada correctamente",
       });
       if (updateUser) {
-        updateUser({ ...user, name: profile.name });
+        updateUser({ ...user, name: profile.name, gender: profile.gender });
       }
     } catch (error) {
       console.error('Error saving profile:', error);
