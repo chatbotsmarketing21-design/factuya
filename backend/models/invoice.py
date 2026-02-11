@@ -23,14 +23,18 @@ class InvoiceBase(BaseModel):
     number: str
     date: str
     dueDate: str
-    status: str = "draft"  # draft, pending, paid, overdue
+    status: str = "pending"  # pending, paid, overdue
+    documentType: str = "invoice"  # invoice, proforma, quotation, bill, receipt
     fromAddress: Address = Field(alias="from")
     toAddress: Address = Field(alias="to")
     items: List[InvoiceItem]
     subtotal: float
     taxRate: float
+    taxName: Optional[str] = None
     tax: float
     total: float
+    hasTax: bool = False
+    logo: Optional[str] = None
     notes: Optional[str] = None
     terms: Optional[str] = None
     template: int = 1
