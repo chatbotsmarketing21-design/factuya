@@ -318,23 +318,46 @@ const InvoiceCreator = () => {
 
       // Convertir a base64
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setInvoice(prev => ({ ...prev, logo: reader.result }));
-        toast({
-          title: "¡Logo cargado!",
-          description: "El logo se ha agregado a tu factura",
-        });
+      reader.onloadend = async () => {
+        const logoBase64 = reader.result;
+        setInvoice(prev => ({ ...prev, logo: logoBase64 }));
+        
+        // Guardar logo en el perfil para futuras facturas
+        try {
+          await profileAPI.updateLogo(logoBase64);
+          toast({
+            title: "¡Logo guardado!",
+            description: "El logo se ha guardado y aparecerá en tus próximas facturas",
+          });
+        } catch (error) {
+          console.error('Error saving logo:', error);
+          toast({
+            title: "¡Logo cargado!",
+            description: "El logo se ha agregado a esta factura",
+          });
+        }
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const removeLogo = () => {
+  const removeLogo = async () => {
     setInvoice(prev => ({ ...prev, logo: '' }));
-    toast({
-      title: "Logo eliminado",
-      description: "El logo ha sido removido de la factura",
-    });
+    
+    // Eliminar logo del perfil
+    try {
+      await profileAPI.deleteLogo();
+      toast({
+        title: "Logo eliminado",
+        description: "El logo ha sido removido de tu perfil",
+      });
+    } catch (error) {
+      console.error('Error deleting logo:', error);
+      toast({
+        title: "Logo eliminado",
+        description: "El logo ha sido removido de la factura",
+      });
+    }
   };
 
   const getDocumentInfo = (type) => {
