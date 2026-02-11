@@ -171,6 +171,25 @@ async def create_invoice(
     invoice_dict = invoice.dict(by_alias=True)
     invoice_dict["userId"] = user_id
     
+    # Update counter for this document type
+    document_type = invoice_dict.get("documentType", "invoice")
+    if document_type in DOCUMENT_PREFIXES:
+        prefix = DOCUMENT_PREFIXES[document_type]
+        invoice_number = invoice_dict.get("number", "")
+        
+        # Extract sequence number from invoice number
+        if invoice_number.startswith(prefix):
+            try:
+                sequence = int(invoice_number.split("-")[1])
+                # Update or create counter
+                await db.invoice_counters.update_one(
+                    {"userId": user_id, "documentType": document_type},
+                    {"$set": {"lastNumber": sequence, "updatedAt": datetime.utcnow()}},
+                    upsert=True
+                )
+            except:
+                pass
+    
     invoice_in_db = InvoiceInDB(**invoice_dict)
     await db.invoices.insert_one(invoice_in_db.dict(by_alias=True))
     
