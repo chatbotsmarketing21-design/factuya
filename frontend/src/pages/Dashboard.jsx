@@ -523,10 +523,6 @@ const Dashboard = () => {
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Cambiar Estado</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'draft')}>
-                              <FileEdit className="w-4 h-4 mr-2 text-gray-600" />
-                              Borrador
-                            </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'pending')}>
                               <Clock className="w-4 h-4 mr-2 text-yellow-600" />
                               Pendiente
