@@ -338,7 +338,7 @@ const Dashboard = () => {
                 </div>
               </Link>
               {user && (
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-gray-600 dark:text-gray-300">
                   {user.gender === 'female' ? t('common.welcomeFemale') : t('common.welcomeMale')}, {user.name}
                 </span>
               )}
