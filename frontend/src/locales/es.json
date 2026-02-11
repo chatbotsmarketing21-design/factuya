@@ -89,6 +89,27 @@
     "changeTemplate": "Cambiar Plantilla",
     "backToDashboard": "Volver al Dashboard"
   },
+  "documentTypes": {
+    "invoice": "FACTURA",
+    "proforma": "FACTURA PROFORMA",
+    "quotation": "COTIZACIÓN",
+    "bill": "CUENTA DE COBRO",
+    "receipt": "RECIBO"
+  },
+  "preview": {
+    "from": "DE",
+    "billTo": "FACTURAR A",
+    "invoiceDate": "Fecha de Emisión",
+    "dueDate": "Fecha de Vencimiento",
+    "description": "Descripción",
+    "qty": "Cant.",
+    "rate": "Precio",
+    "amount": "Monto",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "notes": "Notas",
+    "terms": "Términos y Condiciones"
+  },
   "table": {
     "invoiceHash": "Factura #",
     "client": "Cliente",
