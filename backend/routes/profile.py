@@ -101,6 +101,9 @@ async def update_profile(
     # Prepare update data
     update_data = {"name": profile.name}
     
+    if profile.gender:
+        update_data["gender"] = profile.gender
+    
     if profile.companyInfo:
         update_data["companyInfo"] = profile.companyInfo.dict()
     
