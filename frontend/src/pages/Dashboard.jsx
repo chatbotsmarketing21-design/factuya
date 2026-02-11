@@ -516,8 +516,7 @@ const Dashboard = () => {
                               <Badge className={getStatusColor(invoice.status) + " cursor-pointer"}>
                                 {invoice.status === 'paid' ? 'PAGADA' : 
                                  invoice.status === 'pending' ? 'PENDIENTE' : 
-                                 invoice.status === 'overdue' ? 'VENCIDA' : 
-                                 'BORRADOR'}
+                                 'VENCIDA'}
                               </Badge>
                             </Button>
                           </DropdownMenuTrigger>
