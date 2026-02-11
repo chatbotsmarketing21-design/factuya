@@ -24,6 +24,9 @@ class ProfileUpdate(BaseModel):
     email: str
     companyInfo: Optional[CompanyInfo] = None
 
+class LogoUpdate(BaseModel):
+    logo: str  # Base64 encoded logo
+
 @router.get("/company", response_model=CompanyInfo)
 async def get_company_info(user_id: str = Depends(get_current_user_id)):
     """Get user's company information"""
@@ -50,6 +53,39 @@ async def update_company_info(
     )
     
     return company_info
+
+@router.put("/logo")
+async def update_company_logo(
+    logo_data: LogoUpdate,
+    user_id: str = Depends(get_current_user_id)
+):
+    """Update user's company logo"""
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Update logo in company info
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"companyInfo.logo": logo_data.logo}}
+    )
+    
+    return {"message": "Logo guardado correctamente"}
+
+@router.delete("/logo")
+async def delete_company_logo(user_id: str = Depends(get_current_user_id)):
+    """Delete user's company logo"""
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Remove logo from company info
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"companyInfo.logo": None}}
+    )
+    
+    return {"message": "Logo eliminado correctamente"}
 
 @router.put("")
 async def update_profile(
