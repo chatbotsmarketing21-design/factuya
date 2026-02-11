@@ -508,9 +508,9 @@ const Dashboard = () => {
                     >
                       <TableCell className="font-medium dark:text-white">{invoice.number}</TableCell>
                       <TableCell className="dark:text-gray-300">{invoice.clientName}</TableCell>
-                      <TableCell>{invoice.date}</TableCell>
-                      <TableCell>{invoice.dueDate}</TableCell>
-                      <TableCell className="font-semibold">${invoice.total.toFixed(2)}</TableCell>
+                      <TableCell className="dark:text-gray-300">{invoice.date}</TableCell>
+                      <TableCell className="dark:text-gray-300">{invoice.dueDate}</TableCell>
+                      <TableCell className="font-semibold dark:text-white">${invoice.total.toFixed(2)}</TableCell>
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
