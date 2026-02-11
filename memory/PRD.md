@@ -151,16 +151,27 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 4. ✅ PDF download functionality
 5. ✅ Company logo upload
 6. ✅ Invoice status management
-7. ✅ Multi-language support (ES/EN)
+7. ✅ Multi-language support (ES/EN) with full i18n
 8. ✅ Delete confirmation dialog (using AlertDialog)
 9. ✅ Stripe subscription integration
 10. ✅ Subscription dialog with payment redirect
 11. ✅ Payment status polling on return from Stripe
 12. ✅ Auto-create trial subscription for new users
+13. ✅ Settings panel (Profile, Subscription, Change Password)
+14. ✅ Dark/Light mode toggle
+15. ✅ Password recovery flow via Resend
+16. ✅ Automatic sequential invoice numbering per document type
+17. ✅ Modal-based tax system (IVA, etc.)
+18. ✅ Clickable dashboard invoice rows
+19. ✅ **Document type translation in InvoicePreview** (FACTURA/INVOICE, COTIZACIÓN/QUOTATION, etc.)
 
 ## Backlog / Future Tasks
+### P0 (Critical - User Requested)
+- [ ] Integrate Wompi payment gateway (replace Stripe for Colombia)
+- [ ] Configure production emailing (verify domain in Resend)
+
 ### P1 (High Priority)
-- [ ] Real email integration (SendGrid) to replace mailto:
+- [ ] Real email integration for invoice sending
 
 ### P2 (Medium Priority)
 - [ ] Client management module
