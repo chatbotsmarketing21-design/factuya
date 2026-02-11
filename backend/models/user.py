@@ -29,6 +29,7 @@ class UserInDB(BaseModel):
     email: EmailStr
     password: str  # Hashed
     name: str
+    gender: Optional[str] = None  # "male" or "female"
     companyInfo: CompanyInfo = Field(default_factory=CompanyInfo)
     createdAt: datetime = Field(default_factory=datetime.utcnow)
     updatedAt: datetime = Field(default_factory=datetime.utcnow)
@@ -37,6 +38,7 @@ class UserResponse(BaseModel):
     id: str
     email: str
     name: str
+    gender: Optional[str] = None
     companyInfo: Optional[CompanyInfo] = None
 
 class AuthResponse(BaseModel):
