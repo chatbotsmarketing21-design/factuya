@@ -407,7 +407,7 @@ const Dashboard = () => {
             <Card className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Total Revenue</p>
+                  <p className="text-sm text-gray-600">{t('dashboard.totalRevenue')}</p>
                   <p className="text-3xl font-bold text-gray-900 mt-2">${stats.totalRevenue.toFixed(2)}</p>
                 </div>
                 <div className="bg-blue-100 p-3 rounded-full">
@@ -418,7 +418,7 @@ const Dashboard = () => {
             <Card className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Total de Facturas</p>
+                  <p className="text-sm text-gray-600">{t('dashboard.totalInvoices')}</p>
                   <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalInvoices}</p>
                 </div>
                 <div className="bg-purple-100 p-3 rounded-full">
@@ -429,7 +429,7 @@ const Dashboard = () => {
             <Card className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Paid</p>
+                  <p className="text-sm text-gray-600">{t('dashboard.paid')}</p>
                   <p className="text-3xl font-bold text-green-600 mt-2">{stats.paidInvoices}</p>
                 </div>
                 <div className="bg-green-100 p-3 rounded-full">
@@ -440,7 +440,7 @@ const Dashboard = () => {
             <Card className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">Pending</p>
+                  <p className="text-sm text-gray-600">{t('dashboard.pending')}</p>
                   <p className="text-3xl font-bold text-yellow-600 mt-2">{stats.pendingInvoices}</p>
                 </div>
                 <div className="bg-yellow-100 p-3 rounded-full">
