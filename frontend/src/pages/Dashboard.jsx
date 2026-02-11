@@ -516,26 +516,26 @@ const Dashboard = () => {
                           <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                               <Badge className={getStatusColor(invoice.status) + " cursor-pointer"}>
-                                {invoice.status === 'paid' ? 'PAGADA' : 
-                                 invoice.status === 'pending' ? 'PENDIENTE' : 
-                                 'VENCIDA'}
+                                {invoice.status === 'paid' ? t('status.paid') : 
+                                 invoice.status === 'pending' ? t('status.pending') : 
+                                 t('status.overdue')}
                               </Badge>
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Cambiar Estado</DropdownMenuLabel>
+                            <DropdownMenuLabel>{t('status.changeStatus')}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'pending')}>
                               <Clock className="w-4 h-4 mr-2 text-yellow-600" />
-                              Pendiente
+                              {t('status.pending')}
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'paid')}>
                               <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
-                              Pagada
+                              {t('status.paid')}
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'overdue')}>
                               <XCircle className="w-4 h-4 mr-2 text-red-600" />
-                              Vencida
+                              {t('status.overdue')}
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
