@@ -147,6 +147,7 @@ const InvoiceCreator = () => {
       const companyInfo = response.data;
       setInvoice(prev => ({
         ...prev,
+        logo: companyInfo.logo || '',  // Cargar logo guardado
         from: {
           name: companyInfo.name || '',
           email: companyInfo.email || '',
