@@ -58,6 +58,8 @@ export const invoiceAPI = {
 export const profileAPI = {
   getCompany: () => api.get('/profile/company'),
   updateCompany: (data) => api.put('/profile/company', data),
+  updateLogo: (logo) => api.put('/profile/logo', { logo }),
+  deleteLogo: () => api.delete('/profile/logo'),
 };
 
 export default api;
