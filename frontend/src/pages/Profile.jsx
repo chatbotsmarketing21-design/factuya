@@ -100,8 +100,8 @@ const Profile = () => {
       setSaving(true);
       await api.put('/profile', profile);
       toast({
-        title: "Perfil Actualizado",
-        description: "Tu información ha sido guardada correctamente",
+        title: t('profile.updated'),
+        description: t('profile.updatedDesc'),
       });
       if (updateUser) {
         updateUser({ ...user, name: profile.name, gender: profile.gender });
@@ -109,8 +109,8 @@ const Profile = () => {
     } catch (error) {
       console.error('Error saving profile:', error);
       toast({
-        title: "Error",
-        description: "No se pudo guardar el perfil",
+        title: t('messages.error'),
+        description: t('profile.errorSaving'),
         variant: "destructive"
       });
     } finally {
