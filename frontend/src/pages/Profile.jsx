@@ -163,6 +163,21 @@ const Profile = () => {
                 />
               </div>
               <div>
+                <Label htmlFor="gender">Género</Label>
+                <Select
+                  value={profile.gender}
+                  onValueChange={(value) => setProfile(prev => ({ ...prev, gender: value }))}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Selecciona tu género" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">Masculino</SelectItem>
+                    <SelectItem value="female">Femenino</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
                 <Label htmlFor="email">Correo Electrónico</Label>
                 <Input
                   id="email"
