@@ -357,43 +357,43 @@ const Dashboard = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm">
                     <Settings className="w-4 h-4 mr-2" />
-                    Configuración
+                    {t('settings.title')}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>Mi Cuenta</DropdownMenuLabel>
+                  <DropdownMenuLabel>{t('settings.myAccount')}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate('/profile')}>
                     <User className="w-4 h-4 mr-2" />
-                    Perfil
+                    {t('settings.profile')}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/subscription')}>
                     <CreditCard className="w-4 h-4 mr-2" />
-                    Mi Suscripción
+                    {t('settings.subscription')}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/change-password')}>
                     <Key className="w-4 h-4 mr-2" />
-                    Cambiar Contraseña
+                    {t('settings.changePassword')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuLabel>Apariencia</DropdownMenuLabel>
+                  <DropdownMenuLabel>{t('settings.appearance')}</DropdownMenuLabel>
                   <DropdownMenuItem onClick={toggleDarkMode}>
                     {darkMode ? (
                       <>
                         <Sun className="w-4 h-4 mr-2" />
-                        Modo Claro
+                        {t('settings.lightMode')}
                       </>
                     ) : (
                       <>
                         <Moon className="w-4 h-4 mr-2" />
-                        Modo Oscuro
+                        {t('settings.darkMode')}
                       </>
                     )}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                     <LogOut className="w-4 h-4 mr-2" />
-                    Cerrar Sesión
+                    {t('settings.logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
