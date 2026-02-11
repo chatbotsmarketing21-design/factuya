@@ -136,5 +136,16 @@
     "deleteWarning": "Esta acción no se puede deshacer. La factura será eliminada permanentemente de la base de datos.",
     "error": "Error",
     "success": "Éxito"
+  },
+  "settings": {
+    "title": "Configuración",
+    "myAccount": "Mi Cuenta",
+    "profile": "Perfil",
+    "subscription": "Mi Suscripción",
+    "changePassword": "Cambiar Contraseña",
+    "appearance": "Apariencia",
+    "lightMode": "Modo Claro",
+    "darkMode": "Modo Oscuro",
+    "logout": "Cerrar Sesión"
   }
 }
