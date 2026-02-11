@@ -489,13 +489,13 @@ const Dashboard = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Factura #</TableHead>
-                    <TableHead>Cliente</TableHead>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead>Vencimiento</TableHead>
-                    <TableHead>Monto</TableHead>
-                    <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
+                    <TableHead>{t('table.invoiceNumber')}</TableHead>
+                    <TableHead>{t('table.client')}</TableHead>
+                    <TableHead>{t('table.date')}</TableHead>
+                    <TableHead>{t('table.dueDate')}</TableHead>
+                    <TableHead>{t('table.amount')}</TableHead>
+                    <TableHead>{t('table.status')}</TableHead>
+                    <TableHead className="text-right">{t('table.actions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
