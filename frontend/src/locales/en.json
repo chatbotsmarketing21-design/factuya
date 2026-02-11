@@ -9,7 +9,9 @@
     "send": "Send",
     "search": "Search",
     "loading": "Loading...",
-    "welcome": "Welcome"
+    "welcome": "Welcome",
+    "welcomeMale": "Welcome",
+    "welcomeFemale": "Welcome"
   },
   "nav": {
     "home": "Home",
