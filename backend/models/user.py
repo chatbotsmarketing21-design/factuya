@@ -12,6 +12,7 @@ class CompanyInfo(BaseModel):
     state: Optional[str] = None
     zip: Optional[str] = None
     country: Optional[str] = None
+    logo: Optional[str] = None  # Base64 encoded logo
 
 class UserCreate(BaseModel):
     email: EmailStr
