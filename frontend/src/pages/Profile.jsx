@@ -135,9 +135,9 @@ const Profile = () => {
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')}>
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Volver
+                {t('profile.back')}
               </Button>
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">Mi Perfil</h1>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">{t('profile.title')}</h1>
             </div>
           </div>
         </div>
@@ -149,38 +149,38 @@ const Profile = () => {
           <Card className="p-6 mb-6">
             <div className="flex items-center gap-2 mb-6">
               <User className="w-5 h-5 text-lime-600" />
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">Información Personal</h2>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">{t('profile.personalInfo')}</h2>
             </div>
             
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Nombre Completo</Label>
+                <Label htmlFor="name">{t('profile.fullName')}</Label>
                 <Input
                   id="name"
                   name="name"
                   value={profile.name}
                   onChange={handleChange}
-                  placeholder="Tu nombre"
+                  placeholder={t('profile.fullNamePlaceholder')}
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="gender">Género</Label>
+                <Label htmlFor="gender">{t('profile.gender')}</Label>
                 <Select
                   value={profile.gender}
                   onValueChange={(value) => setProfile(prev => ({ ...prev, gender: value }))}
                 >
                   <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Selecciona tu género" />
+                    <SelectValue placeholder={t('profile.selectGender')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="male">Masculino</SelectItem>
-                    <SelectItem value="female">Femenino</SelectItem>
+                    <SelectItem value="male">{t('profile.male')}</SelectItem>
+                    <SelectItem value="female">{t('profile.female')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div>
-                <Label htmlFor="email">Correo Electrónico</Label>
+                <Label htmlFor="email">{t('profile.email')}</Label>
                 <Input
                   id="email"
                   name="email"
@@ -189,7 +189,7 @@ const Profile = () => {
                   disabled
                   className="mt-1 bg-gray-100"
                 />
-                <p className="text-xs text-gray-500 mt-1">El email no se puede cambiar</p>
+                <p className="text-xs text-gray-500 mt-1">{t('profile.emailCantChange')}</p>
               </div>
             </div>
           </Card>
@@ -198,96 +198,96 @@ const Profile = () => {
           <Card className="p-6 mb-6">
             <div className="flex items-center gap-2 mb-6">
               <Building className="w-5 h-5 text-lime-600" />
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">Información de la Empresa</h2>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">{t('profile.companyInfo')}</h2>
             </div>
             
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="company.name">Nombre de la Empresa</Label>
+                <Label htmlFor="company.name">{t('profile.companyName')}</Label>
                 <Input
                   id="company.name"
                   name="company.name"
                   value={profile.companyInfo.name}
                   onChange={handleChange}
-                  placeholder="Mi Empresa S.A.S"
+                  placeholder={t('profile.companyNamePlaceholder')}
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="company.email">Email de la Empresa</Label>
+                <Label htmlFor="company.email">{t('profile.companyEmail')}</Label>
                 <Input
                   id="company.email"
                   name="company.email"
                   type="email"
                   value={profile.companyInfo.email}
                   onChange={handleChange}
-                  placeholder="contacto@miempresa.com"
+                  placeholder={t('profile.companyEmailPlaceholder')}
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="company.phone">Teléfono</Label>
+                <Label htmlFor="company.phone">{t('profile.phone')}</Label>
                 <Input
                   id="company.phone"
                   name="company.phone"
                   value={profile.companyInfo.phone}
                   onChange={handleChange}
-                  placeholder="+57 300 123 4567"
+                  placeholder={t('profile.phonePlaceholder')}
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="company.address">Dirección</Label>
+                <Label htmlFor="company.address">{t('profile.address')}</Label>
                 <Input
                   id="company.address"
                   name="company.address"
                   value={profile.companyInfo.address}
                   onChange={handleChange}
-                  placeholder="Calle 123 # 45-67"
+                  placeholder={t('profile.addressPlaceholder')}
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="company.city">Ciudad</Label>
+                <Label htmlFor="company.city">{t('profile.city')}</Label>
                 <Input
                   id="company.city"
                   name="company.city"
                   value={profile.companyInfo.city}
                   onChange={handleChange}
-                  placeholder="Medellín"
+                  placeholder={t('profile.cityPlaceholder')}
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="company.state">Departamento/Estado</Label>
+                <Label htmlFor="company.state">{t('profile.state')}</Label>
                 <Input
                   id="company.state"
                   name="company.state"
                   value={profile.companyInfo.state}
                   onChange={handleChange}
-                  placeholder="Antioquia"
+                  placeholder={t('profile.statePlaceholder')}
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="company.zip">Código Postal</Label>
+                <Label htmlFor="company.zip">{t('profile.zip')}</Label>
                 <Input
                   id="company.zip"
                   name="company.zip"
                   value={profile.companyInfo.zip}
                   onChange={handleChange}
-                  placeholder="050001"
+                  placeholder={t('profile.zipPlaceholder')}
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="company.country">País</Label>
+                <Label htmlFor="company.country">{t('profile.country')}</Label>
                 <Input
                   id="company.country"
                   name="company.country"
                   value={profile.companyInfo.country}
                   onChange={handleChange}
-                  placeholder="Colombia"
+                  placeholder={t('profile.countryPlaceholder')}
                   className="mt-1"
                 />
               </div>
@@ -304,12 +304,12 @@ const Profile = () => {
               {saving ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Guardando...
+                  {t('profile.saving')}
                 </>
               ) : (
                 <>
                   <Save className="w-4 h-4 mr-2" />
-                  Guardar Cambios
+                  {t('profile.saveChanges')}
                 </>
               )}
             </Button>
