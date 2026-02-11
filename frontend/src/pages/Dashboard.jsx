@@ -428,25 +428,25 @@ const Dashboard = () => {
                 </div>
               </div>
             </Card>
-            <Card className="p-6">
+            <Card className="p-6 dark:bg-card">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">{t('dashboard.paid')}</p>
-                  <p className="text-3xl font-bold text-green-600 mt-2">{stats.paidInvoices}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('dashboard.paid')}</p>
+                  <p className="text-3xl font-bold text-green-600 dark:text-green-400 mt-2">{stats.paidInvoices}</p>
                 </div>
-                <div className="bg-green-100 p-3 rounded-full">
-                  <FileText className="w-6 h-6 text-green-600" />
+                <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
+                  <FileText className="w-6 h-6 text-green-600 dark:text-green-400" />
                 </div>
               </div>
             </Card>
-            <Card className="p-6">
+            <Card className="p-6 dark:bg-card">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600">{t('dashboard.pending')}</p>
-                  <p className="text-3xl font-bold text-yellow-600 mt-2">{stats.pendingInvoices}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('dashboard.pending')}</p>
+                  <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-2">{stats.pendingInvoices}</p>
                 </div>
-                <div className="bg-yellow-100 p-3 rounded-full">
-                  <FileText className="w-6 h-6 text-yellow-600" />
+                <div className="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full">
+                  <FileText className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
                 </div>
               </div>
             </Card>
@@ -454,7 +454,7 @@ const Dashboard = () => {
         )}
 
         {/* Search and Filter */}
-        <Card className="p-6 mb-6">
+        <Card className="p-6 mb-6 dark:bg-card">
           <div className="flex items-center gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
