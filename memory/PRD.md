@@ -163,7 +163,8 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 16. ✅ Automatic sequential invoice numbering per document type
 17. ✅ Modal-based tax system (IVA, etc.)
 18. ✅ Clickable dashboard invoice rows
-19. ✅ **Document type translation in InvoicePreview** (FACTURA/INVOICE, COTIZACIÓN/QUOTATION, etc.)
+19. ✅ Document type translation in InvoicePreview (FACTURA/INVOICE, etc.)
+20. ✅ **Persistent company logo** - Logo saved in user profile and auto-loaded in new invoices
 
 ## Backlog / Future Tasks
 ### P0 (Critical - User Requested)
