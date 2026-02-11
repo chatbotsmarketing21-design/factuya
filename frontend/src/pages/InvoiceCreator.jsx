@@ -101,7 +101,7 @@ const InvoiceCreator = () => {
     } else {
       // Modo creación - cargar info de empresa y generar número
       loadCompanyInfo();
-      generateInvoiceNumber();
+      generateInvoiceNumber(invoice.documentType);
     }
   }, [invoiceId]);
 
