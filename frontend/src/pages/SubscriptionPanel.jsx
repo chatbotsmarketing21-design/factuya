@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { subscriptionAPI } from '../services/subscriptionApi';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
@@ -31,6 +32,7 @@ import { useToast } from '../hooks/use-toast';
 
 const SubscriptionPanel = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -50,8 +52,8 @@ const SubscriptionPanel = () => {
     } catch (error) {
       console.error('Error loading subscription:', error);
       toast({
-        title: "Error",
-        description: "No se pudo cargar la información de suscripción",
+        title: t('messages.error'),
+        description: t('subscription.errorLoading'),
         variant: "destructive"
       });
     } finally {
@@ -68,8 +70,8 @@ const SubscriptionPanel = () => {
     } catch (error) {
       console.error('Error creating checkout:', error);
       toast({
-        title: "Error",
-        description: "No se pudo iniciar el proceso de pago",
+        title: t('messages.error'),
+        description: t('subscription.errorCheckout'),
         variant: "destructive"
       });
     }
@@ -80,16 +82,16 @@ const SubscriptionPanel = () => {
       setCanceling(true);
       await subscriptionAPI.cancelSubscription();
       toast({
-        title: "Suscripción cancelada",
-        description: "Tu suscripción se cancelará al final del período actual",
+        title: t('subscription.canceled'),
+        description: t('subscription.canceledDesc'),
       });
       setShowCancelDialog(false);
       loadSubscriptionStatus();
     } catch (error) {
       console.error('Error canceling subscription:', error);
       toast({
-        title: "Error",
-        description: error.response?.data?.detail || "No se pudo cancelar la suscripción",
+        title: t('messages.error'),
+        description: error.response?.data?.detail || t('subscription.errorCanceling'),
         variant: "destructive"
       });
     } finally {
@@ -120,9 +122,9 @@ const SubscriptionPanel = () => {
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')}>
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Volver
+                {t('subscription.back')}
               </Button>
-              <h1 className="text-xl font-bold text-gray-900">Mi Suscripción</h1>
+              <h1 className="text-xl font-bold text-gray-900">{t('subscription.title')}</h1>
             </div>
             <Link to="/">
               <div className="flex items-center cursor-pointer">
@@ -149,16 +151,16 @@ const SubscriptionPanel = () => {
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="text-2xl font-bold text-gray-900">
-                    {isPremium ? 'Plan Premium' : 'Plan Gratuito'}
+                    {isPremium ? t('subscription.premiumPlan') : t('subscription.freePlan')}
                   </h2>
                   <Badge className={isPremium ? 'bg-lime-500' : 'bg-gray-500'}>
-                    {isPremium ? 'ACTIVO' : 'TRIAL'}
+                    {isPremium ? t('subscription.active') : t('subscription.trial')}
                   </Badge>
                 </div>
                 <p className="text-gray-600 mt-1">
                   {isPremium 
-                    ? 'Disfruta de facturas ilimitadas y todas las funciones premium'
-                    : `${maxInvoices - invoicesUsed} facturas gratuitas restantes`
+                    ? t('subscription.premiumDesc')
+                    : t('subscription.freeRemaining', { count: maxInvoices - invoicesUsed })
                   }
                 </p>
               </div>
@@ -166,7 +168,7 @@ const SubscriptionPanel = () => {
             {isPremium && (
               <div className="text-right">
                 <p className="text-3xl font-bold text-gray-900">$5</p>
-                <p className="text-sm text-gray-500">/mes</p>
+                <p className="text-sm text-gray-500">/{t('subscription.month')}</p>
               </div>
             )}
           </div>
@@ -175,14 +177,14 @@ const SubscriptionPanel = () => {
           {isTrialing && (
             <div className="mt-6">
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-gray-600">Facturas utilizadas</span>
+                <span className="text-gray-600">{t('subscription.invoicesUsed')}</span>
                 <span className="font-semibold">{invoicesUsed} / {maxInvoices}</span>
               </div>
               <Progress value={progressPercent} className="h-3" />
               {invoicesUsed >= maxInvoices && (
                 <p className="text-sm text-red-600 mt-2 flex items-center gap-1">
                   <AlertTriangle className="w-4 h-4" />
-                  Has alcanzado el límite de facturas gratuitas
+                  {t('subscription.limitReached')}
                 </p>
               )}
             </div>
@@ -194,42 +196,42 @@ const SubscriptionPanel = () => {
           <Card className="p-6 mb-6 border-2 border-lime-500 bg-gradient-to-r from-lime-50 to-green-50">
             <div className="flex items-center gap-2 mb-4">
               <Sparkles className="w-5 h-5 text-lime-600" />
-              <h3 className="text-lg font-bold text-gray-900">Mejora a Premium</h3>
+              <h3 className="text-lg font-bold text-gray-900">{t('subscription.upgradeToPremium')}</h3>
             </div>
             
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-lime-600" />
-                  <span className="text-gray-700">Facturas ilimitadas</span>
+                  <span className="text-gray-700">{t('subscription.feature1')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-lime-600" />
-                  <span className="text-gray-700">Todos los tipos de documentos</span>
+                  <span className="text-gray-700">{t('subscription.feature2')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-lime-600" />
-                  <span className="text-gray-700">Descarga PDF ilimitada</span>
+                  <span className="text-gray-700">{t('subscription.feature3')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="w-5 h-5 text-lime-600" />
-                  <span className="text-gray-700">Soporte prioritario</span>
+                  <span className="text-gray-700">{t('subscription.feature4')}</span>
                 </div>
               </div>
               
               <div className="flex flex-col justify-center items-center bg-white rounded-lg p-6">
                 <p className="text-4xl font-bold text-gray-900">$5</p>
-                <p className="text-gray-500 mb-4">/mes</p>
+                <p className="text-gray-500 mb-4">/{t('subscription.month')}</p>
                 <Button 
                   onClick={handleUpgrade}
                   className="w-full bg-lime-500 hover:bg-lime-600 text-white"
                   data-testid="upgrade-button"
                 >
                   <CreditCard className="w-4 h-4 mr-2" />
-                  Suscribirse Ahora
+                  {t('subscription.subscribeNow')}
                 </Button>
                 <p className="text-xs text-gray-500 mt-2 text-center">
-                  Cancela cuando quieras
+                  {t('subscription.cancelAnytime')}
                 </p>
               </div>
             </div>
@@ -239,31 +241,31 @@ const SubscriptionPanel = () => {
         {/* Subscription Details (for premium users) */}
         {isPremium && (
           <Card className="p-6 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Detalles de la Suscripción</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-4">{t('subscription.details')}</h3>
             
             <div className="space-y-4">
               <div className="flex items-center justify-between py-3 border-b">
                 <div className="flex items-center gap-3">
                   <Calendar className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-600">Estado</span>
+                  <span className="text-gray-600">{t('subscription.status')}</span>
                 </div>
-                <Badge className="bg-green-500">Activa</Badge>
+                <Badge className="bg-green-500">{t('subscription.active')}</Badge>
               </div>
               
               <div className="flex items-center justify-between py-3 border-b">
                 <div className="flex items-center gap-3">
                   <CreditCard className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-600">Plan</span>
+                  <span className="text-gray-600">{t('subscription.plan')}</span>
                 </div>
-                <span className="font-semibold">Premium Mensual - $5/mes</span>
+                <span className="font-semibold">{t('subscription.premiumMonthly')} - $5/{t('subscription.month')}</span>
               </div>
               
               <div className="flex items-center justify-between py-3 border-b">
                 <div className="flex items-center gap-3">
                   <FileText className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-600">Facturas creadas</span>
+                  <span className="text-gray-600">{t('subscription.invoicesCreated')}</span>
                 </div>
-                <span className="font-semibold">{invoicesUsed} (ilimitadas)</span>
+                <span className="font-semibold">{invoicesUsed} ({t('subscription.unlimited')})</span>
               </div>
             </div>
 
@@ -274,10 +276,10 @@ const SubscriptionPanel = () => {
                 className="text-red-600 border-red-300 hover:bg-red-50"
                 onClick={() => setShowCancelDialog(true)}
               >
-                Cancelar Suscripción
+                {t('subscription.cancelSubscription')}
               </Button>
               <p className="text-xs text-gray-500 mt-2">
-                Tu suscripción permanecerá activa hasta el final del período de facturación actual.
+                {t('subscription.cancelNote')}
               </p>
             </div>
           </Card>
@@ -285,12 +287,12 @@ const SubscriptionPanel = () => {
 
         {/* Help Section */}
         <Card className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">¿Necesitas ayuda?</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-4">{t('subscription.needHelp')}</h3>
           <p className="text-gray-600 mb-4">
-            Si tienes preguntas sobre tu suscripción o necesitas asistencia, no dudes en contactarnos.
+            {t('subscription.helpDesc')}
           </p>
           <Button variant="outline">
-            Contactar Soporte
+            {t('subscription.contactSupport')}
           </Button>
         </Card>
       </div>
@@ -299,15 +301,14 @@ const SubscriptionPanel = () => {
       <AlertDialog open={showCancelDialog} onOpenChange={setShowCancelDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Cancelar suscripción?</AlertDialogTitle>
+            <AlertDialogTitle>{t('subscription.cancelTitle')}</AlertDialogTitle>
             <AlertDialogDescription>
-              Tu suscripción seguirá activa hasta el final del período actual. 
-              Después de eso, volverás al plan gratuito con límite de 10 facturas.
+              {t('subscription.cancelWarning')}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={canceling}>
-              Mantener Suscripción
+              {t('subscription.keepSubscription')}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleCancelSubscription}
@@ -317,10 +318,10 @@ const SubscriptionPanel = () => {
               {canceling ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Cancelando...
+                  {t('subscription.canceling')}
                 </>
               ) : (
-                'Sí, Cancelar'
+                t('subscription.yesCancel')
               )}
             </AlertDialogAction>
           </AlertDialogFooter>
