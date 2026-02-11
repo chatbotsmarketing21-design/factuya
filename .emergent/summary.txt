@@ -10,148 +10,171 @@
     *   Allow changing the status of invoices (e.g., Draft, Pending, Paid, Overdue).
     *   Download invoices as PDF.
     *   Share invoices via email.
+    *   Automatic, sequential invoice numbering for each document type (e.g., , ).
 4.  **Internationalization:** The application must support multiple languages, starting with Spanish and English.
 5.  **Subscription Model:** Implement a payment system with a free trial.
     *   New users get 10 free invoices.
     *   To create more, users must subscribe to a recurring /month plan.
-    *   A payment dialog should appear when the free limit is reached, guiding the user to a Stripe checkout page.
+    *   A payment dialog should appear when the free limit is reached, guiding the user to a checkout page.
+6.  **User Account Management:**
+    *   A settings panel with options to manage Profile, Subscription, and Change Password.
+    *   A dark/light mode toggle.
+    *   A full password recovery flow via email.
 
 **User's preferred language**: Español
 
 **what currently exists?**
-A full-stack invoicing application named FactuYa! has been developed using React, FastAPI, and MongoDB. The application is fully functional with the following features implemented:
-- User registration and login (JWT-based).
-- A dashboard with invoice statistics.
-- Full CRUD operations for invoices.
-- 6 customizable invoice templates.
-- A document type selector to switch between Factura, Cotización, etc.
-- Company logo upload functionality.
-- Invoice status management (Draft, Paid, Pending, etc.).
-- PDF generation and download for invoices.
-- Multi-language support (Spanish/English) with a language switcher.
-- A custom modal for delete confirmation.
-- The backend logic for a Stripe-based subscription model (10 free invoices, then /month) is partially in place.
+A comprehensive full-stack invoicing application named FactuYa! using React, FastAPI, and MongoDB. The core features from the previous session (auth, invoice CRUD, PDF generation, logo upload, i18n) are stable.
+
+This session added significant functionality:
+-   **Completed Subscription Flow:** The Stripe payment flow is fully implemented and tested. It correctly displays a subscription dialog after 10 free invoices, redirects to Stripe checkout, and activates the user's subscription upon successful payment.
+-   **Full Account Management:** A Settings dropdown menu was added to the dashboard, leading to new pages for:
+    -   **Profile:** Users can edit their name and company information.
+    -   **Change Password:** A secure form with a password strength indicator.
+    -   **Subscription Panel:** Shows the user's current plan (Trial or Premium), usage, and management options.
+-   **Password Recovery:** A complete Forgot Password flow has been integrated using **Resend** to send recovery emails.
+-   **Automatic Invoice Numbering:** Each document type (Invoice, Quotation, etc.) now has its own automatic, sequential numbering (e.g., , ).
+-   **UI/UX Enhancements:**
+    -   The tax system was reworked to start at 0% and be added via a modal.
+    -   Dashboard invoice rows are now clickable to open the editor, improving navigation.
+    -   A dark/light mode toggle has been implemented.
+    -   Password visibility toggles are present on login/signup forms.
 
 **Last working item**:
-*   **Last item agent was working**: Implementing the frontend for the Stripe subscription flow. When a user without a subscription tries to save their 11th invoice, an API error is triggered. The agent was in the process of catching this error and displaying a  component. This dialog is intended to prompt the user to pay and, upon confirmation, redirect them to a Stripe checkout session.
-*   **Status**: IN PROGRESS
-*   **Agent Testing Done**: N
-*   **Which testing method agent to use?**: both
-*   **User Testing Done**: N
+-   **Last item agent was working**: Implementing internationalization (i18n) for the document type name (e.g., Factura, Invoice) displayed in the  component and the generated PDF. The agent updated the translation files and the component to use the  hook but observed that the text was not translating, always remaining in English.
+-   **Status**: IN PROGRESS
+-   **Agent Testing Done**: N
+-   **Which testing method agent to use?**: frontend testing agent
+-   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
-*   **Issue 1: Delete button confirmation dialog was not appearing.** (RESOLVED)
-    *   **Fix**: The agent replaced the unreliable  with a robust custom modal using Shadcn's  component. This issue is resolved and verified by the user.
+*   **Issue 1: Invoice Preview Document Type is Not Translating (P0)**
+    *   **Description**: The title of the document (e.g., INVOICE, QUOTATION) in the  component does not change when the application's language is switched between English and Spanish. It always shows the English version.
+    *   **Attempted fixes**: The agent updated  to use the  hook and added the necessary keys to  and .
+    *   **Next debug checklist**:
+        1.  In , add a  and inspect the browser console to see what the translation function is returning.
+        2.  Verify the  instance is correctly initialized and passed down the component tree. Check for any errors in the browser's console related to .
+        3.  Force a hard refresh (Ctrl+Shift+R) or clear the browser cache to rule out any caching issues with the translation files.
+        4.  Ensure the  component is correctly triggering a state update that causes a re-render of the .
+    *   **Why fix this issue and what will be achieved with the fix?**: To provide a fully localized user experience as requested by the user.
+    *   **Status**: IN PROGRESS
+    *   **Is recurring issue?**: N
+    *   **Should Test frontend/backend/both after fix?**: Frontend
 
 **In progress Task List**:
-*   **Task 1: Complete the Stripe Subscription and Payment Dialog Flow (P0)**
-    *   **Where to resume**: The agent was modifying . The logic to show a  component when a subscription error occurs has been initiated. The next steps are:
-        1.  Complete the implementation of .
-        2.  Inside the dialog, add a button (Subscribe Now). On click, it should call the backend endpoint (via ) to create a Stripe Checkout session.
-        3.  The backend should return a checkout URL.
-        4.  The frontend should redirect the user to this Stripe URL to complete the payment.
-        5.  Implement Stripe webhooks on the backend to listen for successful payments () and update the user's subscription status in the database.
-    *   **What will be achieved with this?**: Users will be able to subscribe to the service after their free trial ends, making the monetization feature fully functional.
-    *   **Status**: IN PROGRESS
-    *   **Should Test frontend/backend/both after fix?**: Both
-    *   **Blocked on something**: No
+*   None.
 
 **Upcoming and Future Tasks**
 *   **Upcoming Tasks:**
-    *   There are no immediate upcoming tasks requested by the user beyond completing the subscription flow.
-*   **Future Tasks (Suggested by Agent, not yet requested):**
-    *   **P1: Real Email Integration:** Replace the current  link for sending invoices with a proper email service like SendGrid.
-    *   **P2: Client and Product Management:** Create dedicated sections to manage recurring clients and pre-defined products/services to speed up invoice creation.
-    *   **P2: Advanced Reporting:** Add a reports page with charts for revenue over time, top clients, etc.
-    *   **P3: Mobile Application:** The user has expressed interest in a separate mobile app, likely using React Native, which would connect to the existing backend.
+    *   **P0: Integrate Wompi Payment Gateway:** The user has decided that for real-world use in Colombia, Stripe will be replaced by Wompi. The plan is to complete the application with the Stripe test integration first, and then perform the migration to Wompi once the user has registered their company.
+    *   **P1: Configure Production Emailing:** The current Resend integration is in test mode and can only send emails to a verified address. The user needs to verify their own domain in Resend to enable sending password reset emails to all users.
+*   **Future Tasks:**
+    *   **P2: Client and Product Management:** Add dedicated sections to manage recurring clients and pre-defined products/services to accelerate invoice creation.
+    *   **P2: Advanced Reporting:** Build a reports page with charts and analytics for revenue, top clients, and other metrics.
+    *   **P3: Mobile Application:** The user has expressed long-term interest in a mobile app (potentially React Native) that connects to the existing backend.
 
 **Completed work in this session**
-*   **Recently completed:**
-    - Cloned the basic UI and functionality of Invoice Home.
-    - Developed a full-stack application with a React frontend and FastAPI backend.
-    - Implemented secure user authentication (Sign Up/Sign In).
-    - Rebranded the application to FactuYa! with a custom green color scheme.
-    - Implemented full CRUD functionality for invoices (, ).
-    - Added functionality to upload a company logo ().
-    - Implemented a feature to change invoice status from the dashboard ().
-    - Added PDF download functionality using  and  ().
-    - Fixed the delete button by replacing  with a custom  component ().
-    - Implemented multi-language support (ES/EN) using  (, ).
-    - Added a dropdown to select and create different document types (Invoice, Quote, etc.) ().
-    - Implemented the backend logic for a subscription model with a 10-invoice free trial ().
+-   Stripe subscription flow (dialog, checkout, activation) (DONE)
+-   Bug fix for invoice trial counter desync (DONE)
+-   Reworked tax system to be modal-based (DONE)
+-   Made dashboard invoice rows clickable and added hover effect (DONE)
+-   Implemented a Settings dropdown menu containing Profile, Subscription, and Change Password pages (DONE)
+-   Fixed a bug where the header name did not update after a profile change (DONE)
+-   Implemented a dark/light mode theme toggle (DONE)
+-   Added password visibility toggles to auth forms (DONE)
+-   Implemented a full password recovery flow using Resend for emails (DONE)
+-   Implemented automatic, sequential, and prefixed invoice numbering for each document type (DONE)
 
 **Earlier issues found/mentioned but not fixed**
-*   None. All issues raised by the user during the session were addressed and resolved.
+*   None.
 
 **Known issue recurrence from previous fork**
-*   None. This is the first summary for this project.
+*   None.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
-*   **Frontend**: React, React Router, Tailwind CSS, Shadcn UI, Axios,  (for i18n),  &  (for PDF generation), .
-*   **Backend**: FastAPI, MongoDB (with Motor), JWT (for authentication), Pydantic (for data validation), Stripe API (for payments).
-*   **Architecture**: Full-stack monolith with a clear separation between the React frontend and the FastAPI backend API.
+*   **Frontend**: React, React Router, Tailwind CSS, Shadcn UI, Axios, ,  & .
+*   **Backend**: FastAPI, MongoDB (with Motor), JWT, Pydantic.
+*   **Integrations**: Stripe (for test payments), Resend (for transactional emails).
+*   **Architecture**: Full-stack application with a React frontend and a FastAPI backend API.
 
 **key DB schema**
 *   **users**: 
 *   **invoices**: 
 *   **subscriptions**: 
+*   **password_reset_tokens**: 
 
 **changes in tech stack**
-*   None. The stack has remained React, FastAPI, and MongoDB.
+*   **Resend** was added for handling transactional emails.
 
 **All files of reference**
-*   : The core component for creating/editing invoices, where the subscription dialog needs to be finalized.
-*   : The new component for handling the payment prompt.
-*   : The new service to handle frontend-backend communication for Stripe.
-*   : The backend route that creates the Stripe Checkout session.
-*   : The backend utility used as a dependency to check a user's subscription status before allowing actions.
-*   : The main page after login, which displays the list of invoices.
+*   : The component with the translation bug.
+*   : Spanish translation file.
+*   : English translation file.
+*   : The main invoice creation form.
+*   : Handles the password recovery logic.
+*   : Contains the automatic invoice numbering logic.
+*   : User profile page.
+*   : Change password page.
+*   : Subscription management page.
 
 **key api endpoints**
-*   : User registration.
-*   : User login, returns JWT.
-*   : Get all invoices for the logged-in user.
-*   : Create a new invoice (this is where the subscription check happens).
-*   : Update an existing invoice.
-*   : Delete an invoice.
-*   : Creates a Stripe payment link for the user.
-*   : Endpoint for Stripe to send events (e.g., payment success).
+*   : Get the next sequential number for a document type.
+*   : Request a password reset email.
+*   : Reset password using a token from the email.
+*   : Allows a logged-in user to change their password.
+*   : Updates user's personal information (e.g., name).
+*   : Updates user's company information.
+*   : Creates a Stripe payment link.
 
 **Critical Info for New Agent**
-*   The application is named FactuYa!. All user-facing text and branding should reflect this.
-*   The primary color is an apple green ( in Tailwind).
-*   The subscription model is central: 10 free invoices, then a mandatory recurring /month subscription via Stripe. The current task is to complete the frontend part of this flow.
-*   The user is highly engaged and provides specific, iterative feedback. Be prepared for detailed requests and bug reports.
-*   The user's primary language is Spanish. All communication should be in Spanish.
+*   **Primary Language:** You must communicate with the user in **Español**.
+*   **Payment Gateway Strategy:** The app currently uses a Stripe test integration. The user's final plan is to migrate to **Wompi** for payments in Colombia. Do not remove the Stripe code; the migration will be a future task.
+*   **Email Service:** Password recovery is handled by **Resend**. It is currently in test mode, meaning emails can only be delivered to the verified email address on the user's Resend account (). For production, the user must verify their own domain within Resend.
+*   **Testing Accounts:** Be aware of the two main user accounts for testing:
+    1.  : Has an **active Premium subscription**.
+    2.  : Is in **trial mode** and is the verified email for receiving Resend test emails. Its password was recently reset to .
 
 **documents and test reports created in this job**
-*   : Created early on to define API contracts.
+*   
+*   
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **User:** Wants a recurring /month subscription, not a one-time payment. (COMPLETED - Agent confirmed this is how it's implemented).
-2.  **User:** When the invoice limit is reached, wants a payment dialog to appear instead of just an error toast. (IN PROGRESS - This is the current task).
-3.  **Agent:** Acknowledged the request and started implementing the payment dialog by installing Stripe on the frontend.
-4.  **Agent:** Created the frontend subscription service and the dialog component.
-5.  **Agent:** Started updating  to integrate the new dialog.
+1.  **Request for automatic invoice numbering:** User asked for a system where each document type has its own sequential number (FAC-001, COT-001). (COMPLETED)
+2.  **Request for translated document types:** User wants the document name in the invoice preview (e.g., Factura, Invoice) to be translated based on the selected language. (IN PROGRESS - This is the current bug).
+3.  **Approval of tax system:** User approved the new modal-based tax system.
+4.  **Reported subscription dialog stuck:** User mentioned the subscription dialog was getting stuck on loading. (COMPLETED - Fixed by agent).
+5.  **Confirmation of subscription dialog fix:** User confirmed the subscription dialog now works.
+6.  **Request to remove 'eye' icon:** User asked to make the whole invoice row clickable instead of using a view icon. (COMPLETED)
+7.  **Confirmation of clickable rows:** User confirmed the new dashboard navigation works well.
+8.  **Request for Subscription Panel:** User asked for a page to manage their subscription. (COMPLETED)
+9.  **Request for password visibility toggle:** User wanted a show/hide password button on the login page. (COMPLETED)
+10. **Reported Forgot Password link broken:** User noted the link was not functional, which led to the implementation of the full password recovery flow. (COMPLETED)
 
 **Project Health Check:**
-*   **Functional:** The core application (auth, invoice CRUD, PDF, multi-language) is working.
-*   **Broken:** The subscription flow. Creating an 11th invoice will currently fail with a toast message, as the payment dialog is not yet fully integrated.
+*   **Functional:** The application is largely stable and feature-rich. Core workflows like authentication, invoice management, and the full subscription/payment cycle are working.
+*   **Broken:** The internationalization (i18n) for the document type in the invoice preview is not functioning correctly.
 
 **3rd Party Integrations**
-*   **Stripe (Payments):** Used for handling the recurring /month subscription. Requires user-provided API keys ( and ) in the backend  file.
+*   **Stripe (Payments):** Integrated for the recurring subscription model. Currently uses a test key. Requires a User API Key for live mode.
+*   **Resend (Transactional Emails):** Integrated for the password recovery flow. Uses a User API Key provided during the session.
 
 **Testing status**
-*   **Testing agent used after significant changes**: YES (Backend was tested after initial implementation).
+*   **Testing agent used after significant changes**: YES (for the subscription flow)
 *   **Troubleshoot agent used after agent stuck in loop**: NO
-*   **Test files created**: None.
-*   **Known regressions**: None.
+*   **Test files created**: []
+*   **Known regressions**: None
 
 **Credentials to test flow:**
-*   There are no default credentials. The agent should use the Sign Up page to create a new user for testing purposes.
+*   **Trial User:**
+    -   Email: 
+    -   Password: 
+    -   Note: This user is in trial and is the verified recipient for Resend test emails.
+*   **Premium User:**
+    -   Email: 
+    -   Note: This user has an active premium subscription. The agent does not know the current password.
 
 **What agent forgot to execute**
-*   The agent has been very thorough in responding to user requests. Nothing major appears to have been forgotten. The only incomplete feature is the email sending, which was intentionally implemented as a simple  link and noted as such. The agent should be prepared to implement a real email service if the user asks.</analysis>
+*   The agent has been thorough. The only outstanding item is the fix for the i18n bug they were actively working on when the session ended.</analysis>

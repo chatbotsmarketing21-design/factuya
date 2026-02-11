@@ -161,7 +161,7 @@ class TestSubscription:
         response = requests.post(
             f"{BASE_URL}/api/subscription/create-checkout-session",
             headers=auth_headers,
-            json={"originUrl": "https://easyinvoice-35.preview.emergentagent.com"}
+            json={"originUrl": "https://billingpro-21.preview.emergentagent.com"}
         )
         assert response.status_code == 200
         data = response.json()

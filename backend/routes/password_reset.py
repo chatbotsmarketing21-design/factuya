@@ -56,7 +56,7 @@ async def request_password_reset(request: RequestResetRequest):
     })
     
     # Build reset URL (frontend URL)
-    frontend_url = os.environ.get('FRONTEND_URL', 'https://easyinvoice-35.preview.emergentagent.com')
+    frontend_url = os.environ.get('FRONTEND_URL', 'https://billingpro-21.preview.emergentagent.com')
     reset_url = f"{frontend_url}/reset-password?token={token}"
     
     # Send email
