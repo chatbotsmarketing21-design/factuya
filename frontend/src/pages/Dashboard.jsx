@@ -338,7 +338,7 @@ const Dashboard = () => {
                 </div>
               </Link>
               {user && (
-                <span className="text-sm text-gray-600">Welcome, {user.name}</span>
+                <span className="text-sm text-gray-600">{t('common.welcome')}, {user.name}</span>
               )}
             </div>
             <div className="flex items-center gap-3">
