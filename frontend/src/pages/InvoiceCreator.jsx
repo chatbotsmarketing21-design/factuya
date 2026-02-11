@@ -163,14 +163,30 @@ const InvoiceCreator = () => {
     }
   };
 
-  const generateInvoiceNumber = async () => {
+  const generateInvoiceNumber = async (docType = 'invoice') => {
     try {
-      const response = await invoiceAPI.getAll();
-      const invoiceCount = response.data.length;
-      const newNumber = String(invoiceCount + 1).padStart(3, '0');
-      setInvoice(prev => ({ ...prev, number: newNumber }));
+      const response = await invoiceAPI.getNextNumber(docType);
+      setInvoice(prev => ({ ...prev, number: response.data.number }));
     } catch (error) {
-      setInvoice(prev => ({ ...prev, number: '001' }));
+      console.error('Error generating invoice number:', error);
+      // Fallback al formato anterior
+      const prefixes = {
+        invoice: 'FAC',
+        proforma: 'PRO',
+        quotation: 'COT',
+        receipt: 'REC',
+        bill: 'COB'
+      };
+      const prefix = prefixes[docType] || 'FAC';
+      setInvoice(prev => ({ ...prev, number: `${prefix}-001` }));
+    }
+  };
+
+  const handleDocumentTypeChange = async (newType) => {
+    updateInvoice('documentType', newType);
+    // Generar nuevo número para el tipo de documento seleccionado
+    if (!isEditMode) {
+      await generateInvoiceNumber(newType);
     }
   };
 
