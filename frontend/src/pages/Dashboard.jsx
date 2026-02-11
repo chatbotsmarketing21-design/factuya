@@ -338,7 +338,9 @@ const Dashboard = () => {
                 </div>
               </Link>
               {user && (
-                <span className="text-sm text-gray-600">{t('common.welcome')}, {user.name}</span>
+                <span className="text-sm text-gray-600">
+                  {user.gender === 'female' ? t('common.welcomeFemale') : t('common.welcomeMale')}, {user.name}
+                </span>
               )}
             </div>
             <div className="flex items-center gap-3">
