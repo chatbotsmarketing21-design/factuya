@@ -89,6 +89,27 @@
     "changeTemplate": "Change Template",
     "backToDashboard": "Back to Dashboard"
   },
+  "documentTypes": {
+    "invoice": "INVOICE",
+    "proforma": "PROFORMA INVOICE",
+    "quotation": "QUOTATION",
+    "bill": "BILL OF COLLECTION",
+    "receipt": "RECEIPT"
+  },
+  "preview": {
+    "from": "FROM",
+    "billTo": "BILL TO",
+    "invoiceDate": "Invoice Date",
+    "dueDate": "Due Date",
+    "description": "Description",
+    "qty": "Qty",
+    "rate": "Rate",
+    "amount": "Amount",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "notes": "Notes",
+    "terms": "Terms & Conditions"
+  },
   "table": {
     "invoiceHash": "Invoice #",
     "client": "Client",
