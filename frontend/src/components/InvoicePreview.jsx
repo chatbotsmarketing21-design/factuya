@@ -1,16 +1,12 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from './ui/card';
 
 const InvoicePreview = ({ invoice, template }) => {
+  const { t } = useTranslation();
+
   const getDocumentTitle = (type) => {
-    const titles = {
-      invoice: 'INVOICE',
-      proforma: 'PROFORMA INVOICE',
-      quotation: 'QUOTATION',
-      bill: 'BILL',
-      receipt: 'RECEIPT'
-    };
-    return titles[type] || 'INVOICE';
+    return t(`documentTypes.${type}`, type.toUpperCase());
   };
 
   const getDocumentColor = (type) => {
@@ -57,27 +53,27 @@ const InvoicePreview = ({ invoice, template }) => {
         {/* From & To */}
         <div className="grid grid-cols-2 gap-8">
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 mb-2">FROM</h3>
+            <h3 className="text-sm font-semibold text-gray-500 mb-2">{t('preview.from')}</h3>
             <div className="text-sm">
               <p className="font-bold text-gray-900">{invoice.from.name}</p>
               <p className="text-gray-600">{invoice.from.email}</p>
               <p className="text-gray-600">{invoice.from.phone}</p>
               <p className="text-gray-600">{invoice.from.address}</p>
               <p className="text-gray-600">
-                {invoice.from.city}, {invoice.from.state} {invoice.from.zip}
+                {invoice.from.city}{invoice.from.city && invoice.from.state ? ', ' : ''}{invoice.from.state} {invoice.from.zip}
               </p>
               <p className="text-gray-600">{invoice.from.country}</p>
             </div>
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-gray-500 mb-2">BILL TO</h3>
+            <h3 className="text-sm font-semibold text-gray-500 mb-2">{t('preview.billTo')}</h3>
             <div className="text-sm">
               <p className="font-bold text-gray-900">{invoice.to.name}</p>
               <p className="text-gray-600">{invoice.to.email}</p>
               <p className="text-gray-600">{invoice.to.phone}</p>
               <p className="text-gray-600">{invoice.to.address}</p>
               <p className="text-gray-600">
-                {invoice.to.city}, {invoice.to.state} {invoice.to.zip}
+                {invoice.to.city}{invoice.to.city && invoice.to.state ? ', ' : ''}{invoice.to.state} {invoice.to.zip}
               </p>
               <p className="text-gray-600">{invoice.to.country}</p>
             </div>
@@ -87,11 +83,11 @@ const InvoicePreview = ({ invoice, template }) => {
         {/* Dates */}
         <div className="grid grid-cols-2 gap-8 text-sm">
           <div>
-            <p className="text-gray-500">Invoice Date</p>
+            <p className="text-gray-500">{t('preview.invoiceDate')}</p>
             <p className="font-semibold text-gray-900">{invoice.date}</p>
           </div>
           <div>
-            <p className="text-gray-500">Due Date</p>
+            <p className="text-gray-500">{t('preview.dueDate')}</p>
             <p className="font-semibold text-gray-900">{invoice.dueDate}</p>
           </div>
         </div>
@@ -101,10 +97,10 @@ const InvoicePreview = ({ invoice, template }) => {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b-2" style={{ borderColor: documentColor }}>
-                <th className="text-left py-2 font-semibold text-gray-700">Description</th>
-                <th className="text-center py-2 font-semibold text-gray-700">Qty</th>
-                <th className="text-right py-2 font-semibold text-gray-700">Rate</th>
-                <th className="text-right py-2 font-semibold text-gray-700">Amount</th>
+                <th className="text-left py-2 font-semibold text-gray-700">{t('preview.description')}</th>
+                <th className="text-center py-2 font-semibold text-gray-700">{t('preview.qty')}</th>
+                <th className="text-right py-2 font-semibold text-gray-700">{t('preview.rate')}</th>
+                <th className="text-right py-2 font-semibold text-gray-700">{t('preview.amount')}</th>
               </tr>
             </thead>
             <tbody>
@@ -124,17 +120,17 @@ const InvoicePreview = ({ invoice, template }) => {
         <div className="flex justify-end">
           <div className="w-64 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Subtotal:</span>
+              <span className="text-gray-600">{t('preview.subtotal')}:</span>
               <span className="font-semibold text-gray-900">${(parseFloat(invoice.subtotal) || 0).toFixed(2)}</span>
             </div>
             {invoice.hasTax && invoice.taxRate > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">{invoice.taxName || 'Impuesto'} ({invoice.taxRate}%):</span>
+                <span className="text-gray-600">{invoice.taxName || t('invoice.tax')} ({invoice.taxRate}%):</span>
                 <span className="font-semibold text-gray-900">${(parseFloat(invoice.tax) || 0).toFixed(2)}</span>
               </div>
             )}
             <div className="flex justify-between text-lg font-bold pt-2 border-t-2" style={{ borderColor: documentColor }}>
-              <span>Total:</span>
+              <span>{t('preview.total')}:</span>
               <span style={{ color: documentColor }}>${(parseFloat(invoice.total) || 0).toFixed(2)}</span>
             </div>
           </div>
@@ -143,7 +139,7 @@ const InvoicePreview = ({ invoice, template }) => {
         {/* Notes */}
         {invoice.notes && (
           <div className="pt-4">
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">Notes</h4>
+            <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('preview.notes')}</h4>
             <p className="text-sm text-gray-600">{invoice.notes}</p>
           </div>
         )}
@@ -151,7 +147,7 @@ const InvoicePreview = ({ invoice, template }) => {
         {/* Terms */}
         {invoice.terms && (
           <div className="pt-2">
-            <h4 className="text-sm font-semibold text-gray-700 mb-2">Terms & Conditions</h4>
+            <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('preview.terms')}</h4>
             <p className="text-sm text-gray-600">{invoice.terms}</p>
           </div>
         )}
