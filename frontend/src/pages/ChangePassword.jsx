@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -10,6 +11,7 @@ import api from '../services/api';
 
 const ChangePassword = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
@@ -34,8 +36,8 @@ const ChangePassword = () => {
     // Validations
     if (formData.newPassword.length < 6) {
       toast({
-        title: "Error",
-        description: "La nueva contraseña debe tener al menos 6 caracteres",
+        title: t('messages.error'),
+        description: t('changePassword.minLength'),
         variant: "destructive"
       });
       return;
@@ -43,8 +45,8 @@ const ChangePassword = () => {
 
     if (formData.newPassword !== formData.confirmPassword) {
       toast({
-        title: "Error",
-        description: "Las contraseñas nuevas no coinciden",
+        title: t('messages.error'),
+        description: t('changePassword.noMatch'),
         variant: "destructive"
       });
       return;
@@ -52,8 +54,8 @@ const ChangePassword = () => {
 
     if (formData.currentPassword === formData.newPassword) {
       toast({
-        title: "Error",
-        description: "La nueva contraseña debe ser diferente a la actual",
+        title: t('messages.error'),
+        description: t('changePassword.mustBeDifferent'),
         variant: "destructive"
       });
       return;
@@ -67,8 +69,8 @@ const ChangePassword = () => {
       });
       
       toast({
-        title: "¡Contraseña Actualizada!",
-        description: "Tu contraseña ha sido cambiada correctamente",
+        title: t('changePassword.success'),
+        description: t('changePassword.successDesc'),
       });
       
       // Clear form and redirect
@@ -85,8 +87,8 @@ const ChangePassword = () => {
     } catch (error) {
       console.error('Error changing password:', error);
       toast({
-        title: "Error",
-        description: error.response?.data?.detail || "No se pudo cambiar la contraseña",
+        title: t('messages.error'),
+        description: error.response?.data?.detail || t('changePassword.errorChanging'),
         variant: "destructive"
       });
     } finally {
@@ -105,9 +107,9 @@ const ChangePassword = () => {
     if (/[0-9]/.test(password)) strength++;
     if (/[^A-Za-z0-9]/.test(password)) strength++;
 
-    if (strength <= 2) return { strength, label: 'Débil', color: 'bg-red-500' };
-    if (strength <= 3) return { strength, label: 'Media', color: 'bg-yellow-500' };
-    return { strength, label: 'Fuerte', color: 'bg-green-500' };
+    if (strength <= 2) return { strength, label: t('changePassword.weak'), color: 'bg-red-500' };
+    if (strength <= 3) return { strength, label: t('changePassword.medium'), color: 'bg-yellow-500' };
+    return { strength, label: t('changePassword.strong'), color: 'bg-green-500' };
   };
 
   const passwordStrength = getPasswordStrength(formData.newPassword);
@@ -121,9 +123,9 @@ const ChangePassword = () => {
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')}>
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Volver
+                {t('changePassword.back')}
               </Button>
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">Cambiar Contraseña</h1>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">{t('changePassword.title')}</h1>
             </div>
           </div>
         </div>
@@ -133,13 +135,13 @@ const ChangePassword = () => {
         <Card className="p-6">
           <div className="flex items-center gap-2 mb-6">
             <Key className="w-5 h-5 text-lime-600" />
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white">Actualizar Contraseña</h2>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white">{t('changePassword.updatePassword')}</h2>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Current Password */}
             <div>
-              <Label htmlFor="currentPassword">Contraseña Actual</Label>
+              <Label htmlFor="currentPassword">{t('changePassword.currentPassword')}</Label>
               <div className="relative mt-1">
                 <Input
                   id="currentPassword"
@@ -147,7 +149,7 @@ const ChangePassword = () => {
                   type={showCurrentPassword ? 'text' : 'password'}
                   value={formData.currentPassword}
                   onChange={handleChange}
-                  placeholder="Tu contraseña actual"
+                  placeholder={t('changePassword.currentPasswordPlaceholder')}
                   required
                   className="pr-10"
                 />
@@ -163,7 +165,7 @@ const ChangePassword = () => {
 
             {/* New Password */}
             <div>
-              <Label htmlFor="newPassword">Nueva Contraseña</Label>
+              <Label htmlFor="newPassword">{t('changePassword.newPassword')}</Label>
               <div className="relative mt-1">
                 <Input
                   id="newPassword"
@@ -171,7 +173,7 @@ const ChangePassword = () => {
                   type={showNewPassword ? 'text' : 'password'}
                   value={formData.newPassword}
                   onChange={handleChange}
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder={t('changePassword.newPasswordPlaceholder')}
                   required
                   className="pr-10"
                 />
@@ -203,13 +205,13 @@ const ChangePassword = () => {
                   </div>
                   <ul className="mt-2 space-y-1 text-xs text-gray-500">
                     <li className={formData.newPassword.length >= 6 ? 'text-green-600' : ''}>
-                      {formData.newPassword.length >= 6 ? <CheckCircle className="w-3 h-3 inline mr-1" /> : '○'} Mínimo 6 caracteres
+                      {formData.newPassword.length >= 6 ? <CheckCircle className="w-3 h-3 inline mr-1" /> : '○'} {t('changePassword.req6Chars')}
                     </li>
                     <li className={/[A-Z]/.test(formData.newPassword) ? 'text-green-600' : ''}>
-                      {/[A-Z]/.test(formData.newPassword) ? <CheckCircle className="w-3 h-3 inline mr-1" /> : '○'} Una mayúscula
+                      {/[A-Z]/.test(formData.newPassword) ? <CheckCircle className="w-3 h-3 inline mr-1" /> : '○'} {t('changePassword.reqUppercase')}
                     </li>
                     <li className={/[0-9]/.test(formData.newPassword) ? 'text-green-600' : ''}>
-                      {/[0-9]/.test(formData.newPassword) ? <CheckCircle className="w-3 h-3 inline mr-1" /> : '○'} Un número
+                      {/[0-9]/.test(formData.newPassword) ? <CheckCircle className="w-3 h-3 inline mr-1" /> : '○'} {t('changePassword.reqNumber')}
                     </li>
                   </ul>
                 </div>
@@ -218,7 +220,7 @@ const ChangePassword = () => {
 
             {/* Confirm New Password */}
             <div>
-              <Label htmlFor="confirmPassword">Confirmar Nueva Contraseña</Label>
+              <Label htmlFor="confirmPassword">{t('changePassword.confirmPassword')}</Label>
               <div className="relative mt-1">
                 <Input
                   id="confirmPassword"
@@ -226,7 +228,7 @@ const ChangePassword = () => {
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  placeholder="Repite la nueva contraseña"
+                  placeholder={t('changePassword.confirmPasswordPlaceholder')}
                   required
                   className="pr-10"
                 />
@@ -239,11 +241,11 @@ const ChangePassword = () => {
                 </button>
               </div>
               {formData.confirmPassword && formData.newPassword !== formData.confirmPassword && (
-                <p className="text-xs text-red-600 mt-1">Las contraseñas no coinciden</p>
+                <p className="text-xs text-red-600 mt-1">{t('changePassword.passwordsNoMatch')}</p>
               )}
               {formData.confirmPassword && formData.newPassword === formData.confirmPassword && (
                 <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
-                  <CheckCircle className="w-3 h-3" /> Las contraseñas coinciden
+                  <CheckCircle className="w-3 h-3" /> {t('changePassword.passwordsMatch')}
                 </p>
               )}
             </div>
@@ -257,12 +259,12 @@ const ChangePassword = () => {
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Actualizando...
+                  {t('changePassword.updating')}
                 </>
               ) : (
                 <>
                   <Key className="w-4 h-4 mr-2" />
-                  Cambiar Contraseña
+                  {t('changePassword.changeButton')}
                 </>
               )}
             </Button>
