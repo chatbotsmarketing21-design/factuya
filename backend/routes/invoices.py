@@ -119,7 +119,8 @@ async def get_invoice_stats(user_id: str = Depends(get_current_user_id)):
     """Get invoice statistics for current user"""
     invoices = await db.invoices.find({"userId": user_id}).to_list(1000)
     
-    total_revenue = sum(inv["total"] for inv in invoices)
+    # Solo sumar ingresos de facturas pagadas
+    total_revenue = sum(inv["total"] for inv in invoices if inv["status"] == "paid")
     total_invoices = len(invoices)
     paid_invoices = len([inv for inv in invoices if inv["status"] == "paid"])
     pending_invoices = len([inv for inv in invoices if inv["status"] == "pending"])
