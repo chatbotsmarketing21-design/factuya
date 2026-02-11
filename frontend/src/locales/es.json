@@ -223,5 +223,32 @@
     "errorLoading": "No se pudo cargar la información de suscripción",
     "errorCheckout": "No se pudo iniciar el proceso de pago",
     "errorCanceling": "No se pudo cancelar la suscripción"
+  },
+  "changePassword": {
+    "title": "Cambiar Contraseña",
+    "back": "Volver",
+    "updatePassword": "Actualizar Contraseña",
+    "currentPassword": "Contraseña Actual",
+    "currentPasswordPlaceholder": "Tu contraseña actual",
+    "newPassword": "Nueva Contraseña",
+    "newPasswordPlaceholder": "Mínimo 6 caracteres",
+    "confirmPassword": "Confirmar Nueva Contraseña",
+    "confirmPasswordPlaceholder": "Repite la nueva contraseña",
+    "weak": "Débil",
+    "medium": "Media",
+    "strong": "Fuerte",
+    "req6Chars": "Mínimo 6 caracteres",
+    "reqUppercase": "Una mayúscula",
+    "reqNumber": "Un número",
+    "passwordsNoMatch": "Las contraseñas no coinciden",
+    "passwordsMatch": "Las contraseñas coinciden",
+    "changeButton": "Cambiar Contraseña",
+    "updating": "Actualizando...",
+    "success": "¡Contraseña Actualizada!",
+    "successDesc": "Tu contraseña ha sido cambiada correctamente",
+    "minLength": "La nueva contraseña debe tener al menos 6 caracteres",
+    "noMatch": "Las contraseñas nuevas no coinciden",
+    "mustBeDifferent": "La nueva contraseña debe ser diferente a la actual",
+    "errorChanging": "No se pudo cambiar la contraseña"
   }
 }
