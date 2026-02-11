@@ -367,8 +367,8 @@ const InvoiceCreator = () => {
     return documentTypes[type] || documentTypes.invoice;
   };
 
-  const changeDocumentType = (type) => {
-    setInvoice(prev => ({ ...prev, documentType: type }));
+  const changeDocumentType = async (type) => {
+    await handleDocumentTypeChange(type);
     const docInfo = getDocumentInfo(type);
     toast({
       title: "Tipo de Documento Cambiado",
