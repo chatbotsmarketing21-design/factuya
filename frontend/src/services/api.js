@@ -52,6 +52,7 @@ export const invoiceAPI = {
   delete: (id) => api.delete(`/invoices/${id}`),
   getStats: () => api.get('/invoices/stats'),
   getNextNumber: (documentType) => api.get(`/invoices/next-number/${documentType}`),
+  uploadPdf: (data) => api.post('/invoices/upload-pdf', data),
 };
 
 // Profile APIs
