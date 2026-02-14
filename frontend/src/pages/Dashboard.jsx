@@ -752,6 +752,23 @@ const Dashboard = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Hidden PDF Preview for generating PDFs */}
+      {pdfInvoice && (
+        <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
+          <div ref={pdfPreviewRef}>
+            <InvoicePreview 
+              invoice={{
+                ...pdfInvoice,
+                from: pdfInvoice.fromAddress || pdfInvoice.from,
+                to: pdfInvoice.toAddress || pdfInvoice.to,
+                items: pdfInvoice.items || []
+              }} 
+              template={getTemplateById(pdfInvoice.template || 1)} 
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
