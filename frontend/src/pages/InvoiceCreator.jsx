@@ -904,27 +904,27 @@ const InvoiceCreator = () => {
               </div>
 
               {/* Totals */}
-              <div className="mt-6 space-y-3 border-t pt-4">
+              <div className="mt-6 space-y-3 border-t dark:border-border pt-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700">Subtotal:</span>
-                  <span className="font-semibold text-lg">${invoice.subtotal.toFixed(2)}</span>
+                  <span className="text-gray-700 dark:text-gray-300">Subtotal:</span>
+                  <span className="font-semibold text-lg dark:text-white">${invoice.subtotal.toFixed(2)}</span>
                 </div>
                 
                 {/* Tax Section */}
                 {invoice.hasTax ? (
-                  <div className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                  <div className="flex justify-between items-center bg-gray-50 dark:bg-muted p-3 rounded-lg">
                     <div className="flex items-center gap-2">
-                      <span className="text-gray-700">{invoice.taxName || 'Impuesto'} ({invoice.taxRate}%):</span>
+                      <span className="text-gray-700 dark:text-gray-300">{invoice.taxName || 'Impuesto'} ({invoice.taxRate}%):</span>
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={handleRemoveTax}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50 h-6 px-2"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 h-6 px-2"
                       >
                         <Trash2 className="w-3 h-3" />
                       </Button>
                     </div>
-                    <span className="font-semibold text-lg">${invoice.tax.toFixed(2)}</span>
+                    <span className="font-semibold text-lg dark:text-white">${invoice.tax.toFixed(2)}</span>
                   </div>
                 ) : (
                   <div className="flex justify-center">
@@ -932,7 +932,7 @@ const InvoiceCreator = () => {
                       variant="outline"
                       size="sm"
                       onClick={handleAddTax}
-                      className="text-lime-600 border-lime-300 hover:bg-lime-50"
+                      className="text-lime-600 border-lime-300 hover:bg-lime-50 dark:hover:bg-lime-900/20"
                     >
                       <Percent className="w-4 h-4 mr-2" />
                       Añadir Impuesto
@@ -940,35 +940,37 @@ const InvoiceCreator = () => {
                   </div>
                 )}
 
-                <div className="flex justify-between items-center text-xl font-bold border-t pt-3">
-                  <span>Total:</span>
-                  <span className="text-blue-600">${invoice.total.toFixed(2)}</span>
+                <div className="flex justify-between items-center text-xl font-bold border-t dark:border-border pt-3">
+                  <span className="dark:text-white">Total:</span>
+                  <span className="text-blue-600 dark:text-blue-400">${invoice.total.toFixed(2)}</span>
                 </div>
               </div>
             </Card>
 
             {/* Notes and Terms */}
-            <Card className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Información Adicional</h2>
+            <Card className="p-6 dark:bg-card">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Información Adicional</h2>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="notes">Notas</Label>
+                  <Label htmlFor="notes" className="dark:text-gray-300">Notas</Label>
                   <Textarea
                     id="notes"
                     value={invoice.notes}
                     onChange={(e) => updateInvoice('notes', e.target.value)}
                     placeholder="Thank you for your business!"
                     rows={3}
+                    className="dark:bg-secondary dark:border-border dark:text-white"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="terms">Términos y Condiciones</Label>
+                  <Label htmlFor="terms" className="dark:text-gray-300">Términos y Condiciones</Label>
                   <Textarea
                     id="terms"
                     value={invoice.terms}
                     onChange={(e) => updateInvoice('terms', e.target.value)}
                     placeholder="Payment terms and conditions"
                     rows={3}
+                    className="dark:bg-secondary dark:border-border dark:text-white"
                   />
                 </div>
               </div>
