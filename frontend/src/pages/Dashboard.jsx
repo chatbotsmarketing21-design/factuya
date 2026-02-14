@@ -253,19 +253,83 @@ const Dashboard = () => {
     navigate(`/create?id=${invoiceId}`);
   };
 
-  const handleDownloadPDF = async (invoiceId) => {
-    toast({
-      title: "Descargando...",
-      description: "Generando tu factura en PDF",
+  // Helper function to generate PDF from invoice
+  const generatePdfFromInvoice = async (invoice) => {
+    return new Promise((resolve, reject) => {
+      // Set the invoice for PDF preview
+      setPdfInvoice(invoice);
+      setGeneratingPdf(true);
+      
+      // Wait for the preview to render
+      setTimeout(async () => {
+        try {
+          if (!pdfPreviewRef.current) {
+            throw new Error("PDF preview not ready");
+          }
+          
+          const canvas = await html2canvas(pdfPreviewRef.current, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff'
+          });
+          
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF('p', 'mm', 'a4');
+          
+          const imgWidth = 210;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          
+          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+          
+          setGeneratingPdf(false);
+          setPdfInvoice(null);
+          
+          resolve(pdf);
+        } catch (error) {
+          setGeneratingPdf(false);
+          setPdfInvoice(null);
+          reject(error);
+        }
+      }, 500);
     });
-    
-    // Simular descarga - en producción llamarías a la API
-    setTimeout(() => {
+  };
+
+  const handleDownloadPDF = async (invoiceId) => {
+    try {
+      // Find the invoice
+      const invoice = invoices.find(inv => inv.id === invoiceId);
+      if (!invoice) {
+        toast({
+          title: "Error",
+          description: "No se encontró la factura",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      toast({
+        title: "Generando PDF...",
+        description: "Por favor espera un momento",
+      });
+
+      const pdf = await generatePdfFromInvoice(invoice);
+      const invoiceNumber = invoice.invoiceNumber || invoice.number || 'factura';
+      const clientName = invoice.to?.name || 'cliente';
+      pdf.save(`Factura_${invoiceNumber}_${clientName}.pdf`);
+
       toast({
         title: "¡Descarga Completa!",
         description: "Tu factura PDF ha sido descargada",
       });
-    }, 1500);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo generar el PDF",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleSendEmail = async (invoice) => {
@@ -284,25 +348,54 @@ const Dashboard = () => {
     });
   };
 
-  const handleShareWhatsApp = (invoice) => {
-    const clientName = invoice.to?.name || 'Cliente';
-    const invoiceNumber = invoice.invoiceNumber || invoice.number || 'S/N';
-    const total = invoice.total?.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0,00';
-    const phone = invoice.to?.phone?.replace(/\D/g, '') || '';
-    
-    const message = `Hola ${clientName}, le comparto su factura N° ${invoiceNumber} por un total de $${total}. ¡Gracias por su preferencia! - FactuYa!`;
-    const encodedMessage = encodeURIComponent(message);
-    
-    const whatsappUrl = phone 
-      ? `https://wa.me/${phone}?text=${encodedMessage}`
-      : `https://wa.me/?text=${encodedMessage}`;
-    
-    window.open(whatsappUrl, '_blank');
-    
-    toast({
-      title: "WhatsApp Abierto",
-      description: "Se ha abierto WhatsApp para compartir la factura",
-    });
+  const handleShareWhatsApp = async (invoice) => {
+    try {
+      toast({
+        title: "Preparando PDF...",
+        description: "Generando factura para compartir",
+      });
+
+      // Generate PDF
+      const pdf = await generatePdfFromInvoice(invoice);
+      const pdfBase64 = pdf.output('datauristring');
+      
+      // Upload PDF to server
+      const invoiceNumber = invoice.invoiceNumber || invoice.number || 'factura';
+      const response = await invoiceAPI.uploadPdf({
+        pdf: pdfBase64,
+        invoiceNumber: invoiceNumber
+      });
+      
+      // Get the public URL for the PDF
+      const baseUrl = process.env.REACT_APP_BACKEND_URL;
+      const pdfUrl = `${baseUrl}/api/invoices/pdf/${response.data.filename}`;
+      
+      // Prepare WhatsApp message with PDF link
+      const clientName = invoice.to?.name || 'Cliente';
+      const total = invoice.total?.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0,00';
+      const phone = invoice.to?.phone?.replace(/\D/g, '') || '';
+      
+      const message = `Hola ${clientName}, le comparto su factura N° ${invoiceNumber} por un total de $${total}.\n\n📄 Ver/Descargar PDF: ${pdfUrl}\n\n¡Gracias por su preferencia!\n- FactuYa!`;
+      const encodedMessage = encodeURIComponent(message);
+      
+      const whatsappUrl = phone 
+        ? `https://wa.me/${phone}?text=${encodedMessage}`
+        : `https://wa.me/?text=${encodedMessage}`;
+      
+      window.open(whatsappUrl, '_blank');
+      
+      toast({
+        title: "¡Listo!",
+        description: "Se ha abierto WhatsApp con el enlace al PDF",
+      });
+    } catch (error) {
+      console.error('Error sharing via WhatsApp:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo preparar el PDF para compartir",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleShareEmail = (invoice) => {
