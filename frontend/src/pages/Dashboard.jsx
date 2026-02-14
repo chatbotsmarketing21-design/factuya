@@ -297,9 +297,16 @@ const Dashboard = () => {
 
   const handleDownloadPDF = async (invoiceId) => {
     try {
-      // Find the invoice
-      const invoice = invoices.find(inv => inv.id === invoiceId);
-      if (!invoice) {
+      toast({
+        title: "Generando PDF...",
+        description: "Por favor espera un momento",
+      });
+
+      // Load full invoice data
+      const response = await invoiceAPI.getById(invoiceId);
+      const fullInvoice = response.data;
+      
+      if (!fullInvoice) {
         toast({
           title: "Error",
           description: "No se encontró la factura",
@@ -308,14 +315,9 @@ const Dashboard = () => {
         return;
       }
 
-      toast({
-        title: "Generando PDF...",
-        description: "Por favor espera un momento",
-      });
-
-      const pdf = await generatePdfFromInvoice(invoice);
-      const invoiceNumber = invoice.invoiceNumber || invoice.number || 'factura';
-      const clientName = invoice.clientName || invoice.to?.name || invoice.toAddress?.name || 'cliente';
+      const pdf = await generatePdfFromInvoice(fullInvoice);
+      const invoiceNumber = fullInvoice.invoiceNumber || fullInvoice.number || 'factura';
+      const clientName = fullInvoice.clientName || fullInvoice.to?.name || fullInvoice.toAddress?.name || 'cliente';
       pdf.save(`Factura_${invoiceNumber}_${clientName}.pdf`);
 
       toast({
