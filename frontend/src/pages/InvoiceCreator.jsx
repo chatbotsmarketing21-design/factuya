@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { getTemplateById } from '../mock/invoiceData';
 import { invoiceAPI, profileAPI } from '../services/api';
