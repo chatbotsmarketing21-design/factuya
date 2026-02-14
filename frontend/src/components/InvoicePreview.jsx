@@ -148,7 +148,7 @@ const InvoicePreview = ({ invoice, template }) => {
         </div>
 
         {/* Notes */}
-        {invoice.notes && (
+        {invoice?.notes && (
           <div className="pt-4">
             <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('preview.notes')}</h4>
             <p className="text-sm text-gray-600">{invoice.notes}</p>
@@ -156,7 +156,7 @@ const InvoicePreview = ({ invoice, template }) => {
         )}
 
         {/* Terms */}
-        {invoice.terms && (
+        {invoice?.terms && (
           <div className="pt-2">
             <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('preview.terms')}</h4>
             <p className="text-sm text-gray-600">{invoice.terms}</p>
