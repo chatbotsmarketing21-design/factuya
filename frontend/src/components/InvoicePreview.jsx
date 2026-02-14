@@ -95,11 +95,11 @@ const InvoicePreview = ({ invoice, template }) => {
         <div className="grid grid-cols-2 gap-8 text-sm">
           <div>
             <p className="text-gray-500">{t('preview.invoiceDate')}</p>
-            <p className="font-semibold text-gray-900">{invoice.date}</p>
+            <p className="font-semibold text-gray-900">{invoice?.date || ''}</p>
           </div>
           <div>
             <p className="text-gray-500">{t('preview.dueDate')}</p>
-            <p className="font-semibold text-gray-900">{invoice.dueDate}</p>
+            <p className="font-semibold text-gray-900">{invoice?.dueDate || ''}</p>
           </div>
         </div>
 
@@ -115,12 +115,12 @@ const InvoicePreview = ({ invoice, template }) => {
               </tr>
             </thead>
             <tbody>
-              {invoice.items.map((item, index) => (
+              {items.map((item, index) => (
                 <tr key={index} className="border-b border-gray-200">
-                  <td className="py-3 text-gray-900">{item.description}</td>
-                  <td className="py-3 text-center text-gray-700">{item.quantity}</td>
-                  <td className="py-3 text-right text-gray-700">${formatCurrency(item.rate)}</td>
-                  <td className="py-3 text-right font-semibold text-gray-900">${formatCurrency(item.amount)}</td>
+                  <td className="py-3 text-gray-900">{item?.description || ''}</td>
+                  <td className="py-3 text-center text-gray-700">{item?.quantity || 0}</td>
+                  <td className="py-3 text-right text-gray-700">${formatCurrency(item?.rate)}</td>
+                  <td className="py-3 text-right font-semibold text-gray-900">${formatCurrency(item?.amount)}</td>
                 </tr>
               ))}
             </tbody>
@@ -132,17 +132,17 @@ const InvoicePreview = ({ invoice, template }) => {
           <div className="w-64 space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">{t('preview.subtotal')}:</span>
-              <span className="font-semibold text-gray-900">${formatCurrency(invoice.subtotal)}</span>
+              <span className="font-semibold text-gray-900">${formatCurrency(invoice?.subtotal)}</span>
             </div>
-            {invoice.hasTax && invoice.taxRate > 0 && (
+            {invoice?.hasTax && invoice?.taxRate > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">{invoice.taxName || t('invoice.tax')} ({invoice.taxRate}%):</span>
-                <span className="font-semibold text-gray-900">${formatCurrency(invoice.tax)}</span>
+                <span className="text-gray-600">{invoice?.taxName || t('invoice.tax')} ({invoice?.taxRate}%):</span>
+                <span className="font-semibold text-gray-900">${formatCurrency(invoice?.tax)}</span>
               </div>
             )}
             <div className="flex justify-between text-lg font-bold pt-2 border-t-2" style={{ borderColor: documentColor }}>
               <span>{t('preview.total')}:</span>
-              <span style={{ color: documentColor }}>${formatCurrency(invoice.total)}</span>
+              <span style={{ color: documentColor }}>${formatCurrency(invoice?.total)}</span>
             </div>
           </div>
         </div>
