@@ -260,7 +260,7 @@ const Dashboard = () => {
       setPdfInvoice(invoice);
       setGeneratingPdf(true);
       
-      // Wait for the preview to render
+      // Wait for the preview to render (increased timeout for reliability)
       setTimeout(async () => {
         try {
           if (!pdfPreviewRef.current) {
@@ -291,7 +291,7 @@ const Dashboard = () => {
           setPdfInvoice(null);
           reject(error);
         }
-      }, 500);
+      }, 800);
     });
   };
 
@@ -315,7 +315,7 @@ const Dashboard = () => {
 
       const pdf = await generatePdfFromInvoice(invoice);
       const invoiceNumber = invoice.invoiceNumber || invoice.number || 'factura';
-      const clientName = invoice.to?.name || 'cliente';
+      const clientName = invoice.to?.name || invoice.toAddress?.name || 'cliente';
       pdf.save(`Factura_${invoiceNumber}_${clientName}.pdf`);
 
       toast({
