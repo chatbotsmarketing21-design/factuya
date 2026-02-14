@@ -5,6 +5,11 @@ import { Card } from './ui/card';
 const InvoicePreview = ({ invoice, template }) => {
   const { t } = useTranslation();
 
+  // Safe access to nested properties
+  const from = invoice?.from || invoice?.fromAddress || {};
+  const to = invoice?.to || invoice?.toAddress || {};
+  const items = invoice?.items || [];
+
   // Función para formatear números con punto de miles y coma decimal
   const formatCurrency = (value) => {
     const num = parseFloat(value) || 0;
@@ -12,7 +17,7 @@ const InvoicePreview = ({ invoice, template }) => {
   };
 
   const getDocumentTitle = (type) => {
-    return t(`documentTypes.${type}`, type.toUpperCase());
+    return t(`documentTypes.${type}`, type?.toUpperCase() || 'FACTURA');
   };
 
   const getDocumentColor = (type) => {
@@ -23,10 +28,10 @@ const InvoicePreview = ({ invoice, template }) => {
       bill: '#ea580c',
       receipt: '#0891b2'
     };
-    return colors[type] || template.color;
+    return colors[type] || template?.color || '#2563eb';
   };
 
-  const documentColor = getDocumentColor(invoice.documentType || 'invoice');
+  const documentColor = getDocumentColor(invoice?.documentType || 'invoice');
 
   return (
     <Card className="p-8 bg-white shadow-lg">
