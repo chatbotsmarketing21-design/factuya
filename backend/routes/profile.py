@@ -88,6 +88,36 @@ async def delete_company_logo(user_id: str = Depends(get_current_user_id)):
     
     return {"message": "Logo eliminado correctamente"}
 
+
+class InvoiceDefaultsUpdate(BaseModel):
+    notes: Optional[str] = None
+    terms: Optional[str] = None
+
+@router.put("/invoice-defaults")
+async def update_invoice_defaults(
+    defaults: InvoiceDefaultsUpdate,
+    user_id: str = Depends(get_current_user_id)
+):
+    """Update default notes and terms for invoices"""
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    update_data = {}
+    if defaults.notes is not None:
+        update_data["companyInfo.defaultNotes"] = defaults.notes
+    if defaults.terms is not None:
+        update_data["companyInfo.defaultTerms"] = defaults.terms
+    
+    if update_data:
+        await db.users.update_one(
+            {"id": user_id},
+            {"$set": update_data}
+        )
+    
+    return {"message": "Valores por defecto guardados"}
+
+
 @router.put("")
 async def update_profile(
     profile: ProfileUpdate,
