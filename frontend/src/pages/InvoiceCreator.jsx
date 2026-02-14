@@ -514,10 +514,34 @@ const InvoiceCreator = () => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       
-      const imgWidth = 210; // A4 width in mm
+      const pageWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgWidth = pageWidth;
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      // Check if content fits in one page
+      if (imgHeight <= pageHeight) {
+        // Single page
+        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      } else {
+        // Multiple pages needed
+        let heightLeft = imgHeight;
+        let position = 0;
+        
+        // First page
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        // Additional pages
+        while (heightLeft > 0) {
+          position = -pageHeight + (imgHeight - heightLeft - pageHeight);
+          position = -(imgHeight - heightLeft);
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+      }
+      
       pdf.save(`Factura_${invoice.number}_${invoice.to.name}.pdf`);
 
       toast({
