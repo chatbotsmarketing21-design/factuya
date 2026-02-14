@@ -706,33 +706,40 @@ const Dashboard = () => {
                       <TableCell className="dark:text-gray-300">{invoice.dueDate}</TableCell>
                       <TableCell className="font-semibold dark:text-white">${invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                       <TableCell onClick={(e) => e.stopPropagation()}>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                              <Badge className={getStatusColor(invoice.status) + " cursor-pointer"}>
-                                {invoice.status === 'paid' ? t('status.paid') : 
-                                 invoice.status === 'pending' ? t('status.pending') : 
-                                 t('status.overdue')}
-                              </Badge>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>{t('status.changeStatus')}</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'pending')}>
-                              <Clock className="w-4 h-4 mr-2 text-yellow-600" />
-                              {t('status.pending')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'paid')}>
-                              <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
-                              {t('status.paid')}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'overdue')}>
-                              <XCircle className="w-4 h-4 mr-2 text-red-600" />
-                              {t('status.overdue')}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        {/* Solo mostrar estado para facturas, no para cotizaciones */}
+                        {invoice.number?.startsWith('COT') ? (
+                          <Badge className="bg-gray-100 text-gray-600 hover:bg-gray-200">
+                            Cotización
+                          </Badge>
+                        ) : (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                <Badge className={getStatusColor(invoice.status) + " cursor-pointer"}>
+                                  {invoice.status === 'paid' ? t('status.paid') : 
+                                   invoice.status === 'pending' ? t('status.pending') : 
+                                   t('status.overdue')}
+                                </Badge>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>{t('status.changeStatus')}</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'pending')}>
+                                <Clock className="w-4 h-4 mr-2 text-yellow-600" />
+                                {t('status.pending')}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'paid')}>
+                                <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
+                                {t('status.paid')}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'overdue')}>
+                                <XCircle className="w-4 h-4 mr-2 text-red-600" />
+                                {t('status.overdue')}
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
                       </TableCell>
                       <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-end gap-3">
