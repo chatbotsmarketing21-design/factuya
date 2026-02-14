@@ -148,6 +148,8 @@ const InvoiceCreator = () => {
       setInvoice(prev => ({
         ...prev,
         logo: companyInfo.logo || '',  // Cargar logo guardado
+        notes: companyInfo.defaultNotes || prev.notes,  // Cargar notas guardadas
+        terms: companyInfo.defaultTerms || prev.terms,  // Cargar términos guardados
         from: {
           name: companyInfo.name || '',
           email: companyInfo.email || '',
