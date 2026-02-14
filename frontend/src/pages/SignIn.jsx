@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Card } from '../components/ui/card';
-import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 
@@ -19,9 +20,67 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [processingGoogle, setProcessingGoogle] = useState(false);
+
+  // Process Google OAuth callback
+  useEffect(() => {
+    const processGoogleAuth = async () => {
+      // Check if there's a session_id in the URL hash
+      const hash = location.hash;
+      if (!hash || !hash.includes('session_id=')) return;
+
+      setProcessingGoogle(true);
+      
+      try {
+        const params = new URLSearchParams(hash.substring(1));
+        const sessionId = params.get('session_id');
+
+        if (!sessionId) {
+          throw new Error('No session_id found');
+        }
+
+        // Send session_id to backend
+        const response = await api.post('/auth/google/session', {
+          session_id: sessionId
+        });
+
+        if (response.data.success) {
+          const { user, token } = response.data;
+          
+          // Store token in localStorage
+          localStorage.setItem('token', token);
+          localStorage.setItem('user', JSON.stringify(user));
+          
+          toast({
+            title: "¡Bienvenido!",
+            description: `Hola ${user.name}, has iniciado sesión con Google`,
+          });
+          
+          // Clear the hash and navigate to dashboard
+          window.history.replaceState(null, '', window.location.pathname);
+          navigate('/dashboard', { replace: true });
+        } else {
+          throw new Error('Authentication failed');
+        }
+      } catch (error) {
+        console.error('Google auth error:', error);
+        toast({
+          title: "Error",
+          description: "No se pudo iniciar sesión con Google. Por favor intenta de nuevo.",
+          variant: "destructive"
+        });
+        // Clear the hash
+        window.history.replaceState(null, '', window.location.pathname);
+      } finally {
+        setProcessingGoogle(false);
+      }
+    };
+
+    processGoogleAuth();
+  }, [location.hash, navigate, toast]);
 
   // Show error message from OAuth callback if present
-  React.useEffect(() => {
+  useEffect(() => {
     if (location.state?.error) {
       toast({
         title: "Error",
