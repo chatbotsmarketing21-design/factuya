@@ -315,7 +315,7 @@ const Dashboard = () => {
 
       const pdf = await generatePdfFromInvoice(invoice);
       const invoiceNumber = invoice.invoiceNumber || invoice.number || 'factura';
-      const clientName = invoice.to?.name || invoice.toAddress?.name || 'cliente';
+      const clientName = invoice.clientName || invoice.to?.name || invoice.toAddress?.name || 'cliente';
       pdf.save(`Factura_${invoiceNumber}_${clientName}.pdf`);
 
       toast({
