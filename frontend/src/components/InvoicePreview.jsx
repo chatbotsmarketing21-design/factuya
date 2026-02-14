@@ -30,7 +30,7 @@ const InvoicePreview = ({ invoice, template }) => {
         <div className="border-b pb-6" style={{ borderColor: templateColor }}>
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-4xl font-bold" style={{ color: documentColor }}>
+              <h1 className="text-4xl font-bold" style={{ color: templateColor }}>
                 {getDocumentTitle(invoice?.documentType || 'invoice')}
               </h1>
               <p className="text-gray-600 mt-2">#{invoice?.number || invoice?.invoiceNumber || 'S/N'}</p>
