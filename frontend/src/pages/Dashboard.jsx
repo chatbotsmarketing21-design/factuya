@@ -681,7 +681,7 @@ const Dashboard = () => {
                       <TableCell className="dark:text-gray-300">{invoice.clientName}</TableCell>
                       <TableCell className="dark:text-gray-300">{invoice.date}</TableCell>
                       <TableCell className="dark:text-gray-300">{invoice.dueDate}</TableCell>
-                      <TableCell className="font-semibold dark:text-white">${invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="font-semibold dark:text-white">${Math.round(invoice.total).toLocaleString('es-CO')}</TableCell>
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
