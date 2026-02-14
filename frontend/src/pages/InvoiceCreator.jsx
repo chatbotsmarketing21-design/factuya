@@ -886,7 +886,7 @@ const InvoiceCreator = () => {
                             onChange={(e) => updateItem(index, 'rate', e.target.value)}
                             min="0"
                             step="0.01"
-                            className="dark:bg-secondary dark:border-border dark:text-white"
+                            className="dark:bg-secondary dark:border-border dark:text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           />
                         </div>
                         <div>
