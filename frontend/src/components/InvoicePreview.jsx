@@ -41,12 +41,12 @@ const InvoicePreview = ({ invoice, template }) => {
           <div className="flex justify-between items-start">
             <div>
               <h1 className="text-4xl font-bold" style={{ color: documentColor }}>
-                {getDocumentTitle(invoice.documentType || 'invoice')}
+                {getDocumentTitle(invoice?.documentType || 'invoice')}
               </h1>
-              <p className="text-gray-600 mt-2">#{invoice.number}</p>
+              <p className="text-gray-600 mt-2">#{invoice?.number || invoice?.invoiceNumber || 'S/N'}</p>
             </div>
             <div className="text-right">
-              {invoice.logo ? (
+              {invoice?.logo ? (
                 <img 
                   src={invoice.logo} 
                   alt="Company Logo" 
@@ -66,27 +66,27 @@ const InvoicePreview = ({ invoice, template }) => {
           <div>
             <h3 className="text-sm font-semibold text-gray-500 mb-2">{t('preview.from')}</h3>
             <div className="text-sm">
-              <p className="font-bold text-gray-900">{invoice.from.name}</p>
-              <p className="text-gray-600">{invoice.from.email}</p>
-              <p className="text-gray-600">{invoice.from.phone}</p>
-              <p className="text-gray-600">{invoice.from.address}</p>
+              <p className="font-bold text-gray-900">{from.name || ''}</p>
+              <p className="text-gray-600">{from.email || ''}</p>
+              <p className="text-gray-600">{from.phone || ''}</p>
+              <p className="text-gray-600">{from.address || ''}</p>
               <p className="text-gray-600">
-                {invoice.from.city}{invoice.from.city && invoice.from.state ? ', ' : ''}{invoice.from.state} {invoice.from.zip}
+                {from.city || ''}{from.city && from.state ? ', ' : ''}{from.state || ''} {from.zip || ''}
               </p>
-              <p className="text-gray-600">{invoice.from.country}</p>
+              <p className="text-gray-600">{from.country || ''}</p>
             </div>
           </div>
           <div>
             <h3 className="text-sm font-semibold text-gray-500 mb-2">{t('preview.billTo')}</h3>
             <div className="text-sm">
-              <p className="font-bold text-gray-900">{invoice.to.name}</p>
-              <p className="text-gray-600">{invoice.to.email}</p>
-              <p className="text-gray-600">{invoice.to.phone}</p>
-              <p className="text-gray-600">{invoice.to.address}</p>
+              <p className="font-bold text-gray-900">{to.name || ''}</p>
+              <p className="text-gray-600">{to.email || ''}</p>
+              <p className="text-gray-600">{to.phone || ''}</p>
+              <p className="text-gray-600">{to.address || ''}</p>
               <p className="text-gray-600">
-                {invoice.to.city}{invoice.to.city && invoice.to.state ? ', ' : ''}{invoice.to.state} {invoice.to.zip}
+                {to.city || ''}{to.city && to.state ? ', ' : ''}{to.state || ''} {to.zip || ''}
               </p>
-              <p className="text-gray-600">{invoice.to.country}</p>
+              <p className="text-gray-600">{to.country || ''}</p>
             </div>
           </div>
         </div>
