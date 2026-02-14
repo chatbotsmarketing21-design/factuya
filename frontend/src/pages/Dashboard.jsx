@@ -53,6 +53,9 @@ const Dashboard = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [invoiceToDelete, setInvoiceToDelete] = useState(null);
   const [checkingPayment, setCheckingPayment] = useState(false);
+  const [pdfInvoice, setPdfInvoice] = useState(null);
+  const [generatingPdf, setGeneratingPdf] = useState(false);
+  const pdfPreviewRef = useRef(null);
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('darkMode');
     return saved ? JSON.parse(saved) : false;
