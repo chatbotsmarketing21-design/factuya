@@ -599,20 +599,21 @@ const InvoiceCreator = () => {
           {/* Editor Panel */}
           <div className="space-y-6">
             {/* Invoice Details */}
-            <Card className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Detalles de la Factura</h2>
+            <Card className="p-6 dark:bg-card">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Detalles de la Factura</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="number">Número de Factura</Label>
+                  <Label htmlFor="number" className="dark:text-gray-300">Número de Factura</Label>
                   <Input
                     id="number"
                     value={invoice.number}
                     onChange={(e) => updateInvoice('number', e.target.value)}
                     placeholder="001"
+                    className="dark:bg-secondary dark:border-border dark:text-white"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="date">Fecha de Factura</Label>
+                  <Label htmlFor="date" className="dark:text-gray-300">Fecha de Factura</Label>
                   <Input
                     id="date"
                     type="date"
