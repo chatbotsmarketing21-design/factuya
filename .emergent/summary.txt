@@ -6,87 +6,487 @@
 3.  **Invoicing Features:**
     *   Create, Read, Update, and Delete (CRUD) invoices.
     *   Support multiple document types: Invoice, Proforma Invoice, Quotation, Bill of Collection, Receipt.
-    *   Allow users to upload a company logo to be displayed on invoices.
-    *   Allow changing the status of invoices (e.g., Draft, Pending, Paid, Overdue).
+    *   Company logo saved to the user's profile and automatically applied to all future documents.
+    *   Allow changing the status of invoices (Pending, Paid, Overdue).
     *   Download invoices as PDF.
     *   Share invoices via email.
     *   Automatic, sequential invoice numbering for each document type (e.g., , ).
-4.  **Internationalization:** The application must support multiple languages, starting with Spanish and English.
+4.  **Internationalization:** The application must support multiple languages, starting with Spanish and English. The entire UI should be translatable.
 5.  **Subscription Model:** Implement a payment system with a free trial.
     *   New users get 10 free invoices.
     *   To create more, users must subscribe to a recurring /month plan.
     *   A payment dialog should appear when the free limit is reached, guiding the user to a checkout page.
 6.  **User Account Management:**
     *   A settings panel with options to manage Profile, Subscription, and Change Password.
-    *   A dark/light mode toggle.
+    *   A dark/light mode toggle with a custom gray theme.
+    *   Gender selection in the profile for a personalized welcome message (Bienvenido/a).
     *   A full password recovery flow via email.
+7.  **Authentication:** Support traditional email/password login and Google Social Login.
 
 **User's preferred language**: Español
 
 **what currently exists?**
-A comprehensive full-stack invoicing application named FactuYa! using React, FastAPI, and MongoDB. The core features from the previous session (auth, invoice CRUD, PDF generation, logo upload, i18n) are stable.
+A comprehensive full-stack invoicing application named FactuYa! using React, FastAPI, and MongoDB. The application is highly functional, featuring robust authentication, invoice CRUD, PDF generation, subscription management with Stripe, and extensive account settings.
 
-This session added significant functionality:
--   **Completed Subscription Flow:** The Stripe payment flow is fully implemented and tested. It correctly displays a subscription dialog after 10 free invoices, redirects to Stripe checkout, and activates the user's subscription upon successful payment.
--   **Full Account Management:** A Settings dropdown menu was added to the dashboard, leading to new pages for:
-    -   **Profile:** Users can edit their name and company information.
-    -   **Change Password:** A secure form with a password strength indicator.
-    -   **Subscription Panel:** Shows the user's current plan (Trial or Premium), usage, and management options.
--   **Password Recovery:** A complete Forgot Password flow has been integrated using **Resend** to send recovery emails.
--   **Automatic Invoice Numbering:** Each document type (Invoice, Quotation, etc.) now has its own automatic, sequential numbering (e.g., , ).
--   **UI/UX Enhancements:**
-    -   The tax system was reworked to start at 0% and be added via a modal.
-    -   Dashboard invoice rows are now clickable to open the editor, improving navigation.
-    -   A dark/light mode toggle has been implemented.
-    -   Password visibility toggles are present on login/signup forms.
+This session focused heavily on internationalization (i18n) and UI/UX enhancements. Almost the entire frontend is now translatable. A custom, softer gray dark mode has been implemented and applied consistently across the app. Numerous user-requested features were added, including persistent logo storage, removal of the Draft status, fixing the invoice numbering bug, and adding gender-specific greetings. An initial implementation for Google OAuth login was started but is currently not working correctly and was paused by the user.
 
 **Last working item**:
--   **Last item agent was working**: Implementing internationalization (i18n) for the document type name (e.g., Factura, Invoice) displayed in the  component and the generated PDF. The agent updated the translation files and the component to use the  hook but observed that the text was not translating, always remaining in English.
--   **Status**: IN PROGRESS
--   **Agent Testing Done**: N
--   **Which testing method agent to use?**: frontend testing agent
--   **User Testing Done**: N
+-   **Last item agent was working**: The agent was working on formatting all monetary values (Item Price, Amount, Subtotal, Total) in both the  form and the  component (for the PDF) to use Colombian currency format (e.g., ).
+-   **Status**: COMPLETED
+-   **Agent Testing Done**: Y (Verified via user feedback and internal checks)
+-   **Which testing method agent to use?**: NA
+-   **User Testing Done**: Y
 
 **All Pending/In progress Issue list**:
-*   **Issue 1: Invoice Preview Document Type is Not Translating (P0)**
-    *   **Description**: The title of the document (e.g., INVOICE, QUOTATION) in the  component does not change when the application's language is switched between English and Spanish. It always shows the English version.
-    *   **Attempted fixes**: The agent updated  to use the  hook and added the necessary keys to  and .
+*   **Issue 1: Google OAuth Login Redirects Incorrectly (P0)**
+    *   **Description**: After a user successfully authenticates with Google, they are redirected back to the sign-in page instead of the application's dashboard. This creates a login loop, making Google login unusable. The issue was reported by the user when testing in incognito mode.
+    *   **Attempted fixes**:
+        1.  Created backend routes (, ) to handle the OAuth flow.
+        2.  Created a frontend component () to process the redirect, which was later deprecated in favor of handling the logic directly in .
+        3.  Modified  to detect the  from the URL fragment and exchange it for a token.
+        4.  Added extra logging to the backend.
+        5.  The agent paused work on this issue at the user's request.
     *   **Next debug checklist**:
-        1.  In , add a  and inspect the browser console to see what the translation function is returning.
-        2.  Verify the  instance is correctly initialized and passed down the component tree. Check for any errors in the browser's console related to .
-        3.  Force a hard refresh (Ctrl+Shift+R) or clear the browser cache to rule out any caching issues with the translation files.
-        4.  Ensure the  component is correctly triggering a state update that causes a re-render of the .
-    *   **Why fix this issue and what will be achieved with the fix?**: To provide a fully localized user experience as requested by the user.
+        1.  Verify the redirect URI in the Emergent-managed Google Auth settings matches the frontend URL exactly ().
+        2.  In , add  statements to check if the  is being correctly extracted from  on page load after the redirect.
+        3.  Check the browser's developer console in incognito mode for any errors related to third-party cookies, , or cross-origin policies that might be blocking the flow.
+        4.  Examine the backend logs (==> /var/log/supervisor/backend.err.log <==
+  File "/root/.venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [43] using WatchFiles
+INFO:     Started server process [60]
+INFO:     Waiting for application startup.
+2026-02-11 15:22:13,463 - server - INFO - Invoice Home API started successfully
+2026-02-11 15:22:13,463 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [43] using WatchFiles
+INFO:     Started server process [79]
+INFO:     Waiting for application startup.
+2026-02-11 16:06:53,709 - server - INFO - Invoice Home API started successfully
+2026-02-11 16:06:53,709 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [48] using WatchFiles
+INFO:     Started server process [88]
+INFO:     Waiting for application startup.
+2026-02-11 17:29:20,879 - server - INFO - Invoice Home API started successfully
+2026-02-11 17:29:20,879 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+2026-02-11 17:29:40,072 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/root/.venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [48] using WatchFiles
+INFO:     Started server process [84]
+INFO:     Waiting for application startup.
+2026-02-12 13:05:24,323 - server - INFO - Invoice Home API started successfully
+2026-02-12 13:05:24,323 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+2026-02-12 13:05:39,339 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/root/.venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [43] using WatchFiles
+INFO:     Started server process [80]
+INFO:     Waiting for application startup.
+2026-02-12 20:46:02,760 - server - INFO - Invoice Home API started successfully
+2026-02-12 20:46:02,761 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+2026-02-12 20:59:59,307 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/root/.venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [42] using WatchFiles
+INFO:     Started server process [88]
+INFO:     Waiting for application startup.
+2026-02-14 19:25:28,094 - server - INFO - Invoice Home API started successfully
+2026-02-14 19:25:28,094 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+2026-02-14 19:30:38,598 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/root/.venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [42] using WatchFiles
+INFO:     Started server process [73]
+INFO:     Waiting for application startup.
+2026-02-14 20:38:37,105 - server - INFO - Invoice Home API started successfully
+2026-02-14 20:38:37,106 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'routes/google_auth.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-02-14 20:44:03,432 - server - INFO - MongoDB connection closed
+INFO:     Application shutdown complete.
+INFO:     Finished server process [73]
+INFO:     Started server process [264]
+INFO:     Waiting for application startup.
+2026-02-14 20:44:07,956 - server - INFO - Invoice Home API started successfully
+2026-02-14 20:44:07,956 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-02-14 20:44:25,035 - server - INFO - MongoDB connection closed
+INFO:     Application shutdown complete.
+INFO:     Finished server process [264]
+INFO:     Started server process [323]
+INFO:     Waiting for application startup.
+2026-02-14 20:44:27,545 - server - INFO - Invoice Home API started successfully
+2026-02-14 20:44:27,545 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-02-14 20:44:34,827 - server - INFO - MongoDB connection closed
+INFO:     Application shutdown complete.
+INFO:     Finished server process [323]
+INFO:     Started server process [369]
+INFO:     Waiting for application startup.
+2026-02-14 20:44:38,351 - server - INFO - Invoice Home API started successfully
+2026-02-14 20:44:38,351 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-02-14 20:46:16,828 - server - INFO - MongoDB connection closed
+INFO:     Application shutdown complete.
+INFO:     Finished server process [369]
+INFO:     Stopping reloader process [42]
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [596] using WatchFiles
+INFO:     Started server process [598]
+INFO:     Waiting for application startup.
+2026-02-14 20:46:19,648 - server - INFO - Invoice Home API started successfully
+2026-02-14 20:46:19,648 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+2026-02-14 20:51:18,965 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+2026-02-14 20:52:00,485 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+2026-02-14 20:52:18,187 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+2026-02-14 20:57:42,005 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+2026-02-14 20:57:58,407 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+2026-02-14 21:01:32,483 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+2026-02-14 21:05:32,118 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+2026-02-14 21:05:47,158 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+2026-02-14 21:08:10,126 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+2026-02-14 21:08:22,491 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/root/.venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2026-02-14 21:08:43,759 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+2026-02-14 21:08:54,558 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+2026-02-14 21:09:27,501 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+WARNING:  WatchFiles detected changes in 'routes/google_auth.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-02-14 21:10:44,328 - server - INFO - MongoDB connection closed
+INFO:     Application shutdown complete.
+INFO:     Finished server process [598]
+INFO:     Started server process [1290]
+INFO:     Waiting for application startup.
+2026-02-14 21:10:54,207 - server - INFO - Invoice Home API started successfully
+2026-02-14 21:10:54,207 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+2026-02-14 21:11:06,583 - server - INFO - MongoDB connection closed
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1290]
+INFO:     Stopping reloader process [596]
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [1304] using WatchFiles
+INFO:     Started server process [1306]
+INFO:     Waiting for application startup.
+2026-02-14 21:11:14,730 - server - INFO - Invoice Home API started successfully
+2026-02-14 21:11:14,730 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+2026-02-14 21:15:00,828 - routes.google_auth - INFO - Processing Google session: 7880d69c-d15a-4fc3-8...
+2026-02-14 21:15:01,123 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+2026-02-14 21:15:01,125 - routes.google_auth - INFO - Auth response status: 200
+2026-02-14 21:15:01,126 - routes.google_auth - INFO - Session data received for email: cesar.81.guzman.alzate@gmail.com
+2026-02-14 21:15:01,134 - routes.google_auth - INFO - Existing user found: ce879c10-a923-4051-8634-93f02c914058
+2026-02-14 21:15:01,136 - routes.google_auth - ERROR - Unexpected error: No module named 'utils.security'
+2026-02-14 21:15:15,132 - routes.google_auth - INFO - Processing Google session: ef6c3dab-521c-4070-b...
+2026-02-14 21:15:15,260 - httpx - INFO - HTTP Request: GET https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data "HTTP/1.1 200 OK"
+2026-02-14 21:15:15,261 - routes.google_auth - INFO - Auth response status: 200
+2026-02-14 21:15:15,262 - routes.google_auth - INFO - Session data received for email: chatbotsmarketing21@gmail.com
+2026-02-14 21:15:15,264 - routes.google_auth - INFO - Existing user found: d2b14dc2-667a-438d-9c63-533ce747adc4
+2026-02-14 21:15:15,266 - routes.google_auth - ERROR - Unexpected error: No module named 'utils.security'
+2026-02-14 21:16:01,870 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/root/.venv/lib/python3.11/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [48] using WatchFiles
+INFO:     Started server process [79]
+INFO:     Waiting for application startup.
+2026-02-14 21:32:20,873 - server - INFO - Invoice Home API started successfully
+2026-02-14 21:32:20,873 - server - INFO - Connected to MongoDB: test_database
+INFO:     Application startup complete.
+
+==> /var/log/supervisor/backend.out.log <==
+INFO:     10.64.132.44:33648 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.64.128.22:56064 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.64.130.116:44000 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.64.130.130:51272 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.64.132.72:58380 - "PUT /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.64.132.72:58380 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.64.132.44:36732 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.64.132.72:58380 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.64.132.55:49094 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.64.132.72:39022 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.64.132.72:39022 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.64.128.23:40376 - "PUT /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.64.128.19:44780 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.64.128.9:35580 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.64.128.18:45534 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.64.128.19:44780 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.64.130.130:36812 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.64.130.130:36826 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.64.130.116:33636 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.64.130.134:59806 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.64.130.136:54120 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.64.130.135:40212 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.64.130.116:33636 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.64.130.137:51912 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.64.128.22:43014 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.64.128.23:45936 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.64.130.135:53400 - "PUT /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.64.130.137:32820 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.64.130.135:53400 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.64.130.135:53400 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.64.130.136:55598 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.64.132.55:35400 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 403 Forbidden
+INFO:     10.219.0.115:58398 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.182:48490 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:58398 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.182:48490 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.115:58398 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.182:48490 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.182:59304 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:34556 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:33116 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.182:56476 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:33116 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.115:33116 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.115:33116 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.115:45732 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:45732 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:56486 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.182:55056 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.219.0.182:55056 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.182:55056 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:53102 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:55056 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:53102 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:59612 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:35862 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.182:59612 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:35862 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.182:59612 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.115:35862 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.182:55546 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.182:55546 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:48178 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:48188 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:55546 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:48188 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:48188 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.115:48188 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.182:55546 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:48188 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.115:60566 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.219.0.115:60566 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:60566 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.115:60566 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:60566 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.115:60566 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:60566 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:60566 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:60566 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:60566 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.115:60566 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:60566 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.115:32876 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:32876 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:32876 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:32876 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:32876 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.182:34742 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:32876 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.115:32876 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:32876 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:43084 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:34742 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:43084 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:51220 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.219.0.115:56938 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.219.0.182:49890 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:55536 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:49890 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:55536 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:48408 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.219.0.115:38380 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.219.0.115:46930 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:46930 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.115:46930 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:46930 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.115:46930 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.219.0.115:46930 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.219.0.182:58002 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:57170 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:58002 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.182:58002 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:42742 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:33002 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.182:42742 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.115:33002 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:43612 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.115:43620 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.182:47208 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:43620 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.115:43620 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:43612 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:47208 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:43612 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:36820 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.115:33106 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:33106 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.182:36820 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:43350 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:43334 - "POST /api/auth/google/session HTTP/1.1" 200 OK
+INFO:     10.219.0.182:56712 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.115:43334 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Entity
+INFO:     10.219.0.182:56712 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.182:56728 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:56728 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:43334 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:60612 - "POST /api/auth/google/session HTTP/1.1" 200 OK
+INFO:     10.219.0.115:54946 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Entity
+INFO:     10.219.0.115:55572 - "POST /api/auth/google/session HTTP/1.1" 200 OK
+INFO:     10.219.0.182:46848 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Entity
+INFO:     10.219.0.115:39918 - "POST /api/auth/google/session HTTP/1.1" 200 OK
+INFO:     10.219.0.182:49410 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Entity
+INFO:     10.219.0.182:41530 - "POST /api/auth/google/session HTTP/1.1" 200 OK
+INFO:     10.219.0.182:41530 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Entity
+INFO:     10.219.0.182:40876 - "POST /api/auth/google/session HTTP/1.1" 200 OK
+INFO:     10.219.0.115:51192 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Entity
+INFO:     10.219.0.115:49766 - "POST /api/auth/google/session HTTP/1.1" 200 OK
+INFO:     10.219.0.182:39870 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Entity
+INFO:     10.219.0.182:40142 - "POST /api/auth/google/session HTTP/1.1" 200 OK
+INFO:     10.219.0.182:40142 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Entity
+INFO:     10.219.0.182:44912 - "POST /api/auth/google/session HTTP/1.1" 200 OK
+INFO:     10.219.0.115:46580 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Entity
+INFO:     10.219.0.182:40290 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.219.0.182:40290 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.115:35612 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:35624 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.182:40290 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:40290 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:58060 - "POST /api/auth/google/session HTTP/1.1" 200 OK
+INFO:     10.219.0.182:43958 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Entity
+INFO:     10.219.0.182:49230 - "POST /api/auth/google/session HTTP/1.1" 200 OK
+INFO:     10.219.0.115:37880 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Entity
+INFO:     10.219.0.115:32898 - "POST /api/auth/google/session HTTP/1.1" 200 OK
+INFO:     10.219.0.115:32898 - "POST /api/auth/login HTTP/1.1" 422 Unprocessable Entity
+INFO:     10.219.0.115:38362 - "POST /api/auth/google/session HTTP/1.1" 500 Internal Server Error
+INFO:     10.219.0.182:57266 - "POST /api/auth/google/session HTTP/1.1" 500 Internal Server Error
+INFO:     10.219.0.182:34960 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.219.0.115:45858 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.182:34974 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.182:34960 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:34960 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.115:45858 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:42748 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.182:57424 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.182:57424 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.115:42748 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.1.169:47290 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.1.169:47290 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.182:41096 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.1.169:47290 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.1.169:47290 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.182:41096 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.1.169:49572 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.219.0.115:48186 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.182:49942 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.1.169:49572 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.182:49942 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:48186 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:39506 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.1.169:49574 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.182:39506 - "GET /api/profile/company HTTP/1.1" 200 OK
+INFO:     10.219.0.115:43564 - "GET /api/invoices/next-number/invoice HTTP/1.1" 200 OK
+INFO:     10.219.0.182:33766 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.219.0.115:48230 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.219.0.182:33766 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.1.169:49374 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.182:33766 - "GET /api/invoices/stats HTTP/1.1" 200 OK
+INFO:     10.219.0.115:48230 - "GET /api/invoices HTTP/1.1" 200 OK
+INFO:     10.219.0.115:48230 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK
+INFO:     10.219.0.115:48230 - "GET /api/invoices/bf7870d2-e718-43b2-9974-f67b19933634 HTTP/1.1" 200 OK) immediately after a login attempt to see if the  endpoint is being hit and if it returns user data or an error.
+    *   **Why fix this issue and what will be achieved with the fix?**: It will enable a crucial, user-requested alternative login method.
     *   **Status**: IN PROGRESS
-    *   **Is recurring issue?**: N
-    *   **Should Test frontend/backend/both after fix?**: Frontend
+    *   **Is recurring issue?**: Y
+    *   **Should Test frontend/backend/both after fix?**: Both
+    *   **Blocked on other issue**: None
 
 **In progress Task List**:
 *   None.
 
 **Upcoming and Future Tasks**
 *   **Upcoming Tasks:**
-    *   **P0: Integrate Wompi Payment Gateway:** The user has decided that for real-world use in Colombia, Stripe will be replaced by Wompi. The plan is to complete the application with the Stripe test integration first, and then perform the migration to Wompi once the user has registered their company.
-    *   **P1: Configure Production Emailing:** The current Resend integration is in test mode and can only send emails to a verified address. The user needs to verify their own domain in Resend to enable sending password reset emails to all users.
+    *   **P0: Fix Google OAuth Login:** Resume debugging the Google login flow. The user paused this task but it's a critical bug.
+    *   **P1: Integrate Wompi Payment Gateway:** The user has decided that for real-world use in Colombia, Stripe will be replaced by Wompi. This is planned after the main features are stable.
+    *   **P2: Configure Production Emailing:** The current Resend integration is in test mode. The user needs to verify their domain in Resend to enable password reset emails for all users.
 *   **Future Tasks:**
-    *   **P2: Client and Product Management:** Add dedicated sections to manage recurring clients and pre-defined products/services to accelerate invoice creation.
-    *   **P2: Advanced Reporting:** Build a reports page with charts and analytics for revenue, top clients, and other metrics.
-    *   **P3: Mobile Application:** The user has expressed long-term interest in a mobile app (potentially React Native) that connects to the existing backend.
+    *   **P2: Client and Product Management:** Add dedicated sections to manage recurring clients and pre-defined products/services.
+    *   **P2: Advanced Reporting:** Build a reports page with charts and analytics.
+    *   **P3: Mobile Application:** The user has expressed long-term interest in a mobile app.
 
 **Completed work in this session**
--   Stripe subscription flow (dialog, checkout, activation) (DONE)
--   Bug fix for invoice trial counter desync (DONE)
--   Reworked tax system to be modal-based (DONE)
--   Made dashboard invoice rows clickable and added hover effect (DONE)
--   Implemented a Settings dropdown menu containing Profile, Subscription, and Change Password pages (DONE)
--   Fixed a bug where the header name did not update after a profile change (DONE)
--   Implemented a dark/light mode theme toggle (DONE)
--   Added password visibility toggles to auth forms (DONE)
--   Implemented a full password recovery flow using Resend for emails (DONE)
--   Implemented automatic, sequential, and prefixed invoice numbering for each document type (DONE)
+-   Fixed i18n bug in  component, making the entire preview translatable.
+-   Implemented persistent logo upload; logo is now saved to the user's profile and auto-loads on new invoices.
+-   Removed Draft invoice status and set Pending as the default for new invoices.
+-   Fixed the auto-incrementing invoice number bug for all document types (not just invoices) via a backend model fix and a data migration script.
+-   Implemented a custom, softer gray dark mode theme and applied it consistently across the Dashboard and Invoice Creator pages.
+-   Implemented gender selection in the user profile to display a personalized Bienvenido/a message.
+-   Translated the entire UI including the Dashboard (stats cards, table headers, titles, menus), Profile page, Subscription page, and Change Password page.
+-   Modified Total Revenue on the dashboard to only sum 'Paid' invoices.
+-   Applied Colombian currency formatting () to all monetary values in the Dashboard, Invoice Creator, and PDF Preview.
+-   Changed the color of the Total amount in the invoice creator to a dark apple green () per user request.
+-   Started implementation of Google OAuth login (currently blocked/paused).
 
 **Earlier issues found/mentioned but not fixed**
-*   None.
+*   The Google OAuth login is the only known issue that was worked on but not resolved.
 
 **Known issue recurrence from previous fork**
 *   None.
@@ -95,9 +495,9 @@ This session added significant functionality:
 
 
 **Key Technical Concepts**
-*   **Frontend**: React, React Router, Tailwind CSS, Shadcn UI, Axios, ,  & .
+*   **Frontend**: React, React Router, Tailwind CSS, Shadcn UI, Axios, .
 *   **Backend**: FastAPI, MongoDB (with Motor), JWT, Pydantic.
-*   **Integrations**: Stripe (for test payments), Resend (for transactional emails).
+*   **Integrations**: Stripe (payments), Resend (emails), Emergent-managed Google Auth.
 *   **Architecture**: Full-stack application with a React frontend and a FastAPI backend API.
 
 **key DB schema**
@@ -107,62 +507,63 @@ This session added significant functionality:
 *   **password_reset_tokens**: 
 
 **changes in tech stack**
-*   **Resend** was added for handling transactional emails.
+*    was installed in the backend for making server-to-server HTTP requests for the Google Auth flow.
 
 **All files of reference**
-*   : The component with the translation bug.
-*   : Spanish translation file.
-*   : English translation file.
-*   : The main invoice creation form.
-*   : Handles the password recovery logic.
-*   : Contains the automatic invoice numbering logic.
-*   : User profile page.
-*   : Change password page.
-*   : Subscription management page.
+*   : Contains the Google login button and logic to handle the auth callback.
+*   : New backend route to handle the Google OAuth flow.
+*   : Updated to include  and  in .
+*   : Updated to handle saving  and .
+*   : Updated to fix invoice numbering and stats calculation.
+*   : Heavily modified with translations and dark mode classes.
+*   : Heavily modified with dark mode classes and number formatting.
+*   : Fully translated and updated with a gender selector.
+*   : Fully translated.
+*   : Fully translated.
+*   : Updated to handle global dark mode initialization.
+*   : Updated with custom dark mode theme colors.
+*   , : Extensively updated with new translation keys.
 
 **key api endpoints**
-*   : Get the next sequential number for a document type.
-*   : Request a password reset email.
-*   : Reset password using a token from the email.
-*   : Allows a logged-in user to change their password.
-*   : Updates user's personal information (e.g., name).
-*   : Updates user's company information.
-*   : Creates a Stripe payment link.
+*   : Updates the user's company logo.
+*   : Initiates the Google OAuth login flow.
+*   : Handles the server-side callback after Google auth.
+*   : Retrieves dashboard statistics (revenue now only counts 'paid' invoices).
+*   : Now correctly provides the next number for all document types.
 
 **Critical Info for New Agent**
 *   **Primary Language:** You must communicate with the user in **Español**.
-*   **Payment Gateway Strategy:** The app currently uses a Stripe test integration. The user's final plan is to migrate to **Wompi** for payments in Colombia. Do not remove the Stripe code; the migration will be a future task.
-*   **Email Service:** Password recovery is handled by **Resend**. It is currently in test mode, meaning emails can only be delivered to the verified email address on the user's Resend account (). For production, the user must verify their own domain within Resend.
-*   **Testing Accounts:** Be aware of the two main user accounts for testing:
-    1.  : Has an **active Premium subscription**.
-    2.  : Is in **trial mode** and is the verified email for receiving Resend test emails. Its password was recently reset to .
+*   **Google OAuth is Blocked:** The user requested to pause work on the Google login issue. You should prioritize other tasks unless the user asks to resume work on it. The issue is a redirect loop after successful authentication.
+*   **Dark Mode and Styling:** The application now has a well-defined dark mode theme using shades of gray, not pure black. All new components or pages should adhere to this styling, using the classes defined in  and applied in  and .
+*   **Currency Formatting:** All monetary values should be formatted using the  locale for consistency (e.g., ). The currency symbol itself can remain as a dollar sign for now, but the separators (dot for thousands, comma for decimals) are important.
 
 **documents and test reports created in this job**
-*   
-*   
+*    (Updated)
+*    (Created for Google Auth)
 
 **Last 10 User Messages and any pending HUMAN messages**
-1.  **Request for automatic invoice numbering:** User asked for a system where each document type has its own sequential number (FAC-001, COT-001). (COMPLETED)
-2.  **Request for translated document types:** User wants the document name in the invoice preview (e.g., Factura, Invoice) to be translated based on the selected language. (IN PROGRESS - This is the current bug).
-3.  **Approval of tax system:** User approved the new modal-based tax system.
-4.  **Reported subscription dialog stuck:** User mentioned the subscription dialog was getting stuck on loading. (COMPLETED - Fixed by agent).
-5.  **Confirmation of subscription dialog fix:** User confirmed the subscription dialog now works.
-6.  **Request to remove 'eye' icon:** User asked to make the whole invoice row clickable instead of using a view icon. (COMPLETED)
-7.  **Confirmation of clickable rows:** User confirmed the new dashboard navigation works well.
-8.  **Request for Subscription Panel:** User asked for a page to manage their subscription. (COMPLETED)
-9.  **Request for password visibility toggle:** User wanted a show/hide password button on the login page. (COMPLETED)
-10. **Reported Forgot Password link broken:** User noted the link was not functional, which led to the implementation of the full password recovery flow. (COMPLETED)
+1.  **Request for Number Formatting:** User asked for thousand separators in all monetary fields (price, amount, subtotal, total) in the invoice creator. (COMPLETED)
+2.  **Request for PDF Number Formatting:** User asked for the same thousand separators in the PDF preview. (COMPLETED)
+3.  **Query about Saving Progress:** User asked how to save their work. Agent explained the Save to Github feature. (COMPLETED)
+4.  **Confirmation of Dark Green Color:** User confirmed they liked the  color for the total amount. (COMPLETED)
+5.  **Request for Darker Green:** User asked for a darker green than the initial one. (COMPLETED)
+6.  **Request for Apple Green Total:** User requested the Total amount in the invoice creator be apple green. (COMPLETED)
+7.  **Paused Google Login Debugging:** User explicitly asked to pause work on the Google login issue and focus on UI changes. (COMPLETED)
+8.  **Reported Google Login Failure:** User reported that after authenticating with Google, they are sent back to the homepage instead of the dashboard. (IN PROGRESS)
+9.  **Request for Preview Link:** User asked for the application link to test in incognito mode. (COMPLETED)
+10. **Request for Google Login:** User requested the ability to sign in with a Google account. (IN PROGRESS)
 
 **Project Health Check:**
-*   **Functional:** The application is largely stable and feature-rich. Core workflows like authentication, invoice management, and the full subscription/payment cycle are working.
-*   **Broken:** The internationalization (i18n) for the document type in the invoice preview is not functioning correctly.
+*   **Functional:** The application is highly stable and feature-rich. The vast majority of features, including all recent i18n and UI/UX improvements, are working correctly.
+*   **Broken:** The Google OAuth login flow is non-functional, creating a redirect loop.
 
 **3rd Party Integrations**
-*   **Stripe (Payments):** Integrated for the recurring subscription model. Currently uses a test key. Requires a User API Key for live mode.
-*   **Resend (Transactional Emails):** Integrated for the password recovery flow. Uses a User API Key provided during the session.
+*   **Stripe (Payments):** Integrated for subscriptions. Requires a User API Key for live mode.
+*   **Resend (Transactional Emails):** Integrated for password recovery. Requires a User API Key.
+*   **Emergent-managed Google Auth:** Partially integrated for social login. Uses Emergent LLM Key infrastructure.
 
 **Testing status**
-*   **Testing agent used after significant changes**: YES (for the subscription flow)
+*   **Testing agent used after significant changes**: NO
 *   **Troubleshoot agent used after agent stuck in loop**: NO
 *   **Test files created**: []
 *   **Known regressions**: None
@@ -171,10 +572,10 @@ This session added significant functionality:
 *   **Trial User:**
     -   Email: 
     -   Password: 
-    -   Note: This user is in trial and is the verified recipient for Resend test emails.
+    -   Note: This user is in trial, has gender set to 'female', and is the verified recipient for Resend test emails.
 *   **Premium User:**
     -   Email: 
     -   Note: This user has an active premium subscription. The agent does not know the current password.
 
 **What agent forgot to execute**
-*   The agent has been thorough. The only outstanding item is the fix for the i18n bug they were actively working on when the session ended.</analysis>
+*   The agent correctly followed user instructions, including pausing the work on the Google Login feature as requested. No tasks were forgotten.</analysis>
