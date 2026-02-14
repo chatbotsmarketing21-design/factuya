@@ -619,41 +619,43 @@ const InvoiceCreator = () => {
                     type="date"
                     value={invoice.date}
                     onChange={(e) => updateInvoice('date', e.target.value)}
+                    className="dark:bg-secondary dark:border-border dark:text-white"
                   />
                 </div>
                 <div className="col-span-2">
-                  <Label htmlFor="dueDate">Fecha de Vencimiento</Label>
+                  <Label htmlFor="dueDate" className="dark:text-gray-300">Fecha de Vencimiento</Label>
                   <Input
                     id="dueDate"
                     type="date"
                     value={invoice.dueDate}
                     onChange={(e) => updateInvoice('dueDate', e.target.value)}
+                    className="dark:bg-secondary dark:border-border dark:text-white"
                   />
                 </div>
               </div>
             </Card>
 
             {/* From Section */}
-            <Card className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">De (Tu Empresa)</h2>
+            <Card className="p-6 dark:bg-card">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">De (Tu Empresa)</h2>
               <div className="space-y-4">
                 {/* Logo Upload Section */}
-                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
-                  <Label className="text-base font-semibold mb-3 block">Logo de la Empresa</Label>
+                <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4">
+                  <Label className="text-base font-semibold mb-3 block dark:text-white">Logo de la Empresa</Label>
                   {invoice.logo ? (
                     <div className="flex items-center gap-4">
                       <img 
                         src={invoice.logo} 
                         alt="Logo" 
-                        className="h-20 w-20 object-contain border border-gray-200 rounded"
+                        className="h-20 w-20 object-contain border border-gray-200 dark:border-gray-600 rounded"
                       />
                       <div className="flex-1">
-                        <p className="text-sm text-gray-600 mb-2">Logo cargado exitosamente</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Logo cargado exitosamente</p>
                         <Button 
                           variant="outline" 
                           size="sm" 
                           onClick={removeLogo}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
                           Eliminar Logo
@@ -662,19 +664,20 @@ const InvoiceCreator = () => {
                     </div>
                   ) : (
                     <div>
-                      <p className="text-sm text-gray-600 mb-3">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                         Sube el logo de tu empresa (JPG, PNG - máx 2MB)
                       </p>
                       <input
                         type="file"
                         accept="image/*"
                         onChange={handleLogoUpload}
-                        className="block w-full text-sm text-gray-500
+                        className="block w-full text-sm text-gray-500 dark:text-gray-400
                           file:mr-4 file:py-2 file:px-4
                           file:rounded-lg file:border-0
                           file:text-sm file:font-semibold
                           file:bg-lime-50 file:text-lime-700
-                          hover:file:bg-lime-100
+                          dark:file:bg-lime-900/30 dark:file:text-lime-400
+                          hover:file:bg-lime-100 dark:hover:file:bg-lime-900/50
                           cursor-pointer"
                       />
                     </div>
@@ -682,21 +685,23 @@ const InvoiceCreator = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="fromName">Nombre de la Empresa</Label>
+                  <Label htmlFor="fromName" className="dark:text-gray-300">Nombre de la Empresa</Label>
                   <Input
                     id="fromName"
                     value={invoice.from.name}
                     onChange={(e) => updateFrom('name', e.target.value)}
+                    className="dark:bg-secondary dark:border-border dark:text-white"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="fromEmail">Correo Electrónico</Label>
+                    <Label htmlFor="fromEmail" className="dark:text-gray-300">Correo Electrónico</Label>
                     <Input
                       id="fromEmail"
                       type="email"
                       value={invoice.from.email}
                       onChange={(e) => updateFrom('email', e.target.value)}
+                      className="dark:bg-secondary dark:border-border dark:text-white"
                     />
                   </div>
                   <div>
