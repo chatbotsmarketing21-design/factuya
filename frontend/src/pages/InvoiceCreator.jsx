@@ -705,45 +705,50 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="fromPhone">Teléfono</Label>
+                    <Label htmlFor="fromPhone" className="dark:text-gray-300">Teléfono</Label>
                     <Input
                       id="fromPhone"
                       value={invoice.from.phone}
                       onChange={(e) => updateFrom('phone', e.target.value)}
+                      className="dark:bg-secondary dark:border-border dark:text-white"
                     />
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="fromAddress">Dirección</Label>
+                  <Label htmlFor="fromAddress" className="dark:text-gray-300">Dirección</Label>
                   <Input
                     id="fromAddress"
                     value={invoice.from.address}
                     onChange={(e) => updateFrom('address', e.target.value)}
+                    className="dark:bg-secondary dark:border-border dark:text-white"
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="fromCity">Ciudad</Label>
+                    <Label htmlFor="fromCity" className="dark:text-gray-300">Ciudad</Label>
                     <Input
                       id="fromCity"
                       value={invoice.from.city}
                       onChange={(e) => updateFrom('city', e.target.value)}
+                      className="dark:bg-secondary dark:border-border dark:text-white"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="fromState">Estado/Provincia</Label>
+                    <Label htmlFor="fromState" className="dark:text-gray-300">Estado/Provincia</Label>
                     <Input
                       id="fromState"
                       value={invoice.from.state}
                       onChange={(e) => updateFrom('state', e.target.value)}
+                      className="dark:bg-secondary dark:border-border dark:text-white"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="fromZip">Código Postal</Label>
+                    <Label htmlFor="fromZip" className="dark:text-gray-300">Código Postal</Label>
                     <Input
                       id="fromZip"
                       value={invoice.from.zip}
                       onChange={(e) => updateFrom('zip', e.target.value)}
+                      className="dark:bg-secondary dark:border-border dark:text-white"
                     />
                   </div>
                 </div>
@@ -751,52 +756,57 @@ const InvoiceCreator = () => {
             </Card>
 
             {/* To Section */}
-            <Card className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Para (Cliente)</h2>
+            <Card className="p-6 dark:bg-card">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Para (Cliente)</h2>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="toName">Nombre del Cliente *</Label>
+                  <Label htmlFor="toName" className="dark:text-gray-300">Nombre del Cliente *</Label>
                   <Input
                     id="toName"
                     value={invoice.to.name}
                     onChange={(e) => updateTo('name', e.target.value)}
                     required
+                    className="dark:bg-secondary dark:border-border dark:text-white"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="toEmail">Correo Electrónico</Label>
+                    <Label htmlFor="toEmail" className="dark:text-gray-300">Correo Electrónico</Label>
                     <Input
                       id="toEmail"
                       type="email"
                       value={invoice.to.email}
                       onChange={(e) => updateTo('email', e.target.value)}
+                      className="dark:bg-secondary dark:border-border dark:text-white"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="toPhone">Teléfono</Label>
+                    <Label htmlFor="toPhone" className="dark:text-gray-300">Teléfono</Label>
                     <Input
                       id="toPhone"
                       value={invoice.to.phone}
                       onChange={(e) => updateTo('phone', e.target.value)}
+                      className="dark:bg-secondary dark:border-border dark:text-white"
                     />
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="toAddress">Dirección</Label>
+                  <Label htmlFor="toAddress" className="dark:text-gray-300">Dirección</Label>
                   <Input
                     id="toAddress"
                     value={invoice.to.address}
                     onChange={(e) => updateTo('address', e.target.value)}
+                    className="dark:bg-secondary dark:border-border dark:text-white"
                   />
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label htmlFor="toCity">Ciudad</Label>
+                    <Label htmlFor="toCity" className="dark:text-gray-300">Ciudad</Label>
                     <Input
                       id="toCity"
                       value={invoice.to.city}
                       onChange={(e) => updateTo('city', e.target.value)}
+                      className="dark:bg-secondary dark:border-border dark:text-white"
                     />
                   </div>
                   <div>
