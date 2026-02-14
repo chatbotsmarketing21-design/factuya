@@ -892,7 +892,7 @@ const InvoiceCreator = () => {
                         <div>
                           <Label className="dark:text-gray-300">Monto ($)</Label>
                           <Input
-                            value={item.amount.toFixed(2)}
+                            value={item.amount.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             disabled
                             className="bg-gray-50 dark:bg-muted dark:text-gray-300"
                           />
@@ -907,7 +907,7 @@ const InvoiceCreator = () => {
               <div className="mt-6 space-y-3 border-t dark:border-border pt-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-700 dark:text-gray-300">Subtotal:</span>
-                  <span className="font-semibold text-lg dark:text-white">${invoice.subtotal.toFixed(2)}</span>
+                  <span className="font-semibold text-lg dark:text-white">${invoice.subtotal.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
                 
                 {/* Tax Section */}
@@ -924,7 +924,7 @@ const InvoiceCreator = () => {
                         <Trash2 className="w-3 h-3" />
                       </Button>
                     </div>
-                    <span className="font-semibold text-lg dark:text-white">${invoice.tax.toFixed(2)}</span>
+                    <span className="font-semibold text-lg dark:text-white">${invoice.tax.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 ) : (
                   <div className="flex justify-center">
@@ -942,7 +942,7 @@ const InvoiceCreator = () => {
 
                 <div className="flex justify-between items-center text-xl font-bold border-t dark:border-border pt-3">
                   <span className="dark:text-white">Total:</span>
-                  <span className="text-lime-700 dark:text-lime-400">${invoice.total.toFixed(2)}</span>
+                  <span className="text-lime-700 dark:text-lime-400">${invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
               </div>
             </Card>
