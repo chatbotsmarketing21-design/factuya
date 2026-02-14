@@ -709,7 +709,7 @@ const Dashboard = () => {
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => handleShareWhatsApp(invoice)}>
+                              <DropdownMenuItem onClick={() => handleShareWhatsApp(invoice.id)}>
                                 <MessageCircle className="w-4 h-4 mr-2 text-green-600" />
                                 WhatsApp
                               </DropdownMenuItem>
