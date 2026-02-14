@@ -942,7 +942,7 @@ const InvoiceCreator = () => {
 
                 <div className="flex justify-between items-center text-xl font-bold border-t dark:border-border pt-3">
                   <span className="dark:text-white">Total:</span>
-                  <span className="text-blue-600 dark:text-blue-400">${invoice.total.toFixed(2)}</span>
+                  <span className="text-lime-600 dark:text-lime-400">${invoice.total.toFixed(2)}</span>
                 </div>
               </div>
             </Card>
