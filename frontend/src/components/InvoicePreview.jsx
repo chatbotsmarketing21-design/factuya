@@ -130,9 +130,9 @@ const InvoicePreview = ({ invoice, template }) => {
                 <span className="font-semibold text-gray-900">${formatCurrency(invoice?.tax)}</span>
               </div>
             )}
-            <div className="flex justify-between text-lg font-bold pt-2 border-t-2" style={{ borderColor: documentColor }}>
+            <div className="flex justify-between text-lg font-bold pt-2 border-t-2" style={{ borderColor: templateColor }}>
               <span>{t('preview.total')}:</span>
-              <span style={{ color: documentColor }}>${formatCurrency(invoice?.total)}</span>
+              <span style={{ color: templateColor }}>${formatCurrency(invoice?.total)}</span>
             </div>
           </div>
         </div>
