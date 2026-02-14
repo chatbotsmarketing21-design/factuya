@@ -524,21 +524,22 @@ const InvoiceCreator = () => {
         // Single page
         pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
       } else {
-        // Multiple pages needed
-        let heightLeft = imgHeight;
-        let position = 0;
+        // Multiple pages needed - split the image vertically
+        let yPosition = 0;
+        let remainingHeight = imgHeight;
+        let pageNumber = 0;
         
-        // First page
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-        
-        // Additional pages
-        while (heightLeft > 0) {
-          position = -pageHeight + (imgHeight - heightLeft - pageHeight);
-          position = -(imgHeight - heightLeft);
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
+        while (remainingHeight > 0) {
+          if (pageNumber > 0) {
+            pdf.addPage();
+          }
+          
+          // Calculate the position to show the correct portion of the image
+          const yOffset = -(pageNumber * pageHeight);
+          pdf.addImage(imgData, 'PNG', 0, yOffset, imgWidth, imgHeight);
+          
+          remainingHeight -= pageHeight;
+          pageNumber++;
         }
       }
       
