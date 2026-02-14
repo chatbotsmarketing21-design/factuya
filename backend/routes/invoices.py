@@ -1,11 +1,14 @@
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query, UploadFile, File
+from fastapi.responses import FileResponse
 from typing import List, Optional
 from models.invoice import InvoiceCreate, InvoiceUpdate, InvoiceInDB, InvoiceListItem, InvoiceStats
 from utils.auth import get_current_user_id
 from utils.subscription_check import check_can_create_invoice, increment_trial_invoice_count
 import os
+import uuid
+import base64
 from motor.motor_asyncio import AsyncIOMotorClient
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -18,6 +21,10 @@ router = APIRouter(prefix="/invoices", tags=["Invoices"])
 # Database connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
+
+# PDF storage directory
+PDF_STORAGE_DIR = ROOT_DIR / "pdf_storage"
+PDF_STORAGE_DIR.mkdir(exist_ok=True)
 db = client[os.environ['DB_NAME']]
 
 # Document type prefixes
