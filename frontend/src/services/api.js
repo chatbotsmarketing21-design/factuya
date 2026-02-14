@@ -61,6 +61,7 @@ export const profileAPI = {
   updateCompany: (data) => api.put('/profile/company', data),
   updateLogo: (logo) => api.put('/profile/logo', { logo }),
   deleteLogo: () => api.delete('/profile/logo'),
+  updateInvoiceDefaults: (data) => api.put('/profile/invoice-defaults', data),
 };
 
 export default api;
