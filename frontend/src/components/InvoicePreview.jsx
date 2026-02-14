@@ -5,6 +5,12 @@ import { Card } from './ui/card';
 const InvoicePreview = ({ invoice, template }) => {
   const { t } = useTranslation();
 
+  // Función para formatear números con punto de miles y coma decimal
+  const formatCurrency = (value) => {
+    const num = parseFloat(value) || 0;
+    return num.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
   const getDocumentTitle = (type) => {
     return t(`documentTypes.${type}`, type.toUpperCase());
   };
@@ -108,8 +114,8 @@ const InvoicePreview = ({ invoice, template }) => {
                 <tr key={index} className="border-b border-gray-200">
                   <td className="py-3 text-gray-900">{item.description}</td>
                   <td className="py-3 text-center text-gray-700">{item.quantity}</td>
-                  <td className="py-3 text-right text-gray-700">${(parseFloat(item.rate) || 0).toFixed(2)}</td>
-                  <td className="py-3 text-right font-semibold text-gray-900">${(parseFloat(item.amount) || 0).toFixed(2)}</td>
+                  <td className="py-3 text-right text-gray-700">${formatCurrency(item.rate)}</td>
+                  <td className="py-3 text-right font-semibold text-gray-900">${formatCurrency(item.amount)}</td>
                 </tr>
               ))}
             </tbody>
@@ -121,17 +127,17 @@ const InvoicePreview = ({ invoice, template }) => {
           <div className="w-64 space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">{t('preview.subtotal')}:</span>
-              <span className="font-semibold text-gray-900">${(parseFloat(invoice.subtotal) || 0).toFixed(2)}</span>
+              <span className="font-semibold text-gray-900">${formatCurrency(invoice.subtotal)}</span>
             </div>
             {invoice.hasTax && invoice.taxRate > 0 && (
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">{invoice.taxName || t('invoice.tax')} ({invoice.taxRate}%):</span>
-                <span className="font-semibold text-gray-900">${(parseFloat(invoice.tax) || 0).toFixed(2)}</span>
+                <span className="font-semibold text-gray-900">${formatCurrency(invoice.tax)}</span>
               </div>
             )}
             <div className="flex justify-between text-lg font-bold pt-2 border-t-2" style={{ borderColor: documentColor }}>
               <span>{t('preview.total')}:</span>
-              <span style={{ color: documentColor }}>${(parseFloat(invoice.total) || 0).toFixed(2)}</span>
+              <span style={{ color: documentColor }}>${formatCurrency(invoice.total)}</span>
             </div>
           </div>
         </div>
