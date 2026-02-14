@@ -871,10 +871,13 @@ const InvoiceCreator = () => {
                         <div>
                           <Label className="dark:text-gray-300">Cantidad</Label>
                           <Input
-                            type="number"
-                            value={item.quantity}
-                            onChange={(e) => updateItem(index, 'quantity', e.target.value)}
-                            min="0"
+                            type="text"
+                            value={item.quantity ? Number(item.quantity).toLocaleString('es-CO') : ''}
+                            onChange={(e) => {
+                              const rawValue = e.target.value.replace(/\./g, '').replace(/,/g, '.');
+                              const numValue = parseFloat(rawValue) || 0;
+                              updateItem(index, 'quantity', numValue);
+                            }}
                             className="dark:bg-secondary dark:border-border dark:text-white"
                           />
                         </div>
