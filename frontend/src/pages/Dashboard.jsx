@@ -277,6 +277,45 @@ const Dashboard = () => {
     });
   };
 
+  const handleShareWhatsApp = (invoice) => {
+    const clientName = invoice.to?.name || 'Cliente';
+    const invoiceNumber = invoice.invoiceNumber || invoice.number || 'S/N';
+    const total = invoice.total?.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0,00';
+    const phone = invoice.to?.phone?.replace(/\D/g, '') || '';
+    
+    const message = `Hola ${clientName}, le comparto su factura N° ${invoiceNumber} por un total de $${total}. ¡Gracias por su preferencia! - FactuYa!`;
+    const encodedMessage = encodeURIComponent(message);
+    
+    const whatsappUrl = phone 
+      ? `https://wa.me/${phone}?text=${encodedMessage}`
+      : `https://wa.me/?text=${encodedMessage}`;
+    
+    window.open(whatsappUrl, '_blank');
+    
+    toast({
+      title: "WhatsApp Abierto",
+      description: "Se ha abierto WhatsApp para compartir la factura",
+    });
+  };
+
+  const handleShareEmail = (invoice) => {
+    const clientName = invoice.to?.name || 'Cliente';
+    const clientEmail = invoice.to?.email || '';
+    const invoiceNumber = invoice.invoiceNumber || invoice.number || 'S/N';
+    const total = invoice.total?.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0,00';
+    
+    const subject = encodeURIComponent(`Factura N° ${invoiceNumber} - FactuYa!`);
+    const body = encodeURIComponent(`Hola ${clientName},\n\nLe comparto su factura N° ${invoiceNumber} por un total de $${total}.\n\n¡Gracias por su preferencia!\n\nAtentamente,\nFactuYa!`);
+    
+    const mailtoUrl = `mailto:${clientEmail}?subject=${subject}&body=${body}`;
+    window.location.href = mailtoUrl;
+    
+    toast({
+      title: "Correo Abierto",
+      description: "Se ha abierto su cliente de correo para enviar la factura",
+    });
+  };
+
   const handleLogout = () => {
     logout();
     window.location.href = '/';
