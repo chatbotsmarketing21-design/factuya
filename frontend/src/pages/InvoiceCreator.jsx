@@ -166,6 +166,45 @@ const InvoiceCreator = () => {
     }
   };
 
+  // Auto-save notes and terms with debounce
+  const saveTimeoutRef = useRef(null);
+  
+  const autoSaveDefaults = useCallback(async (notes, terms) => {
+    try {
+      await profileAPI.updateInvoiceDefaults({ notes, terms });
+    } catch (error) {
+      console.error('Error auto-saving defaults:', error);
+    }
+  }, []);
+
+  const handleNotesChange = (value) => {
+    updateInvoice('notes', value);
+    
+    // Clear existing timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    
+    // Set new timeout to save after 1 second of inactivity
+    saveTimeoutRef.current = setTimeout(() => {
+      autoSaveDefaults(value, invoice.terms);
+    }, 1000);
+  };
+
+  const handleTermsChange = (value) => {
+    updateInvoice('terms', value);
+    
+    // Clear existing timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+    
+    // Set new timeout to save after 1 second of inactivity
+    saveTimeoutRef.current = setTimeout(() => {
+      autoSaveDefaults(invoice.notes, value);
+    }, 1000);
+  };
+
   const generateInvoiceNumber = async (docType = 'invoice') => {
     try {
       const response = await invoiceAPI.getNextNumber(docType);
