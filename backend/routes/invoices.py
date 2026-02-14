@@ -246,3 +246,61 @@ async def delete_invoice(
     await db.invoices.delete_one({"id": invoice_id})
     
     return {"message": "Invoice deleted successfully"}
+
+
+@router.post("/upload-pdf")
+async def upload_pdf(
+    pdf_data: dict,
+    user_id: str = Depends(get_current_user_id)
+):
+    """Upload a PDF and return a shareable URL"""
+    try:
+        # Get base64 PDF data
+        base64_pdf = pdf_data.get("pdf")
+        invoice_number = pdf_data.get("invoiceNumber", "factura")
+        
+        if not base64_pdf:
+            raise HTTPException(status_code=400, detail="No PDF data provided")
+        
+        # Remove data URL prefix if present
+        if "," in base64_pdf:
+            base64_pdf = base64_pdf.split(",")[1]
+        
+        # Decode base64 to binary
+        pdf_binary = base64.b64decode(base64_pdf)
+        
+        # Generate unique filename
+        unique_id = str(uuid.uuid4())[:8]
+        filename = f"{invoice_number}_{unique_id}.pdf"
+        filepath = PDF_STORAGE_DIR / filename
+        
+        # Save PDF file
+        with open(filepath, "wb") as f:
+            f.write(pdf_binary)
+        
+        # Store metadata in database for cleanup later
+        await db.pdf_files.insert_one({
+            "userId": user_id,
+            "filename": filename,
+            "createdAt": datetime.utcnow(),
+            "expiresAt": datetime.utcnow() + timedelta(days=7)  # Expires in 7 days
+        })
+        
+        return {"filename": filename}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error uploading PDF: {str(e)}")
+
+@router.get("/pdf/{filename}")
+async def get_pdf(filename: str):
+    """Get a PDF file for sharing"""
+    filepath = PDF_STORAGE_DIR / filename
+    
+    if not filepath.exists():
+        raise HTTPException(status_code=404, detail="PDF not found")
+    
+    return FileResponse(
+        path=filepath,
+        media_type="application/pdf",
+        filename=filename
+    )
