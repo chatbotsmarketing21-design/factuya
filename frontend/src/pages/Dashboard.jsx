@@ -545,14 +545,6 @@ const Dashboard = () => {
                           <Button 
                             variant="ghost" 
                             size="sm" 
-                            title="Editar"
-                            onClick={() => handleEdit(invoice.id)}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
                             title="Descargar PDF"
                             onClick={() => handleDownloadPDF(invoice.id)}
                           >
