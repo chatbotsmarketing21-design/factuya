@@ -514,9 +514,9 @@ const InvoiceCreator = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-100 dark:bg-background">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <header className="bg-white dark:bg-card border-b border-gray-200 dark:border-border sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -527,7 +527,7 @@ const InvoiceCreator = () => {
                 </Button>
               </Link>
               <div className="flex items-center">
-                <span className="text-xl font-bold text-gray-900">Factu</span>
+                <span className="text-xl font-bold text-gray-900 dark:text-white">Factu</span>
                 <span className="text-xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
               </div>
               
