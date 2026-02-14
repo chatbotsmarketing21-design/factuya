@@ -10,10 +10,10 @@ const InvoicePreview = ({ invoice, template }) => {
   const to = invoice?.to || invoice?.toAddress || {};
   const items = invoice?.items || [];
 
-  // Función para formatear números con punto de miles sin decimales
+  // Función para formatear números con punto de miles y coma decimal
   const formatCurrency = (value) => {
-    const num = Math.round(parseFloat(value) || 0);
-    return num.toLocaleString('es-CO');
+    const num = parseFloat(value) || 0;
+    return num.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
   const getDocumentTitle = (type) => {
