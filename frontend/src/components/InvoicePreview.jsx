@@ -20,24 +20,14 @@ const InvoicePreview = ({ invoice, template }) => {
     return t(`documentTypes.${type}`, type?.toUpperCase() || 'FACTURA');
   };
 
-  const getDocumentColor = (type) => {
-    const colors = {
-      invoice: '#2563eb',
-      proforma: '#7c3aed',
-      quotation: '#059669',
-      bill: '#ea580c',
-      receipt: '#0891b2'
-    };
-    return colors[type] || template?.color || '#2563eb';
-  };
-
-  const documentColor = getDocumentColor(invoice?.documentType || 'invoice');
+  // Usar el color de la plantilla seleccionada
+  const templateColor = template?.color || '#2563eb';
 
   return (
     <Card className="p-8 bg-white shadow-lg">
       <div className="space-y-6">
         {/* Header */}
-        <div className="border-b pb-6" style={{ borderColor: documentColor }}>
+        <div className="border-b pb-6" style={{ borderColor: templateColor }}>
           <div className="flex justify-between items-start">
             <div>
               <h1 className="text-4xl font-bold" style={{ color: documentColor }}>
