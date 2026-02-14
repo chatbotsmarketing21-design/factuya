@@ -13,6 +13,8 @@ class CompanyInfo(BaseModel):
     zip: Optional[str] = None
     country: Optional[str] = None
     logo: Optional[str] = None  # Base64 encoded logo
+    defaultNotes: Optional[str] = None  # Default notes for invoices
+    defaultTerms: Optional[str] = None  # Default terms for invoices
 
 class UserCreate(BaseModel):
     email: EmailStr
