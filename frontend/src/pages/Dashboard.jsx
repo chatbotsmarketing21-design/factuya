@@ -707,11 +707,7 @@ const Dashboard = () => {
                       <TableCell className="font-semibold dark:text-white">${invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         {/* Solo mostrar estado para facturas, no para cotizaciones */}
-                        {invoice.number?.startsWith('COT') ? (
-                          <Badge className="bg-gray-100 text-gray-600 hover:bg-gray-200">
-                            Cotización
-                          </Badge>
-                        ) : (
+                        {!invoice.number?.startsWith('COT') && (
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
