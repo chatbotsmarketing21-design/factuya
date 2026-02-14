@@ -579,7 +579,10 @@ const Dashboard = () => {
                 </div>
               </div>
             </Card>
-            <Card className="p-6 dark:bg-card">
+            <Card 
+              className="p-6 dark:bg-card cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => setStatusFilter(null)}
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalInvoices')}</p>
@@ -590,7 +593,10 @@ const Dashboard = () => {
                 </div>
               </div>
             </Card>
-            <Card className="p-6 dark:bg-card">
+            <Card 
+              className={`p-6 dark:bg-card cursor-pointer hover:shadow-lg transition-all ${statusFilter === 'paid' ? 'ring-2 ring-green-500 shadow-lg' : ''}`}
+              onClick={() => handleStatusFilterClick('paid')}
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">{t('dashboard.paid')}</p>
@@ -601,7 +607,10 @@ const Dashboard = () => {
                 </div>
               </div>
             </Card>
-            <Card className="p-6 dark:bg-card">
+            <Card 
+              className={`p-6 dark:bg-card cursor-pointer hover:shadow-lg transition-all ${statusFilter === 'pending' ? 'ring-2 ring-yellow-500 shadow-lg' : ''}`}
+              onClick={() => handleStatusFilterClick('pending')}
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">{t('dashboard.pending')}</p>
