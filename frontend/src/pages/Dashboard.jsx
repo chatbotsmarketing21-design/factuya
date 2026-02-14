@@ -379,7 +379,7 @@ const Dashboard = () => {
       
       // Prepare WhatsApp message with PDF link
       const clientName = invoice.clientName || invoice.to?.name || invoice.toAddress?.name || 'Cliente';
-      const total = invoice.total?.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0,00';
+      const total = Math.round(invoice.total || 0).toLocaleString('es-CO');
       const phone = invoice.to?.phone || invoice.toAddress?.phone || '';
       const cleanPhone = phone.replace(/\D/g, '');
       
