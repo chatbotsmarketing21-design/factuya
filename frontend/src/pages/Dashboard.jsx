@@ -444,11 +444,26 @@ const Dashboard = () => {
     }
   };
 
-  const filteredInvoices = invoices.filter(
-    (invoice) =>
+  // Handle status filter click
+  const handleStatusFilterClick = (status) => {
+    if (statusFilter === status) {
+      setStatusFilter(null); // Clear filter if clicking the same one
+    } else {
+      setStatusFilter(status);
+    }
+  };
+
+  const filteredInvoices = invoices.filter((invoice) => {
+    // First apply search filter
+    const matchesSearch = 
       invoice.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      invoice.number.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      invoice.number.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Then apply status filter
+    const matchesStatus = statusFilter ? invoice.status === statusFilter : true;
+    
+    return matchesSearch && matchesStatus;
+  });
 
   if (loading) {
     return (
