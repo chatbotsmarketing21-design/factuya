@@ -996,14 +996,15 @@ const InvoiceCreator = () => {
             {/* Notes and Terms */}
             <Card className="p-6 dark:bg-card">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Información Adicional</h2>
+              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Los cambios se guardan automáticamente</p>
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="notes" className="dark:text-gray-300">Notas</Label>
                   <Textarea
                     id="notes"
                     value={invoice.notes}
-                    onChange={(e) => updateInvoice('notes', e.target.value)}
-                    placeholder="Thank you for your business!"
+                    onChange={(e) => handleNotesChange(e.target.value)}
+                    placeholder="¡Gracias por su preferencia!"
                     rows={3}
                     className="dark:bg-secondary dark:border-border dark:text-white"
                   />
@@ -1013,8 +1014,8 @@ const InvoiceCreator = () => {
                   <Textarea
                     id="terms"
                     value={invoice.terms}
-                    onChange={(e) => updateInvoice('terms', e.target.value)}
-                    placeholder="Payment terms and conditions"
+                    onChange={(e) => handleTermsChange(e.target.value)}
+                    placeholder="Pago a 30 días"
                     rows={3}
                     className="dark:bg-secondary dark:border-border dark:text-white"
                   />
