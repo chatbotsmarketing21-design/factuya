@@ -350,12 +350,16 @@ const Dashboard = () => {
     });
   };
 
-  const handleShareWhatsApp = async (invoice) => {
+  const handleShareWhatsApp = async (invoiceId) => {
     try {
       toast({
         title: "Preparando PDF...",
         description: "Generando factura para compartir",
       });
+
+      // Load full invoice data
+      const response = await invoiceAPI.getById(invoiceId);
+      const invoice = response.data;
 
       // Generate PDF
       const pdf = await generatePdfFromInvoice(invoice);
@@ -363,25 +367,26 @@ const Dashboard = () => {
       
       // Upload PDF to server
       const invoiceNumber = invoice.invoiceNumber || invoice.number || 'factura';
-      const response = await invoiceAPI.uploadPdf({
+      const uploadResponse = await invoiceAPI.uploadPdf({
         pdf: pdfBase64,
         invoiceNumber: invoiceNumber
       });
       
       // Get the public URL for the PDF
       const baseUrl = process.env.REACT_APP_BACKEND_URL;
-      const pdfUrl = `${baseUrl}/api/invoices/pdf/${response.data.filename}`;
+      const pdfUrl = `${baseUrl}/api/invoices/pdf/${uploadResponse.data.filename}`;
       
       // Prepare WhatsApp message with PDF link
-      const clientName = invoice.to?.name || 'Cliente';
+      const clientName = invoice.clientName || invoice.to?.name || invoice.toAddress?.name || 'Cliente';
       const total = invoice.total?.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0,00';
-      const phone = invoice.to?.phone?.replace(/\D/g, '') || '';
+      const phone = invoice.to?.phone || invoice.toAddress?.phone || '';
+      const cleanPhone = phone.replace(/\D/g, '');
       
       const message = `Hola ${clientName}, le comparto su factura N° ${invoiceNumber} por un total de $${total}.\n\n📄 Ver/Descargar PDF: ${pdfUrl}\n\n¡Gracias por su preferencia!\n- FactuYa!`;
       const encodedMessage = encodeURIComponent(message);
       
-      const whatsappUrl = phone 
-        ? `https://wa.me/${phone}?text=${encodedMessage}`
+      const whatsappUrl = cleanPhone 
+        ? `https://wa.me/${cleanPhone}?text=${encodedMessage}`
         : `https://wa.me/?text=${encodedMessage}`;
       
       window.open(whatsappUrl, '_blank');
