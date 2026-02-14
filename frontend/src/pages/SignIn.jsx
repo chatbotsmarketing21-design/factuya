@@ -120,6 +120,21 @@ const SignIn = () => {
     window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
   };
 
+  // Show loading screen while processing Google auth
+  if (processingGoogle) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-background">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 animate-spin text-lime-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Iniciando sesión con Google...
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">Por favor espera un momento</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-background flex flex-col">
       {/* Header */}
