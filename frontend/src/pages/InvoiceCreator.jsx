@@ -875,7 +875,7 @@ const InvoiceCreator = () => {
                             value={item.quantity}
                             onChange={(e) => updateItem(index, 'quantity', e.target.value)}
                             min="0"
-                            className="dark:bg-secondary dark:border-border dark:text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            className="dark:bg-secondary dark:border-border dark:text-white"
                           />
                         </div>
                         <div>
@@ -885,14 +885,14 @@ const InvoiceCreator = () => {
                             value={item.rate}
                             onChange={(e) => updateItem(index, 'rate', e.target.value)}
                             min="0"
-                            step="1"
+                            step="0.01"
                             className="dark:bg-secondary dark:border-border dark:text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                           />
                         </div>
                         <div>
                           <Label className="dark:text-gray-300">Monto ($)</Label>
                           <Input
-                            value={`$${Math.round(item.amount).toLocaleString('es-CO')}`}
+                            value={item.amount.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             disabled
                             className="bg-gray-50 dark:bg-muted dark:text-gray-300"
                           />
