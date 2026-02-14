@@ -810,19 +810,21 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="toState">Estado/Provincia</Label>
+                    <Label htmlFor="toState" className="dark:text-gray-300">Estado/Provincia</Label>
                     <Input
                       id="toState"
                       value={invoice.to.state}
                       onChange={(e) => updateTo('state', e.target.value)}
+                      className="dark:bg-secondary dark:border-border dark:text-white"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="toZip">Código Postal</Label>
+                    <Label htmlFor="toZip" className="dark:text-gray-300">Código Postal</Label>
                     <Input
                       id="toZip"
                       value={invoice.to.zip}
                       onChange={(e) => updateTo('zip', e.target.value)}
+                      className="dark:bg-secondary dark:border-border dark:text-white"
                     />
                   </div>
                 </div>
@@ -830,9 +832,9 @@ const InvoiceCreator = () => {
             </Card>
 
             {/* Items Section */}
-            <Card className="p-6">
+            <Card className="p-6 dark:bg-card">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Items / Servicios</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Items / Servicios</h2>
                 <Button onClick={addItem} size="sm">
                   <Plus className="w-4 h-4 mr-2" />
                   Agregar Item
@@ -840,15 +842,15 @@ const InvoiceCreator = () => {
               </div>
               <div className="space-y-4">
                 {invoice.items.map((item, index) => (
-                  <div key={index} className="border border-gray-200 rounded-lg p-4">
+                  <div key={index} className="border border-gray-200 dark:border-border rounded-lg p-4">
                     <div className="flex justify-between items-start mb-3">
-                      <span className="text-sm font-medium text-gray-500">Item {index + 1}</span>
+                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Item {index + 1}</span>
                       {invoice.items.length > 1 && (
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => removeItem(index)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -856,40 +858,43 @@ const InvoiceCreator = () => {
                     </div>
                     <div className="space-y-3">
                       <div>
-                        <Label>Descripción *</Label>
+                        <Label className="dark:text-gray-300">Descripción *</Label>
                         <Input
                           value={item.description}
                           onChange={(e) => updateItem(index, 'description', e.target.value)}
                           placeholder="Service or product description"
                           required
+                          className="dark:bg-secondary dark:border-border dark:text-white"
                         />
                       </div>
                       <div className="grid grid-cols-3 gap-3">
                         <div>
-                          <Label>Cantidad</Label>
+                          <Label className="dark:text-gray-300">Cantidad</Label>
                           <Input
                             type="number"
                             value={item.quantity}
                             onChange={(e) => updateItem(index, 'quantity', e.target.value)}
                             min="0"
+                            className="dark:bg-secondary dark:border-border dark:text-white"
                           />
                         </div>
                         <div>
-                          <Label>Precio ($)</Label>
+                          <Label className="dark:text-gray-300">Precio ($)</Label>
                           <Input
                             type="number"
                             value={item.rate}
                             onChange={(e) => updateItem(index, 'rate', e.target.value)}
                             min="0"
                             step="0.01"
+                            className="dark:bg-secondary dark:border-border dark:text-white"
                           />
                         </div>
                         <div>
-                          <Label>Monto ($)</Label>
+                          <Label className="dark:text-gray-300">Monto ($)</Label>
                           <Input
                             value={item.amount.toFixed(2)}
                             disabled
-                            className="bg-gray-50"
+                            className="bg-gray-50 dark:bg-muted dark:text-gray-300"
                           />
                         </div>
                       </div>
