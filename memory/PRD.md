@@ -21,6 +21,7 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 - [x] User registration with email/password
 - [x] User login with JWT tokens
 - [x] Protected routes
+- [ ] Google OAuth login (in progress - redirect loop issue)
 
 ### Invoice Management
 - [x] Create invoices with customer details
@@ -29,175 +30,109 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 - [x] View invoice list on dashboard
 - [x] Invoice statistics (total revenue, paid, pending)
 - [x] Multiple document types (Invoice, Proforma, Quote, Bill, Receipt)
-- [x] Company logo upload
-- [x] Invoice status management (Draft, Pending, Paid, Overdue)
+- [x] Company logo upload (persistent in user profile)
+- [x] Invoice status management (Pending, Paid, Overdue) - Draft removed
+- [x] Auto-incrementing invoice numbers per document type
+- [x] Quotations don't show payment status (only invoices/bills do)
 
 ### PDF & Export
 - [x] Download invoice as PDF (using html2canvas + jspdf)
-- [x] Send invoice via email (mailto: link)
+- [x] Multi-page PDF support for long invoices
+- [x] PDF color based on selected template (not document type)
+- [x] Share via WhatsApp with PDF link
+- [x] Share via Email
+
+### Dashboard Features
+- [x] Filter invoices by clicking on "Pagadas" or "Pendientes" cards
+- [x] Colombian currency formatting ($1.234.567,89)
+- [x] Styled action buttons (Descargar PDF, Compartir)
+- [x] Dark mode support with custom gray theme
+
+### Invoice Creator Features
+- [x] Quantity field with thousand separators
+- [x] Price field with thousand separators (no spinner)
+- [x] Auto-save Notes and Terms to user profile
+- [x] Quantity starts at 0 (not 1)
 
 ### Internationalization
 - [x] Spanish language support
 - [x] English language support
 - [x] Language switcher component
+- [x] Full UI translation
 
 ### Subscription Model
 - [x] 10 free invoices for trial users
 - [x] $5/month Premium plan via Stripe
 - [x] Subscription dialog when limit reached
-- [x] Stripe Checkout integration using emergentintegrations
-- [x] Payment return handling with status polling
-- [x] Subscription status endpoint
+- [x] Stripe Checkout integration
+- [x] Payment return handling
 
-## Tech Stack
-- **Frontend**: React, React Router, Tailwind CSS, Shadcn UI
-- **Backend**: FastAPI, Motor (async MongoDB driver)
-- **Database**: MongoDB
-- **Authentication**: JWT
-- **Payments**: Stripe (via emergentintegrations library)
-- **PDF**: html2canvas + jspdf
-- **i18n**: react-i18next
+### User Profile
+- [x] Company information management
+- [x] Logo upload and persistence
+- [x] Gender selection for personalized greeting
+- [x] Default Notes and Terms auto-save
+- [x] Change password functionality
+- [x] Dark/Light mode toggle
 
-## API Endpoints
-### Authentication
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user
-
-### Invoices
-- `GET /api/invoices` - List all invoices
-- `POST /api/invoices` - Create invoice (checks subscription)
-- `GET /api/invoices/{id}` - Get invoice by ID
-- `PUT /api/invoices/{id}` - Update invoice
-- `DELETE /api/invoices/{id}` - Delete invoice
-- `GET /api/invoices/stats` - Get invoice statistics
-
-### Subscription
-- `GET /api/subscription/status` - Get subscription status
-- `POST /api/subscription/create-checkout-session` - Create Stripe checkout
-- `GET /api/subscription/checkout-status/{session_id}` - Get payment status
-- `POST /api/subscription/webhook` - Stripe webhook handler
-- `POST /api/subscription/cancel` - Cancel subscription
+## Technical Architecture
+```
+/app
+├── backend
+│   ├── models/ (user.py, invoice.py, subscription.py)
+│   ├── routes/ (auth.py, invoices.py, profile.py, subscription.py, password_reset.py, google_auth.py)
+│   ├── utils/ (security.py, subscription_check.py)
+│   ├── pdf_storage/ (temporary PDF files for sharing)
+│   ├── .env
+│   ├── requirements.txt
+│   └── server.py
+└── frontend
+    ├── src/
+    │   ├── components/ (InvoicePreview.jsx, ProtectedRoute.jsx, SubscriptionDialog.jsx, etc.)
+    │   ├── context/ (AuthContext.jsx)
+    │   ├── locales/ (en.json, es.json)
+    │   ├── pages/ (Dashboard.jsx, InvoiceCreator.jsx, SignIn.jsx, SignUp.jsx, Profile.jsx, etc.)
+    │   ├── services/ (api.js, subscriptionApi.js)
+    │   └── i18n.js
+    └── package.json
+```
 
 ## Database Schema
-### users
-```json
-{
-  "id": "uuid",
-  "name": "string",
-  "email": "string",
-  "password": "hashed_string",
-  "companyInfo": {
-    "name": "string",
-    "email": "string",
-    "phone": "string",
-    "address": "string",
-    "city": "string",
-    "state": "string",
-    "zip": "string",
-    "country": "string"
-  }
-}
-```
+- **users**: `{id, username, email, hashed_password, name, gender, companyInfo: { logo, defaultNotes, defaultTerms, ... }}`
+- **invoices**: `{id, userId, invoiceData, documentType, status, total, createdAt, invoiceNumber}`
+- **subscriptions**: `{userId, stripe_customer_id, status, trialInvoicesUsed}`
+- **password_reset_tokens**: `{user_id, token, expires_at, used}`
+- **pdf_files**: `{userId, filename, createdAt, expiresAt}` (for WhatsApp sharing)
 
-### invoices
-```json
-{
-  "id": "uuid",
-  "userId": "uuid",
-  "number": "string",
-  "date": "string",
-  "dueDate": "string",
-  "status": "draft|pending|paid|overdue",
-  "documentType": "invoice|proforma|quotation|bill|receipt",
-  "from": { ... },
-  "to": { ... },
-  "items": [ ... ],
-  "subtotal": "number",
-  "taxRate": "number",
-  "tax": "number",
-  "total": "number"
-}
-```
+## 3rd Party Integrations
+- **Stripe**: Payment processing for subscriptions
+- **Resend**: Transactional emails for password recovery
+- **Emergent Google Auth**: Social login (in progress)
 
-### subscriptions
-```json
-{
-  "userId": "uuid",
-  "planId": "trial|premium_monthly",
-  "status": "trialing|active|canceled",
-  "trialInvoicesUsed": "number",
-  "maxTrialInvoices": 10,
-  "currentPeriodEnd": "datetime"
-}
-```
+## Pending Issues
+1. **Google OAuth Login (P0)**: Redirect loop after authentication - paused by user
 
-### payment_transactions
-```json
-{
-  "userId": "uuid",
-  "sessionId": "stripe_session_id",
-  "amount": "number",
-  "currency": "usd",
-  "status": "pending|complete",
-  "paymentStatus": "initiated|paid"
-}
-```
+## Upcoming Tasks
+1. **P1**: Integrate Wompi payment gateway (replacement for Stripe in Colombia)
+2. **P2**: Configure production emailing in Resend
+3. **P2**: Client and Product management sections
+4. **P2**: Advanced reporting with charts
 
-## Completed Features (as of Feb 2026)
-1. ✅ Full authentication flow (register/login)
-2. ✅ Invoice CRUD operations
-3. ✅ 6 invoice templates
-4. ✅ PDF download functionality
-5. ✅ Company logo upload
-6. ✅ Invoice status management
-7. ✅ Multi-language support (ES/EN) with full i18n
-8. ✅ Delete confirmation dialog (using AlertDialog)
-9. ✅ Stripe subscription integration
-10. ✅ Subscription dialog with payment redirect
-11. ✅ Payment status polling on return from Stripe
-12. ✅ Auto-create trial subscription for new users
-13. ✅ Settings panel (Profile, Subscription, Change Password)
-14. ✅ Dark/Light mode toggle
-15. ✅ Password recovery flow via Resend
-16. ✅ Automatic sequential invoice numbering per document type
-17. ✅ Modal-based tax system (IVA, etc.)
-18. ✅ Clickable dashboard invoice rows
-19. ✅ Document type translation in InvoicePreview (FACTURA/INVOICE, etc.)
-20. ✅ **Persistent company logo** - Logo saved in user profile and auto-loaded in new invoices
-
-## Backlog / Future Tasks
-### P0 (Critical - User Requested)
-- [ ] Integrate Wompi payment gateway (replace Stripe for Colombia)
-- [ ] Configure production emailing (verify domain in Resend)
-
-### P1 (High Priority)
-- [ ] Real email integration for invoice sending
-
-### P2 (Medium Priority)
-- [ ] Client management module
-- [ ] Product/service catalog
-- [ ] Advanced reporting with charts
-- [ ] Invoice reminders
-
-### P3 (Low Priority)
-- [ ] Mobile app (React Native)
-- [ ] Multiple currencies
-- [ ] Tax presets by country
-- [ ] Invoice templates customization
-
-## Known Issues
-- None at this time
+## Session Completed: February 14, 2026
+### Changes Made This Session:
+- Removed spinner from Price field in invoice creator
+- Changed "Enviar Email" button to "Compartir" with WhatsApp and Email options
+- Implemented WhatsApp sharing with PDF link (uploads PDF to server)
+- Fixed PDF download from Dashboard (was not generating real PDF)
+- Made InvoicePreview component more robust for API data
+- Added filter functionality to dashboard stats cards (Pagadas/Pendientes)
+- Implemented multi-page PDF generation for long invoices
+- Quotations now show no status badge (only invoices show Pending/Paid/Overdue)
+- PDF color now based on template selection, not document type
+- Auto-save Notes and Terms to user profile
+- Quantity field now starts at 0
+- Quantity and Price fields now show thousand separators
 
 ## Test Credentials
-- Use any email/password combination to create a test account
-
-## Environment Variables
-### Backend (.env)
-- `MONGO_URL` - MongoDB connection string
-- `DB_NAME` - Database name
-- `JWT_SECRET` - JWT signing secret
-- `STRIPE_API_KEY` - Stripe test key (sk_test_emergent)
-
-### Frontend (.env)
-- `REACT_APP_BACKEND_URL` - Backend API URL
+- **Trial User**: chatbotsmarketing21@gmail.com / Test123!
+- **Premium User**: tecnogramasmedellin@gmail.com
