@@ -621,7 +621,8 @@ const InvoiceCreator = () => {
                 <span className="text-xl font-bold text-gray-900 dark:text-white">Factu</span>
                 <span className="text-xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
               </div>
-              
+            </div>
+            <div className="flex items-center gap-3">
               {/* Selector de Tipo de Documento */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -635,7 +636,7 @@ const InvoiceCreator = () => {
                     {getDocumentInfo(invoice.documentType).name}
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="start">
+                <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Tipo de Documento</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => changeDocumentType('invoice')}>
@@ -660,8 +661,6 @@ const InvoiceCreator = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </div>
-            <div className="flex items-center gap-3">
               <Link to="/templates">
                 <Button variant="outline" size="sm">
                   Cambiar Plantilla
