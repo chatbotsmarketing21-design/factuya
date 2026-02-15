@@ -145,6 +145,13 @@ const InvoiceCreator = () => {
     try {
       const response = await profileAPI.getCompany();
       const companyInfo = response.data;
+      
+      // Cargar plantilla guardada
+      if (companyInfo.defaultTemplate) {
+        setSelectedTemplate(companyInfo.defaultTemplate);
+        setInvoice(prev => ({ ...prev, template: companyInfo.defaultTemplate }));
+      }
+      
       setInvoice(prev => ({
         ...prev,
         logo: companyInfo.logo || '',  // Cargar logo guardado
@@ -166,12 +173,12 @@ const InvoiceCreator = () => {
     }
   };
 
-  // Auto-save notes and terms with debounce
+  // Auto-save notes, terms and template with debounce
   const saveTimeoutRef = useRef(null);
   
-  const autoSaveDefaults = useCallback(async (notes, terms) => {
+  const autoSaveDefaults = useCallback(async (notes, terms, template) => {
     try {
-      await profileAPI.updateInvoiceDefaults({ notes, terms });
+      await profileAPI.updateInvoiceDefaults({ notes, terms, template });
     } catch (error) {
       console.error('Error auto-saving defaults:', error);
     }
