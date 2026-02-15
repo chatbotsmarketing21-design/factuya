@@ -26,17 +26,18 @@ const InvoicePreview = ({ invoice, template }) => {
 
   return (
     <Card className="p-8 bg-white shadow-lg relative overflow-hidden">
-      {/* Sello de PAGADO */}
+      {/* Sello de PAGADO - Circular */}
       {isPaid && (
         <div 
-          className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          style={{ zIndex: 10 }}
+          className="absolute right-8 pointer-events-none"
+          style={{ zIndex: 10, top: '45%' }}
         >
           <div 
-            className="border-8 border-green-500 text-green-500 font-bold text-6xl px-8 py-4 rounded-lg opacity-40"
+            className="border-8 border-green-500 text-green-500 font-bold text-3xl rounded-full opacity-50 flex items-center justify-center"
             style={{ 
-              transform: 'rotate(-25deg)',
-              textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+              width: '150px',
+              height: '150px',
+              transform: 'rotate(-15deg)',
             }}
           >
             PAGADO
