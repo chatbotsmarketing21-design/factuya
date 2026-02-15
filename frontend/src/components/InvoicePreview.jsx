@@ -9,6 +9,7 @@ const InvoicePreview = ({ invoice, template }) => {
   const from = invoice?.from || invoice?.fromAddress || {};
   const to = invoice?.to || invoice?.toAddress || {};
   const items = invoice?.items || [];
+  const isPaid = invoice?.status === 'paid';
 
   // Función para formatear números con punto de miles y coma decimal
   const formatCurrency = (value) => {
@@ -24,7 +25,25 @@ const InvoicePreview = ({ invoice, template }) => {
   const templateColor = template?.color || '#2563eb';
 
   return (
-    <Card className="p-8 bg-white shadow-lg">
+    <Card className="p-8 bg-white shadow-lg relative overflow-hidden">
+      {/* Sello de PAGADO */}
+      {isPaid && (
+        <div 
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          style={{ zIndex: 10 }}
+        >
+          <div 
+            className="border-8 border-green-500 text-green-500 font-bold text-6xl px-8 py-4 rounded-lg opacity-40"
+            style={{ 
+              transform: 'rotate(-25deg)',
+              textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
+            }}
+          >
+            PAGADO
+          </div>
+        </div>
+      )}
+      
       <div className="space-y-6">
         {/* Header */}
         <div className="border-b pb-6" style={{ borderColor: templateColor }}>
