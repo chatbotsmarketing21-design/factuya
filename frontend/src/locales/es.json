@@ -11,7 +11,8 @@
     "loading": "Cargando...",
     "welcome": "Bienvenido",
     "welcomeMale": "Bienvenido",
-    "welcomeFemale": "Bienvenida"
+    "welcomeFemale": "Bienvenida",
+    "back": "Volver"
   },
   "nav": {
     "home": "Inicio",
@@ -20,6 +21,13 @@
     "signin": "Iniciar Sesión",
     "signup": "Registrarse",
     "logout": "Cerrar Sesión"
+  },
+  "templates": {
+    "title": "Elige tu Plantilla de Factura",
+    "subtitle": "Selecciona entre nuestras plantillas diseñadas profesionalmente",
+    "myInvoices": "Mis Facturas",
+    "useTemplate": "Usar Esta Plantilla",
+    "style": "estilo"
   },
   "auth": {
     "signin": "Iniciar Sesión",

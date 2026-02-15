@@ -11,7 +11,8 @@
     "loading": "Loading...",
     "welcome": "Welcome",
     "welcomeMale": "Welcome",
-    "welcomeFemale": "Welcome"
+    "welcomeFemale": "Welcome",
+    "back": "Back"
   },
   "nav": {
     "home": "Home",
@@ -20,6 +21,13 @@
     "signin": "Sign In",
     "signup": "Sign Up",
     "logout": "Logout"
+  },
+  "templates": {
+    "title": "Choose Your Invoice Template",
+    "subtitle": "Select from our professionally designed templates",
+    "myInvoices": "My Invoices",
+    "useTemplate": "Use This Template",
+    "style": "style"
   },
   "auth": {
     "signin": "Sign In",
