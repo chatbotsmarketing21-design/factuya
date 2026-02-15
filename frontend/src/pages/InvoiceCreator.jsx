@@ -78,7 +78,7 @@ const InvoiceCreator = () => {
     items: [
       {
         description: '',
-        quantity: 1,
+        quantity: 0,
         rate: 0,
         amount: 0
       }
