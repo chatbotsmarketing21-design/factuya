@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { mockTemplates } from '../mock/invoiceData';
+import { profileAPI } from '../services/api';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { ArrowLeft, Check } from 'lucide-react';
@@ -9,8 +10,16 @@ const Templates = () => {
   const navigate = useNavigate();
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
-  const handleSelectTemplate = (templateId) => {
+  const handleSelectTemplate = async (templateId) => {
     setSelectedTemplate(templateId);
+    
+    // Guardar plantilla seleccionada en el perfil del usuario
+    try {
+      await profileAPI.updateInvoiceDefaults({ template: templateId });
+    } catch (error) {
+      console.error('Error saving template preference:', error);
+    }
+    
     // Navigate to invoice creator with selected template
     setTimeout(() => {
       navigate(`/create?template=${templateId}`);
