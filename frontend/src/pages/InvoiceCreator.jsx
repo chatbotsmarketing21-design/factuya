@@ -48,10 +48,18 @@ const InvoiceCreator = () => {
   const [isCompoundTax, setIsCompoundTax] = useState(false);
   const [template, setTemplate] = useState(getTemplateById(templateId));
   const invoicePreviewRef = useRef(null);
+  // Calcular fecha de vencimiento (un mes exacto después)
+  const getOneMonthLater = () => {
+    const today = new Date();
+    const nextMonth = new Date(today);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    return nextMonth.toISOString().split('T')[0];
+  };
+
   const [invoice, setInvoice] = useState({
     number: '',
     date: new Date().toISOString().split('T')[0],
-    dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    dueDate: getOneMonthLater(),
     status: 'pending',
     documentType: 'invoice', // invoice, proforma, quotation, bill, receipt
     logo: '', // Para guardar el logo en base64
