@@ -133,6 +133,12 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 - Quantity field now starts at 0
 - Quantity and Price fields now show thousand separators
 
+## Session: December 2025
+### Changes Made This Session:
+- Fixed Dashboard multi-page PDF generation rendering horizontally instead of vertically
+- Added fixed width (794px) to hidden PDF preview container for consistent A4 rendering
+- Synchronized PDF generation logic between Dashboard and InvoiceCreator
+
 ## Test Credentials
 - **Trial User**: chatbotsmarketing21@gmail.com / Test123!
 - **Premium User**: tecnogramasmedellin@gmail.com
