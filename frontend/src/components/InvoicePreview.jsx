@@ -29,8 +29,8 @@ const InvoicePreview = ({ invoice, template }) => {
       {/* Sello de PAGADO - Circular */}
       {isPaid && (
         <div 
-          className="absolute left-1/2 pointer-events-none"
-          style={{ zIndex: 10, bottom: '15%', transform: 'translateX(-50%)' }}
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+          style={{ zIndex: 10 }}
         >
           <div 
             className="border-8 border-green-500 text-green-500 font-bold text-3xl rounded-full opacity-50 flex items-center justify-center"
