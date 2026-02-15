@@ -15,6 +15,7 @@ class CompanyInfo(BaseModel):
     logo: Optional[str] = None  # Base64 encoded logo
     defaultNotes: Optional[str] = None  # Default notes for invoices
     defaultTerms: Optional[str] = None  # Default terms for invoices
+    defaultTemplate: Optional[int] = None  # Default template ID for invoices
 
 class UserCreate(BaseModel):
     email: EmailStr
