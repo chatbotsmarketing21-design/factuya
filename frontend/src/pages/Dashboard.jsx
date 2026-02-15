@@ -832,10 +832,15 @@ const Dashboard = () => {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Hidden PDF Preview for generating PDFs */}
+      {/* Hidden PDF Preview for generating PDFs - Fixed width container for consistent rendering */}
       {pdfInvoice && (
-        <div style={{ position: 'absolute', left: '-9999px', top: 0 }}>
-          <div ref={pdfPreviewRef}>
+        <div style={{ 
+          position: 'absolute', 
+          left: '-9999px', 
+          top: 0,
+          width: '794px' // A4 width at 96 DPI for consistent PDF generation
+        }}>
+          <div ref={pdfPreviewRef} style={{ width: '100%' }}>
             <InvoicePreview 
               invoice={{
                 ...pdfInvoice,
