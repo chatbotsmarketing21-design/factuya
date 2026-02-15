@@ -255,6 +255,7 @@ const Dashboard = () => {
   };
 
   // Helper function to generate PDF from invoice
+  // This logic mirrors the InvoiceCreator.jsx implementation exactly
   const generatePdfFromInvoice = async (invoice) => {
     return new Promise((resolve, reject) => {
       // Set the invoice for PDF preview
@@ -268,6 +269,7 @@ const Dashboard = () => {
             throw new Error("PDF preview not ready");
           }
           
+          // Capture the preview as image with high quality (same as InvoiceCreator)
           const canvas = await html2canvas(pdfPreviewRef.current, {
             scale: 2,
             useCORS: true,
@@ -289,7 +291,7 @@ const Dashboard = () => {
             const imgData = canvas.toDataURL('image/png');
             pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
           } else {
-            // Multiple pages - slice the canvas
+            // Multiple pages - slice the canvas vertically (identical to InvoiceCreator)
             const totalPages = Math.ceil(imgHeight / pageHeight);
             const sourceWidth = canvas.width;
             const sourcePageHeight = (canvas.width * pageHeight) / pageWidth;
@@ -314,10 +316,10 @@ const Dashboard = () => {
               ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
               ctx.drawImage(
                 canvas,
-                0, sourceY,
-                sourceWidth, drawHeight,
-                0, 0,
-                sourceWidth, drawHeight
+                0, sourceY,                    // Source x, y
+                sourceWidth, drawHeight,       // Source width, height
+                0, 0,                          // Destination x, y
+                sourceWidth, drawHeight        // Destination width, height
               );
               
               const pageImgData = pageCanvas.toDataURL('image/png');
