@@ -671,10 +671,6 @@ const InvoiceCreator = () => {
                 <Download className="w-4 h-4 mr-2" />
                 Descargar PDF
               </Button>
-              <Button variant="outline" size="sm" onClick={handleSend}>
-                <Send className="w-4 h-4 mr-2" />
-                Enviar Email
-              </Button>
               <Button size="sm" className="bg-lime-500 hover:bg-lime-600 text-white" onClick={handleSave} disabled={loading}>
                 <Save className="w-4 h-4 mr-2" />
                 {loading ? 'Guardando...' : isEditMode ? 'Actualizar Factura' : 'Guardar Factura'}
