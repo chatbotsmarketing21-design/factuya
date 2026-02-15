@@ -33,7 +33,7 @@ const InvoicePreview = ({ invoice, template }) => {
           style={{ zIndex: 10 }}
         >
           <div 
-            className="border-8 border-green-500 text-green-500 font-bold text-6xl px-8 py-4 rounded-lg opacity-40"
+            className="border-8 border-red-500 text-red-500 font-bold text-6xl px-8 py-4 rounded-lg opacity-40"
             style={{ 
               transform: 'rotate(-25deg)',
               textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
