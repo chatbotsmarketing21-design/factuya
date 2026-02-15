@@ -146,9 +146,9 @@ const InvoiceCreator = () => {
       const response = await profileAPI.getCompany();
       const companyInfo = response.data;
       
-      // Cargar plantilla guardada
-      if (companyInfo.defaultTemplate) {
-        setSelectedTemplate(companyInfo.defaultTemplate);
+      // Cargar plantilla guardada (solo si no viene de URL)
+      if (companyInfo.defaultTemplate && !searchParams.get('template')) {
+        setTemplate(getTemplateById(companyInfo.defaultTemplate));
         setInvoice(prev => ({ ...prev, template: companyInfo.defaultTemplate }));
       }
       
