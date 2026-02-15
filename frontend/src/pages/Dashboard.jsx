@@ -261,7 +261,7 @@ const Dashboard = () => {
       setPdfInvoice(invoice);
       setGeneratingPdf(true);
       
-      // Wait for the preview to render (increased timeout for reliability)
+      // Wait for the preview to render
       setTimeout(async () => {
         try {
           if (!pdfPreviewRef.current) {
@@ -275,34 +275,53 @@ const Dashboard = () => {
             backgroundColor: '#ffffff'
           });
           
-          const imgData = canvas.toDataURL('image/png');
           const pdf = new jsPDF('p', 'mm', 'a4');
           
           const pageWidth = 210; // A4 width in mm
           const pageHeight = 297; // A4 height in mm
+          
+          // Calculate dimensions
           const imgWidth = pageWidth;
           const imgHeight = (canvas.height * imgWidth) / canvas.width;
           
-          // Check if content fits in one page
+          // If fits in one page
           if (imgHeight <= pageHeight) {
-            // Single page
+            const imgData = canvas.toDataURL('image/png');
             pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
           } else {
-            // Multiple pages needed - split the image vertically
-            let remainingHeight = imgHeight;
-            let pageNumber = 0;
+            // Multiple pages - slice the canvas
+            const totalPages = Math.ceil(imgHeight / pageHeight);
+            const sourceWidth = canvas.width;
+            const sourcePageHeight = (canvas.width * pageHeight) / pageWidth;
             
-            while (remainingHeight > 0) {
-              if (pageNumber > 0) {
+            for (let page = 0; page < totalPages; page++) {
+              if (page > 0) {
                 pdf.addPage();
               }
               
-              // Calculate the position to show the correct portion of the image
-              const yOffset = -(pageNumber * pageHeight);
-              pdf.addImage(imgData, 'PNG', 0, yOffset, imgWidth, imgHeight);
+              // Create a temporary canvas for this page section
+              const pageCanvas = document.createElement('canvas');
+              pageCanvas.width = sourceWidth;
+              pageCanvas.height = sourcePageHeight;
               
-              remainingHeight -= pageHeight;
-              pageNumber++;
+              const ctx = pageCanvas.getContext('2d');
+              
+              // Draw the portion of the original canvas for this page
+              const sourceY = page * sourcePageHeight;
+              const drawHeight = Math.min(sourcePageHeight, canvas.height - sourceY);
+              
+              ctx.fillStyle = '#ffffff';
+              ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+              ctx.drawImage(
+                canvas,
+                0, sourceY,
+                sourceWidth, drawHeight,
+                0, 0,
+                sourceWidth, drawHeight
+              );
+              
+              const pageImgData = pageCanvas.toDataURL('image/png');
+              pdf.addImage(pageImgData, 'PNG', 0, 0, pageWidth, pageHeight);
             }
           }
           
