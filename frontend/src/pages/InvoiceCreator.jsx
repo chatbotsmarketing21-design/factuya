@@ -568,7 +568,7 @@ const InvoiceCreator = () => {
         }
       }
       
-      pdf.save(`Factura_${invoice.number}_${invoice.to.name}.pdf`);
+      pdf.save(`${invoice.number}_${invoice.to.name}.pdf`);
 
       toast({
         title: "¡Descarga Completa!",
