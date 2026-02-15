@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { mockTemplates } from '../mock/invoiceData';
 import { profileAPI } from '../services/api';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { ArrowLeft, Check } from 'lucide-react';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const Templates = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [selectedTemplate, setSelectedTemplate] = useState(null);
 
   const handleSelectTemplate = async (templateId) => {
@@ -36,7 +39,7 @@ const Templates = () => {
               <Link to="/">
                 <Button variant="ghost" size="sm">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back
+                  {t('common.back')}
                 </Button>
               </Link>
               <div className="flex items-center">
@@ -44,9 +47,12 @@ const Templates = () => {
                 <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
               </div>
             </div>
-            <Link to="/dashboard">
-              <Button variant="outline">My Invoices</Button>
-            </Link>
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher />
+              <Link to="/dashboard">
+                <Button variant="outline">{t('templates.myInvoices')}</Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -54,8 +60,8 @@ const Templates = () => {
       {/* Templates Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Choose Your Invoice Template</h1>
-          <p className="text-xl text-gray-600">Select from our professionally designed templates</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('templates.title')}</h1>
+          <p className="text-xl text-gray-600">{t('templates.subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -113,13 +119,13 @@ const Templates = () => {
               {/* Template Info */}
               <div className="p-6 bg-white">
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">{template.name}</h3>
-                <p className="text-gray-600 capitalize">{template.style} style</p>
+                <p className="text-gray-600 capitalize">{template.style} {t('templates.style')}</p>
                 <Button
                   className="w-full mt-4 group-hover:bg-blue-600 group-hover:text-white transition-colors"
                   variant="outline"
                   style={selectedTemplate === template.id ? { backgroundColor: template.color, color: 'white', borderColor: template.color } : {}}
                 >
-                  Use This Template
+                  {t('templates.useTemplate')}
                 </Button>
               </div>
             </Card>
