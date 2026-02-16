@@ -53,6 +53,9 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 - [x] Price field with thousand separators (no spinner)
 - [x] Auto-save Notes and Terms to user profile
 - [x] Quantity starts at 0 (not 1)
+- [x] Mobile-responsive layout with collapsible sections
+- [x] Mobile preview modal with fullscreen invoice view
+- [x] Responsive header with mobile menu
 
 ### Internationalization
 - [x] Spanish language support
