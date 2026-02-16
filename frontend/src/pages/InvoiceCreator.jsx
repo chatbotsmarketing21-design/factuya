@@ -833,22 +833,22 @@ const InvoiceCreator = () => {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 pb-24 lg:pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
           {/* Editor Panel */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {/* Invoice Details */}
-            <Card className="p-6 dark:bg-card">
-              <div className="flex justify-between items-center mb-6 cursor-pointer" onClick={() => toggleSection('details')}>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Detalles de la Factura</h2>
+            <Card className="p-4 sm:p-6 dark:bg-card">
+              <div className="flex justify-between items-center mb-4 sm:mb-6 cursor-pointer" onClick={() => toggleSection('details')}>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Detalles de la Factura</h2>
                 <Button variant="ghost" size="sm">
                   {sectionsOpen.details ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                 </Button>
               </div>
               {sectionsOpen.details && (
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <Label htmlFor="number" className="dark:text-gray-300">Número de Factura</Label>
+                    <Label htmlFor="number" className="dark:text-gray-300 text-sm">Número de Factura</Label>
                     <Input
                       id="number"
                       value={invoice.number}
@@ -858,7 +858,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="date" className="dark:text-gray-300">Fecha de Factura</Label>
+                    <Label htmlFor="date" className="dark:text-gray-300 text-sm">Fecha de Factura</Label>
                     <Input
                       id="date"
                       type="date"
@@ -867,8 +867,8 @@ const InvoiceCreator = () => {
                       className="dark:bg-secondary dark:border-border dark:text-white"
                     />
                   </div>
-                  <div className="col-span-2">
-                    <Label htmlFor="dueDate" className="dark:text-gray-300">Fecha de Vencimiento</Label>
+                  <div className="sm:col-span-2">
+                    <Label htmlFor="dueDate" className="dark:text-gray-300 text-sm">Fecha de Vencimiento</Label>
                     <Input
                       id="dueDate"
                       type="date"
