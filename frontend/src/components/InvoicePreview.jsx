@@ -1,9 +1,15 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from './ui/card';
+import InvoiceTemplateWave from './InvoiceTemplateWave';
 
 const InvoicePreview = ({ invoice, template }) => {
   const { t } = useTranslation();
+
+  // Si la plantilla es de tipo "wave", usar el componente especializado
+  if (template?.type === 'wave') {
+    return <InvoiceTemplateWave invoice={invoice} template={template} />;
+  }
 
   // Safe access to nested properties
   const from = invoice?.from || invoice?.fromAddress || {};
