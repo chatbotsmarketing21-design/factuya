@@ -1306,6 +1306,7 @@ const InvoiceCreator = () => {
       {/* Mobile Preview Button - Fixed at bottom */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 p-3 bg-white dark:bg-card border-t border-gray-200 dark:border-border shadow-lg z-20">
         <Button 
+          data-testid="mobile-preview-btn"
           onClick={() => setShowMobilePreview(true)}
           className="w-full bg-lime-500 hover:bg-lime-600 text-white py-3"
         >
