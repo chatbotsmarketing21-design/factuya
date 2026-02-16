@@ -56,13 +56,14 @@ const InvoiceTemplateModerno = ({ invoice, template }) => {
         style={{ backgroundColor: primaryColor }}
       >
         <div 
-          className="text-white font-bold text-xl whitespace-nowrap uppercase"
+          className="text-white font-bold text-base whitespace-nowrap uppercase"
           style={{ 
-            writingMode: 'vertical-rl',
-            transform: 'rotate(180deg)',
-            letterSpacing: '0.08em',
-            fontFamily: 'Arial, sans-serif',
-            textShadow: '1px 1px 2px rgba(0,0,0,0.2)'
+            transform: 'rotate(-90deg)',
+            transformOrigin: 'center center',
+            letterSpacing: '0.1em',
+            fontFamily: 'Arial, Helvetica, sans-serif',
+            minWidth: '300px',
+            textAlign: 'center'
           }}
         >
           {getDocumentTitle(invoice?.documentType)} {invoice?.number || 'S/N'}
