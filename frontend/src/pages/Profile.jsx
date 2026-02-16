@@ -216,6 +216,17 @@ const Profile = () => {
                 />
               </div>
               <div>
+                <Label htmlFor="company.nit">NIT</Label>
+                <Input
+                  id="company.nit"
+                  name="company.nit"
+                  value={profile.companyInfo.nit || ''}
+                  onChange={handleChange}
+                  placeholder="900.123.456-7"
+                  className="mt-1"
+                />
+              </div>
+              <div>
                 <Label htmlFor="company.email">{t('profile.companyEmail')}</Label>
                 <Input
                   id="company.email"
