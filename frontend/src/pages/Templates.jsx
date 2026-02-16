@@ -47,7 +47,6 @@ const Templates = () => {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <LanguageSwitcher />
               <Link to="/dashboard">
                 <Button variant="outline" className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">{t('templates.myInvoices')}</Button>
               </Link>
