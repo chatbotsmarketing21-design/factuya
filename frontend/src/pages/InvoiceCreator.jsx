@@ -706,70 +706,127 @@ const InvoiceCreator = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-background">
-      {/* Header */}
+      {/* Header - Responsive */}
       <header className="bg-white dark:bg-card border-b border-gray-200 dark:border-border sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link to="/dashboard">
+            {/* Left side - Logo and back button */}
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Link to="/dashboard" className="hidden sm:block">
                 <Button variant="ghost" size="sm">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Volver al Dashboard
                 </Button>
               </Link>
+              <Link to="/dashboard" className="sm:hidden">
+                <Button variant="ghost" size="icon">
+                  <ArrowLeft className="w-5 h-5" />
+                </Button>
+              </Link>
               <div className="flex items-center">
-                <span className="text-xl font-bold text-gray-900 dark:text-white">Factu</span>
-                <span className="text-xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
+                <span className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Factu</span>
+                <span className="text-lg sm:text-xl font-bold text-white bg-lime-500 px-1.5 sm:px-2 ml-1">Ya!</span>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              {/* Selector de Tipo de Documento */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="gap-2"
-                    style={{ borderColor: getDocumentInfo(invoice.documentType).color, color: getDocumentInfo(invoice.documentType).color }}
-                  >
-                    {getDocumentInfo(invoice.documentType).icon}
-                    {getDocumentInfo(invoice.documentType).name}
+            
+            {/* Right side - Actions */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Desktop actions */}
+              <div className="hidden md:flex items-center gap-3">
+                {/* Selector de Tipo de Documento */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="gap-2"
+                      style={{ borderColor: getDocumentInfo(invoice.documentType).color, color: getDocumentInfo(invoice.documentType).color }}
+                    >
+                      {getDocumentInfo(invoice.documentType).icon}
+                      {getDocumentInfo(invoice.documentType).name}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Tipo de Documento</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => changeDocumentType('invoice')}>
+                      <FileText className="w-4 h-4 mr-2 text-blue-600" />
+                      FACTURA
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => changeDocumentType('proforma')}>
+                      <FileCheck className="w-4 h-4 mr-2 text-purple-600" />
+                      FACTURA PROFORMA
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => changeDocumentType('quotation')}>
+                      <Calculator className="w-4 h-4 mr-2 text-green-600" />
+                      COTIZACIÓN
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => changeDocumentType('bill')}>
+                      <DollarSign className="w-4 h-4 mr-2 text-orange-600" />
+                      CUENTA DE COBRO
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => changeDocumentType('receipt')}>
+                      <Receipt className="w-4 h-4 mr-2 text-cyan-600" />
+                      RECIBO
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Link to="/templates">
+                  <Button variant="outline" size="sm">
+                    Cambiar Plantilla
+                  </Button>
+                </Link>
+              </div>
+              
+              {/* Save button - Always visible */}
+              <Button 
+                size="sm" 
+                className="bg-lime-500 hover:bg-lime-600 text-white text-xs sm:text-sm px-2 sm:px-4" 
+                onClick={handleSave} 
+                disabled={loading}
+              >
+                <Save className="w-4 h-4 sm:mr-2" />
+                <span className="hidden sm:inline">{loading ? 'Guardando...' : isEditMode ? 'Actualizar' : 'Guardar'}</span>
+              </Button>
+              
+              {/* Mobile menu button */}
+              <DropdownMenu open={showMobileMenu} onOpenChange={setShowMobileMenu}>
+                <DropdownMenuTrigger asChild className="md:hidden">
+                  <Button variant="outline" size="icon">
+                    <Menu className="w-5 h-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>Tipo de Documento</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => changeDocumentType('invoice')}>
+                  <DropdownMenuItem onClick={() => { changeDocumentType('invoice'); setShowMobileMenu(false); }}>
                     <FileText className="w-4 h-4 mr-2 text-blue-600" />
                     FACTURA
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => changeDocumentType('proforma')}>
+                  <DropdownMenuItem onClick={() => { changeDocumentType('proforma'); setShowMobileMenu(false); }}>
                     <FileCheck className="w-4 h-4 mr-2 text-purple-600" />
                     FACTURA PROFORMA
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => changeDocumentType('quotation')}>
+                  <DropdownMenuItem onClick={() => { changeDocumentType('quotation'); setShowMobileMenu(false); }}>
                     <Calculator className="w-4 h-4 mr-2 text-green-600" />
                     COTIZACIÓN
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => changeDocumentType('bill')}>
+                  <DropdownMenuItem onClick={() => { changeDocumentType('bill'); setShowMobileMenu(false); }}>
                     <DollarSign className="w-4 h-4 mr-2 text-orange-600" />
                     CUENTA DE COBRO
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => changeDocumentType('receipt')}>
+                  <DropdownMenuItem onClick={() => { changeDocumentType('receipt'); setShowMobileMenu(false); }}>
                     <Receipt className="w-4 h-4 mr-2 text-cyan-600" />
                     RECIBO
                   </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/templates" className="w-full">
+                      Cambiar Plantilla
+                    </Link>
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Link to="/templates">
-                <Button variant="outline" size="sm">
-                  Cambiar Plantilla
-                </Button>
-              </Link>
-              <Button size="sm" className="bg-lime-500 hover:bg-lime-600 text-white" onClick={handleSave} disabled={loading}>
-                <Save className="w-4 h-4 mr-2" />
-                {loading ? 'Guardando...' : isEditMode ? 'Actualizar Factura' : 'Guardar Factura'}
-              </Button>
             </div>
           </div>
         </div>
