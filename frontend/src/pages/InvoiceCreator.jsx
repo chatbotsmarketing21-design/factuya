@@ -1116,25 +1116,25 @@ const InvoiceCreator = () => {
             </Card>
 
             {/* Items Section */}
-            <Card className="p-6 dark:bg-card">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Items / Servicios</h2>
-                <Button onClick={addItem} size="sm">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Agregar Item
+            <Card className="p-4 sm:p-6 dark:bg-card">
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Items / Servicios</h2>
+                <Button onClick={addItem} size="sm" className="text-xs sm:text-sm">
+                  <Plus className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Agregar Item</span>
                 </Button>
               </div>
               <div className="space-y-4">
                 {invoice.items.map((item, index) => (
-                  <div key={index} className="border border-gray-200 dark:border-border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-3">
-                      <span className="text-sm font-medium text-gray-500 dark:text-gray-400">Item {index + 1}</span>
+                  <div key={index} className="border border-gray-200 dark:border-border rounded-lg p-3 sm:p-4">
+                    <div className="flex justify-between items-start mb-2 sm:mb-3">
+                      <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Item {index + 1}</span>
                       {invoice.items.length > 1 && (
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => removeItem(index)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 h-7 w-7 p-0"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
@@ -1142,26 +1142,24 @@ const InvoiceCreator = () => {
                     </div>
                     <div className="space-y-3">
                       <div>
-                        <Label className="dark:text-gray-300">Descripción *</Label>
+                        <Label className="dark:text-gray-300 text-sm">Descripción *</Label>
                         <Input
                           value={item.description}
                           onChange={(e) => updateItem(index, 'description', e.target.value)}
-                          placeholder="Service or product description"
+                          placeholder="Descripción del servicio o producto"
                           required
-                          className="dark:bg-secondary dark:border-border dark:text-white"
+                          className="dark:bg-secondary dark:border-border dark:text-white text-sm"
                         />
                       </div>
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-3 gap-2 sm:gap-3">
                         <div>
-                          <Label className="dark:text-gray-300">Cantidad</Label>
+                          <Label className="dark:text-gray-300 text-xs sm:text-sm">Cant.</Label>
                           <Input
                             type="text"
                             inputMode="decimal"
                             value={item.quantityText !== undefined ? item.quantityText : (item.quantity || '')}
                             onChange={(e) => {
-                              // Permitir números con punto o coma como decimal
                               let inputValue = e.target.value.replace(',', '.');
-                              // Solo permitir números y un punto decimal
                               if (inputValue === '' || /^\d*\.?\d*$/.test(inputValue)) {
                                 const newItems = [...invoice.items];
                                 newItems[index] = { 
@@ -1169,7 +1167,6 @@ const InvoiceCreator = () => {
                                   quantityText: inputValue,
                                   quantity: parseFloat(inputValue) || 0
                                 };
-                                // Recalcular monto
                                 const quantity = parseFloat(inputValue) || 0;
                                 const rate = parseFloat(newItems[index].rate) || 0;
                                 newItems[index].amount = quantity * rate;
@@ -1178,17 +1175,16 @@ const InvoiceCreator = () => {
                               }
                             }}
                             onBlur={() => {
-                              // Al perder foco, limpiar el texto temporal
                               const newItems = [...invoice.items];
                               delete newItems[index].quantityText;
                               setInvoice(prev => ({ ...prev, items: newItems }));
                             }}
                             placeholder=""
-                            className="dark:bg-secondary dark:border-border dark:text-white"
+                            className="dark:bg-secondary dark:border-border dark:text-white text-sm"
                           />
                         </div>
                         <div>
-                          <Label className="dark:text-gray-300">Precio ($)</Label>
+                          <Label className="dark:text-gray-300 text-xs sm:text-sm">Precio</Label>
                           <Input
                             type="text"
                             value={item.rate ? Number(item.rate).toLocaleString('es-CO') : ''}
@@ -1197,15 +1193,15 @@ const InvoiceCreator = () => {
                               const numValue = parseFloat(rawValue) || 0;
                               updateItem(index, 'rate', numValue);
                             }}
-                            className="dark:bg-secondary dark:border-border dark:text-white"
+                            className="dark:bg-secondary dark:border-border dark:text-white text-sm"
                           />
                         </div>
                         <div>
-                          <Label className="dark:text-gray-300">Monto ($)</Label>
+                          <Label className="dark:text-gray-300 text-xs sm:text-sm">Monto</Label>
                           <Input
-                            value={item.amount.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            value={item.amount.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                             disabled
-                            className="bg-gray-50 dark:bg-muted dark:text-gray-300"
+                            className="bg-gray-50 dark:bg-muted dark:text-gray-300 text-sm"
                           />
                         </div>
                       </div>
@@ -1215,27 +1211,27 @@ const InvoiceCreator = () => {
               </div>
 
               {/* Totals */}
-              <div className="mt-6 space-y-3 border-t dark:border-border pt-4">
+              <div className="mt-4 sm:mt-6 space-y-2 sm:space-y-3 border-t dark:border-border pt-3 sm:pt-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-700 dark:text-gray-300">Subtotal:</span>
-                  <span className="font-semibold text-lg dark:text-white">${invoice.subtotal.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">Subtotal:</span>
+                  <span className="font-semibold text-base sm:text-lg dark:text-white">${invoice.subtotal.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
                 </div>
                 
                 {/* Tax Section */}
                 {invoice.hasTax ? (
-                  <div className="flex justify-between items-center bg-gray-50 dark:bg-muted p-3 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-700 dark:text-gray-300">{invoice.taxName || 'Impuesto'} ({invoice.taxRate}%):</span>
+                  <div className="flex justify-between items-center bg-gray-50 dark:bg-muted p-2 sm:p-3 rounded-lg">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <span className="text-sm text-gray-700 dark:text-gray-300">{invoice.taxName || 'Impuesto'} ({invoice.taxRate}%):</span>
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={handleRemoveTax}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 h-6 px-2"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 h-6 w-6 p-0"
                       >
                         <Trash2 className="w-3 h-3" />
                       </Button>
                     </div>
-                    <span className="font-semibold text-lg dark:text-white">${invoice.tax.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    <span className="font-semibold text-base sm:text-lg dark:text-white">${invoice.tax.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
                   </div>
                 ) : (
                   <div className="flex justify-center">
@@ -1243,17 +1239,17 @@ const InvoiceCreator = () => {
                       variant="outline"
                       size="sm"
                       onClick={handleAddTax}
-                      className="text-lime-600 border-lime-300 hover:bg-lime-50 dark:hover:bg-lime-900/20"
+                      className="text-lime-600 border-lime-300 hover:bg-lime-50 dark:hover:bg-lime-900/20 text-xs sm:text-sm"
                     >
-                      <Percent className="w-4 h-4 mr-2" />
+                      <Percent className="w-4 h-4 mr-1 sm:mr-2" />
                       Añadir Impuesto
                     </Button>
                   </div>
                 )}
 
-                <div className="flex justify-between items-center text-xl font-bold border-t dark:border-border pt-3">
+                <div className="flex justify-between items-center text-lg sm:text-xl font-bold border-t dark:border-border pt-2 sm:pt-3">
                   <span className="dark:text-white">Total:</span>
-                  <span className="text-lime-700 dark:text-lime-400">${invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  <span className="text-lime-700 dark:text-lime-400">${invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
                 </div>
               </div>
             </Card>
