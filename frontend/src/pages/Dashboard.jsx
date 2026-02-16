@@ -807,6 +807,15 @@ const Dashboard = () => {
                             <Download className="w-4 h-4 mr-2" />
                             Descargar PDF
                           </Button>
+                          <Button 
+                            variant="outline" 
+                            size="default"
+                            className="rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-card hover:bg-gray-50 dark:hover:bg-muted px-4 py-2 font-medium"
+                            onClick={(event) => handleCopyInvoice(invoice.id, event)}
+                          >
+                            <Copy className="w-4 h-4 mr-2" />
+                            Copiar
+                          </Button>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button 
