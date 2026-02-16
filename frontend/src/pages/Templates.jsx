@@ -30,27 +30,27 @@ const Templates = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link to="/create">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" className="dark:text-gray-300 dark:hover:bg-gray-700">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   {t('common.back')}
                 </Button>
               </Link>
               <div className="flex items-center">
-                <span className="text-2xl font-bold text-gray-900">Factu</span>
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">Factu</span>
                 <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
               </div>
             </div>
             <div className="flex items-center gap-3">
               <LanguageSwitcher />
               <Link to="/dashboard">
-                <Button variant="outline">{t('templates.myInvoices')}</Button>
+                <Button variant="outline" className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">{t('templates.myInvoices')}</Button>
               </Link>
             </div>
           </div>
@@ -60,15 +60,15 @@ const Templates = () => {
       {/* Templates Grid */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">{t('templates.title')}</h1>
-          <p className="text-xl text-gray-600">{t('templates.subtitle')}</p>
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">{t('templates.title')}</h1>
+          <p className="text-xl text-gray-600 dark:text-gray-400">{t('templates.subtitle')}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {mockTemplates.map((template) => (
             <Card
               key={template.id}
-              className={`group cursor-pointer transition-all duration-300 hover:shadow-xl overflow-hidden ${
+              className={`group cursor-pointer transition-all duration-300 hover:shadow-xl overflow-hidden dark:bg-gray-800 dark:border-gray-700 ${
                 selectedTemplate === template.id ? 'ring-2 ring-blue-500' : ''
               }`}
               onClick={() => handleSelectTemplate(template.id)}
@@ -103,19 +103,19 @@ const Templates = () => {
                         style={{ backgroundColor: template.color, width: '60%' }}
                       ></div>
                       <div className="space-y-2">
-                        <div className="h-3 bg-gray-300 rounded w-full"></div>
-                        <div className="h-3 bg-gray-300 rounded w-5/6"></div>
-                        <div className="h-3 bg-gray-300 rounded w-4/6"></div>
+                        <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-full"></div>
+                        <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-5/6"></div>
+                        <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-4/6"></div>
                       </div>
                     </div>
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <div className="h-3 bg-gray-300 rounded w-1/3"></div>
-                        <div className="h-3 bg-gray-400 rounded w-1/4"></div>
+                        <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/3"></div>
+                        <div className="h-3 bg-gray-400 dark:bg-gray-500 rounded w-1/4"></div>
                       </div>
                       <div className="flex justify-between">
-                        <div className="h-3 bg-gray-300 rounded w-1/3"></div>
-                        <div className="h-3 bg-gray-400 rounded w-1/4"></div>
+                        <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded w-1/3"></div>
+                        <div className="h-3 bg-gray-400 dark:bg-gray-500 rounded w-1/4"></div>
                       </div>
                       <div
                         className="h-4 rounded mt-4"
@@ -128,7 +128,7 @@ const Templates = () => {
                 {/* Selection Overlay */}
                 {selectedTemplate === template.id && (
                   <div className="absolute inset-0 bg-blue-600 bg-opacity-20 flex items-center justify-center">
-                    <div className="bg-white rounded-full p-3">
+                    <div className="bg-white dark:bg-gray-800 rounded-full p-3">
                       <Check className="w-8 h-8 text-blue-600" />
                     </div>
                   </div>
@@ -136,11 +136,11 @@ const Templates = () => {
               </div>
 
               {/* Template Info */}
-              <div className="p-6 bg-white">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{template.name}</h3>
-                <p className="text-gray-600 capitalize">{template.style} {t('templates.style')}</p>
+              <div className="p-6 bg-white dark:bg-gray-800">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{template.name}</h3>
+                <p className="text-gray-600 dark:text-gray-400 capitalize">{template.style} {t('templates.style')}</p>
                 <Button
-                  className="w-full mt-4 group-hover:bg-blue-600 group-hover:text-white transition-colors"
+                  className="w-full mt-4 group-hover:bg-blue-600 group-hover:text-white transition-colors dark:border-gray-600 dark:text-gray-300"
                   variant="outline"
                   style={selectedTemplate === template.id ? { backgroundColor: template.color, color: 'white', borderColor: template.color } : {}}
                 >
