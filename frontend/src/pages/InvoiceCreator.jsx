@@ -711,39 +711,46 @@ const InvoiceCreator = () => {
           <div className="space-y-6">
             {/* Invoice Details */}
             <Card className="p-6 dark:bg-card">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Detalles de la Factura</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="number" className="dark:text-gray-300">Número de Factura</Label>
-                  <Input
-                    id="number"
-                    value={invoice.number}
-                    onChange={(e) => updateInvoice('number', e.target.value)}
-                    placeholder="001"
-                    className="dark:bg-secondary dark:border-border dark:text-white"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="date" className="dark:text-gray-300">Fecha de Factura</Label>
-                  <Input
-                    id="date"
-                    type="date"
-                    value={invoice.date}
-                    onChange={(e) => updateInvoice('date', e.target.value)}
-                    className="dark:bg-secondary dark:border-border dark:text-white"
-                  />
-                </div>
-                <div className="col-span-2">
-                  <Label htmlFor="dueDate" className="dark:text-gray-300">Fecha de Vencimiento</Label>
-                  <Input
-                    id="dueDate"
-                    type="date"
-                    value={invoice.dueDate}
-                    onChange={(e) => updateInvoice('dueDate', e.target.value)}
-                    className="dark:bg-secondary dark:border-border dark:text-white"
-                  />
-                </div>
+              <div className="flex justify-between items-center mb-6 cursor-pointer" onClick={() => toggleSection('details')}>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Detalles de la Factura</h2>
+                <Button variant="ghost" size="sm">
+                  {sectionsOpen.details ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </Button>
               </div>
+              {sectionsOpen.details && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="number" className="dark:text-gray-300">Número de Factura</Label>
+                    <Input
+                      id="number"
+                      value={invoice.number}
+                      onChange={(e) => updateInvoice('number', e.target.value)}
+                      placeholder="001"
+                      className="dark:bg-secondary dark:border-border dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="date" className="dark:text-gray-300">Fecha de Factura</Label>
+                    <Input
+                      id="date"
+                      type="date"
+                      value={invoice.date}
+                      onChange={(e) => updateInvoice('date', e.target.value)}
+                      className="dark:bg-secondary dark:border-border dark:text-white"
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <Label htmlFor="dueDate" className="dark:text-gray-300">Fecha de Vencimiento</Label>
+                    <Input
+                      id="dueDate"
+                      type="date"
+                      value={invoice.dueDate}
+                      onChange={(e) => updateInvoice('dueDate', e.target.value)}
+                      className="dark:bg-secondary dark:border-border dark:text-white"
+                    />
+                  </div>
+                </div>
+              )}
             </Card>
 
             {/* From Section */}
