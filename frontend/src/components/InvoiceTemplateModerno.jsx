@@ -76,14 +76,14 @@ const InvoiceTemplateModerno = ({ invoice, template }) => {
               {from.name || 'Tu Empresa'}
             </h1>
             {from.nit && <p className="text-gray-600 text-sm">NIT: {from.nit}</p>}
+            {from.phone && <p className="text-gray-600 text-sm">TELÉFONO: {from.phone}</p>}
+            {from.email && <p className="text-gray-600 text-sm">CORREO: {from.email}</p>}
             {from.address && <p className="text-gray-600 text-sm">{from.address}</p>}
             {(from.city || from.state || from.zip) && (
               <p className="text-gray-600 text-sm">
                 {from.zip && `${from.zip} `}{from.city}{from.city && from.state ? ', ' : ''}{from.state}
               </p>
             )}
-            {from.email && <p className="text-gray-600 text-sm">{from.email}</p>}
-            {from.phone && <p className="text-gray-600 text-sm">{from.phone}</p>}
           </div>
           <div className="text-right">
             {invoice?.logo ? (
