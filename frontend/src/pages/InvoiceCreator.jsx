@@ -48,6 +48,19 @@ const InvoiceCreator = () => {
   const [isCompoundTax, setIsCompoundTax] = useState(false);
   const [template, setTemplate] = useState(getTemplateById(templateId));
   const invoicePreviewRef = useRef(null);
+  
+  // Estados para secciones colapsables
+  const [sectionsOpen, setSectionsOpen] = useState({
+    details: true,
+    from: true,
+    to: true,
+    items: true,
+    notes: true
+  });
+  
+  const toggleSection = (section) => {
+    setSectionsOpen(prev => ({ ...prev, [section]: !prev[section] }));
+  };
   // Calcular fecha de vencimiento (un mes exacto después)
   const getOneMonthLater = () => {
     const today = new Date();
