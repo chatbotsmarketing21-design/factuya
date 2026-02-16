@@ -89,8 +89,8 @@ const InvoiceTemplateDexter = ({ invoice, template }) => {
           )}
         </div>
 
-        {/* Three Column Section */}
-        <div className="grid grid-cols-3 gap-4 mb-6 text-sm">
+        {/* Two Column Section */}
+        <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
           {/* Bill To */}
           <div>
             <h3 className="font-bold text-gray-700 mb-2" style={{ color: '#1565C0' }}>FACTURAR A</h3>
