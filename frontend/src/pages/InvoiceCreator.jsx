@@ -134,9 +134,27 @@ const InvoiceCreator = () => {
       const response = await invoiceAPI.getById(id);
       const invoiceData = response.data;
       
+      // Obtener info actual de la empresa para fusionar el NIT
+      let companyNit = '';
+      let companyLogo = '';
+      try {
+        const companyResponse = await profileAPI.getCompany();
+        companyNit = companyResponse.data.nit || '';
+        companyLogo = companyResponse.data.logo || '';
+      } catch (err) {
+        console.error('Error loading company info for NIT:', err);
+      }
+      
+      const fromData = invoiceData.fromAddress || invoiceData.from || {};
+      
       setInvoice({
         ...invoiceData,
-        from: invoiceData.fromAddress || invoiceData.from,
+        logo: invoiceData.logo || companyLogo,
+        from: {
+          ...fromData,
+          // Fusionar el NIT del perfil si la factura antigua no lo tiene
+          nit: fromData.nit || companyNit
+        },
         to: invoiceData.toAddress || invoiceData.to
       });
       
