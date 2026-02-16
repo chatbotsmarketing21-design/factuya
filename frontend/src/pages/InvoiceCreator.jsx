@@ -1125,7 +1125,7 @@ const InvoiceCreator = () => {
             {/* Notes and Terms */}
             <Card className="p-6 dark:bg-card">
               <div className="flex justify-between items-center mb-6 cursor-pointer" onClick={() => toggleSection('notes')}>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Información Adicional</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Información Adicional / Pie de Página</h2>
                 <Button variant="ghost" size="sm">
                   {sectionsOpen.notes ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                 </Button>
