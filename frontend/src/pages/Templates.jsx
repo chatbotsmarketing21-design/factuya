@@ -6,7 +6,6 @@ import { profileAPI } from '../services/api';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { ArrowLeft, Check } from 'lucide-react';
-import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const Templates = () => {
   const navigate = useNavigate();
