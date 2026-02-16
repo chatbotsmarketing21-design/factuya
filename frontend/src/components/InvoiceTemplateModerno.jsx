@@ -56,7 +56,7 @@ const InvoiceTemplateModerno = ({ invoice, template }) => {
         style={{ backgroundColor: primaryColor }}
       >
         <div 
-          className="text-white font-bold text-xl whitespace-nowrap"
+          className="text-white font-bold text-xl whitespace-nowrap uppercase"
           style={{ 
             writingMode: 'vertical-rl',
             transform: 'rotate(180deg)',
