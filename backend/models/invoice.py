@@ -5,6 +5,7 @@ import uuid
 
 class Address(BaseModel):
     name: str
+    nit: Optional[str] = None
     email: Optional[str] = None
     phone: Optional[str] = None
     address: Optional[str] = None
