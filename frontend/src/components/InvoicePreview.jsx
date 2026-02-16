@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Card } from './ui/card';
 import InvoiceTemplateWave from './InvoiceTemplateWave';
 import InvoiceTemplateDexter from './InvoiceTemplateDexter';
+import InvoiceTemplateModerno from './InvoiceTemplateModerno';
 
 const InvoicePreview = ({ invoice, template }) => {
   const { t } = useTranslation();
@@ -15,6 +16,11 @@ const InvoicePreview = ({ invoice, template }) => {
   // Si la plantilla es de tipo "dexter", usar el componente Dexter
   if (template?.type === 'dexter') {
     return <InvoiceTemplateDexter invoice={invoice} template={template} />;
+  }
+
+  // Si la plantilla es de tipo "moderno", usar el componente Moderno
+  if (template?.type === 'moderno') {
+    return <InvoiceTemplateModerno invoice={invoice} template={template} />;
   }
 
   // Safe access to nested properties
