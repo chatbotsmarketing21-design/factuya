@@ -85,7 +85,7 @@ export const mockTemplates = [
     id: 11,
     name: "Moderno Verde",
     thumbnail: "https://customer-assets.emergentagent.com/job_4b4e60b7-72b2-4913-be5c-ff8a02d8cf3d/artifacts/ljexcauz_modelo-cotizacion-es-moderno-rojo-750px.png",
-    color: "#059669",
+    color: "#558B2F",
     style: "moderno",
     type: "moderno"
   },
