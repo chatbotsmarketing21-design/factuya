@@ -64,6 +64,38 @@ export const mockTemplates = [
     color: "#1565C0",
     style: "colorful",
     type: "dexter"
+  },
+  {
+    id: 9,
+    name: "Moderno Rojo",
+    thumbnail: "https://customer-assets.emergentagent.com/job_4b4e60b7-72b2-4913-be5c-ff8a02d8cf3d/artifacts/ljexcauz_modelo-cotizacion-es-moderno-rojo-750px.png",
+    color: "#DC2626",
+    style: "moderno",
+    type: "moderno"
+  },
+  {
+    id: 10,
+    name: "Moderno Azul",
+    thumbnail: "https://customer-assets.emergentagent.com/job_4b4e60b7-72b2-4913-be5c-ff8a02d8cf3d/artifacts/ljexcauz_modelo-cotizacion-es-moderno-rojo-750px.png",
+    color: "#2563EB",
+    style: "moderno",
+    type: "moderno"
+  },
+  {
+    id: 11,
+    name: "Moderno Verde",
+    thumbnail: "https://customer-assets.emergentagent.com/job_4b4e60b7-72b2-4913-be5c-ff8a02d8cf3d/artifacts/ljexcauz_modelo-cotizacion-es-moderno-rojo-750px.png",
+    color: "#059669",
+    style: "moderno",
+    type: "moderno"
+  },
+  {
+    id: 12,
+    name: "Moderno Gris",
+    thumbnail: "https://customer-assets.emergentagent.com/job_4b4e60b7-72b2-4913-be5c-ff8a02d8cf3d/artifacts/ljexcauz_modelo-cotizacion-es-moderno-rojo-750px.png",
+    color: "#4B5563",
+    style: "moderno",
+    type: "moderno"
   }
 ];
 
