@@ -138,6 +138,14 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 - Fixed Dashboard multi-page PDF generation rendering horizontally instead of vertically
 - Added fixed width (794px) to hidden PDF preview container for consistent A4 rendering
 - Synchronized PDF generation logic between Dashboard and InvoiceCreator
+- **Custom Templates**: Added "Olas Azules" template with WaveTemplate.jsx component
+- **NIT Field Integration**: Added "NIT" (Tax ID) fields for company and client across entire stack
+- **Collapsible Sections**: Made "Detalles de la Factura" and "Información Adicional" sections collapsible
+- **Bug Fix (NIT Loading)**: Fixed issue where company NIT was not loading for existing invoices - modified loadInvoice() to merge NIT from profile
+- **PAGADO Stamp**: Added red rectangular diagonal "PAGADO" stamp on paid invoices
+- **PDF Filename**: Updated to cleaner format (DOC-NUM_Client-Name.pdf)
+- **Due Date**: Auto-calculated to one month from issue date
+- **Templates Page**: Fully translated to Spanish/English with correct navigation
 
 ## Test Credentials
 - **Trial User**: chatbotsmarketing21@gmail.com / Test123!
