@@ -75,14 +75,21 @@ const Templates = () => {
             >
               <div className="relative">
                 {/* Template Preview */}
-                {(template.type === 'wave' || template.type === 'dexter') ? (
+                {(template.type === 'wave' || template.type === 'dexter' || template.type === 'moderno') ? (
                   // Mostrar imagen real para plantillas especiales
-                  <div className="h-64 overflow-hidden">
+                  <div className="h-64 overflow-hidden relative">
                     <img 
                       src={template.thumbnail} 
                       alt={template.name}
                       className="w-full h-full object-cover object-top"
                     />
+                    {/* Color indicator for moderno templates */}
+                    {template.type === 'moderno' && (
+                      <div 
+                        className="absolute bottom-2 right-2 w-6 h-6 rounded-full border-2 border-white shadow-md"
+                        style={{ backgroundColor: template.color }}
+                      ></div>
+                    )}
                   </div>
                 ) : (
                   // Preview genérico para plantillas default
