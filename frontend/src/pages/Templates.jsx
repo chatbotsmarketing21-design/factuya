@@ -75,7 +75,7 @@ const Templates = () => {
             >
               <div className="relative">
                 {/* Template Preview */}
-                {template.type === 'wave' ? (
+                {(template.type === 'wave' || template.type === 'dexter') ? (
                   // Mostrar imagen real para plantillas especiales
                   <div className="h-64 overflow-hidden">
                     <img 
