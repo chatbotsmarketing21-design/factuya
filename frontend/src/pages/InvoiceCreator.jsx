@@ -1255,37 +1255,37 @@ const InvoiceCreator = () => {
             </Card>
 
             {/* Notes and Terms */}
-            <Card className="p-6 dark:bg-card">
-              <div className="flex justify-between items-center mb-6 cursor-pointer" onClick={() => toggleSection('notes')}>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Información Adicional / Pie de Página</h2>
+            <Card className="p-4 sm:p-6 dark:bg-card">
+              <div className="flex justify-between items-center mb-4 sm:mb-6 cursor-pointer" onClick={() => toggleSection('notes')}>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Notas / Pie de Página</h2>
                 <Button variant="ghost" size="sm">
                   {sectionsOpen.notes ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                 </Button>
               </div>
               {sectionsOpen.notes && (
                 <>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Los cambios se guardan automáticamente</p>
+                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-3 sm:mb-4">Los cambios se guardan automáticamente</p>
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="notes" className="dark:text-gray-300">Notas</Label>
+                      <Label htmlFor="notes" className="dark:text-gray-300 text-sm">Notas</Label>
                       <Textarea
                         id="notes"
                         value={invoice.notes}
                         onChange={(e) => handleNotesChange(e.target.value)}
                         placeholder="¡Gracias por su preferencia!"
-                        rows={3}
-                        className="dark:bg-secondary dark:border-border dark:text-white"
+                        rows={2}
+                        className="dark:bg-secondary dark:border-border dark:text-white text-sm"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="terms" className="dark:text-gray-300">Términos y Condiciones</Label>
+                      <Label htmlFor="terms" className="dark:text-gray-300 text-sm">Términos y Condiciones</Label>
                       <Textarea
                         id="terms"
                         value={invoice.terms}
                         onChange={(e) => handleTermsChange(e.target.value)}
                         placeholder="Pago a 30 días"
-                        rows={3}
-                        className="dark:bg-secondary dark:border-border dark:text-white"
+                        rows={2}
+                        className="dark:bg-secondary dark:border-border dark:text-white text-sm"
                       />
                     </div>
                   </div>
@@ -1294,14 +1294,63 @@ const InvoiceCreator = () => {
             </Card>
           </div>
 
-          {/* Preview Panel */}
-          <div className="lg:sticky lg:top-24 h-fit">
+          {/* Preview Panel - Hidden on mobile, shown on desktop */}
+          <div className="hidden lg:block lg:sticky lg:top-24 h-fit">
             <div ref={invoicePreviewRef}>
               <InvoicePreview invoice={invoice} template={template} />
             </div>
           </div>
         </div>
       </div>
+
+      {/* Mobile Preview Button - Fixed at bottom */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 p-3 bg-white dark:bg-card border-t border-gray-200 dark:border-border shadow-lg z-20">
+        <Button 
+          onClick={() => setShowMobilePreview(true)}
+          className="w-full bg-lime-500 hover:bg-lime-600 text-white py-3"
+        >
+          <Eye className="w-5 h-5 mr-2" />
+          Ver Vista Previa
+        </Button>
+      </div>
+
+      {/* Mobile Preview Modal */}
+      {showMobilePreview && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-black/50">
+          <div className="absolute inset-0 bg-white dark:bg-background overflow-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-white dark:bg-card border-b dark:border-border p-3 flex items-center justify-between z-10">
+              <h3 className="font-semibold text-gray-900 dark:text-white">Vista Previa</h3>
+              <div className="flex items-center gap-2">
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={handleDownload}
+                  className="text-xs"
+                >
+                  <Download className="w-4 h-4 mr-1" />
+                  PDF
+                </Button>
+                <Button 
+                  size="icon" 
+                  variant="ghost"
+                  onClick={() => setShowMobilePreview(false)}
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+            </div>
+            {/* Preview Content */}
+            <div className="p-4 pb-20">
+              <div className="transform scale-90 origin-top">
+                <div ref={invoicePreviewRef}>
+                  <InvoicePreview invoice={invoice} template={template} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Subscription Dialog */}
       <SubscriptionDialog 
