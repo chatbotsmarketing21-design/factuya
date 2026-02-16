@@ -1053,22 +1053,31 @@ const InvoiceCreator = () => {
                           <Input
                             type="text"
                             inputMode="decimal"
-                            value={item.quantityInput !== undefined ? item.quantityInput : (item.quantity || '')}
+                            value={item.quantityText !== undefined ? item.quantityText : (item.quantity || '')}
                             onChange={(e) => {
                               // Permitir números con punto o coma como decimal
                               let inputValue = e.target.value.replace(',', '.');
                               // Solo permitir números y un punto decimal
                               if (inputValue === '' || /^\d*\.?\d*$/.test(inputValue)) {
-                                const numValue = parseFloat(inputValue) || 0;
-                                updateItem(index, 'quantity', numValue);
-                                updateItem(index, 'quantityInput', inputValue);
+                                const newItems = [...invoice.items];
+                                newItems[index] = { 
+                                  ...newItems[index], 
+                                  quantityText: inputValue,
+                                  quantity: parseFloat(inputValue) || 0
+                                };
+                                // Recalcular monto
+                                const quantity = parseFloat(inputValue) || 0;
+                                const rate = parseFloat(newItems[index].rate) || 0;
+                                newItems[index].amount = quantity * rate;
+                                setInvoice(prev => ({ ...prev, items: newItems }));
+                                recalculateTotal(newItems, invoice.taxRate);
                               }
                             }}
-                            onBlur={(e) => {
-                              // Al perder foco, limpiar el input temporal
-                              const numValue = parseFloat(item.quantity) || 0;
-                              updateItem(index, 'quantityInput', undefined);
-                              updateItem(index, 'quantity', numValue);
+                            onBlur={() => {
+                              // Al perder foco, limpiar el texto temporal
+                              const newItems = [...invoice.items];
+                              delete newItems[index].quantityText;
+                              setInvoice(prev => ({ ...prev, items: newItems }));
                             }}
                             placeholder="48.50"
                             className="dark:bg-secondary dark:border-border dark:text-white"
