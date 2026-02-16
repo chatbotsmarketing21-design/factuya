@@ -133,12 +133,41 @@ const InvoiceCreator = () => {
     if (invoiceId) {
       // Modo edición - cargar factura existente
       loadInvoice(invoiceId);
+    } else if (copyData) {
+      // Modo copia - cargar datos del cliente desde otra factura
+      loadCompanyInfo();
+      generateInvoiceNumber(invoice.documentType);
+      
+      // Aplicar los datos copiados
+      setTimeout(() => {
+        setInvoice(prev => ({
+          ...prev,
+          to: {
+            name: copyData.to?.name || '',
+            nit: copyData.to?.nit || '',
+            email: copyData.to?.email || '',
+            phone: copyData.to?.phone || '',
+            address: copyData.to?.address || '',
+            city: copyData.to?.city || '',
+            state: copyData.to?.state || '',
+            zip: copyData.to?.zip || ''
+          },
+          items: copyData.items || prev.items,
+          notes: copyData.notes || prev.notes,
+          terms: copyData.terms || prev.terms
+        }));
+        
+        // Si hay plantilla en los datos copiados, aplicarla
+        if (copyData.template) {
+          setTemplate(getTemplateById(copyData.template));
+        }
+      }, 500);
     } else {
       // Modo creación - cargar info de empresa y generar número
       loadCompanyInfo();
       generateInvoiceNumber(invoice.documentType);
     }
-  }, [invoiceId]);
+  }, [invoiceId, copyData]);
 
   const loadInvoice = async (id) => {
     try {
