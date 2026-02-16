@@ -50,6 +50,8 @@ const InvoiceCreator = () => {
   const [isCompoundTax, setIsCompoundTax] = useState(false);
   const [template, setTemplate] = useState(getTemplateById(templateId));
   const invoicePreviewRef = useRef(null);
+  const [showMobilePreview, setShowMobilePreview] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   
   // Estados para secciones colapsables - cargar desde localStorage
   const [sectionsOpen, setSectionsOpen] = useState(() => {
