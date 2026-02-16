@@ -216,6 +216,44 @@ const Dashboard = () => {
     }
   };
 
+  const handleCopyInvoice = async (invoiceId, event) => {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    try {
+      // Obtener los datos de la factura original
+      const response = await invoiceAPI.getById(invoiceId);
+      const originalInvoice = response.data;
+
+      // Navegar al creador con los datos del cliente prerellenados
+      navigate('/create', {
+        state: {
+          copyFrom: {
+            to: originalInvoice.to || originalInvoice.toAddress,
+            items: originalInvoice.items,
+            notes: originalInvoice.notes,
+            terms: originalInvoice.terms,
+            template: originalInvoice.template
+          }
+        }
+      });
+
+      toast({
+        title: "Factura copiada",
+        description: "Se han copiado los datos del cliente. Puedes modificar lo que necesites.",
+      });
+    } catch (error) {
+      console.error('Error copying invoice:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo copiar la factura",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleStatusChange = async (invoiceId, newStatus) => {
     try {
       // Buscar la factura completa
