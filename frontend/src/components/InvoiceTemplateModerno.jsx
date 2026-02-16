@@ -109,8 +109,8 @@ const InvoiceTemplateModerno = ({ invoice, template }) => {
           <div>
             <h3 className="font-semibold mb-2" style={{ color: primaryColor }}>Facturar a</h3>
             <p className="text-gray-800 font-medium">{to.name || ''}</p>
-            {to.nit && <p className="text-gray-600">{to.nit}</p>}
-            {to.phone && <p className="text-gray-600">{to.phone}</p>}
+            {to.nit && <p className="text-gray-600">NIT: {to.nit}</p>}
+            {to.phone && <p className="text-gray-600">TELÉFONO: {to.phone}</p>}
             {to.email && <p className="text-gray-600">{to.email}</p>}
             {to.address && <p className="text-gray-600">{to.address}</p>}
             {(to.city || to.state || to.zip) && (
