@@ -74,7 +74,7 @@ const InvoiceTemplateWave = ({ invoice, template }) => {
         {/* Header */}
         <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-3xl font-serif italic" style={{ color: waveColor }}>
+            <h1 className="text-3xl font-serif italic text-gray-900">
               {from.name || 'Tu Empresa'}
             </h1>
             <p className="text-gray-600 text-sm mt-1">{from.address || ''}</p>
