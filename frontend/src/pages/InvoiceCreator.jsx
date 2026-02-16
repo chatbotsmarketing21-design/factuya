@@ -776,14 +776,26 @@ const InvoiceCreator = () => {
                   )}
                 </div>
 
-                <div>
-                  <Label htmlFor="fromName" className="dark:text-gray-300">Nombre de la Empresa</Label>
-                  <Input
-                    id="fromName"
-                    value={invoice.from.name}
-                    onChange={(e) => updateFrom('name', e.target.value)}
-                    className="dark:bg-secondary dark:border-border dark:text-white"
-                  />
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="col-span-2">
+                    <Label htmlFor="fromName" className="dark:text-gray-300">Nombre de la Empresa</Label>
+                    <Input
+                      id="fromName"
+                      value={invoice.from.name}
+                      onChange={(e) => updateFrom('name', e.target.value)}
+                      className="dark:bg-secondary dark:border-border dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="fromNit" className="dark:text-gray-300">NIT</Label>
+                    <Input
+                      id="fromNit"
+                      value={invoice.from.nit}
+                      onChange={(e) => updateFrom('nit', e.target.value)}
+                      placeholder="900.123.456-7"
+                      className="dark:bg-secondary dark:border-border dark:text-white"
+                    />
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
