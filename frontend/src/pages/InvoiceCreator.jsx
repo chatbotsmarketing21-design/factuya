@@ -35,8 +35,10 @@ import jsPDF from 'jspdf';
 const InvoiceCreator = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const templateId = parseInt(searchParams.get('template')) || 1;
   const invoiceId = searchParams.get('id'); // ID de factura para editar
+  const copyData = location.state?.copyFrom; // Datos copiados de otra factura
   const { toast } = useToast();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
