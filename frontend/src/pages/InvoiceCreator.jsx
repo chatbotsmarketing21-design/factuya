@@ -174,6 +174,7 @@ const InvoiceCreator = () => {
         terms: companyInfo.defaultTerms || prev.terms,  // Cargar términos guardados
         from: {
           name: companyInfo.name || '',
+          nit: companyInfo.nit || '',
           email: companyInfo.email || '',
           phone: companyInfo.phone || '',
           address: companyInfo.address || '',
