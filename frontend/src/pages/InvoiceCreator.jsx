@@ -1079,7 +1079,7 @@ const InvoiceCreator = () => {
                               delete newItems[index].quantityText;
                               setInvoice(prev => ({ ...prev, items: newItems }));
                             }}
-                            placeholder="48.50"
+                            placeholder=""
                             className="dark:bg-secondary dark:border-border dark:text-white"
                           />
                         </div>
