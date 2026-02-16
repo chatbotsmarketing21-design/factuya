@@ -53,7 +53,7 @@ const Profile = () => {
         name: response.data.name || '',
         email: response.data.email || '',
         gender: response.data.gender || '',
-        companyInfo: response.data.companyInfo || {
+        companyInfo: {
           name: '',
           nit: '',
           email: '',
@@ -62,7 +62,8 @@ const Profile = () => {
           city: '',
           state: '',
           zip: '',
-          country: ''
+          country: '',
+          ...response.data.companyInfo
         }
       });
     } catch (error) {
