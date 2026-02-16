@@ -125,10 +125,14 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
    - Desktop layout unchanged (two-column with sticky preview)
 
 ## Upcoming Tasks
-1. **P1**: Integrate Wompi payment gateway (replacement for Stripe in Colombia)
-2. **P2**: Configure production emailing in Resend
-3. **P2**: Client and Product management sections
-4. **P2**: Advanced reporting with charts
+1. **P0**: DEPLOYMENT TO PRODUCTION - Usuario quiere desplegar con dominio propio
+   - Plan: Render.com (gratis) + MongoDB Atlas (gratis) + dominio propio
+   - Pendiente: Usuario debe confirmar nombre de dominio
+   - Siguiente paso: Preparar código para GitHub y guiar configuración DNS
+2. **P1**: Integrate Wompi payment gateway (replacement for Stripe in Colombia)
+3. **P2**: Configure production emailing in Resend
+4. **P2**: Client and Product management sections
+5. **P2**: Advanced reporting with charts
 
 ## Session Completed: February 14, 2026
 ### Changes Made This Session:
