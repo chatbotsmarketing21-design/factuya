@@ -190,9 +190,9 @@ const Profile = () => {
                   type="email"
                   value={profile.email}
                   disabled
-                  className="mt-1 bg-gray-100"
+                  className="mt-1 bg-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-600"
                 />
-                <p className="text-xs text-gray-500 mt-1">{t('profile.emailCantChange')}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{t('profile.emailCantChange')}</p>
               </div>
             </div>
           </Card>
