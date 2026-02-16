@@ -446,40 +446,67 @@ const Dashboard = () => {
 
       // Generate PDF
       const pdf = await generatePdfFromInvoice(invoice);
-      const pdfBase64 = pdf.output('datauristring');
       
-      // Upload PDF to server
+      // Get invoice details for message
       const invoiceNumber = invoice.invoiceNumber || invoice.number || 'factura';
-      const uploadResponse = await invoiceAPI.uploadPdf({
-        pdf: pdfBase64,
-        invoiceNumber: invoiceNumber
-      });
-      
-      // Get the public URL for the PDF
-      const baseUrl = process.env.REACT_APP_BACKEND_URL;
-      const pdfUrl = `${baseUrl}/api/invoices/pdf/${uploadResponse.data.filename}`;
-      
-      // Prepare WhatsApp message with PDF link
       const clientName = invoice.clientName || invoice.to?.name || invoice.toAddress?.name || 'Cliente';
-      const total = invoice.total?.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0,00';
+      const total = invoice.total?.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) || '0';
       const phone = invoice.to?.phone || invoice.toAddress?.phone || '';
       const cleanPhone = phone.replace(/\D/g, '');
       
-      const message = `Hola ${clientName}, le comparto su factura N° ${invoiceNumber} por un total de $${total}.\n\n📄 Ver/Descargar PDF: ${pdfUrl}\n\n¡Gracias por su preferencia!\n- FactuYa!`;
-      const encodedMessage = encodeURIComponent(message);
+      // Check if device supports Web Share API with files (usually mobile)
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const canShareFiles = navigator.canShare && navigator.canShare({ files: [new File([], 'test.pdf', { type: 'application/pdf' })] });
       
-      const whatsappUrl = cleanPhone 
-        ? `https://wa.me/${cleanPhone}?text=${encodedMessage}`
-        : `https://wa.me/?text=${encodedMessage}`;
-      
-      window.open(whatsappUrl, '_blank');
-      
-      toast({
-        title: "¡Listo!",
-        description: "Se ha abierto WhatsApp con el enlace al PDF",
-      });
+      if (isMobile && canShareFiles) {
+        // MOBILE: Share PDF directly as file attachment
+        const pdfBlob = pdf.output('blob');
+        const pdfFile = new File([pdfBlob], `Factura_${invoiceNumber}_${clientName}.pdf`, { type: 'application/pdf' });
+        
+        const shareData = {
+          title: `Factura ${invoiceNumber}`,
+          text: `Hola ${clientName}, le comparto su factura N° ${invoiceNumber} por un total de $${total}.\n\n¡Gracias por su preferencia!\n- FactuYa!`,
+          files: [pdfFile]
+        };
+        
+        await navigator.share(shareData);
+        
+        toast({
+          title: "¡Compartido!",
+          description: "El PDF se ha compartido exitosamente",
+        });
+      } else {
+        // DESKTOP: Download PDF + Open WhatsApp with message
+        // 1. Download PDF automatically
+        const fileName = `Factura_${invoiceNumber}_${clientName}.pdf`;
+        pdf.save(fileName);
+        
+        // 2. Prepare WhatsApp message (without link)
+        const message = `Hola ${clientName}, le comparto su factura N° ${invoiceNumber} por un total de $${total}.\n\n📎 *El PDF está adjunto o descargado en su computador*\n\n¡Gracias por su preferencia!\n- FactuYa!`;
+        const encodedMessage = encodeURIComponent(message);
+        
+        const whatsappUrl = cleanPhone 
+          ? `https://wa.me/${cleanPhone}?text=${encodedMessage}`
+          : `https://wa.me/?text=${encodedMessage}`;
+        
+        // Small delay to ensure PDF download starts first
+        setTimeout(() => {
+          window.open(whatsappUrl, '_blank');
+        }, 500);
+        
+        toast({
+          title: "¡PDF Descargado!",
+          description: "Adjunta el PDF descargado en la conversación de WhatsApp",
+        });
+      }
     } catch (error) {
       console.error('Error sharing via WhatsApp:', error);
+      
+      // If share was cancelled by user, don't show error
+      if (error.name === 'AbortError') {
+        return;
+      }
+      
       toast({
         title: "Error",
         description: "No se pudo preparar el PDF para compartir",
