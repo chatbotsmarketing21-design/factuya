@@ -5,6 +5,7 @@ import uuid
 
 class CompanyInfo(BaseModel):
     name: Optional[str] = None
+    nit: Optional[str] = None
     email: Optional[str] = None
     phone: Optional[str] = None
     address: Optional[str] = None
