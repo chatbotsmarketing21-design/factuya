@@ -113,7 +113,16 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 - **Emergent Google Auth**: Social login (in progress)
 
 ## Pending Issues
-1. **Google OAuth Login (P0)**: Redirect loop after authentication - paused by user
+1. **Google OAuth Login (P1)**: Redirect loop after authentication - paused by user
+
+## Completed in Latest Session (Feb 2026)
+1. **Mobile Optimization**: Complete responsive redesign of InvoiceCreator
+   - Responsive header with mobile menu dropdown
+   - Collapsible sections for all form areas
+   - Mobile-friendly field layouts (grid adjustments)
+   - Floating "Ver Vista Previa" button for mobile
+   - Fullscreen preview modal with PDF download option
+   - Desktop layout unchanged (two-column with sticky preview)
 
 ## Upcoming Tasks
 1. **P1**: Integrate Wompi payment gateway (replacement for Stripe in Colombia)
