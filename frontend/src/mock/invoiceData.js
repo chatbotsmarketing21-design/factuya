@@ -56,6 +56,14 @@ export const mockTemplates = [
     color: "#4AABE3",
     style: "wave",
     type: "wave"
+  },
+  {
+    id: 8,
+    name: "Dexter",
+    thumbnail: "https://customer-assets.emergentagent.com/job_4b4e60b7-72b2-4913-be5c-ff8a02d8cf3d/artifacts/aegsn5y2_modelo-cotizacion-es-dexter-750px.png",
+    color: "#1565C0",
+    style: "colorful",
+    type: "dexter"
   }
 ];
 
