@@ -82,6 +82,7 @@ const InvoicePreview = ({ invoice, template }) => {
             <h3 className="text-sm font-semibold text-gray-500 mb-2">{t('preview.from')}</h3>
             <div className="text-sm">
               <p className="font-bold text-gray-900">{from.name || ''}</p>
+              {from.nit && <p className="text-gray-600">NIT: {from.nit}</p>}
               <p className="text-gray-600">{from.email || ''}</p>
               <p className="text-gray-600">{from.phone || ''}</p>
               <p className="text-gray-600">{from.address || ''}</p>
@@ -95,6 +96,7 @@ const InvoicePreview = ({ invoice, template }) => {
             <h3 className="text-sm font-semibold text-gray-500 mb-2">{t('preview.billTo')}</h3>
             <div className="text-sm">
               <p className="font-bold text-gray-900">{to.name || ''}</p>
+              {to.nit && <p className="text-gray-600">NIT/CC: {to.nit}</p>}
               <p className="text-gray-600">{to.email || ''}</p>
               <p className="text-gray-600">{to.phone || ''}</p>
               <p className="text-gray-600">{to.address || ''}</p>
