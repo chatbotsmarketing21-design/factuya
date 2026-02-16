@@ -127,6 +127,11 @@ const InvoiceCreator = () => {
         to: invoiceData.toAddress || invoiceData.to
       });
       
+      // Cargar la plantilla guardada en la factura
+      if (invoiceData.template) {
+        setTemplate(getTemplateById(invoiceData.template));
+      }
+      
       setIsEditMode(true);
       
       toast({
