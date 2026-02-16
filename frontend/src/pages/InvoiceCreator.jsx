@@ -1021,12 +1021,18 @@ const InvoiceCreator = () => {
             </Card>
 
             {/* To Section */}
-            <Card className="p-6 dark:bg-card">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Para (Cliente)</h2>
+            <Card className="p-4 sm:p-6 dark:bg-card">
+              <div className="flex justify-between items-center mb-4 sm:mb-6 cursor-pointer" onClick={() => toggleSection('to')}>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Para (Cliente)</h2>
+                <Button variant="ghost" size="sm">
+                  {sectionsOpen.to ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                </Button>
+              </div>
+              {sectionsOpen.to && (
               <div className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="col-span-2">
-                    <Label htmlFor="toName" className="dark:text-gray-300">Nombre del Cliente *</Label>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                  <div className="sm:col-span-2">
+                    <Label htmlFor="toName" className="dark:text-gray-300 text-sm">Nombre del Cliente *</Label>
                     <Input
                       id="toName"
                       value={invoice.to.name}
@@ -1036,7 +1042,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="toNit" className="dark:text-gray-300">NIT / Cédula</Label>
+                    <Label htmlFor="toNit" className="dark:text-gray-300 text-sm">NIT / Cédula</Label>
                     <Input
                       id="toNit"
                       value={invoice.to.nit}
@@ -1046,9 +1052,9 @@ const InvoiceCreator = () => {
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <Label htmlFor="toEmail" className="dark:text-gray-300">Correo Electrónico</Label>
+                    <Label htmlFor="toEmail" className="dark:text-gray-300 text-sm">Correo Electrónico</Label>
                     <Input
                       id="toEmail"
                       type="email"
@@ -1058,7 +1064,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="toPhone" className="dark:text-gray-300">Teléfono</Label>
+                    <Label htmlFor="toPhone" className="dark:text-gray-300 text-sm">Teléfono</Label>
                     <Input
                       id="toPhone"
                       value={invoice.to.phone}
@@ -1068,7 +1074,7 @@ const InvoiceCreator = () => {
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="toAddress" className="dark:text-gray-300">Dirección</Label>
+                  <Label htmlFor="toAddress" className="dark:text-gray-300 text-sm">Dirección</Label>
                   <Input
                     id="toAddress"
                     value={invoice.to.address}
@@ -1076,9 +1082,9 @@ const InvoiceCreator = () => {
                     className="dark:bg-secondary dark:border-border dark:text-white"
                   />
                 </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <Label htmlFor="toCity" className="dark:text-gray-300">Ciudad</Label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                  <div className="col-span-2 sm:col-span-1">
+                    <Label htmlFor="toCity" className="dark:text-gray-300 text-sm">Ciudad</Label>
                     <Input
                       id="toCity"
                       value={invoice.to.city}
@@ -1087,7 +1093,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="toState" className="dark:text-gray-300">Estado/Provincia</Label>
+                    <Label htmlFor="toState" className="dark:text-gray-300 text-sm">Dpto/Prov</Label>
                     <Input
                       id="toState"
                       value={invoice.to.state}
@@ -1096,7 +1102,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="toZip" className="dark:text-gray-300">Código Postal</Label>
+                    <Label htmlFor="toZip" className="dark:text-gray-300 text-sm">C. Postal</Label>
                     <Input
                       id="toZip"
                       value={invoice.to.zip}
@@ -1106,6 +1112,7 @@ const InvoiceCreator = () => {
                   </div>
                 </div>
               </div>
+              )}
             </Card>
 
             {/* Items Section */}
