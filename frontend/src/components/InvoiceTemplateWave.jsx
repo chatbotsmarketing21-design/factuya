@@ -77,6 +77,7 @@ const InvoiceTemplateWave = ({ invoice, template }) => {
             <h1 className="text-3xl font-serif italic text-gray-900">
               {from.name || 'Tu Empresa'}
             </h1>
+            {from.nit && <p className="text-gray-600 text-sm mt-1">NIT: {from.nit}</p>}
             <p className="text-gray-600 text-sm mt-1">{from.address || ''}</p>
             <p className="text-gray-600 text-sm">{from.city}{from.city && from.state ? ', ' : ''}{from.state}</p>
             {from.email && <p className="text-gray-600 text-sm">{from.email}</p>}
@@ -102,6 +103,7 @@ const InvoiceTemplateWave = ({ invoice, template }) => {
           <div>
             <h3 className="font-semibold" style={{ color: waveColor }}>Facturar a</h3>
             <p className="font-bold text-gray-800 mt-1">{to.name || ''}</p>
+            {to.nit && <p className="text-gray-600">NIT/CC: {to.nit}</p>}
             <p className="text-gray-600">{to.address || ''}</p>
             <p className="text-gray-600">{to.city}{to.city && to.state ? ', ' : ''}{to.state}</p>
           </div>
