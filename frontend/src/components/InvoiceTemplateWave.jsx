@@ -78,8 +78,11 @@ const InvoiceTemplateWave = ({ invoice, template }) => {
               {from.name || 'Tu Empresa'}
             </h1>
             {from.nit && <p className="text-gray-600 text-sm mt-1">NIT: {from.nit}</p>}
-            {from.email && <p className="text-gray-600 text-sm">{from.email}</p>}
-            {from.phone && <p className="text-gray-600 text-sm">{from.phone}</p>}
+            {(from.email || from.phone) && (
+              <p className="text-gray-600 text-sm">
+                {from.email}{from.email && from.phone ? ' | ' : ''}{from.phone}
+              </p>
+            )}
             {from.address && <p className="text-gray-600 text-sm">{from.address}</p>}
             {from.city && <p className="text-gray-600 text-sm">{from.city}</p>}
             {from.state && <p className="text-gray-600 text-sm">{from.state}</p>}
