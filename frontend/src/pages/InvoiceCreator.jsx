@@ -1052,15 +1052,23 @@ const InvoiceCreator = () => {
                           <Label className="dark:text-gray-300">Cantidad</Label>
                           <Input
                             type="text"
-                            value={item.quantity || ''}
+                            inputMode="decimal"
+                            value={item.quantityInput !== undefined ? item.quantityInput : (item.quantity || '')}
                             onChange={(e) => {
                               // Permitir números con punto o coma como decimal
-                              const inputValue = e.target.value.replace(',', '.');
+                              let inputValue = e.target.value.replace(',', '.');
                               // Solo permitir números y un punto decimal
                               if (inputValue === '' || /^\d*\.?\d*$/.test(inputValue)) {
-                                const numValue = inputValue === '' ? 0 : parseFloat(inputValue) || 0;
-                                updateItem(index, 'quantity', inputValue === '' ? '' : numValue);
+                                const numValue = parseFloat(inputValue) || 0;
+                                updateItem(index, 'quantity', numValue);
+                                updateItem(index, 'quantityInput', inputValue);
                               }
+                            }}
+                            onBlur={(e) => {
+                              // Al perder foco, limpiar el input temporal
+                              const numValue = parseFloat(item.quantity) || 0;
+                              updateItem(index, 'quantityInput', undefined);
+                              updateItem(index, 'quantity', numValue);
                             }}
                             placeholder="48.50"
                             className="dark:bg-secondary dark:border-border dark:text-white"
