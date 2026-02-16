@@ -846,8 +846,8 @@ const InvoiceCreator = () => {
                     <Input
                       id="fromName"
                       value={invoice.from.name}
-                      onChange={(e) => updateFrom('name', e.target.value)}
-                      className="dark:bg-secondary dark:border-border dark:text-white"
+                      onChange={(e) => updateFrom('name', e.target.value.toUpperCase())}
+                      className="dark:bg-secondary dark:border-border dark:text-white uppercase"
                     />
                   </div>
                   <div>
