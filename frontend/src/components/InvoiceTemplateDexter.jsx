@@ -104,18 +104,6 @@ const InvoiceTemplateDexter = ({ invoice, template }) => {
             )}
           </div>
 
-          {/* Ship To */}
-          <div>
-            <h3 className="font-bold text-gray-700 mb-2" style={{ color: '#1565C0' }}>ENVIAR A</h3>
-            <p className="text-gray-800">{to.name || ''}</p>
-            {to.address && <p className="text-gray-600">{to.address}</p>}
-            {(to.city || to.state || to.zip) && (
-              <p className="text-gray-600">
-                {to.zip && `${to.zip} `}{to.city}{to.city && to.state ? ', ' : ''}{to.state}
-              </p>
-            )}
-          </div>
-
           {/* Document Info */}
           <div className="text-right">
             <div className="mb-1">
