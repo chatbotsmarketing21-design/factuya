@@ -65,6 +65,7 @@ const InvoiceCreator = () => {
     logo: '', // Para guardar el logo en base64
     from: {
       name: '',
+      nit: '',
       email: '',
       phone: '',
       address: '',
@@ -75,6 +76,7 @@ const InvoiceCreator = () => {
     },
     to: {
       name: '',
+      nit: '',
       email: '',
       phone: '',
       address: '',
