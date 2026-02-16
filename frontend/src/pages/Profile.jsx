@@ -55,6 +55,7 @@ const Profile = () => {
         gender: response.data.gender || '',
         companyInfo: response.data.companyInfo || {
           name: '',
+          nit: '',
           email: '',
           phone: '',
           address: '',
