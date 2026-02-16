@@ -49,18 +49,28 @@ const InvoiceCreator = () => {
   const [template, setTemplate] = useState(getTemplateById(templateId));
   const invoicePreviewRef = useRef(null);
   
-  // Estados para secciones colapsables
-  const [sectionsOpen, setSectionsOpen] = useState({
-    details: true,
-    from: true,
-    to: true,
-    items: true,
-    notes: true
+  // Estados para secciones colapsables - cargar desde localStorage
+  const [sectionsOpen, setSectionsOpen] = useState(() => {
+    const saved = localStorage.getItem('invoiceSectionsState');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch {
+        return { details: true, from: true, to: true, items: true, notes: true };
+      }
+    }
+    return { details: true, from: true, to: true, items: true, notes: true };
   });
   
   const toggleSection = (section) => {
-    setSectionsOpen(prev => ({ ...prev, [section]: !prev[section] }));
+    setSectionsOpen(prev => {
+      const newState = { ...prev, [section]: !prev[section] };
+      // Guardar en localStorage
+      localStorage.setItem('invoiceSectionsState', JSON.stringify(newState));
+      return newState;
+    });
   };
+
   // Calcular fecha de vencimiento (un mes exacto después)
   const getOneMonthLater = () => {
     const today = new Date();
