@@ -111,10 +111,11 @@ const InvoiceTemplateModerno = ({ invoice, template }) => {
             <p className="text-gray-800 font-medium">{to.name || ''}</p>
             {to.nit && <p className="text-gray-600">{to.nit}</p>}
             {to.phone && <p className="text-gray-600">{to.phone}</p>}
+            {to.email && <p className="text-gray-600">{to.email}</p>}
             {to.address && <p className="text-gray-600">{to.address}</p>}
-            {(to.city || to.state) && (
+            {(to.city || to.state || to.zip) && (
               <p className="text-gray-600">
-                {to.city}{to.city && to.state ? ', ' : ''}{to.state}
+                {to.zip && `${to.zip} `}{to.city}{to.city && to.state ? ', ' : ''}{to.state}
               </p>
             )}
           </div>
