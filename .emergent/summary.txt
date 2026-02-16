@@ -1,0 +1,190 @@
+<analysis>**original_problem_statement:** The user initially requested a clone of the Invoice Home application. The project has since evolved based on user feedback into a feature-rich, full-stack invoicing application named FactuYa!.
+
+**PRODUCT REQUIREMENTS:**
+1.  **Core Functionality:** Create a full-stack invoicing application with user authentication.
+2.  **Branding:** The application should be named FactuYa! with an apple green color scheme.
+3.  **Invoicing Features:**
+    *   Create, Read, Update, and Delete (CRUD) invoices.
+    *   Support multiple document types: Invoice, Proforma Invoice, Quotation, Bill of Collection, Receipt.
+    *   Company logo, default notes, and default terms saved to the user's profile and automatically applied to all future documents.
+    *   Default invoice template is saved to the user's profile.
+    *   Allow changing the status of invoices (Pending, Paid, Overdue).
+    *   Download invoices as PDF, with support for multi-page documents.
+    *   Share invoices via email or a generated link on WhatsApp.
+    *   Automatic, sequential invoice numbering for each document type (e.g., , ).
+    *   Add a NIT (Tax ID) field for both the company and the client, which should be saved and pre-filled.
+4.  **Internationalization:** The application must support multiple languages, starting with Spanish and English. The entire UI should be translatable.
+5.  **Custom Templates:** Allow users to upload their own PNG designs to be used as invoice templates.
+6.  **Subscription Model:** Implement a payment system with a free trial. New users get 10 free invoices, then must subscribe.
+7.  **User Account Management:**
+    *   A settings panel to manage Profile, Subscription, and Change Password.
+    *   A dark/light mode toggle.
+    *   A full password recovery flow.
+8.  **Authentication:** Support traditional email/password login and Google Social Login.
+
+**User's preferred language**: Español
+
+**what currently exists?**
+A functional full-stack invoicing application (React, FastAPI, MongoDB). This session focused heavily on user-requested UI/UX improvements and new features, including:
+*   **Custom Templates:** A new flexible template system was built, allowing the integration of a user-provided PNG (Olas Azules) as a fully functional invoice template with its own layout. The design of this template was iteratively refined based on user feedback.
+*   **NIT (Tax ID) Feature:** NIT fields were added for the company and client. This data is now part of the user profile, invoice forms, invoice previews, and the backend data model.
+*   **Invoice Creator UX:**
+    *   Key sections (Detalles de la Factura and Información Adicional) are now collapsible to improve usability.
+    *   The Descargar PDF and Enviar Email buttons were removed from the header to streamline the UI.
+    *   The due date is now automatically calculated to be one month after the invoice date.
+*   **Bug Fixes & Refinements:**
+    *   A critical, recurring bug causing multi-page PDFs to render horizontally from the dashboard has been fixed.
+    *   PDF filenames are now formatted cleanly (e.g., ).
+    *   A PAGADO stamp (customized to be a red, rectangular, diagonal overlay) now appears on paid invoices.
+    *   Fixed a bug where loading an existing invoice would always revert the preview to the default template instead of the correct one.
+*   **Internationalization:** The Templates page is now fully translated into Spanish and English.
+
+**Last working item**:
+-   **Last item agent was working**: The user reported that when loading an *existing* invoice, the company's NIT (tax ID) does not appear in the form, even though it is correctly saved in the user's profile and appears for *new* invoices. The agent diagnosed that this is because old invoice data (without the NIT field) overwrites the profile data upon loading.
+-   **Status**: IN PROGRESS
+-   **Agent Testing Done**: N
+-   **Which testing method agent to use?**: Frontend testing. After applying the fix, the agent must test two scenarios:
+    1. Load an old, existing invoice and verify the company's NIT from the profile is correctly displayed.
+    2. Create a new invoice and verify the company's NIT is still pre-filled as expected.
+-   **User Testing Done**: N
+
+**All Pending/In progress Issue list**:
+*   **Issue 1: Company NIT Not Loading for Existing Invoices (P0)**
+    *   **Description**: When a user loads a previously created invoice, the  data in that invoice document (which lacks the  field) overwrites the company information pulled from the user's profile, causing the NIT to disappear from the form.
+    *   **Attempted fixes**: None. The issue was just diagnosed.
+    *   **Next debug checklist**:
+        1.  Open .
+        2.  Locate the  function (likely within a  hook that runs when an invoice ID is present).
+        3.  Inside this function, after fetching the invoice data, modify the state update to merge the company NIT from the user's profile. The logic should be: . This ensures the NIT from the profile is always present when editing any invoice, new or old.
+    *   **Why fix this issue and what will be achieved with the fix?**: Ensures data consistency and meets user expectations. The current company information (including NIT) should always be used when editing an invoice, regardless of when it was created.
+    *   **Status**: IN PROGRESS
+    *   **Is recurring issue?**: N
+    *   **Should Test frontend/backend/both after fix?**: Frontend
+    *   **Blocked on other issue**: None
+
+*   **Issue 2: Google OAuth Login Redirects Incorrectly (P1)**
+    *   **Description**: After successful Google authentication, the user is redirected to the sign-in page instead of the dashboard, creating an unusable login loop.
+    *   **Attempted fixes**: Backend routes and frontend logic were created in a previous session, but the final token exchange and redirect step is failing.
+    *   **Next debug checklist**:
+        1.  Verify the redirect URI in the Emergent-managed Google Auth settings matches the frontend URL exactly ().
+        2.  Trace the redirect flow in browser developer tools to check for console errors.
+        3.  Check backend logs for hits to the  endpoint.
+    *   **Why fix this issue and what will be achieved with the fix?**: Enables a crucial, user-requested alternative login method.
+    *   **Status**: IN PROGRESS (Paused by user)
+    *   **Is recurring issue?**: Y
+    *   **Should Test frontend/backend/both after fix?**: Both
+    *   **Blocked on other issue**: None
+
+**In progress Task List**:
+*   None.
+
+**Upcoming and Future Tasks**
+*   **Upcoming Tasks:**
+    *   **P0: Add Remaining 9 Custom Templates:** The user has more PNG template designs to be added to the gallery, following the pattern established with Olas Azules.
+    *   **P1: Integrate Wompi Payment Gateway:** Replace Stripe with Wompi for the Colombian market.
+    *   **P2: Configure Production Emailing:** The Resend integration is in test mode and needs a verified domain for production use.
+*   **Future Tasks:**
+    *   **P2: Client and Product Management:** Add dedicated sections to manage recurring clients and pre-defined products/services.
+    *   **P2: Advanced Reporting:** Build a reports page with charts and analytics.
+    *   **P3: Mobile Application:** The user has expressed long-term interest in a mobile app.
+
+**Completed work in this session**
+-   **Custom Template System**: Implemented a new system to support image-based templates and added the first one, Olas Azules ().
+-   **NIT Field Integration**: Added NIT (Tax ID) fields for company and client across the entire application stack (Profile, Invoice Creator, Previews, Backend Model).
+-   **PDF Generation Fix**: Resolved a recurring bug where multi-page PDFs from the Dashboard rendered horizontally.
+-   **UI/UX Enhancements in Invoice Creator**:
+    *   Made the Invoice Details and Additional Information sections collapsible.
+    *   Removed Download PDF and Send Email buttons from the header.
+    *   Moved the document type selector for better layout.
+-   **Bug Fix**: Corrected an issue where loading an existing invoice would not display the correct template in the preview.
+-   **Feature Refinement**:
+    *   The PAGADO stamp on PDFs was added and customized to be a red, rectangular, diagonal overlay.
+    *   PDF filenames were updated to a cleaner format ().
+    *   The invoice due date is now automatically set to one month from the issue date.
+-   **Internationalization**: The  page was fully translated to support English and Spanish.
+-   **Navigation Fix**: The Back button on the  page now correctly navigates to the  page.
+
+**Earlier issues found/mentioned but not fixed**
+*   The Google OAuth login issue remains paused by the user.
+
+**Known issue recurrence from previous fork**
+-   **Issue recurrence in previous fork**: Multi-page PDF generation.
+-   **Recurrence count**: 3+
+-   **Status**: RESOLVED. The agent successfully fixed the horizontal rendering bug in the Dashboard by aligning its logic with the working implementation in the Invoice Creator.
+
+**Code Architecture**
+
+
+**Key Technical Concepts**
+*   **Frontend**: React, React Router, Tailwind CSS, Shadcn UI, Axios, , , .
+*   **Backend**: FastAPI, MongoDB (with Motor), JWT, Pydantic.
+*   **Dynamic Component Rendering**: Using conditional logic in  to render different template components (e.g., ) based on the selected template type.
+*   **Collapsible UI**: Using React state and conditional rendering to create accordion-style sections in the .
+
+**key DB schema**
+*   **users**: 
+*   **invoices**: 
+
+**changes in tech stack**
+*   None.
+
+**All files of reference**
+*   : **Primary file for the next task.** Contains the  logic that needs to be fixed. Also contains the new collapsible sections and NIT fields.
+*   : Where the user saves their company NIT.
+*   : Contains the logic for the PAGADO stamp and dynamic template rendering.
+*   : The new custom template component, which serves as a blueprint for future templates.
+*   : Updated to include the  field in the  model.
+*   : Updated with i18n and a new navigation link.
+*   : Contains the fix for horizontal PDF generation.
+
+**key api endpoints**
+*   : Returns company info, including the NIT.
+*   : Saves company info, including the NIT.
+*   : Fetches a specific invoice document.
+
+**Critical Info for New Agent**
+*   **Primary Language:** You must communicate with the user in **Español**.
+*   **Top Priority:** Fix the NIT not loading on existing invoices. The diagnosis is complete; you just need to implement the fix in  by merging the profile NIT into the loaded invoice state.
+*   **Google OAuth is Paused:** Do not work on the Google login bug unless the user specifically asks for it.
+*   **Iterative User Feedback:** The user provides frequent, specific feedback, especially on UI/UX. Be prepared to make small, iterative changes.
+*   **Custom Templates:** The user wants to add more PNG templates. The groundwork is laid with  as the example to follow.
+
+**documents and test reports created in this job**
+*    (updated)
+
+**Last 10 User Messages and any pending HUMAN messages**
+10. User: Make the data in the Olas Azules template display in a specific order. (COMPLETED)
+9.  User: Put the email and phone number on the same line in the Olas Azules template. (COMPLETED)
+8.  User: The client's full address details are not showing up in the Olas Azules template PDF. (COMPLETED)
+7.  User: Make the Detalles de la Factura section in the invoice creator collapsible. (COMPLETED)
+6.  User: Please also make the Información Adicional section collapsible. (COMPLETED)
+5.  User: The company NIT isn't being saved and loaded automatically. (IN PROGRESS)
+4.  Agent: [Investigates the NIT issue, confirms backend and API are working correctly].
+3.  User: Okay, I see the problem now. The NIT loads for a *new* invoice, but when I load an *existing* invoice, the NIT disappears. (IN PROGRESS)
+2.  Agent: Ah, I understand. That's because the old invoice data is overwriting the profile data. I will modify the  function to fix this. (AWAITING IMPLEMENTATION)
+1.  **[PENDING USER CONFIRMATION]** The agent has proposed the solution for the NIT issue and is awaiting the user's go-ahead or for the next session to begin implementation.
+
+**Project Health Check:**
+*   **Broken**:
+    *   Logic for loading company NIT when editing an existing invoice.
+    *   Google OAuth login flow (redirect loop, work is paused).
+*   **Mocked**: None.
+
+**3rd Party Integrations**
+*   **Stripe (Payments):** Integrated for subscriptions. Requires a User API Key for live mode.
+*   **Resend (Transactional Emails):** Integrated for password recovery. Requires a User API Key.
+*   **Emergent-managed Google Auth:** Partially integrated for social login (currently broken/paused).
+
+**Testing status**
+-   **Testing agent used after significant changes**: NO
+-   **Troubleshoot agent used after agent stuck in loop**: NO
+-   **Test files created**: []
+-   **Known regressions**: None in this session. The previous PDF regression was fixed.
+
+**Credentials to test flow:**
+*   **User:**
+    -   Email: 
+    -   Password: 
+
+**What agent forgot to execute**
+The agent has correctly identified the next step to resolve the last user-reported issue but has not yet implemented it. The task is clearly defined and ready for the next agent to execute.</analysis>
