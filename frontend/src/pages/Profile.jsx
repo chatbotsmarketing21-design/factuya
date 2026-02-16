@@ -30,6 +30,7 @@ const Profile = () => {
     gender: '',
     companyInfo: {
       name: '',
+      nit: '',
       email: '',
       phone: '',
       address: '',
