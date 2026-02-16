@@ -156,6 +156,7 @@ const InvoiceCreator = () => {
       }
       
       const fromData = invoiceData.fromAddress || invoiceData.from || {};
+      const toData = invoiceData.toAddress || invoiceData.to || {};
       
       setInvoice({
         ...invoiceData,
@@ -165,7 +166,16 @@ const InvoiceCreator = () => {
           // Fusionar el NIT del perfil si la factura antigua no lo tiene
           nit: fromData.nit || companyNit
         },
-        to: invoiceData.toAddress || invoiceData.to
+        to: {
+          name: toData.name || '',
+          nit: toData.nit || '',
+          email: toData.email || '',
+          phone: toData.phone || '',
+          address: toData.address || '',
+          city: toData.city || '',
+          state: toData.state || '',
+          zip: toData.zip || ''
+        }
       });
       
       // Cargar la plantilla guardada en la factura
