@@ -104,25 +104,35 @@ const InvoiceTemplateModerno = ({ invoice, template }) => {
         <div className="h-0.5 mb-6" style={{ backgroundColor: primaryColor }}></div>
 
         {/* Info Section */}
-        <div className="grid grid-cols-3 gap-4 mb-6 text-sm">
+        <div className="grid grid-cols-4 gap-4 mb-6 text-sm">
           {/* Facturar a */}
           <div>
             <h3 className="font-semibold mb-2" style={{ color: primaryColor }}>Facturar a</h3>
             <p className="text-gray-800 font-medium">{to.name || ''}</p>
-            {to.nit && <p className="text-gray-600">NIT: {to.nit}</p>}
+            {to.nit && <p className="text-gray-600">{to.nit}</p>}
+            {to.phone && <p className="text-gray-600">{to.phone}</p>}
             {to.address && <p className="text-gray-600">{to.address}</p>}
-            {(to.city || to.state || to.zip) && (
+            {(to.city || to.state) && (
               <p className="text-gray-600">
-                {to.zip && `${to.zip} `}{to.city}{to.city && to.state ? ', ' : ''}{to.state}
+                {to.city}{to.city && to.state ? ', ' : ''}{to.state}
               </p>
             )}
           </div>
 
-          {/* Spacer */}
-          <div></div>
+          {/* Enviar a */}
+          <div>
+            <h3 className="font-semibold mb-2" style={{ color: primaryColor }}>Enviar a</h3>
+            <p className="text-gray-800 font-medium">{to.name || ''}</p>
+            {to.address && <p className="text-gray-600">{to.address}</p>}
+            {(to.city || to.state) && (
+              <p className="text-gray-600">
+                {to.city}{to.city && to.state ? ', ' : ''}{to.state}
+              </p>
+            )}
+          </div>
 
           {/* Document Info */}
-          <div className="text-right">
+          <div className="text-right col-span-2">
             <div className="mb-2">
               <span className="font-semibold" style={{ color: primaryColor }}>Fecha de la {getDocumentTitle(invoice?.documentType).toLowerCase()}</span>
               <p className="text-gray-800">{invoice?.date || ''}</p>
