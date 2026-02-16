@@ -188,14 +188,6 @@ const InvoiceTemplateModerno = ({ invoice, template }) => {
           </div>
         </div>
 
-        {/* Signature Area */}
-        <div className="flex justify-end mb-8">
-          <div className="w-48 text-center">
-            <div className="h-16 border-b border-gray-400"></div>
-            <p className="text-sm text-gray-500 mt-1">Firma</p>
-          </div>
-        </div>
-
         {/* Divider */}
         <div className="h-0.5 mb-4" style={{ backgroundColor: primaryColor }}></div>
 
