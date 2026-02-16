@@ -146,6 +146,7 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 - **PDF Filename**: Updated to cleaner format (DOC-NUM_Client-Name.pdf)
 - **Due Date**: Auto-calculated to one month from issue date
 - **Templates Page**: Fully translated to Spanish/English with correct navigation
+- **NEW Template "Dexter"**: Added new colorful template with green/yellow/blue wave design on both sides. Template includes: FACTURAR A, ENVIAR A sections, items table, totals, signature area, and payment conditions section.
 
 ## Test Credentials
 - **Trial User**: chatbotsmarketing21@gmail.com / Test123!
