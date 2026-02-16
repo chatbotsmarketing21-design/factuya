@@ -101,7 +101,7 @@ const SubscriptionPanel = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-background">
         <Loader2 className="w-8 h-8 animate-spin text-lime-500" />
       </div>
     );
@@ -114,9 +114,9 @@ const SubscriptionPanel = () => {
   const progressPercent = isTrialing ? (invoicesUsed / maxInvoices) * 100 : 0;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-background">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-white dark:bg-card border-b border-gray-200 dark:border-border">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -124,11 +124,11 @@ const SubscriptionPanel = () => {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 {t('subscription.back')}
               </Button>
-              <h1 className="text-xl font-bold text-gray-900">{t('subscription.title')}</h1>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">{t('subscription.title')}</h1>
             </div>
             <Link to="/">
               <div className="flex items-center cursor-pointer">
-                <span className="text-2xl font-bold text-gray-900">Factu</span>
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">Factu</span>
                 <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
               </div>
             </Link>
@@ -138,26 +138,26 @@ const SubscriptionPanel = () => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Current Plan Card */}
-        <Card className="p-6 mb-6">
+        <Card className="p-6 mb-6 dark:bg-card">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
-              <div className={`p-3 rounded-full ${isPremium ? 'bg-lime-100' : 'bg-gray-100'}`}>
+              <div className={`p-3 rounded-full ${isPremium ? 'bg-lime-100 dark:bg-lime-900/30' : 'bg-gray-100 dark:bg-gray-800'}`}>
                 {isPremium ? (
-                  <Crown className="w-8 h-8 text-lime-600" />
+                  <Crown className="w-8 h-8 text-lime-600 dark:text-lime-400" />
                 ) : (
-                  <FileText className="w-8 h-8 text-gray-600" />
+                  <FileText className="w-8 h-8 text-gray-600 dark:text-gray-400" />
                 )}
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-2xl font-bold text-gray-900">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                     {isPremium ? t('subscription.premiumPlan') : t('subscription.freePlan')}
                   </h2>
                   <Badge className={isPremium ? 'bg-lime-500' : 'bg-gray-500'}>
                     {isPremium ? t('subscription.active') : t('subscription.trial')}
                   </Badge>
                 </div>
-                <p className="text-gray-600 mt-1">
+                <p className="text-gray-600 dark:text-gray-400 mt-1">
                   {isPremium 
                     ? t('subscription.premiumDesc')
                     : t('subscription.freeRemaining', { count: maxInvoices - invoicesUsed })
@@ -167,8 +167,8 @@ const SubscriptionPanel = () => {
             </div>
             {isPremium && (
               <div className="text-right">
-                <p className="text-3xl font-bold text-gray-900">$5</p>
-                <p className="text-sm text-gray-500">/{t('subscription.month')}</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">$5</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">/{t('subscription.month')}</p>
               </div>
             )}
           </div>
@@ -177,12 +177,12 @@ const SubscriptionPanel = () => {
           {isTrialing && (
             <div className="mt-6">
               <div className="flex justify-between text-sm mb-2">
-                <span className="text-gray-600">{t('subscription.invoicesUsed')}</span>
-                <span className="font-semibold">{invoicesUsed} / {maxInvoices}</span>
+                <span className="text-gray-600 dark:text-gray-400">{t('subscription.invoicesUsed')}</span>
+                <span className="font-semibold dark:text-white">{invoicesUsed} / {maxInvoices}</span>
               </div>
               <Progress value={progressPercent} className="h-3" />
               {invoicesUsed >= maxInvoices && (
-                <p className="text-sm text-red-600 mt-2 flex items-center gap-1">
+                <p className="text-sm text-red-600 dark:text-red-400 mt-2 flex items-center gap-1">
                   <AlertTriangle className="w-4 h-4" />
                   {t('subscription.limitReached')}
                 </p>
@@ -193,35 +193,35 @@ const SubscriptionPanel = () => {
 
         {/* Upgrade Card (for trial users) */}
         {!isPremium && (
-          <Card className="p-6 mb-6 border-2 border-lime-500 bg-gradient-to-r from-lime-50 to-green-50">
+          <Card className="p-6 mb-6 border-2 border-lime-500 bg-gradient-to-r from-lime-50 to-green-50 dark:from-lime-900/20 dark:to-green-900/20 dark:bg-card">
             <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="w-5 h-5 text-lime-600" />
-              <h3 className="text-lg font-bold text-gray-900">{t('subscription.upgradeToPremium')}</h3>
+              <Sparkles className="w-5 h-5 text-lime-600 dark:text-lime-400" />
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">{t('subscription.upgradeToPremium')}</h3>
             </div>
             
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-lime-600" />
-                  <span className="text-gray-700">{t('subscription.feature1')}</span>
+                  <Check className="w-5 h-5 text-lime-600 dark:text-lime-400" />
+                  <span className="text-gray-700 dark:text-gray-300">{t('subscription.feature1')}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-lime-600" />
-                  <span className="text-gray-700">{t('subscription.feature2')}</span>
+                  <Check className="w-5 h-5 text-lime-600 dark:text-lime-400" />
+                  <span className="text-gray-700 dark:text-gray-300">{t('subscription.feature2')}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-lime-600" />
-                  <span className="text-gray-700">{t('subscription.feature3')}</span>
+                  <Check className="w-5 h-5 text-lime-600 dark:text-lime-400" />
+                  <span className="text-gray-700 dark:text-gray-300">{t('subscription.feature3')}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-lime-600" />
-                  <span className="text-gray-700">{t('subscription.feature4')}</span>
+                  <Check className="w-5 h-5 text-lime-600 dark:text-lime-400" />
+                  <span className="text-gray-700 dark:text-gray-300">{t('subscription.feature4')}</span>
                 </div>
               </div>
               
-              <div className="flex flex-col justify-center items-center bg-white rounded-lg p-6">
-                <p className="text-4xl font-bold text-gray-900">$5</p>
-                <p className="text-gray-500 mb-4">/{t('subscription.month')}</p>
+              <div className="flex flex-col justify-center items-center bg-white dark:bg-gray-800 rounded-lg p-6">
+                <p className="text-4xl font-bold text-gray-900 dark:text-white">$5</p>
+                <p className="text-gray-500 dark:text-gray-400 mb-4">/{t('subscription.month')}</p>
                 <Button 
                   onClick={handleUpgrade}
                   className="w-full bg-lime-500 hover:bg-lime-600 text-white"
@@ -230,7 +230,7 @@ const SubscriptionPanel = () => {
                   <CreditCard className="w-4 h-4 mr-2" />
                   {t('subscription.subscribeNow')}
                 </Button>
-                <p className="text-xs text-gray-500 mt-2 text-center">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
                   {t('subscription.cancelAnytime')}
                 </p>
               </div>
@@ -240,45 +240,45 @@ const SubscriptionPanel = () => {
 
         {/* Subscription Details (for premium users) */}
         {isPremium && (
-          <Card className="p-6 mb-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">{t('subscription.details')}</h3>
+          <Card className="p-6 mb-6 dark:bg-card">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{t('subscription.details')}</h3>
             
             <div className="space-y-4">
-              <div className="flex items-center justify-between py-3 border-b">
+              <div className="flex items-center justify-between py-3 border-b dark:border-gray-700">
                 <div className="flex items-center gap-3">
                   <Calendar className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-600">{t('subscription.status')}</span>
+                  <span className="text-gray-600 dark:text-gray-400">{t('subscription.status')}</span>
                 </div>
                 <Badge className="bg-green-500">{t('subscription.active')}</Badge>
               </div>
               
-              <div className="flex items-center justify-between py-3 border-b">
+              <div className="flex items-center justify-between py-3 border-b dark:border-gray-700">
                 <div className="flex items-center gap-3">
                   <CreditCard className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-600">{t('subscription.plan')}</span>
+                  <span className="text-gray-600 dark:text-gray-400">{t('subscription.plan')}</span>
                 </div>
-                <span className="font-semibold">{t('subscription.premiumMonthly')} - $5/{t('subscription.month')}</span>
+                <span className="font-semibold dark:text-white">{t('subscription.premiumMonthly')} - $5/{t('subscription.month')}</span>
               </div>
               
-              <div className="flex items-center justify-between py-3 border-b">
+              <div className="flex items-center justify-between py-3 border-b dark:border-gray-700">
                 <div className="flex items-center gap-3">
                   <FileText className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-600">{t('subscription.invoicesCreated')}</span>
+                  <span className="text-gray-600 dark:text-gray-400">{t('subscription.invoicesCreated')}</span>
                 </div>
-                <span className="font-semibold">{invoicesUsed} ({t('subscription.unlimited')})</span>
+                <span className="font-semibold dark:text-white">{invoicesUsed} ({t('subscription.unlimited')})</span>
               </div>
             </div>
 
             {/* Cancel Subscription */}
-            <div className="mt-6 pt-6 border-t">
+            <div className="mt-6 pt-6 border-t dark:border-gray-700">
               <Button 
                 variant="outline" 
-                className="text-red-600 border-red-300 hover:bg-red-50"
+                className="text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20"
                 onClick={() => setShowCancelDialog(true)}
               >
                 {t('subscription.cancelSubscription')}
               </Button>
-              <p className="text-xs text-gray-500 mt-2">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
                 {t('subscription.cancelNote')}
               </p>
             </div>
@@ -286,9 +286,9 @@ const SubscriptionPanel = () => {
         )}
 
         {/* Help Section */}
-        <Card className="p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">{t('subscription.needHelp')}</h3>
-          <p className="text-gray-600 mb-4">
+        <Card className="p-6 dark:bg-card">
+          <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">{t('subscription.needHelp')}</h3>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
             {t('subscription.helpDesc')}
           </p>
           <Button variant="outline">
