@@ -1052,12 +1052,17 @@ const InvoiceCreator = () => {
                           <Label className="dark:text-gray-300">Cantidad</Label>
                           <Input
                             type="text"
-                            value={item.quantity ? Number(item.quantity).toLocaleString('es-CO') : ''}
+                            value={item.quantity || ''}
                             onChange={(e) => {
-                              const rawValue = e.target.value.replace(/\./g, '').replace(/,/g, '.');
-                              const numValue = parseFloat(rawValue) || 0;
-                              updateItem(index, 'quantity', numValue);
+                              // Permitir números con punto o coma como decimal
+                              const inputValue = e.target.value.replace(',', '.');
+                              // Solo permitir números y un punto decimal
+                              if (inputValue === '' || /^\d*\.?\d*$/.test(inputValue)) {
+                                const numValue = inputValue === '' ? 0 : parseFloat(inputValue) || 0;
+                                updateItem(index, 'quantity', inputValue === '' ? '' : numValue);
+                              }
                             }}
+                            placeholder="48.50"
                             className="dark:bg-secondary dark:border-border dark:text-white"
                           />
                         </div>
