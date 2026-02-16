@@ -52,15 +52,17 @@ const InvoiceTemplateModerno = ({ invoice, template }) => {
 
       {/* Left Sidebar */}
       <div 
-        className="absolute left-0 top-0 bottom-0 w-12 flex items-center justify-center"
+        className="absolute left-0 top-0 bottom-0 w-14 flex items-center justify-center"
         style={{ backgroundColor: primaryColor }}
       >
         <div 
-          className="text-white font-bold text-lg tracking-widest whitespace-nowrap"
+          className="text-white font-bold text-xl whitespace-nowrap"
           style={{ 
             writingMode: 'vertical-rl',
             transform: 'rotate(180deg)',
-            letterSpacing: '0.15em'
+            letterSpacing: '0.08em',
+            fontFamily: 'Arial, sans-serif',
+            textShadow: '1px 1px 2px rgba(0,0,0,0.2)'
           }}
         >
           {getDocumentTitle(invoice?.documentType)} {invoice?.number || 'S/N'}
@@ -68,7 +70,7 @@ const InvoiceTemplateModerno = ({ invoice, template }) => {
       </div>
 
       {/* Main Content */}
-      <div className="ml-12 p-8">
+      <div className="ml-14 p-8">
         {/* Header */}
         <div className="flex justify-between items-start mb-6">
           <div>
