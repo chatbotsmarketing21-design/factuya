@@ -1304,11 +1304,11 @@ const InvoiceCreator = () => {
       </div>
 
       {/* Mobile Preview Button - Fixed at bottom */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 p-3 bg-white dark:bg-card border-t border-gray-200 dark:border-border shadow-lg z-20">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 p-3 pb-4 bg-white dark:bg-card border-t border-gray-200 dark:border-border shadow-lg z-[100]">
         <Button 
           data-testid="mobile-preview-btn"
           onClick={() => setShowMobilePreview(true)}
-          className="w-full bg-lime-500 hover:bg-lime-600 text-white py-3"
+          className="w-full bg-lime-500 hover:bg-lime-600 text-white h-12"
         >
           <Eye className="w-5 h-5 mr-2" />
           Ver Vista Previa
