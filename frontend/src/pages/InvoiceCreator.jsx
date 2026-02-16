@@ -863,15 +863,27 @@ const InvoiceCreator = () => {
             <Card className="p-6 dark:bg-card">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Para (Cliente)</h2>
               <div className="space-y-4">
-                <div>
-                  <Label htmlFor="toName" className="dark:text-gray-300">Nombre del Cliente *</Label>
-                  <Input
-                    id="toName"
-                    value={invoice.to.name}
-                    onChange={(e) => updateTo('name', e.target.value)}
-                    required
-                    className="dark:bg-secondary dark:border-border dark:text-white"
-                  />
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="col-span-2">
+                    <Label htmlFor="toName" className="dark:text-gray-300">Nombre del Cliente *</Label>
+                    <Input
+                      id="toName"
+                      value={invoice.to.name}
+                      onChange={(e) => updateTo('name', e.target.value)}
+                      required
+                      className="dark:bg-secondary dark:border-border dark:text-white"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="toNit" className="dark:text-gray-300">NIT / Cédula</Label>
+                    <Input
+                      id="toNit"
+                      value={invoice.to.nit}
+                      onChange={(e) => updateTo('nit', e.target.value)}
+                      placeholder="123.456.789"
+                      className="dark:bg-secondary dark:border-border dark:text-white"
+                    />
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
