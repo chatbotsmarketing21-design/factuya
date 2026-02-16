@@ -22,7 +22,20 @@ export const AuthProvider = ({ children }) => {
       setUser(response.data);
     } catch (error) {
       console.error('Failed to load user:', error);
-      logout();
+      // Solo cerrar sesión si el token expiró (401) o es inválido (403)
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        logout();
+      } else {
+        // Si es otro error (red, servidor), intentar usar datos guardados
+        const savedUser = localStorage.getItem('user');
+        if (savedUser) {
+          try {
+            setUser(JSON.parse(savedUser));
+          } catch {
+            logout();
+          }
+        }
+      }
     } finally {
       setLoading(false);
     }
