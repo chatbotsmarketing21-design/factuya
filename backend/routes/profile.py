@@ -155,6 +155,8 @@ async def update_invoice_defaults(
         update_data["companyInfo.defaultTerms"] = defaults.terms
     if defaults.template is not None:
         update_data["companyInfo.defaultTemplate"] = defaults.template
+    if defaults.color is not None:
+        update_data["companyInfo.defaultColor"] = defaults.color
     
     if update_data:
         await db.users.update_one(
