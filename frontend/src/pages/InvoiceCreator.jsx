@@ -129,7 +129,8 @@ const InvoiceCreator = () => {
     notes: 'Thank you for your business!',
     terms: 'Payment due within 30 days',
     template: templateId,
-    signature: ''
+    signature: '',
+    signatureRotation: 0
   });
 
   useEffect(() => {
