@@ -91,8 +91,8 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
 
   return (
     <div className="bg-white w-full max-w-[800px] mx-auto shadow-lg" style={{ fontFamily: 'Arial, sans-serif' }}>
-      {/* Header with green bar */}
-      <div className="bg-lime-500 text-white px-6 py-3 flex justify-between items-center">
+      {/* Header with colored bar */}
+      <div className="text-white px-6 py-3 flex justify-between items-center" style={{ backgroundColor: primaryColor }}>
         <div>
           <span className="text-sm opacity-80">DOCUMENTO EQUIVALENTE A</span>
           <h1 className="text-2xl font-bold tracking-wide">CUENTA DE COBRO</h1>
@@ -112,7 +112,7 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
         <div className="flex justify-between mb-6">
           {/* Client Info - Who owes money (Left) - PAGO TOTAL */}
           <div className="w-1/2">
-            <p className="text-sm text-lime-600 font-semibold mb-2">PAGO TOTAL</p>
+            <p className="text-sm font-semibold mb-2" style={{ color: primaryColor }}>PAGO TOTAL</p>
             {invoice.to?.logo && (
               <img src={invoice.to.logo} alt="Logo" className="h-16 mb-3 object-contain" />
             )}
@@ -130,8 +130,8 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
 
           {/* Company Info - Who is owed money (Right) - DEBE A */}
           <div className="w-1/2 text-right">
-            <div className="bg-lime-50 border-l-4 border-lime-500 p-4 inline-block text-left">
-              <p className="text-sm text-lime-700 font-semibold mb-1">DEBE A:</p>
+            <div className="p-4 inline-block text-left" style={{ backgroundColor: `${primaryColor}15`, borderLeft: `4px solid ${primaryColor}` }}>
+              <p className="text-sm font-semibold mb-1" style={{ color: primaryColor }}>DEBE A:</p>
               <p className="font-bold text-gray-800">{companyInfo?.name || invoice.from?.name || '_______________'}</p>
               <p className="text-sm text-gray-600">NIT: {companyInfo?.nit || invoice.from?.nit || '_______________'}</p>
               <p className="text-sm text-gray-600">Tel: {companyInfo?.phone || invoice.from?.phone || '_______________'}</p>
@@ -149,7 +149,7 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
 
         {/* Concept Table */}
         <div className="mb-6">
-          <div className="bg-lime-500 text-white px-4 py-2 font-semibold">
+          <div className="text-white px-4 py-2 font-semibold" style={{ backgroundColor: primaryColor }}>
             POR CONCEPTO DE:
           </div>
           <table className="w-full border-collapse">
