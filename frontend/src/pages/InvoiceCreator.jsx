@@ -346,6 +346,15 @@ const InvoiceCreator = () => {
 
   const handleDocumentTypeChange = async (newType) => {
     updateInvoice('documentType', newType);
+    
+    // Si es Cuenta de Cobro, aplicar automáticamente la plantilla especial
+    if (newType === 'Cuenta de Cobro') {
+      const cuentaCobroTemplate = mockTemplates.find(t => t.type === 'cuenta_cobro');
+      if (cuentaCobroTemplate) {
+        setTemplate(cuentaCobroTemplate);
+      }
+    }
+    
     // Generar nuevo número para el tipo de documento seleccionado
     if (!isEditMode) {
       await generateInvoiceNumber(newType);
