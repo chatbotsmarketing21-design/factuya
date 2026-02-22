@@ -61,6 +61,8 @@ export const profileAPI = {
   updateCompany: (data) => api.put('/profile/company', data),
   updateLogo: (logo) => api.put('/profile/logo', { logo }),
   deleteLogo: () => api.delete('/profile/logo'),
+  updateSignature: (signature, signatureRotation) => api.put('/profile/signature', { signature, signatureRotation }),
+  deleteSignature: () => api.delete('/profile/signature'),
   updateInvoiceDefaults: (data) => api.put('/profile/invoice-defaults', data),
 };
 
