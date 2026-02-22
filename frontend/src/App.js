@@ -36,6 +36,7 @@ function AppRouter() {
       <Route path="/signup" element={<SignUp />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/privacy" element={<Privacy />} />
       <Route path="/templates" element={<Templates />} />
       <Route
         path="/create"
