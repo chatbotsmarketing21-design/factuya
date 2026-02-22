@@ -278,7 +278,9 @@ const InvoiceCreator = () => {
           city: companyInfo.city || '',
           state: companyInfo.state || '',
           zip: companyInfo.zip || '',
-          country: companyInfo.country || ''
+          country: companyInfo.country || '',
+          bank: companyInfo.bank || '',
+          bankAccount: companyInfo.bankAccount || ''
         }
       }));
     } catch (error) {
