@@ -4,9 +4,15 @@ import { Card } from './ui/card';
 import InvoiceTemplateWave from './InvoiceTemplateWave';
 import InvoiceTemplateDexter from './InvoiceTemplateDexter';
 import InvoiceTemplateModerno from './InvoiceTemplateModerno';
+import InvoiceTemplateCuentaCobro from './InvoiceTemplateCuentaCobro';
 
-const InvoicePreview = ({ invoice, template }) => {
+const InvoicePreview = ({ invoice, template, companyInfo }) => {
   const { t } = useTranslation();
+
+  // Si la plantilla es de tipo "cuenta_cobro" o el documento es Cuenta de Cobro, usar plantilla especial
+  if (template?.type === 'cuenta_cobro' || invoice?.documentType === 'Cuenta de Cobro') {
+    return <InvoiceTemplateCuentaCobro invoice={invoice} template={template} companyInfo={companyInfo || invoice?.from} />;
+  }
 
   // Si la plantilla es de tipo "wave", usar el componente especializado
   if (template?.type === 'wave') {
