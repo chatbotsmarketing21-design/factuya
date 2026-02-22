@@ -229,18 +229,25 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
           </div>
         </div>
 
-        {/* Signature Line */}
-        <div className="mt-12 flex justify-between">
-          <div className="w-64 text-center">
-            <div className="border-t border-gray-400 pt-2">
-              <p className="text-sm text-gray-600">{companyInfo?.name || 'NOMBRE EMPRESA'}</p>
-              <p className="text-xs text-gray-500">NIT: {companyInfo?.nit || '---'}</p>
+        {/* Signature Section */}
+        <div className="mt-10 pt-6 border-t border-gray-200">
+          <div className="flex justify-between">
+            {/* Firma Acreedor (Empresa) */}
+            <div className="w-64 text-center">
+              <p className="text-xs text-gray-500 mb-8">FIRMA ACREEDOR</p>
+              <div className="border-t-2 border-gray-400 pt-2">
+                <p className="text-sm font-medium text-gray-700">{companyInfo?.name || invoice.from?.name || '_______________'}</p>
+                <p className="text-xs text-gray-500">NIT: {companyInfo?.nit || invoice.from?.nit || '_______________'}</p>
+              </div>
             </div>
-          </div>
-          <div className="w-64 text-center">
-            <div className="border-t border-gray-400 pt-2">
-              <p className="text-sm text-gray-600">{invoice.to?.name || 'CLIENTE'}</p>
-              <p className="text-xs text-gray-500">C.C./NIT: {invoice.to?.nit || '---'}</p>
+            
+            {/* Firma Deudor (Cliente) */}
+            <div className="w-64 text-center">
+              <p className="text-xs text-gray-500 mb-8">FIRMA DEUDOR</p>
+              <div className="border-t-2 border-gray-400 pt-2">
+                <p className="text-sm font-medium text-gray-700">{invoice.to?.name || '_______________'}</p>
+                <p className="text-xs text-gray-500">C.C./NIT: {invoice.to?.nit || '_______________'}</p>
+              </div>
             </div>
           </div>
         </div>
