@@ -241,7 +241,10 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
                     src={invoice.signature} 
                     alt="Firma" 
                     className="max-h-20 max-w-[180px] object-contain"
-                    style={{ imageOrientation: 'from-image' }}
+                    style={{ 
+                      transform: `rotate(${invoice.signatureRotation || 0}deg)`,
+                      imageOrientation: 'from-image'
+                    }}
                   />
                 </div>
               ) : (
