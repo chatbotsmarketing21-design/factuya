@@ -51,6 +51,14 @@ function AppRouter() {
         }
       />
       <Route
+        path="/invoice"
+        element={
+          <ProtectedRoute>
+            <InvoiceCreator />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/dashboard"
         element={
           <ProtectedRoute>
