@@ -124,7 +124,17 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
    - All 32 i18n tests passed (English & Spanish translations verified)
    - Fallback language: Spanish (es)
 
-2. **Mobile Optimization (Previous)**: Complete responsive redesign of InvoiceCreator
+2. **Professional Hero Image on Landing Page (DONE)**
+   - Replaced skeleton placeholder with AI-generated professional invoice mockup image
+   - Image matches FactuYa! brand colors (lime green)
+
+3. **Google OAuth Login Fix (DONE)**
+   - Added `loginWithGoogle()` function to AuthContext that properly updates both localStorage AND React state
+   - Fixed import path in google_auth.py (utils.security → utils.auth)
+   - Fixed JWT exception handling (jwt.JWTError → jwt.exceptions.DecodeError)
+   - All 24 backend tests passed
+
+4. **Mobile Optimization (Previous)**: Complete responsive redesign of InvoiceCreator
    - Responsive header with mobile menu dropdown
    - Collapsible sections for all form areas
    - Mobile-friendly field layouts (grid adjustments)
