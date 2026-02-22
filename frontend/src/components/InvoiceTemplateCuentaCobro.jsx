@@ -107,8 +107,9 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
 
         {/* Two columns: Client Info (left) and Company/Creditor Info (right) */}
         <div className="flex justify-between mb-6">
-          {/* Client Info - Who owes money (Left) */}
+          {/* Client Info - Who owes money (Left) - PAGO TOTAL */}
           <div className="w-1/2">
+            <p className="text-sm text-lime-600 font-semibold mb-2">PAGO TOTAL</p>
             {invoice.to?.logo && (
               <img src={invoice.to.logo} alt="Logo" className="h-16 mb-3 object-contain" />
             )}
@@ -127,8 +128,7 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
           {/* Company Info - Who is owed money (Right) - DEBE A */}
           <div className="w-1/2 text-right">
             <div className="bg-lime-50 border-l-4 border-lime-500 p-4 inline-block text-left">
-              <p className="text-sm text-lime-700 font-semibold mb-1">PAGO TOTAL</p>
-              <p className="text-xs text-gray-500 mb-1">DEBE A:</p>
+              <p className="text-sm text-lime-700 font-semibold mb-1">DEBE A:</p>
               <p className="font-bold text-gray-800">{companyInfo?.name || invoice.from?.name || '_______________'}</p>
               <p className="text-sm text-gray-600">NIT: {companyInfo?.nit || invoice.from?.nit || '_______________'}</p>
               <p className="text-sm text-gray-600">Tel: {companyInfo?.phone || invoice.from?.phone || '_______________'}</p>
