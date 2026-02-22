@@ -231,10 +231,10 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
 
         {/* Signature Section */}
         <div className="mt-10 pt-6 border-t border-gray-200">
-          <div className="flex justify-between">
+          <div className="flex justify-center">
             {/* Firma Acreedor (Empresa) */}
             <div className="w-64 text-center">
-              <p className="text-xs text-gray-500 mb-2">FIRMA ACREEDOR</p>
+              <p className="text-xs text-gray-500 mb-2">FIRMA</p>
               {invoice.signature ? (
                 <div className="mb-2 h-16 flex items-end justify-center">
                   <img src={invoice.signature} alt="Firma" className="max-h-16 max-w-[150px] object-contain" />
@@ -245,16 +245,6 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
               <div className="border-t-2 border-gray-400 pt-2">
                 <p className="text-sm font-medium text-gray-700">{companyInfo?.name || invoice.from?.name || '_______________'}</p>
                 <p className="text-xs text-gray-500">NIT: {companyInfo?.nit || invoice.from?.nit || '_______________'}</p>
-              </div>
-            </div>
-            
-            {/* Firma Deudor (Cliente) */}
-            <div className="w-64 text-center">
-              <p className="text-xs text-gray-500 mb-2">FIRMA DEUDOR</p>
-              <div className="mb-2 h-16"></div>
-              <div className="border-t-2 border-gray-400 pt-2">
-                <p className="text-sm font-medium text-gray-700">{invoice.to?.name || '_______________'}</p>
-                <p className="text-xs text-gray-500">C.C./NIT: {invoice.to?.nit || '_______________'}</p>
               </div>
             </div>
           </div>
