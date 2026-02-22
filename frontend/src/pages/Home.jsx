@@ -67,7 +67,7 @@ const Home = () => {
             <h1 className="text-5xl font-bold text-gray-900 mb-6" data-testid="landing-hero-title">
               {t('landing.heroTitle')}
             </h1>
-            <Link to={user ? "/dashboard" : "/create"}>
+            <Link to="/create">
               <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white text-xl px-12 py-6 rounded-lg mt-8" data-testid="landing-hero-cta">
                 {t('landing.heroButton')}
               </Button>
