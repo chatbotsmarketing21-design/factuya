@@ -140,6 +140,14 @@ const InvoiceCreator = () => {
       loadCompanyInfo();
       generateInvoiceNumber(invoice.documentType);
       
+      // Calcular totales de los items copiados
+      const copiedItems = copyData.items || [];
+      const subtotal = copiedItems.reduce((sum, item) => sum + (item.amount || 0), 0);
+      const taxRate = copyData.taxRate || 0;
+      const hasTax = copyData.hasTax || false;
+      const tax = hasTax ? (subtotal * taxRate) / 100 : 0;
+      const total = subtotal + tax;
+      
       // Aplicar los datos copiados
       setTimeout(() => {
         setInvoice(prev => ({
@@ -154,9 +162,14 @@ const InvoiceCreator = () => {
             state: copyData.to?.state || '',
             zip: copyData.to?.zip || ''
           },
-          items: copyData.items || prev.items,
+          items: copiedItems,
           notes: copyData.notes || prev.notes,
-          terms: copyData.terms || prev.terms
+          terms: copyData.terms || prev.terms,
+          hasTax: hasTax,
+          taxRate: taxRate,
+          subtotal: subtotal,
+          tax: tax,
+          total: total
         }));
         
         // Si hay plantilla en los datos copiados, aplicarla
