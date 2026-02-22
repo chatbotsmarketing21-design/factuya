@@ -21,7 +21,7 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 - [x] User registration with email/password
 - [x] User login with JWT tokens
 - [x] Protected routes
-- [ ] Google OAuth login (in progress - redirect loop issue)
+- [x] **Google OAuth login (FIXED Feb 2026)** - Fixed redirect loop by properly updating AuthContext state
 
 ### Invoice Management
 - [x] Create invoices with customer details
