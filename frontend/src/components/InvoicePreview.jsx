@@ -9,8 +9,8 @@ import InvoiceTemplateCuentaCobro from './InvoiceTemplateCuentaCobro';
 const InvoicePreview = ({ invoice, template, companyInfo }) => {
   const { t } = useTranslation();
 
-  // Si la plantilla es de tipo "cuenta_cobro" o el documento es Cuenta de Cobro (bill), usar plantilla especial
-  if (template?.type === 'cuenta_cobro' || invoice?.documentType === 'bill') {
+  // Si el documento es Cuenta de Cobro (bill), usar plantilla especial
+  if (invoice?.documentType === 'bill') {
     return <InvoiceTemplateCuentaCobro invoice={invoice} template={template} companyInfo={companyInfo || invoice?.from} />;
   }
 
