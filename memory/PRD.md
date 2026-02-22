@@ -62,6 +62,7 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 - [x] English language support
 - [x] Language switcher component
 - [x] Full UI translation
+- [x] **AUTO-DETECT browser language on landing page** (Feb 2026)
 
 ### Subscription Model
 - [x] 10 free invoices for trial users
