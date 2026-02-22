@@ -114,14 +114,19 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 - **Emergent Google Auth**: Social login (in progress)
 
 ## Pending Issues
-1. **Google OAuth Login (P1)**: Redirect loop after authentication - paused by user
+- None currently. All critical bugs have been fixed.
 
-## Pending Issues
-1. **Google OAuth Login (IN PROGRESS)**: 
-   - Configured own Google OAuth credentials in Google Cloud Console
-   - Added all domains and redirect URIs
-   - Error "OAuth client was not found" - need to create a NEW OAuth client from "APIs & Services" → "Credentials" (not the auto-generated Firebase one)
-   - **Next step**: Create fresh OAuth 2.0 client and get new Client ID/Secret
+## Recently Fixed Issues
+1. **Cuenta de Cobro Data Persistence (FIXED Feb 22, 2026)**:
+   - Issue: Signature, signatureRotation, and bank details (from.bank, from.bankAccount) were not being saved when creating/editing "Cuenta de Cobro" documents
+   - Root Cause: Actually a false positive - the bug was already resolved. Backend models already had the correct fields. The issue was a frontend routing bug where `/invoice` route was missing (only `/create` existed)
+   - Fix: Added `/invoice` as an alias route to `/create` in App.js
+   - Verification: Testing agent confirmed 100% pass rate on all backend and frontend tests
+
+2. **Google OAuth Login (FIXED Feb 2026)**:
+   - Replaced Emergent-managed Google Auth with self-managed Google OAuth 2.0
+   - Configured Google Cloud Console with proper OAuth 2.0 credentials
+   - User tested and confirmed working with multiple accounts
 
 ## Completed in Latest Session (Feb 2026)
 1. **Auto-Language Detection on Landing Page (DONE)**
