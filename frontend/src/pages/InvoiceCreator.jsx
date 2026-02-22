@@ -1348,9 +1348,16 @@ const InvoiceCreator = () => {
                               variant="outline"
                               size="sm"
                               className="h-10 px-3"
-                              onClick={() => {
+                              onClick={async () => {
                                 const newRotation = ((invoice.signatureRotation || 0) + 90) % 360;
                                 updateInvoice('signatureRotation', newRotation);
+                                
+                                // Guardar rotación en el perfil
+                                try {
+                                  await profileAPI.updateSignature(invoice.signature, newRotation);
+                                } catch (error) {
+                                  console.error('Error saving signature rotation:', error);
+                                }
                               }}
                               title="Rotar 90°"
                             >
