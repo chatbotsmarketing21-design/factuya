@@ -128,7 +128,8 @@ const InvoiceCreator = () => {
     hasTax: false,
     notes: 'Thank you for your business!',
     terms: 'Payment due within 30 days',
-    template: templateId
+    template: templateId,
+    signature: ''
   });
 
   useEffect(() => {
