@@ -49,7 +49,7 @@ const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
   };
 
   // Usar el color de la plantilla seleccionada
-  const templateColor = template?.color || '#2563eb';
+  const displayColor = activeColor || template?.color || '#2563eb';
 
   return (
     <Card className="p-8 bg-white shadow-lg relative overflow-hidden">
@@ -73,10 +73,10 @@ const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
       
       <div className="space-y-6">
         {/* Header */}
-        <div className="border-b pb-6" style={{ borderColor: templateColor }}>
+        <div className="border-b pb-6" style={{ borderColor: displayColor }}>
           <div className="flex justify-between items-start">
             <div>
-              <h1 className="text-4xl font-bold" style={{ color: templateColor }}>
+              <h1 className="text-4xl font-bold" style={{ color: displayColor }}>
                 {getDocumentTitle(invoice?.documentType || 'invoice')}
               </h1>
               <p className="text-gray-600 mt-2">#{invoice?.number || invoice?.invoiceNumber || 'S/N'}</p>
