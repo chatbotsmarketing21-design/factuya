@@ -146,7 +146,7 @@ const Home = () => {
           <p className="text-xl text-blue-100 mb-8">
             {t('landing.ctaSubtitle')}
           </p>
-          <Link to="/create">
+          <Link to={user ? "/dashboard" : "/create"}>
             <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white font-semibold text-xl px-12 py-6 rounded-lg" data-testid="landing-cta-btn">
               {t('landing.ctaButton')}
             </Button>
