@@ -1,109 +1,63 @@
 // Mock data for Invoice Home clone
 
+// Colores disponibles para las plantillas
+export const templateColors = [
+  { id: 'black', name: 'Negro', hex: '#1f2937' },
+  { id: 'red', name: 'Rojo', hex: '#DC2626' },
+  { id: 'orange', name: 'Naranja', hex: '#ea580c' },
+  { id: 'yellow', name: 'Amarillo', hex: '#ca8a04' },
+  { id: 'blue', name: 'Azul', hex: '#2563EB' },
+  { id: 'cyan', name: 'Cyan', hex: '#0891b2' },
+  { id: 'green', name: 'Verde', hex: '#059669' },
+  { id: 'lime', name: 'Lima', hex: '#84cc16' },
+];
+
+// Plantillas base (solo 5 diseños únicos)
 export const mockTemplates = [
   {
     id: 1,
-    name: "Modern Blue",
-    thumbnail: "https://images.unsplash.com/photo-1554224311-beee460ae6ba?w=400&h=500&fit=crop",
-    color: "#2563eb",
-    style: "modern",
-    type: "default"
+    name: "Clásica",
+    thumbnail: null,
+    color: "#1f2937",
+    style: "classic",
+    type: "default",
+    supportsColor: true
   },
   {
     id: 2,
-    name: "Professional Green",
-    thumbnail: "https://images.unsplash.com/photo-1554224311-beee460ae6ba?w=400&h=500&fit=crop",
-    color: "#059669",
-    style: "professional",
-    type: "default"
+    name: "Moderno",
+    thumbnail: "https://customer-assets.emergentagent.com/job_4b4e60b7-72b2-4913-be5c-ff8a02d8cf3d/artifacts/ljexcauz_modelo-cotizacion-es-moderno-rojo-750px.png",
+    color: "#558B2F",
+    style: "moderno",
+    type: "moderno",
+    supportsColor: true
   },
   {
     id: 3,
-    name: "Classic Black",
-    thumbnail: "https://images.unsplash.com/photo-1554224311-beee460ae6ba?w=400&h=500&fit=crop",
-    color: "#1f2937",
-    style: "classic",
-    type: "default"
-  },
-  {
-    id: 4,
-    name: "Creative Purple",
-    thumbnail: "https://images.unsplash.com/photo-1554224311-beee460ae6ba?w=400&h=500&fit=crop",
-    color: "#7c3aed",
-    style: "creative",
-    type: "default"
-  },
-  {
-    id: 5,
-    name: "Elegant Orange",
-    thumbnail: "https://images.unsplash.com/photo-1554224311-beee460ae6ba?w=400&h=500&fit=crop",
-    color: "#ea580c",
-    style: "elegant",
-    type: "default"
-  },
-  {
-    id: 6,
-    name: "Simple Gray",
-    thumbnail: "https://images.unsplash.com/photo-1554224311-beee460ae6ba?w=400&h=500&fit=crop",
-    color: "#6b7280",
-    style: "simple",
-    type: "default"
-  },
-  {
-    id: 7,
-    name: "Olas Azules",
+    name: "Olas",
     thumbnail: "https://customer-assets.emergentagent.com/job_b3f4ff57-e03f-4202-b03a-ed6cf31eff1d/artifacts/a9i7im3s_modelo-cotizacion-es-buena-onda-750px.png",
     color: "#4AABE3",
     style: "wave",
-    type: "wave"
+    type: "wave",
+    supportsColor: true
   },
   {
-    id: 8,
+    id: 4,
     name: "Dexter",
     thumbnail: "https://customer-assets.emergentagent.com/job_4b4e60b7-72b2-4913-be5c-ff8a02d8cf3d/artifacts/aegsn5y2_modelo-cotizacion-es-dexter-750px.png",
     color: "#1565C0",
     style: "colorful",
-    type: "dexter"
+    type: "dexter",
+    supportsColor: true
   },
   {
-    id: 9,
-    name: "Moderno Rojo",
-    thumbnail: "https://customer-assets.emergentagent.com/job_4b4e60b7-72b2-4913-be5c-ff8a02d8cf3d/artifacts/ljexcauz_modelo-cotizacion-es-moderno-rojo-750px.png",
-    color: "#DC2626",
-    style: "moderno",
-    type: "moderno"
-  },
-  {
-    id: 10,
-    name: "Moderno Azul",
-    thumbnail: "https://customer-assets.emergentagent.com/job_4b4e60b7-72b2-4913-be5c-ff8a02d8cf3d/artifacts/ljexcauz_modelo-cotizacion-es-moderno-rojo-750px.png",
-    color: "#2563EB",
-    style: "moderno",
-    type: "moderno"
-  },
-  {
-    id: 11,
-    name: "Moderno Verde",
-    thumbnail: "https://customer-assets.emergentagent.com/job_4b4e60b7-72b2-4913-be5c-ff8a02d8cf3d/artifacts/ljexcauz_modelo-cotizacion-es-moderno-rojo-750px.png",
-    color: "#558B2F",
-    style: "moderno",
-    type: "moderno"
-  },
-  {
-    id: 12,
-    name: "Moderno Gris",
-    thumbnail: "https://customer-assets.emergentagent.com/job_4b4e60b7-72b2-4913-be5c-ff8a02d8cf3d/artifacts/ljexcauz_modelo-cotizacion-es-moderno-rojo-750px.png",
-    color: "#4B5563",
-    style: "moderno",
-    type: "moderno"
-  },
-  {
-    id: 13,
+    id: 5,
     name: "Cuenta de Cobro",
     thumbnail: "https://static.prod-images.emergentagent.com/jobs/380f7905-e22e-4890-bf32-ad048c328c8c/images/21106796b14a0c297a5cce514001ee66d41cc9354b26183075cfce3e6c6e17fb.png",
     color: "#84cc16",
     style: "cuenta_cobro",
     type: "cuenta_cobro",
+    supportsColor: true,
     documentTypeOnly: "Cuenta de Cobro"
   }
 ];
