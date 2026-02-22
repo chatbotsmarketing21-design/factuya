@@ -13,15 +13,16 @@ i18n
       es: { translation: es },
       en: { translation: en }
     },
-    lng: localStorage.getItem('i18nextLng') || 'es',
     fallbackLng: 'es',
+    supportedLngs: ['es', 'en'],
     debug: false,
     interpolation: {
       escapeValue: false
     },
     detection: {
-      order: ['localStorage', 'navigator'],
-      caches: ['localStorage']
+      order: ['localStorage', 'navigator', 'htmlTag'],
+      caches: ['localStorage'],
+      lookupLocalStorage: 'i18nextLng'
     }
   });
 
