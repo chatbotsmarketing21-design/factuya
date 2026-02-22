@@ -1365,17 +1365,33 @@ const InvoiceCreator = () => {
                               id="signature-upload"
                               accept="image/png,image/jpeg,image/jpg"
                               className="hidden"
-                              onChange={(e) => {
+                              onChange={async (e) => {
                                 const file = e.target.files?.[0];
                                 if (file) {
                                   if (file.size > 1024 * 1024) {
-                                    alert('La firma no debe superar 1MB');
+                                    toast({
+                                      title: "Error",
+                                      description: "La firma no debe superar 1MB",
+                                      variant: "destructive"
+                                    });
                                     return;
                                   }
                                   const reader = new FileReader();
-                                  reader.onload = (event) => {
-                                    updateInvoice('signature', event.target?.result);
+                                  reader.onload = async (event) => {
+                                    const signatureData = event.target?.result;
+                                    updateInvoice('signature', signatureData);
                                     updateInvoice('signatureRotation', 0);
+                                    
+                                    // Guardar firma en el perfil
+                                    try {
+                                      await profileAPI.updateSignature(signatureData, 0);
+                                      toast({
+                                        title: "¡Firma guardada!",
+                                        description: "La firma se ha guardado y aparecerá en tus próximos documentos",
+                                      });
+                                    } catch (error) {
+                                      console.error('Error saving signature:', error);
+                                    }
                                   };
                                   reader.readAsDataURL(file);
                                 }
