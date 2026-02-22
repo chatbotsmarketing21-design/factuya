@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
-import { getTemplateById } from '../mock/invoiceData';
+import { getTemplateById, mockTemplates } from '../mock/invoiceData';
 import { invoiceAPI, profileAPI } from '../services/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
