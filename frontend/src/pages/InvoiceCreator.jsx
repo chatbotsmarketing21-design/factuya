@@ -263,8 +263,13 @@ const InvoiceCreator = () => {
       
       // Cargar plantilla guardada (solo si no viene de URL)
       if (companyInfo.defaultTemplate && !searchParams.get('template')) {
-        setTemplate(getTemplateById(companyInfo.defaultTemplate));
+        const savedTemplate = getTemplateById(companyInfo.defaultTemplate);
+        setTemplate(savedTemplate);
+        setUserDefaultTemplate(savedTemplate); // Guardar como plantilla por defecto del usuario
         setInvoice(prev => ({ ...prev, template: companyInfo.defaultTemplate }));
+      } else {
+        // Si viene de URL o no hay plantilla guardada, usar la actual como default
+        setUserDefaultTemplate(getTemplateById(templateId));
       }
       
       setInvoice(prev => ({
