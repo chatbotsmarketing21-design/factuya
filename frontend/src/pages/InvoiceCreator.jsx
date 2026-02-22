@@ -37,6 +37,7 @@ const InvoiceCreator = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const templateId = parseInt(searchParams.get('template')) || 1;
+  const colorFromUrl = searchParams.get('color');
   const invoiceId = searchParams.get('id'); // ID de factura para editar
   const copyData = location.state?.copyFrom; // Datos copiados de otra factura
   const { toast } = useToast();
@@ -49,6 +50,7 @@ const InvoiceCreator = () => {
   const [tempTaxRate, setTempTaxRate] = useState(19);
   const [isCompoundTax, setIsCompoundTax] = useState(false);
   const [template, setTemplate] = useState(getTemplateById(templateId));
+  const [templateColor, setTemplateColor] = useState(colorFromUrl || '#84cc16'); // Color de la plantilla
   const [userDefaultTemplate, setUserDefaultTemplate] = useState(null); // Plantilla guardada del usuario
   const invoicePreviewRef = useRef(null);
   const [showMobilePreview, setShowMobilePreview] = useState(false);
