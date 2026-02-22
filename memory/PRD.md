@@ -117,7 +117,14 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 1. **Google OAuth Login (P1)**: Redirect loop after authentication - paused by user
 
 ## Completed in Latest Session (Feb 2026)
-1. **Mobile Optimization**: Complete responsive redesign of InvoiceCreator
+1. **Auto-Language Detection on Landing Page (DONE)**
+   - Configured i18next-browser-languagedetector with detection order: localStorage → navigator → htmlTag
+   - Added all landing page text to translation files (en.json, es.json)
+   - Updated Home.jsx to use useTranslation() hook
+   - All 32 i18n tests passed (English & Spanish translations verified)
+   - Fallback language: Spanish (es)
+
+2. **Mobile Optimization (Previous)**: Complete responsive redesign of InvoiceCreator
    - Responsive header with mobile menu dropdown
    - Collapsible sections for all form areas
    - Mobile-friendly field layouts (grid adjustments)
