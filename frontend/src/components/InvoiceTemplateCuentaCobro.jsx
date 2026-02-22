@@ -219,12 +219,12 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
           <p className="text-sm font-semibold text-gray-700 mb-2">DATOS PARA PAGO:</p>
           <div className="flex gap-8 text-sm text-gray-600">
             <div>
-              <p><span className="font-medium">Titular:</span> {companyInfo?.name || '---'}</p>
-              <p><span className="font-medium">NIT:</span> {companyInfo?.nit || '---'}</p>
+              <p><span className="font-medium">Titular:</span> {companyInfo?.name || invoice.from?.name || '---'}</p>
+              <p><span className="font-medium">NIT:</span> {companyInfo?.nit || invoice.from?.nit || '---'}</p>
             </div>
             <div>
-              <p><span className="font-medium">Banco:</span> {companyInfo?.bank || 'BANCOLOMBIA'}</p>
-              <p><span className="font-medium">Cuenta:</span> {companyInfo?.bankAccount || '---'}</p>
+              <p><span className="font-medium">Banco:</span> {companyInfo?.bank || invoice.from?.bank || '---'}</p>
+              <p><span className="font-medium">Cuenta:</span> {companyInfo?.bankAccount || invoice.from?.bankAccount || '---'}</p>
             </div>
           </div>
         </div>
