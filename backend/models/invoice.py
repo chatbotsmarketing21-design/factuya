@@ -13,6 +13,8 @@ class Address(BaseModel):
     state: Optional[str] = None
     zip: Optional[str] = None
     country: Optional[str] = None
+    bank: Optional[str] = None
+    bankAccount: Optional[str] = None
 
 class InvoiceItem(BaseModel):
     description: str
