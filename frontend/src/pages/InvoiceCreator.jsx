@@ -274,6 +274,11 @@ const InvoiceCreator = () => {
         setUserDefaultTemplate(getTemplateById(templateId));
       }
       
+      // Cargar color guardado (solo si no viene de URL)
+      if (companyInfo.defaultColor && !colorFromUrl) {
+        setTemplateColor(companyInfo.defaultColor);
+      }
+      
       setInvoice(prev => ({
         ...prev,
         logo: companyInfo.logo || '',  // Cargar logo guardado
