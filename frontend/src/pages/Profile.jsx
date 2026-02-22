@@ -37,7 +37,9 @@ const Profile = () => {
       city: '',
       state: '',
       zip: '',
-      country: ''
+      country: '',
+      bank: '',
+      bankAccount: ''
     }
   });
 
