@@ -145,7 +145,7 @@ const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
         <div>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b-2" style={{ borderColor: templateColor }}>
+              <tr className="border-b-2" style={{ borderColor: displayColor }}>
                 <th className="text-left py-2 font-semibold text-gray-700">{t('preview.description')}</th>
                 <th className="text-center py-2 font-semibold text-gray-700">{t('preview.qty')}</th>
                 <th className="text-right py-2 font-semibold text-gray-700">{t('preview.rate')}</th>
@@ -178,9 +178,9 @@ const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
                 <span className="font-semibold text-gray-900">${formatCurrency(invoice?.tax)}</span>
               </div>
             )}
-            <div className="flex justify-between text-lg font-bold pt-2 border-t-2" style={{ borderColor: templateColor }}>
+            <div className="flex justify-between text-lg font-bold pt-2 border-t-2" style={{ borderColor: displayColor }}>
               <span>{t('preview.total')}:</span>
-              <span style={{ color: templateColor }}>${formatCurrency(invoice?.total)}</span>
+              <span style={{ color: displayColor }}>${formatCurrency(invoice?.total)}</span>
             </div>
           </div>
         </div>
