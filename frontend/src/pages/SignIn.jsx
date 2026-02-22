@@ -15,7 +15,7 @@ const SignIn = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
