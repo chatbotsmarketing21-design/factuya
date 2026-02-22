@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-const InvoiceTemplateModerno = ({ invoice, template }) => {
+const InvoiceTemplateModerno = ({ invoice, template, templateColor }) => {
   const { t } = useTranslation();
 
   // Safe access to nested properties
@@ -10,8 +10,8 @@ const InvoiceTemplateModerno = ({ invoice, template }) => {
   const items = invoice?.items || [];
   const isPaid = invoice?.status === 'paid';
 
-  // Color dinámico desde la plantilla
-  const primaryColor = template?.color || '#DC2626';
+  // Color dinámico: prioridad al color personalizado, luego el de la plantilla
+  const primaryColor = templateColor || template?.color || '#DC2626';
 
   // Función para formatear números
   const formatCurrency = (value) => {
