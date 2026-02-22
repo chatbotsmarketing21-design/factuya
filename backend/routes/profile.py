@@ -92,6 +92,45 @@ async def delete_company_logo(user_id: str = Depends(get_current_user_id)):
     
     return {"message": "Logo eliminado correctamente"}
 
+@router.put("/signature")
+async def update_company_signature(
+    signature_data: SignatureUpdate,
+    user_id: str = Depends(get_current_user_id)
+):
+    """Update user's signature for invoices"""
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Update signature in company info
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {
+            "companyInfo.signature": signature_data.signature,
+            "companyInfo.signatureRotation": signature_data.signatureRotation
+        }}
+    )
+    
+    return {"message": "Firma guardada correctamente"}
+
+@router.delete("/signature")
+async def delete_company_signature(user_id: str = Depends(get_current_user_id)):
+    """Delete user's signature"""
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Remove signature from company info
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {
+            "companyInfo.signature": None,
+            "companyInfo.signatureRotation": 0
+        }}
+    )
+    
+    return {"message": "Firma eliminada correctamente"}
+
 
 class InvoiceDefaultsUpdate(BaseModel):
     notes: Optional[str] = None
