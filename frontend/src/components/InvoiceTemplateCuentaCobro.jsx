@@ -144,17 +144,17 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
             <tbody>
               {invoice.items && invoice.items.map((item, index) => (
                 <tr key={index} className="bg-white">
-                  <td className="border border-gray-300 px-3 py-2 text-center text-sm">
-                    {item.quantity !== undefined ? item.quantity : '-'}
+                  <td className="border border-gray-300 px-3 py-2 text-center text-sm text-gray-800">
+                    {String(item.quantity || 0)}
                   </td>
-                  <td className="border border-gray-300 px-3 py-2 text-sm">
-                    {item.description || '-'}
+                  <td className="border border-gray-300 px-3 py-2 text-sm text-gray-800">
+                    {String(item.description || 'Sin descripción')}
                   </td>
-                  <td className="border border-gray-300 px-3 py-2 text-right text-sm">
-                    ${formatCurrency(item.rate || 0)}
+                  <td className="border border-gray-300 px-3 py-2 text-right text-sm text-gray-800">
+                    ${formatCurrency(Number(item.rate) || 0)}
                   </td>
-                  <td className="border border-gray-300 px-3 py-2 text-right text-sm">
-                    ${formatCurrency(item.amount || 0)}
+                  <td className="border border-gray-300 px-3 py-2 text-right text-sm text-gray-800">
+                    ${formatCurrency(Number(item.amount) || 0)}
                   </td>
                 </tr>
               ))}
