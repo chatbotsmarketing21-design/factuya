@@ -1335,9 +1335,20 @@ const InvoiceCreator = () => {
                                 variant="destructive"
                                 size="sm"
                                 className="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full"
-                                onClick={() => {
+                                onClick={async () => {
                                   updateInvoice('signature', '');
                                   updateInvoice('signatureRotation', 0);
+                                  
+                                  // Eliminar firma del perfil
+                                  try {
+                                    await profileAPI.deleteSignature();
+                                    toast({
+                                      title: "Firma eliminada",
+                                      description: "La firma ha sido removida de tu perfil",
+                                    });
+                                  } catch (error) {
+                                    console.error('Error deleting signature:', error);
+                                  }
                                 }}
                               >
                                 ×
