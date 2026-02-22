@@ -52,7 +52,7 @@ const Home = () => {
                   {t('landing.signIn')}
                 </Button>
               </Link>
-              <Link to="/create">
+              <Link to={user ? "/dashboard" : "/create"}>
                 <Button className="bg-lime-500 hover:bg-lime-600 text-white font-semibold" data-testid="landing-create-invoice-btn">
                   {t('landing.createInvoice')}
                 </Button>
