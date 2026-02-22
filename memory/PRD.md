@@ -143,12 +143,11 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
    - Desktop layout unchanged (two-column with sticky preview)
 
 ## Upcoming Tasks
-1. **P1**: Fix Google OAuth Login (redirect loop issue)
-2. **P1**: Integrate Wompi payment gateway (replacement for Stripe in Colombia)
-3. **P2**: Configure production emailing in Resend
-4. **P2**: Add more custom invoice templates
-5. **P2**: Client and Product management sections
-6. **P2**: Advanced reporting with charts
+1. **P1**: Integrate Wompi payment gateway (replacement for Stripe in Colombia)
+2. **P2**: Configure production emailing in Resend
+3. **P2**: Add more custom invoice templates
+4. **P2**: Client and Product management sections
+5. **P2**: Advanced reporting with charts
 
 ## Deployment Information
 - **Production Server**: Hostinger VPS (Ubuntu) at IP 187.77.19.47
