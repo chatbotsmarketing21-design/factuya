@@ -236,8 +236,13 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
             <div className="w-64 text-center">
               <p className="text-xs text-gray-500 mb-2">FIRMA</p>
               {invoice.signature ? (
-                <div className="mb-2 h-16 flex items-end justify-center">
-                  <img src={invoice.signature} alt="Firma" className="max-h-16 max-w-[150px] object-contain" />
+                <div className="mb-2 h-20 flex items-end justify-center">
+                  <img 
+                    src={invoice.signature} 
+                    alt="Firma" 
+                    className="max-h-20 max-w-[180px] object-contain"
+                    style={{ imageOrientation: 'from-image' }}
+                  />
                 </div>
               ) : (
                 <div className="mb-2 h-16"></div>
