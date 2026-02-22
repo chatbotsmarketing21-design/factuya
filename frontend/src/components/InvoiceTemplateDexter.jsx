@@ -74,7 +74,7 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
       <div className="relative z-10 px-20 py-8">
         {/* Document Title */}
         <div className="mb-6">
-          <h1 className="text-4xl font-bold tracking-wide" style={{ color: '#1565C0', fontFamily: 'Georgia, serif' }}>
+          <h1 className="text-4xl font-bold tracking-wide" style={{ color: primaryColor, fontFamily: 'Georgia, serif' }}>
             {getDocumentTitle(invoice?.documentType)}
           </h1>
           <div className="h-1 w-48 mt-2" style={{ backgroundColor: '#4FC3F7' }}></div>
@@ -96,7 +96,7 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
         <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
           {/* Bill To */}
           <div>
-            <h3 className="font-bold text-gray-700 mb-2" style={{ color: '#1565C0' }}>FACTURAR A</h3>
+            <h3 className="font-bold text-gray-700 mb-2" style={{ color: primaryColor }}>FACTURAR A</h3>
             <p className="text-gray-800">{to.name || ''}</p>
             {to.nit && <p className="text-gray-600">NIT: {to.nit}</p>}
             {to.address && <p className="text-gray-600">{to.address}</p>}
@@ -110,15 +110,15 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
           {/* Document Info */}
           <div className="text-right">
             <div className="mb-1">
-              <span className="font-bold text-gray-700" style={{ color: '#1565C0' }}>{getDocumentTitle(invoice?.documentType)} #</span>
+              <span className="font-bold text-gray-700" style={{ color: primaryColor }}>{getDocumentTitle(invoice?.documentType)} #</span>
               <span className="ml-2 text-gray-800">{invoice?.number || invoice?.invoiceNumber || 'S/N'}</span>
             </div>
             <div className="mb-1">
-              <span className="font-bold text-gray-700" style={{ color: '#1565C0' }}>FECHA DE LA {getDocumentTitle(invoice?.documentType).split(' ')[0]}</span>
+              <span className="font-bold text-gray-700" style={{ color: primaryColor }}>FECHA DE LA {getDocumentTitle(invoice?.documentType).split(' ')[0]}</span>
               <span className="ml-2 text-gray-800">{invoice?.date || ''}</span>
             </div>
             <div>
-              <span className="font-bold text-gray-700" style={{ color: '#1565C0' }}>N° DE PEDIDO</span>
+              <span className="font-bold text-gray-700" style={{ color: primaryColor }}>N° DE PEDIDO</span>
               <span className="ml-2 text-gray-800">{invoice?.number || ''}</span>
             </div>
           </div>
@@ -172,7 +172,7 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
             )}
             <div className="flex justify-between py-3">
               <span className="font-bold text-gray-900">TOTAL</span>
-              <span className="font-bold text-lg" style={{ color: '#1565C0' }}>{formatCurrency(invoice?.total)} $</span>
+              <span className="font-bold text-lg" style={{ color: primaryColor }}>{formatCurrency(invoice?.total)} $</span>
             </div>
           </div>
         </div>
@@ -188,7 +188,7 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
         {/* Terms & Conditions */}
         {invoice?.terms && (
           <div className="mt-8">
-            <h4 className="font-bold text-sm mb-2" style={{ color: '#1565C0' }}>CONDICIONES Y FORMA DE PAGO</h4>
+            <h4 className="font-bold text-sm mb-2" style={{ color: primaryColor }}>CONDICIONES Y FORMA DE PAGO</h4>
             <p className="text-sm text-gray-600 whitespace-pre-line">{invoice.terms}</p>
           </div>
         )}
