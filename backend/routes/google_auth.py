@@ -1,6 +1,7 @@
-from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 import httpx
 import uuid
 import os
@@ -8,6 +9,7 @@ import logging
 from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 from pathlib import Path
+from urllib.parse import urlencode
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -23,40 +25,89 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-class SessionRequest(BaseModel):
-    session_id: str
+# Google OAuth configuration
+GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
+GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
+GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
+GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token"
+GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo"
 
-@router.post("/session")
-async def process_google_session(request: SessionRequest, response: Response):
+
+class TokenRequest(BaseModel):
+    code: str
+    redirect_uri: str
+
+
+@router.get("/login")
+async def google_login(request: Request):
     """
-    Process Google OAuth session_id and create user session
-    REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+    Redirect user to Google OAuth consent screen
     """
-    logger.info(f"Processing Google session: {request.session_id[:20]}...")
+    # Get the redirect URI from the frontend
+    redirect_uri = request.query_params.get('redirect_uri', 'https://factuya.site/auth/google/callback')
+    
+    params = {
+        'client_id': GOOGLE_CLIENT_ID,
+        'redirect_uri': redirect_uri,
+        'response_type': 'code',
+        'scope': 'openid email profile',
+        'access_type': 'offline',
+        'prompt': 'select_account'
+    }
+    
+    auth_url = f"{GOOGLE_AUTH_URL}?{urlencode(params)}"
+    return RedirectResponse(url=auth_url)
+
+
+@router.post("/token")
+async def google_token(request: TokenRequest):
+    """
+    Exchange authorization code for tokens and create user session
+    """
+    logger.info(f"Processing Google auth code...")
     
     try:
-        # Call Emergent Auth to get session data
-        async with httpx.AsyncClient() as client_http:
-            auth_response = await client_http.get(
-                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
-                headers={"X-Session-ID": request.session_id}
+        # Exchange code for tokens
+        async with httpx.AsyncClient() as http_client:
+            token_response = await http_client.post(
+                GOOGLE_TOKEN_URL,
+                data={
+                    'client_id': GOOGLE_CLIENT_ID,
+                    'client_secret': GOOGLE_CLIENT_SECRET,
+                    'code': request.code,
+                    'grant_type': 'authorization_code',
+                    'redirect_uri': request.redirect_uri
+                }
             )
             
-            logger.info(f"Auth response status: {auth_response.status_code}")
+            if token_response.status_code != 200:
+                logger.error(f"Token exchange failed: {token_response.text}")
+                raise HTTPException(status_code=401, detail="Failed to exchange code for token")
             
-            if auth_response.status_code != 200:
-                logger.error(f"Invalid session response: {auth_response.text}")
-                raise HTTPException(status_code=401, detail="Invalid session")
+            token_data = token_response.json()
+            access_token = token_data.get('access_token')
             
-            session_data = auth_response.json()
-            logger.info(f"Session data received for email: {session_data.get('email')}")
+            if not access_token:
+                raise HTTPException(status_code=401, detail="No access token received")
+            
+            # Get user info from Google
+            userinfo_response = await http_client.get(
+                GOOGLE_USERINFO_URL,
+                headers={'Authorization': f'Bearer {access_token}'}
+            )
+            
+            if userinfo_response.status_code != 200:
+                logger.error(f"Failed to get user info: {userinfo_response.text}")
+                raise HTTPException(status_code=401, detail="Failed to get user info")
+            
+            user_info = userinfo_response.json()
+            logger.info(f"Got user info for: {user_info.get('email')}")
         
-        email = session_data.get("email")
-        name = session_data.get("name")
-        picture = session_data.get("picture")
+        email = user_info.get("email")
+        name = user_info.get("name")
+        picture = user_info.get("picture")
         
         if not email:
-            logger.error("No email in session data")
             raise HTTPException(status_code=400, detail="Email not provided by Google")
         
         # Check if user exists
@@ -102,7 +153,7 @@ async def process_google_session(request: SessionRequest, response: Response):
             await db.subscriptions.insert_one(subscription)
             logger.info(f"Created subscription for user: {user_id}")
         
-        # Create session token (use JWT format like existing auth)
+        # Create session token
         from utils.auth import create_access_token
         token = create_access_token({"sub": user_id})
         
@@ -111,7 +162,7 @@ async def process_google_session(request: SessionRequest, response: Response):
         # Get user data to return
         user = await db.users.find_one({"id": user_id}, {"_id": 0, "password": 0})
         
-        result = {
+        return {
             "success": True,
             "user": {
                 "id": user["id"],
@@ -124,31 +175,9 @@ async def process_google_session(request: SessionRequest, response: Response):
             "token": token
         }
         
-        logger.info(f"Returning success response for user: {user['email']}")
-        return result
-        
     except httpx.RequestError as e:
         logger.error(f"HTTP error: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Failed to verify session: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to communicate with Google: {str(e)}")
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Authentication error: {str(e)}")
-
-@router.post("/logout")
-async def google_logout(request: Request, response: Response):
-    """Logout and clear session"""
-    session_token = request.cookies.get("session_token")
-    
-    if session_token:
-        # Delete session from database
-        await db.user_sessions.delete_one({"session_token": session_token})
-    
-    # Clear cookie
-    response.delete_cookie(
-        key="session_token",
-        path="/",
-        secure=True,
-        samesite="none"
-    )
-    
-    return {"success": True, "message": "Logged out successfully"}
