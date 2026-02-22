@@ -310,6 +310,37 @@ const Profile = () => {
                 />
               </div>
             </div>
+
+            {/* Bank Information */}
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                {t('profile.bankInfo') || 'Información Bancaria'}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="company.bank">{t('profile.bank') || 'Banco'}</Label>
+                  <Input
+                    id="company.bank"
+                    name="company.bank"
+                    value={profile.companyInfo.bank}
+                    onChange={handleChange}
+                    placeholder="Ej: BANCOLOMBIA"
+                    className="mt-1"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="company.bankAccount">{t('profile.bankAccount') || 'Número de Cuenta'}</Label>
+                  <Input
+                    id="company.bankAccount"
+                    name="company.bankAccount"
+                    value={profile.companyInfo.bankAccount}
+                    onChange={handleChange}
+                    placeholder="Ej: 614-122666-08"
+                    className="mt-1"
+                  />
+                </div>
+              </div>
+            </div>
           </Card>
 
           {/* Save Button */}
