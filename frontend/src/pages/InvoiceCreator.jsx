@@ -49,6 +49,7 @@ const InvoiceCreator = () => {
   const [tempTaxRate, setTempTaxRate] = useState(19);
   const [isCompoundTax, setIsCompoundTax] = useState(false);
   const [template, setTemplate] = useState(getTemplateById(templateId));
+  const [userDefaultTemplate, setUserDefaultTemplate] = useState(null); // Plantilla guardada del usuario
   const invoicePreviewRef = useRef(null);
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
