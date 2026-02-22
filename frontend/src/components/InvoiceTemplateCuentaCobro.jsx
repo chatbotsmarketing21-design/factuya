@@ -84,7 +84,7 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
           <h1 className="text-2xl font-bold tracking-wide">CUENTA DE COBRO</h1>
         </div>
         <div className="text-right">
-          <span className="text-2xl font-bold">N° {invoice.invoiceNumber || '---'}</span>
+          <span className="text-2xl font-bold">N° {invoice.number || '---'}</span>
         </div>
       </div>
 
