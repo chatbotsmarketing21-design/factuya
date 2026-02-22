@@ -109,9 +109,10 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 - **pdf_files**: `{userId, filename, createdAt, expiresAt}` (for WhatsApp sharing)
 
 ## 3rd Party Integrations
-- **Stripe**: Payment processing for subscriptions
-- **Resend**: Transactional emails for password recovery
-- **Emergent Google Auth**: Social login (in progress)
+- **Stripe**: Payment processing for subscriptions (test mode, to be replaced by Wompi)
+- **Resend**: Transactional emails for password recovery (test mode)
+- **Google OAuth 2.0 (Self-Managed)**: Social login - fully configured and working
+  - Client ID: 441119292026-ngpbt64126c5pnlv08rgugqhtg0fedlj.apps.googleusercontent.com
 
 ## Pending Issues
 - None currently. All critical bugs have been fixed.
