@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-const InvoiceTemplateDexter = ({ invoice, template }) => {
+const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
   const { t } = useTranslation();
 
   // Safe access to nested properties
@@ -9,6 +9,9 @@ const InvoiceTemplateDexter = ({ invoice, template }) => {
   const to = invoice?.to || invoice?.toAddress || {};
   const items = invoice?.items || [];
   const isPaid = invoice?.status === 'paid';
+
+  // Color dinámico: prioridad al color personalizado
+  const primaryColor = templateColor || template?.color || '#1565C0';
 
   // Función para formatear números con punto de miles y coma decimal
   const formatCurrency = (value) => {
