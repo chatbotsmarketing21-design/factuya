@@ -1,6 +1,9 @@
 import React from 'react';
 
-const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
+const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateColor }) => {
+  // Color dinámico: prioridad al color personalizado
+  const primaryColor = templateColor || template?.color || '#84cc16';
+  
   // Función para convertir número a letras en español
   const numeroALetras = (num) => {
     const unidades = ['', 'UN', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE'];
