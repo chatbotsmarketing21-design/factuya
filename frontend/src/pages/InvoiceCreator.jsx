@@ -359,6 +359,13 @@ const InvoiceCreator = () => {
       if (cuentaCobroTemplate) {
         setTemplate(cuentaCobroTemplate);
       }
+    } else {
+      // Si NO es Cuenta de Cobro, restaurar plantilla por defecto (o la que tenía el usuario)
+      // Solo cambiar si la plantilla actual es cuenta_cobro
+      if (template?.type === 'cuenta_cobro') {
+        const defaultTemplate = getTemplateById(templateId) || getTemplateById(1);
+        setTemplate(defaultTemplate);
+      }
     }
     
     // Generar nuevo número para el tipo de documento seleccionado
