@@ -121,12 +121,6 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
               <p className="font-bold text-gray-800">{companyInfo?.name || invoice.from?.name || '_______________'}</p>
               <p className="text-sm text-gray-600">NIT: {companyInfo?.nit || invoice.from?.nit || '_______________'}</p>
               <p className="text-sm text-gray-600">Tel: {companyInfo?.phone || invoice.from?.phone || '_______________'}</p>
-              <p className="text-sm text-gray-600">Email: {companyInfo?.email || invoice.from?.email || '_______________'}</p>
-              <p className="text-sm text-gray-600">{companyInfo?.address || invoice.from?.address || '_______________'}</p>
-              <p className="text-sm text-gray-600">
-                {companyInfo?.city || invoice.from?.city || '_______________'}
-                {(companyInfo?.state || invoice.from?.state) ? `, ${companyInfo?.state || invoice.from?.state}` : ''}
-              </p>
             </div>
           </div>
         </div>
