@@ -116,6 +116,13 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 ## Pending Issues
 1. **Google OAuth Login (P1)**: Redirect loop after authentication - paused by user
 
+## Pending Issues
+1. **Google OAuth Login (IN PROGRESS)**: 
+   - Configured own Google OAuth credentials in Google Cloud Console
+   - Added all domains and redirect URIs
+   - Error "OAuth client was not found" - need to create a NEW OAuth client from "APIs & Services" → "Credentials" (not the auto-generated Firebase one)
+   - **Next step**: Create fresh OAuth 2.0 client and get new Client ID/Secret
+
 ## Completed in Latest Session (Feb 2026)
 1. **Auto-Language Detection on Landing Page (DONE)**
    - Configured i18next-browser-languagedetector with detection order: localStorage → navigator → htmlTag
