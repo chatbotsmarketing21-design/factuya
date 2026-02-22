@@ -19,6 +19,8 @@ class CompanyInfo(BaseModel):
     defaultNotes: Optional[str] = None  # Default notes for invoices
     defaultTerms: Optional[str] = None  # Default terms for invoices
     defaultTemplate: Optional[int] = None  # Default template ID for invoices
+    signature: Optional[str] = None  # Base64 encoded signature
+    signatureRotation: Optional[int] = 0  # Signature rotation in degrees
 
 class UserCreate(BaseModel):
     email: EmailStr
