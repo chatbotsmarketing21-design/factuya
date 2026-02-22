@@ -173,11 +173,13 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
             <div className="w-64">
               <div className="flex justify-between py-1 border-b border-gray-200">
                 <span className="text-sm text-gray-600">SUBTOTAL:</span>
-                <span className="text-sm font-medium">${formatCurrency(invoice.subtotal || invoice.items?.reduce((sum, item) => sum + (item.amount || 0), 0) || 0)}</span>
+                <span className="text-sm font-medium text-gray-800">
+                  ${formatCurrency(invoice.subtotal || invoice.total || 0)}
+                </span>
               </div>
               <div className="flex justify-between py-1 border-b border-gray-200">
                 <span className="text-sm text-gray-600">IVA ({invoice.taxRate || 0}%):</span>
-                <span className="text-sm font-medium">${formatCurrency(invoice.tax || 0)}</span>
+                <span className="text-sm font-medium text-gray-800">${formatCurrency(invoice.tax || 0)}</span>
               </div>
               <div className="flex justify-between py-2 bg-lime-500 text-white px-2 mt-1">
                 <span className="font-bold">TOTAL:</span>
