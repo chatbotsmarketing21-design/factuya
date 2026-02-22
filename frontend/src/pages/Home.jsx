@@ -3,11 +3,9 @@ import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FileText, Send, CreditCard, CheckCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
 
   const features = [
     {
