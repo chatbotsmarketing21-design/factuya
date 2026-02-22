@@ -28,6 +28,10 @@ class ProfileUpdate(BaseModel):
 class LogoUpdate(BaseModel):
     logo: str  # Base64 encoded logo
 
+class SignatureUpdate(BaseModel):
+    signature: str  # Base64 encoded signature
+    signatureRotation: Optional[int] = 0  # Rotation in degrees
+
 @router.get("/company", response_model=CompanyInfo)
 async def get_company_info(user_id: str = Depends(get_current_user_id)):
     """Get user's company information"""
