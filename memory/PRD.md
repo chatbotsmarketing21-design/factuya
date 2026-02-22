@@ -102,8 +102,8 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 ```
 
 ## Database Schema
-- **users**: `{id, username, email, hashed_password, name, gender, companyInfo: { logo, defaultNotes, defaultTerms, ... }}`
-- **invoices**: `{id, userId, invoiceData, documentType, status, total, createdAt, invoiceNumber}`
+- **users**: `{id, username, email, hashed_password, name, gender, companyInfo: { logo, defaultNotes, defaultTerms, nit, bank, bankAccount, ... }}`
+- **invoices**: `{id, userId, from, to, items, documentType, status, total, signature, signatureRotation, createdAt, invoiceNumber}`
 - **subscriptions**: `{userId, stripe_customer_id, status, trialInvoicesUsed}`
 - **password_reset_tokens**: `{user_id, token, expires_at, used}`
 - **pdf_files**: `{userId, filename, createdAt, expiresAt}` (for WhatsApp sharing)
