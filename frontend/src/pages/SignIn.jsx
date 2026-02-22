@@ -55,7 +55,7 @@ const SignIn = () => {
   const handleGoogleLogin = () => {
     // Redirect directly to Google OAuth
     const redirectUri = `${window.location.origin}/auth/google/callback`;
-    const clientId = '441119292026-ef0vk2agj3kh5caq7f5ncahfgngcsh7o.apps.googleusercontent.com';
+    const clientId = '441119292026-ngpbt64126c5pnlv08rgugqhtg0fedlj.apps.googleusercontent.com';
     
     const params = new URLSearchParams({
       client_id: clientId,
