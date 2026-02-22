@@ -1310,7 +1310,7 @@ const InvoiceCreator = () => {
           {/* Preview Panel - Hidden on mobile, shown on desktop */}
           <div className="hidden lg:block lg:sticky lg:top-24 h-fit">
             <div ref={invoicePreviewRef}>
-              <InvoicePreview invoice={invoice} template={template} />
+              <InvoicePreview invoice={invoice} template={template} companyInfo={invoice.from} />
             </div>
           </div>
         </div>
