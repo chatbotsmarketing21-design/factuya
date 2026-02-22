@@ -96,6 +96,15 @@ export const mockTemplates = [
     color: "#4B5563",
     style: "moderno",
     type: "moderno"
+  },
+  {
+    id: 13,
+    name: "Cuenta de Cobro",
+    thumbnail: "https://static.prod-images.emergentagent.com/jobs/380f7905-e22e-4890-bf32-ad048c328c8c/images/21106796b14a0c297a5cce514001ee66d41cc9354b26183075cfce3e6c6e17fb.png",
+    color: "#84cc16",
+    style: "cuenta_cobro",
+    type: "cuenta_cobro",
+    documentTypeOnly: "Cuenta de Cobro"
   }
 ];
 
