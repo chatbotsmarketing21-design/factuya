@@ -47,9 +47,8 @@ const SignIn = () => {
         if (response.data.success) {
           const { user, token } = response.data;
           
-          // Store token in localStorage
-          localStorage.setItem('token', token);
-          localStorage.setItem('user', JSON.stringify(user));
+          // Update AuthContext state (this is the key fix!)
+          await loginWithGoogle(user, token);
           
           toast({
             title: "¡Bienvenido!",
