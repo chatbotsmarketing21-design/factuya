@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-const InvoiceTemplateWave = ({ invoice, template }) => {
+const InvoiceTemplateWave = ({ invoice, template, templateColor }) => {
   const { t } = useTranslation();
 
   // Safe access to nested properties
@@ -27,7 +27,8 @@ const InvoiceTemplateWave = ({ invoice, template }) => {
     return titles[type] || 'Factura';
   };
 
-  const waveColor = template?.color || '#4AABE3';
+  // Color dinámico: prioridad al color personalizado
+  const waveColor = templateColor || template?.color || '#4AABE3';
 
   return (
     <div className="bg-white shadow-lg relative overflow-hidden" style={{ minHeight: '800px' }}>
