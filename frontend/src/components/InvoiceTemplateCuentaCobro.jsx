@@ -91,7 +91,7 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
       {/* Header with green bar */}
       <div className="bg-lime-500 text-white px-6 py-3 flex justify-between items-center">
         <div>
-          <span className="text-sm opacity-80">DOCUMENTO EQUIVALENTE</span>
+          <span className="text-sm opacity-80">DOCUMENTO EQUIVALENTE A</span>
           <h1 className="text-2xl font-bold tracking-wide">CUENTA DE COBRO</h1>
         </div>
         <div className="text-right">
