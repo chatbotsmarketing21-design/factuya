@@ -1,35 +1,37 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Send, CreditCard, CheckCircle, Zap, Shield } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { FileText, Send, CreditCard, CheckCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { Card } from '../components/ui/card';
 
 const Home = () => {
+  const { t } = useTranslation();
+
   const features = [
     {
       icon: <FileText className="w-12 h-12" />,
-      title: "Create an Invoice",
-      description: "Choose from 100 templates and various logos"
+      title: t('landing.feature1Title'),
+      description: t('landing.feature1Desc')
     },
     {
       icon: <Send className="w-12 h-12" />,
-      title: "Send as a PDF",
-      description: "Email or print your invoice to send to your clients"
+      title: t('landing.feature2Title'),
+      description: t('landing.feature2Desc')
     },
     {
       icon: <CreditCard className="w-12 h-12" />,
-      title: "Get Paid",
-      description: "Receive payments in seconds by card or PayPal"
+      title: t('landing.feature3Title'),
+      description: t('landing.feature3Desc')
     }
   ];
 
   const benefits = [
-    { icon: <CheckCircle className="w-5 h-5" />, text: "100+ Professional Templates" },
-    { icon: <CheckCircle className="w-5 h-5" />, text: "Unlimited Invoices" },
-    { icon: <CheckCircle className="w-5 h-5" />, text: "Cloud Storage" },
-    { icon: <CheckCircle className="w-5 h-5" />, text: "Mobile & Desktop Access" },
-    { icon: <CheckCircle className="w-5 h-5" />, text: "Multi-Currency Support" },
-    { icon: <CheckCircle className="w-5 h-5" />, text: "Email & PDF Export" }
+    { icon: <CheckCircle className="w-5 h-5" />, text: t('landing.benefit1') },
+    { icon: <CheckCircle className="w-5 h-5" />, text: t('landing.benefit2') },
+    { icon: <CheckCircle className="w-5 h-5" />, text: t('landing.benefit3') },
+    { icon: <CheckCircle className="w-5 h-5" />, text: t('landing.benefit4') },
+    { icon: <CheckCircle className="w-5 h-5" />, text: t('landing.benefit5') },
+    { icon: <CheckCircle className="w-5 h-5" />, text: t('landing.benefit6') }
   ];
 
   return (
@@ -44,13 +46,13 @@ const Home = () => {
             </div>
             <div className="flex items-center gap-4">
               <Link to="/signin">
-                <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
-                  Sign In
+                <Button variant="ghost" className="text-gray-700 hover:text-gray-900" data-testid="landing-signin-btn">
+                  {t('landing.signIn')}
                 </Button>
               </Link>
               <Link to="/create">
-                <Button className="bg-lime-500 hover:bg-lime-600 text-white font-semibold">
-                  Crear Factura
+                <Button className="bg-lime-500 hover:bg-lime-600 text-white font-semibold" data-testid="landing-create-invoice-btn">
+                  {t('landing.createInvoice')}
                 </Button>
               </Link>
             </div>
@@ -62,12 +64,12 @@ const Home = () => {
       <section className="py-20 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-5xl font-bold text-gray-900 mb-6">
-              100 Free Invoice Templates | Print & Email Invoices
+            <h1 className="text-5xl font-bold text-gray-900 mb-6" data-testid="landing-hero-title">
+              {t('landing.heroTitle')}
             </h1>
             <Link to="/create">
-              <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white text-xl px-12 py-6 rounded-lg mt-8">
-                ¡Crear Factura Ahora!
+              <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white text-xl px-12 py-6 rounded-lg mt-8" data-testid="landing-hero-cta">
+                {t('landing.heroButton')}
               </Button>
             </Link>
           </div>
@@ -95,7 +97,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {features.map((feature, index) => (
-              <div key={index} className="text-center">
+              <div key={index} className="text-center" data-testid={`landing-feature-${index + 1}`}>
                 <div className="inline-flex items-center justify-center w-24 h-24 bg-yellow-100 rounded-full mb-6">
                   <div className="text-yellow-600">
                     {feature.icon}
@@ -113,12 +115,12 @@ const Home = () => {
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Everything You Need</h2>
-            <p className="text-xl text-gray-600">Professional invoicing made simple</p>
+            <h2 className="text-4xl font-bold text-gray-900 mb-4" data-testid="landing-benefits-title">{t('landing.benefitsTitle')}</h2>
+            <p className="text-xl text-gray-600">{t('landing.benefitsSubtitle')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {benefits.map((benefit, index) => (
-              <div key={index} className="flex items-center gap-3 text-gray-700">
+              <div key={index} className="flex items-center gap-3 text-gray-700" data-testid={`landing-benefit-${index + 1}`}>
                 <div className="text-green-600 flex-shrink-0">{benefit.icon}</div>
                 <span className="text-lg">{benefit.text}</span>
               </div>
@@ -130,15 +132,15 @@ const Home = () => {
       {/* CTA Section */}
       <section className="py-20 bg-blue-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Start Creating Professional Invoices Today
+          <h2 className="text-4xl font-bold text-white mb-6" data-testid="landing-cta-title">
+            {t('landing.ctaTitle')}
           </h2>
           <p className="text-xl text-blue-100 mb-8">
-            Join thousands of businesses using Invoice Home
+            {t('landing.ctaSubtitle')}
           </p>
           <Link to="/create">
-            <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white font-semibold text-xl px-12 py-6 rounded-lg">
-              Comenzar - Es Gratis
+            <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white font-semibold text-xl px-12 py-6 rounded-lg" data-testid="landing-cta-btn">
+              {t('landing.ctaButton')}
             </Button>
           </Link>
         </div>
@@ -150,35 +152,35 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <h3 className="text-white font-semibold mb-4">FactuYa!</h3>
-              <p className="text-sm">Facturación profesional para pequeñas empresas y freelancers.</p>
+              <p className="text-sm">{t('landing.footerDesc')}</p>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4">Product</h4>
+              <h4 className="text-white font-semibold mb-4">{t('landing.footerProduct')}</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Templates</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Pricing</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerTemplates')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerFeatures')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerPricing')}</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4">Support</h4>
+              <h4 className="text-white font-semibold mb-4">{t('landing.footerSupport')}</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerHelpCenter')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerContact')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerFAQ')}</a></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4">Company</h4>
+              <h4 className="text-white font-semibold mb-4">{t('landing.footerCompany')}</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerAbout')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerBlog')}</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerPrivacy')}</a></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
-            <p>&copy; 2025 FactuYa! Todos los derechos reservados.</p>
+            <p>{t('landing.footerCopyright')}</p>
           </div>
         </div>
       </footer>
