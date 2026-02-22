@@ -1,0 +1,76 @@
+{
+  "summary": "Cuenta de Cobro Signature & Bank Details Bug Fix Verification - ALL TESTS PASSED. Backend API correctly saves and returns signature, signatureRotation, and bank details (from.bank, from.bankAccount). Frontend correctly displays these fields when loading an existing invoice.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [],
+    "verified_working": [
+      "POST /api/invoices - correctly saves signature, signatureRotation, from.bank, from.bankAccount",
+      "GET /api/invoices/{id} - correctly returns all fields after reload",
+      "PUT /api/invoices/{id} - correctly updates all fields"
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [],
+    "verified_working": [
+      "Signature image displays correctly with uploaded base64 data",
+      "Rotate button appears when signature is loaded",
+      "Bank details (Banco, Cuenta) display in DATOS PARA PAGO section of Cuenta de Cobro template"
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_cuenta_cobro_signature.py",
+    "/app/test_reports/pytest/cuenta_cobro_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "InvoiceBase model in /app/backend/models/invoice.py correctly defines signature (Optional[str]) and signatureRotation (Optional[int]=0)",
+    "Address model correctly defines bank (Optional[str]) and bankAccount (Optional[str])",
+    "InvoiceCreator.jsx loadInvoice function correctly loads fromAddress data including bank details",
+    "InvoiceTemplateCuentaCobro.jsx correctly renders signature image with rotation transform and bank details in DATOS PARA PAGO section"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_cuenta_cobro_signature.py"
+  ],
+  "success_rate": {
+    "backend": "100% (5/5 tests passed)",
+    "frontend": "100% (E2E flows verified)"
+  },
+  "test_credentials": {
+    "email": "test@test.com",
+    "password": "Test123!"
+  },
+  "seed_data_creation": "Created multiple Cuenta de Cobro invoices with TEST_ prefix for signature and bank details testing",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Bug fix verified. The signature, signatureRotation, bank, and bankAccount fields are now correctly persisted in MongoDB and returned by the API. Frontend displays all fields correctly when editing existing invoices. Main agent's note about 1x1 pixel test image being invisible was correct - the visual test with a proper signature image shows it renders correctly.",
+  "bug_verification": {
+    "original_issue": "Signature, signatureRotation, and bank details (from.bank, from.bankAccount) not persisting when saving Cuenta de Cobro",
+    "verification_method": "API tests + Frontend E2E tests",
+    "result": "BUG IS FIXED",
+    "evidence": [
+      "API test: POST creates invoice with all fields, GET returns all fields after reload",
+      "API test: PUT updates all fields correctly, GET verifies persistence",
+      "Frontend: Signature image displays with rotation, Rotate button visible",
+      "Frontend: Bank details (Bancolombia, 1234567890) displayed in preview"
+    ]
+  },
+  "tests_performed": {
+    "backend_tests": [
+      "test_create_cuenta_cobro_with_signature_and_bank - PASS",
+      "test_get_cuenta_cobro_preserves_signature_and_bank - PASS (KEY BUG TEST)",
+      "test_update_cuenta_cobro_signature_and_bank - PASS",
+      "test_cuenta_cobro_without_signature - PASS",
+      "test_cuenta_cobro_with_empty_signature_rotation - PASS"
+    ],
+    "frontend_tests": [
+      "Login flow - PASS",
+      "Create Cuenta de Cobro - PASS",
+      "Save invoice with signature - PASS",
+      "Load existing invoice - PASS",
+      "Signature display verification - PASS",
+      "Bank details display verification - PASS"
+    ]
+  }
+}
