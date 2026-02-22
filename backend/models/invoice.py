@@ -41,6 +41,8 @@ class InvoiceBase(BaseModel):
     notes: Optional[str] = None
     terms: Optional[str] = None
     template: int = 1
+    signature: Optional[str] = None
+    signatureRotation: Optional[int] = 0
 
     class Config:
         populate_by_name = True
