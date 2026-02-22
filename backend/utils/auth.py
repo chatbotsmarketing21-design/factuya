@@ -37,7 +37,9 @@ def decode_token(token: str) -> dict:
         return payload
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token has expired")
-    except jwt.JWTError:
+    except jwt.exceptions.DecodeError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    except jwt.exceptions.InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 def get_current_user_id(credentials: HTTPAuthorizationCredentials = Security(security)) -> str:
