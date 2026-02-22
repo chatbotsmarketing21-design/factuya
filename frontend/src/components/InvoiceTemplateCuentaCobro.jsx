@@ -104,8 +104,13 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
             <h2 className="font-bold text-lg text-gray-800">{invoice.to?.name || '_______________'}</h2>
             <p className="text-sm text-gray-600">NIT/C.C.: {invoice.to?.nit || '_______________'}</p>
             <p className="text-sm text-gray-600">Tel: {invoice.to?.phone || '_______________'}</p>
+            <p className="text-sm text-gray-600">Email: {invoice.to?.email || '_______________'}</p>
             <p className="text-sm text-gray-600">{invoice.to?.address || '_______________'}</p>
-            <p className="text-sm text-gray-600">{invoice.to?.city || '_______________'}</p>
+            <p className="text-sm text-gray-600">
+              {invoice.to?.city || '_______________'}
+              {invoice.to?.state ? `, ${invoice.to.state}` : ''}
+              {invoice.to?.zip ? ` - ${invoice.to.zip}` : ''}
+            </p>
           </div>
 
           {/* Company Info - Who is owed money (Right) - DEBE A */}
