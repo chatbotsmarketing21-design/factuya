@@ -201,7 +201,7 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
                 <span className="text-sm text-gray-600">IVA ({invoice.taxRate || 0}%):</span>
                 <span className="text-sm font-medium text-gray-800">${formatCurrency(invoice.tax || 0)}</span>
               </div>
-              <div className="flex justify-between py-2 bg-lime-500 text-white px-2 mt-1">
+              <div className="flex justify-between py-2 text-white px-2 mt-1" style={{ backgroundColor: primaryColor }}>
                 <span className="font-bold">TOTAL:</span>
                 <span className="font-bold">${formatCurrency(invoice.total || 0)}</span>
               </div>
@@ -211,7 +211,7 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
 
         {/* Notes Section */}
         {invoice.notes && (
-          <div className="mb-6 border-l-4 border-lime-500 pl-4 py-2 bg-gray-50">
+          <div className="mb-6 pl-4 py-2 bg-gray-50" style={{ borderLeft: `4px solid ${primaryColor}` }}>
             <p className="text-sm font-semibold text-gray-700 mb-1">NOTA:</p>
             <p className="text-sm text-gray-600">{invoice.notes}</p>
           </div>
