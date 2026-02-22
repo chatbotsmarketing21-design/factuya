@@ -40,6 +40,7 @@ function AppRouter() {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
+      <Route path="/auth/google/callback" element={<GoogleCallback />} />
       <Route path="/templates" element={<Templates />} />
       <Route
         path="/create"
