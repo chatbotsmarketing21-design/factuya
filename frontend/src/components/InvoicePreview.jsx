@@ -6,27 +6,30 @@ import InvoiceTemplateDexter from './InvoiceTemplateDexter';
 import InvoiceTemplateModerno from './InvoiceTemplateModerno';
 import InvoiceTemplateCuentaCobro from './InvoiceTemplateCuentaCobro';
 
-const InvoicePreview = ({ invoice, template, companyInfo }) => {
+const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
   const { t } = useTranslation();
+  
+  // Usar el color de la plantilla o el color personalizado
+  const activeColor = templateColor || template?.color || '#84cc16';
 
   // Si el documento es Cuenta de Cobro (bill), usar plantilla especial
   if (invoice?.documentType === 'bill') {
-    return <InvoiceTemplateCuentaCobro invoice={invoice} template={template} companyInfo={companyInfo || invoice?.from} />;
+    return <InvoiceTemplateCuentaCobro invoice={invoice} template={template} companyInfo={companyInfo || invoice?.from} templateColor={activeColor} />;
   }
 
   // Si la plantilla es de tipo "wave", usar el componente especializado
   if (template?.type === 'wave') {
-    return <InvoiceTemplateWave invoice={invoice} template={template} />;
+    return <InvoiceTemplateWave invoice={invoice} template={template} templateColor={activeColor} />;
   }
 
   // Si la plantilla es de tipo "dexter", usar el componente Dexter
   if (template?.type === 'dexter') {
-    return <InvoiceTemplateDexter invoice={invoice} template={template} />;
+    return <InvoiceTemplateDexter invoice={invoice} template={template} templateColor={activeColor} />;
   }
 
   // Si la plantilla es de tipo "moderno", usar el componente Moderno
   if (template?.type === 'moderno') {
-    return <InvoiceTemplateModerno invoice={invoice} template={template} />;
+    return <InvoiceTemplateModerno invoice={invoice} template={template} templateColor={activeColor} />;
   }
 
   // Safe access to nested properties
