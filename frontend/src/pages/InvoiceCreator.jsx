@@ -271,6 +271,8 @@ const InvoiceCreator = () => {
         logo: companyInfo.logo || '',  // Cargar logo guardado
         notes: companyInfo.defaultNotes || prev.notes,  // Cargar notas guardadas
         terms: companyInfo.defaultTerms || prev.terms,  // Cargar términos guardados
+        signature: companyInfo.signature || '',  // Cargar firma guardada
+        signatureRotation: companyInfo.signatureRotation || 0,  // Cargar rotación de firma
         from: {
           name: companyInfo.name || '',
           nit: companyInfo.nit || '',
