@@ -142,16 +142,20 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
               </tr>
             </thead>
             <tbody>
-              {invoice.items?.map((item, index) => (
-                <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                  <td className="border border-gray-300 px-3 py-2 text-center text-sm">{item.quantity || ''}</td>
-                  <td className="border border-gray-300 px-3 py-2 text-sm">{item.description || ''}</td>
-                  <td className="border border-gray-300 px-3 py-2 text-right text-sm">{item.rate ? `$${formatCurrency(item.rate)}` : ''}</td>
-                  <td className="border border-gray-300 px-3 py-2 text-right text-sm">{item.amount ? `$${formatCurrency(item.amount)}` : ''}</td>
-                </tr>
-              ))}
+              {invoice.items && invoice.items.length > 0 && invoice.items.map((item, index) => {
+                // Only render rows that have data
+                if (!item.description && !item.quantity && !item.rate) return null;
+                return (
+                  <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                    <td className="border border-gray-300 px-3 py-2 text-center text-sm">{item.quantity}</td>
+                    <td className="border border-gray-300 px-3 py-2 text-sm">{item.description}</td>
+                    <td className="border border-gray-300 px-3 py-2 text-right text-sm">${formatCurrency(item.rate)}</td>
+                    <td className="border border-gray-300 px-3 py-2 text-right text-sm">${formatCurrency(item.amount)}</td>
+                  </tr>
+                );
+              })}
               {/* Empty rows to fill minimum 3 rows */}
-              {Array.from({ length: Math.max(0, 3 - (invoice.items?.length || 0)) }).map((_, index) => (
+              {Array.from({ length: Math.max(0, 3 - (invoice.items?.filter(i => i.description || i.quantity || i.rate).length || 0)) }).map((_, index) => (
                 <tr key={`empty-${index}`} className="bg-white">
                   <td className="border border-gray-300 px-3 py-2 text-sm">&nbsp;</td>
                   <td className="border border-gray-300 px-3 py-2 text-sm">&nbsp;</td>
