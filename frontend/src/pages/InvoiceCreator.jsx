@@ -1312,6 +1312,62 @@ const InvoiceCreator = () => {
                         className="dark:bg-secondary dark:border-border dark:text-white text-sm"
                       />
                     </div>
+                    
+                    {/* Signature Upload */}
+                    <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                      <Label className="dark:text-gray-300 text-sm mb-2 block">Firma</Label>
+                      <div className="flex items-center gap-4">
+                        {invoice.signature ? (
+                          <div className="relative">
+                            <img 
+                              src={invoice.signature} 
+                              alt="Firma" 
+                              className="h-16 max-w-[200px] object-contain border border-gray-200 dark:border-gray-600 rounded p-2 bg-white"
+                            />
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="sm"
+                              className="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full"
+                              onClick={() => updateInvoice('signature', '')}
+                            >
+                              ×
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="flex-1">
+                            <input
+                              type="file"
+                              id="signature-upload"
+                              accept="image/png,image/jpeg,image/jpg"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  if (file.size > 1024 * 1024) {
+                                    alert('La firma no debe superar 1MB');
+                                    return;
+                                  }
+                                  const reader = new FileReader();
+                                  reader.onload = (event) => {
+                                    updateInvoice('signature', event.target?.result);
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                            />
+                            <label
+                              htmlFor="signature-upload"
+                              className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
+                            >
+                              <Upload className="w-4 h-4" />
+                              Subir Firma (PNG, JPG)
+                            </label>
+                            <p className="text-xs text-gray-500 mt-1">Máximo 1MB - Fondo transparente recomendado</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
