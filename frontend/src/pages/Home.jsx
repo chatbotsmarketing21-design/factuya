@@ -74,19 +74,15 @@ const Home = () => {
             </Link>
           </div>
 
-          {/* Hero Image Placeholder */}
+          {/* Hero Image */}
           <div className="mt-16 relative">
-            <div className="mx-auto max-w-4xl bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg shadow-2xl p-8 min-h-[400px] flex items-center justify-center">
-              <div className="grid grid-cols-3 gap-4">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="bg-white rounded shadow-md p-4 h-40 flex flex-col">
-                    <div className="h-4 bg-blue-200 rounded w-3/4 mb-2"></div>
-                    <div className="h-2 bg-gray-200 rounded w-full mb-1"></div>
-                    <div className="h-2 bg-gray-200 rounded w-full mb-1"></div>
-                    <div className="h-2 bg-gray-200 rounded w-2/3"></div>
-                  </div>
-                ))}
-              </div>
+            <div className="mx-auto max-w-5xl">
+              <img 
+                src="https://static.prod-images.emergentagent.com/jobs/380f7905-e22e-4890-bf32-ad048c328c8c/images/cbf8c9555a7e26db470683536696b0a4fbbc534b686234bd784866245496b92b.png" 
+                alt="Professional invoice templates"
+                className="w-full rounded-lg shadow-2xl"
+                data-testid="landing-hero-image"
+              />
             </div>
           </div>
         </div>
