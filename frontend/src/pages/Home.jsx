@@ -45,26 +45,16 @@ const Home = () => {
               <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
             </div>
             <div className="flex items-center gap-4">
-              {user ? (
-                <Link to="/dashboard">
-                  <Button className="bg-lime-500 hover:bg-lime-600 text-white font-semibold" data-testid="landing-dashboard-btn">
-                    Dashboard
-                  </Button>
-                </Link>
-              ) : (
-                <>
-                  <Link to="/signin">
-                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900" data-testid="landing-signin-btn">
-                      {t('landing.signIn')}
-                    </Button>
-                  </Link>
-                  <Link to="/create">
-                    <Button className="bg-lime-500 hover:bg-lime-600 text-white font-semibold" data-testid="landing-create-invoice-btn">
-                      {t('landing.createInvoice')}
-                    </Button>
-                  </Link>
-                </>
-              )}
+              <Link to="/signin">
+                <Button variant="ghost" className="text-gray-700 hover:text-gray-900" data-testid="landing-signin-btn">
+                  {t('landing.signIn')}
+                </Button>
+              </Link>
+              <Link to="/create">
+                <Button className="bg-lime-500 hover:bg-lime-600 text-white font-semibold" data-testid="landing-create-invoice-btn">
+                  {t('landing.createInvoice')}
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
