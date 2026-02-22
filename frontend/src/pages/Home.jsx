@@ -170,8 +170,8 @@ const Home = () => {
               <h4 className="text-white font-semibold mb-4">{t('landing.footerCompany')}</h4>
               <ul className="space-y-2 text-sm">
                 <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerAbout')}</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerBlog')}</a></li>
                 <li><Link to="/privacy" className="hover:text-white transition-colors">{t('landing.footerPrivacy')}</Link></li>
+                <li><Link to="/terms" className="hover:text-white transition-colors">{t('landing.footerTerms')}</Link></li>
               </ul>
             </div>
           </div>
