@@ -1320,20 +1320,40 @@ const InvoiceCreator = () => {
                       <Label className="dark:text-gray-300 text-sm mb-2 block">Firma</Label>
                       <div className="flex items-center gap-4">
                         {invoice.signature ? (
-                          <div className="relative">
-                            <img 
-                              src={invoice.signature} 
-                              alt="Firma" 
-                              className="h-16 max-w-[200px] object-contain border border-gray-200 dark:border-gray-600 rounded p-2 bg-white"
-                            />
+                          <div className="flex items-center gap-3">
+                            <div className="relative">
+                              <img 
+                                src={invoice.signature} 
+                                alt="Firma" 
+                                className="h-16 max-w-[200px] object-contain border border-gray-200 dark:border-gray-600 rounded p-2 bg-white"
+                                style={{ transform: `rotate(${invoice.signatureRotation || 0}deg)` }}
+                              />
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="sm"
+                                className="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full"
+                                onClick={() => {
+                                  updateInvoice('signature', '');
+                                  updateInvoice('signatureRotation', 0);
+                                }}
+                              >
+                                ×
+                              </Button>
+                            </div>
                             <Button
                               type="button"
-                              variant="destructive"
+                              variant="outline"
                               size="sm"
-                              className="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full"
-                              onClick={() => updateInvoice('signature', '')}
+                              className="h-10 px-3"
+                              onClick={() => {
+                                const newRotation = ((invoice.signatureRotation || 0) + 90) % 360;
+                                updateInvoice('signatureRotation', newRotation);
+                              }}
+                              title="Rotar 90°"
                             >
-                              ×
+                              <RotateCw className="w-4 h-4 mr-1" />
+                              Rotar
                             </Button>
                           </div>
                         ) : (
@@ -1353,6 +1373,7 @@ const InvoiceCreator = () => {
                                   const reader = new FileReader();
                                   reader.onload = (event) => {
                                     updateInvoice('signature', event.target?.result);
+                                    updateInvoice('signatureRotation', 0);
                                   };
                                   reader.readAsDataURL(file);
                                 }
