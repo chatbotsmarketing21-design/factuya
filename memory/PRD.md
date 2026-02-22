@@ -167,6 +167,12 @@ Create a full-stack invoicing application clone of "Invoice Home" with the follo
 - **GitHub Repo**: https://github.com/chatbotsmarketing21-design/factuya.git
 - **Development Workflow**: Develop in Emergent → Push to GitHub → Pull/Rebuild on VPS
 
+## Session Completed: February 22, 2026
+### Changes Made This Session (Feb 22, 2026):
+- **Bug Fix: Cuenta de Cobro Data Persistence**: Verified and fixed the routing issue preventing `/invoice` URL from working. All signature, signatureRotation, and bank details now persist correctly.
+- **Route Alias Added**: Added `/invoice` route as alias for `/create` in App.js for backward compatibility
+- **Testing**: 100% pass rate on all backend and frontend tests for Cuenta de Cobro functionality
+
 ## Session Completed: February 14, 2026
 ### Changes Made This Session:
 - Removed spinner from Price field in invoice creator
