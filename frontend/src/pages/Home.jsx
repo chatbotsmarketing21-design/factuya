@@ -171,7 +171,7 @@ const Home = () => {
               <ul className="space-y-2 text-sm">
                 <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerAbout')}</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerBlog')}</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerPrivacy')}</a></li>
+                <li><Link to="/privacy" className="hover:text-white transition-colors">{t('landing.footerPrivacy')}</Link></li>
               </ul>
             </div>
           </div>
