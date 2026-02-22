@@ -113,10 +113,20 @@ const SignIn = () => {
   };
 
   const handleGoogleLogin = () => {
-    // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
-    // Redirect to signin page to handle the callback
-    const redirectUrl = window.location.origin + '/signin';
-    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    // Redirect directly to Google OAuth
+    const redirectUri = `${window.location.origin}/auth/google/callback`;
+    const clientId = '441119292026-ef0vk2agj3kh5caq7f5ncahfgngcsh7o.apps.googleusercontent.com';
+    
+    const params = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: redirectUri,
+      response_type: 'code',
+      scope: 'openid email profile',
+      access_type: 'offline',
+      prompt: 'select_account'
+    });
+    
+    window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
   };
 
   // Show loading screen while processing Google auth
