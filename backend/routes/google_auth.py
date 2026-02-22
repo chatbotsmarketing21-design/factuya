@@ -103,7 +103,7 @@ async def process_google_session(request: SessionRequest, response: Response):
             logger.info(f"Created subscription for user: {user_id}")
         
         # Create session token (use JWT format like existing auth)
-        from utils.security import create_access_token
+        from utils.auth import create_access_token
         token = create_access_token({"sub": user_id})
         
         logger.info(f"Created token for user: {user_id}")
