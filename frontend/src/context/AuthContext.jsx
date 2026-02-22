@@ -82,6 +82,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Login with Google (called after OAuth callback)
+  const loginWithGoogle = async (userData, authToken) => {
+    localStorage.setItem('token', authToken);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setToken(authToken);
+    setUser(userData);
+    return { success: true };
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
