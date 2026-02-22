@@ -65,6 +65,8 @@ const Profile = () => {
           state: '',
           zip: '',
           country: '',
+          bank: '',
+          bankAccount: '',
           ...response.data.companyInfo
         }
       });
