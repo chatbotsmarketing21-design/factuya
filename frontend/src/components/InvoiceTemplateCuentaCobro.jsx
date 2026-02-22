@@ -70,6 +70,17 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template }) => {
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
+    // Parse the date string directly to avoid timezone issues
+    const parts = dateString.split('-');
+    if (parts.length === 3) {
+      const year = parseInt(parts[0]);
+      const month = parseInt(parts[1]) - 1; // months are 0-indexed
+      const day = parseInt(parts[2]);
+      const date = new Date(year, month, day);
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString('es-CO', options);
+    }
+    // Fallback for other formats
     const date = new Date(dateString);
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('es-CO', options);
