@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -11,9 +11,14 @@ const GoogleCallback = () => {
   const { loginWithGoogle } = useAuth();
   const { toast } = useToast();
   const [error, setError] = useState(null);
+  const processedRef = useRef(false);
 
   useEffect(() => {
     const processCallback = async () => {
+      // Prevent double execution
+      if (processedRef.current) return;
+      processedRef.current = true;
+
       const code = searchParams.get('code');
       const errorParam = searchParams.get('error');
 
@@ -69,7 +74,7 @@ const GoogleCallback = () => {
         setError('Failed to complete authentication');
         toast({
           title: "Error",
-          description: "No se pudo completar la autenticación con Google",
+          description: "No se pudo completar la autenticación con Google. Por favor intenta de nuevo.",
           variant: "destructive"
         });
         setTimeout(() => navigate('/signin'), 2000);
@@ -77,7 +82,7 @@ const GoogleCallback = () => {
     };
 
     processCallback();
-  }, [searchParams, navigate, loginWithGoogle, toast]);
+  }, []); // Empty dependency array - run only once
 
   if (error) {
     return (
