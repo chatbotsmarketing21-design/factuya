@@ -1358,7 +1358,7 @@ const InvoiceCreator = () => {
             <div className="p-4 pb-20">
               <div className="transform scale-90 origin-top">
                 <div ref={invoicePreviewRef}>
-                  <InvoicePreview invoice={invoice} template={template} />
+                  <InvoicePreview invoice={invoice} template={template} companyInfo={invoice.from} />
                 </div>
               </div>
             </div>
