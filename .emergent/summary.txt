@@ -1,4 +1,4 @@
-<analysis>**original_problem_statement:** The user initially requested a clone of the Invoice Home application. The project has since evolved based on user feedback into a feature-rich, full-stack invoicing application named FactuYa!.
+<analysis>**original_problem_statement:** The user initially requested a clone of the Invoice Home application. The project has since evolved based on user feedback into a feature-rich, full-stack invoicing application named FactuYa!. The application has been successfully deployed to the user's own Hostinger VPS and is live at their custom domain.
 
 **PRODUCT REQUIREMENTS:**
 1.  **Core Functionality:** Create a full-stack invoicing application with user authentication.
@@ -6,44 +6,52 @@
 3.  **Invoicing Features:**
     *   Create, Read, Update, and Delete (CRUD) invoices.
     *   Support multiple document types: Invoice, Proforma Invoice, Quotation, Bill of Collection, Receipt.
-    *   Company logo, default notes, and default terms saved to the user's profile and automatically applied to all future documents.
-    *   Default invoice template is saved to the user's profile.
+    *   Company logo, default notes, and default terms saved to the user's profile.
+    *   Default invoice template saved to the user's profile.
     *   Allow changing the status of invoices (Pending, Paid, Overdue).
-    *   Download invoices as PDF, with support for multi-page documents.
+    *   Download invoices as PDF.
     *   Share invoices via email or a generated link on WhatsApp.
-    *   Automatic, sequential invoice numbering for each document type (e.g., , ).
-    *   Add a NIT (Tax ID) field for both the company and the client, which should be saved and pre-filled.
+    *   Automatic, sequential invoice numbering.
+    *   NIT (Tax ID) field for company and client.
     *   Ability to copy/duplicate an existing invoice.
-4.  **Internationalization:** The application must support multiple languages, starting with Spanish and English. The entire UI should be translatable.
-5.  **Custom Templates:** Allow users to upload their own PNG designs to be used as invoice templates, and support templates with user-selectable color variations.
-6.  **Subscription Model:** Implement a payment system with a free trial. New users get 10 free invoices, then must subscribe.
-7.  **User Account Management:**
-    *   A settings panel to manage Profile, Subscription, and Change Password.
-    *   A dark/light mode toggle.
-    *   A full password recovery flow.
-    *   Remember UI preferences (like collapsed sections) across sessions.
+4.  **Internationalization:** The application must support multiple languages (Spanish and English). **The landing page should automatically detect the user's browser language.**
+5.  **Custom Templates:** Allow users to upload their own PNG designs.
+6.  **Subscription Model:** Free trial (10 invoices), then subscription required.
+7.  **User Account Management:** Settings panel, dark/light mode, password recovery.
 8.  **Authentication:** Support traditional email/password login and Google Social Login.
+9.  **Deployment:** The application must be deployed on the user's own hosting (Hostinger VPS).
 
 **User's preferred language**: Español
 
 **what currently exists?**
-A functional full-stack invoicing application. The latest session focused on adding new features and fixing bugs based on user requests. Key additions include a Copy Invoice feature on the dashboard, two new customizable invoice templates (Dexter and Moderno), and numerous UI/UX enhancements. Critical bugs related to loading client/company NIT on existing invoices and allowing decimal quantities in items were resolved. The agent also addressed a PDF rendering issue with vertical text and answered the user's query about deployment.
+A full-stack invoicing application (React + FastAPI + MongoDB) that has been successfully deployed to a user-provided Hostinger VPS. The application is live and accessible via a custom domain with an SSL certificate. In this session, the agent guided the user through the entire server setup and deployment process from scratch. The agent also implemented significant mobile responsiveness improvements, fixed dark mode UI bugs, and enhanced the WhatsApp sharing feature. The user and agent have agreed on a new workflow: all future development will happen in the Emergent environment, be pushed to GitHub, and then pulled and rebuilt on the VPS.
 
 **Last working item**:
--   **Last item agent was working**: The user asked how to deploy the application to a real domain to test it live. The agent correctly identified this as a deployment task and invoked the  to provide the user with the necessary instructions.
--   **Status**: USER VERIFICATION PENDING
--   **Agent Testing Done**: N/A
--   **Which testing method agent to use?**: N/A
+-   **Last item agent was working**: The user requested that the public-facing landing page automatically detect the visitor's browser/device language (Spanish or English) and display the content accordingly. The agent was in the process of analyzing the code to implement this using .
+-   **Status**: NOT STARTED
+-   **Agent Testing Done**: N
+-   **Which testing method agent to use?**: Frontend testing agent
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1: Google OAuth Login Redirects Incorrectly (P1)**
-    -   **Description**: After successful Google authentication, the user is redirected to the sign-in page instead of the dashboard, creating an unusable login loop. This task was paused in a previous session at the user's request and has not been addressed since.
-    -   **Attempted fixes**: None in this session.
+-   **Issue 1: Implement Automatic Language Detection on Landing Page (P0)**
+    -   **Description**: The landing page () currently has hardcoded Spanish text. It needs to be updated to use the  translation files and automatically switch between Spanish and English based on the user's browser settings.
     -   **Next debug checklist**:
-        1.  Verify the redirect URI in the Emergent-managed Google Auth settings matches the frontend URL exactly.
-        2.  Trace the redirect flow in browser developer tools to check for console errors on the frontend.
-        3.  Check backend logs for hits to the  endpoint to see if the token exchange is happening.
+        1.  Add translation keys for all text on  to  and .
+        2.  Modify  to include and configure .
+        3.  Update  to use the  hook for all text content.
+    -   **Why fix this issue and what will be achieved with the fix?**: Fulfills a direct user request to make the application's entry point accessible to both Spanish and English-speaking users automatically.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Frontend
+    -   **Blocked on other issue**: None
+
+-   **Issue 2: Google OAuth Login Redirects Incorrectly (P1)**
+    -   **Description**: After successful Google authentication, the user is redirected to the sign-in page instead of the dashboard, creating a login loop. This task was paused in a previous session.
+    -   **Next debug checklist**:
+        1.  Verify the redirect URI in the Emergent-managed Google Auth settings.
+        2.  Trace the redirect flow in browser developer tools to check for frontend errors.
+        3.  Check backend logs for hits to the  endpoint.
     -   **Why fix this issue and what will be achieved with the fix?**: Enables a crucial, user-requested alternative login method.
     -   **Status**: NOT STARTED
     -   **Is recurring issue?**: Y
@@ -55,66 +63,72 @@ A functional full-stack invoicing application. The latest session focused on add
 
 **Upcoming and Future Tasks**
 *   **Upcoming Tasks:**
-    *   **P0: Add More Custom Templates:** The user has indicated they have more PNG designs to be added to the gallery, following the pattern established with Olas Azules, Dexter, and Moderno.
-    *   **P1: Integrate Wompi Payment Gateway:** Replace Stripe with Wompi for the Colombian market.
-    *   **P2: Configure Production Emailing:** The Resend integration is in test mode and needs a verified domain for production use.
+    *   **P1: Integrate Wompi Payment Gateway:** The user has explicitly stated this is the next major task after the current small fixes. This will replace Stripe for the Colombian market.
+    *   **P2: Configure Production Emailing:** The Resend integration needs to be configured for production use on the VPS.
+    *   **P2: Add More Custom Templates:** The user has indicated they have more designs to add.
 *   **Future Tasks:**
-    *   **P2: Client and Product Management:** Add dedicated sections to manage recurring clients and pre-defined products/services.
-    *   **P2: Advanced Reporting:** Build a reports page with charts and analytics.
+    *   **P2: Client and Product Management:** Add dedicated sections to manage recurring clients and products.
+    *   **P2: Advanced Reporting:** Build a reports page with analytics.
     *   **P3: Mobile Application:** The user has expressed long-term interest in a mobile app.
 
 **Completed work in this session**
--   **Feature: Copy Invoice (DONE)**: Added a Copiar button to the dashboard that duplicates an invoice's client data, items, and settings into a new invoice draft.
--   **Feature: New Custom Templates (DONE)**:
-    -   Added Dexter template with a colorful wave design.
-    -   Added Moderno template with a vertical bar and support for multiple, user-selectable colors.
--   **Feature: UI Preference Persistence (DONE)**: The collapsed/expanded state of sections in the Invoice Creator is now saved in  and persists between sessions.
--   **UI/UX Enhancements (DONE)**:
-    -   Company and Client name fields now automatically convert text to uppercase.
-    -   The Información Adicional section was renamed to Información Adicional / Pie de Página.
-    -   Implemented dark mode for the Templates gallery page.
-    -   Removed the redundant language toggle from the Templates page.
-    -   Improved PDF legibility for the Moderno template's vertical text by using  instead of .
--   **Bug Fix: Client NIT Not Loading (DONE)**: Fixed a bug where the client's NIT would not appear when loading an existing invoice by adding the  field to the  model in the backend ().
--   **Bug Fix: Decimal Quantity Input (DONE)**: Resolved an issue preventing users from entering decimal values (e.g., 48.5) in the item quantity field and ensured the final amount was calculated correctly.
--   **Bug Fix: Company NIT Not Loading (DONE)**: Fixed the initial bug from the previous session, ensuring the company's NIT from the user's profile is correctly loaded when editing an existing invoice.
-
-**Earlier issues found/mentioned but not fixed**
-*   The Google OAuth login issue remains paused by the user and is listed in the pending issues.
+-   **Full Manual Deployment to Hostinger VPS (DONE):**
+    -   Guided the user through purchasing and setting up a KVM 2 VPS plan on Hostinger.
+    -   Installed and configured all necessary server software: Ubuntu, Python, Node.js, MongoDB, Nginx, Git, Certbot.
+    -   Cloned the application code from the user's public GitHub repository.
+    -   Configured backend and frontend  files for the production environment.
+    -   Built the production version of the React frontend.
+    -   Configured Nginx as a reverse proxy to serve the frontend and route  calls to the backend.
+    -   Configured DNS A records to point the custom domain () to the VPS IP address ().
+    -   Installed and configured a free Let's Encrypt SSL certificate, enabling HTTPS.
+    -   The application is now live at .
+-   **Feature: Mobile Responsiveness (DONE):** Overhauled  to be fully responsive, improving layouts and adding a floating Preview button on mobile.
+-   **Feature: Improved WhatsApp Sharing (DONE):** Implemented logic to use the Web Share API on mobile to share the PDF directly as a file, while retaining the download + message behavior on desktop.
+-   **Bug Fix: Session Expiration (DONE):** Corrected an issue where any network error would log the user out. Now, logout only occurs on authentication errors (401/403).
+-   **Bug Fix: Dark Mode UI (DONE):** Fixed contrast issues on the Profile and Subscription pages in dark mode.
+-   **Code Cleanup: Removed Emergent Badge (DONE):** Removed the Made with Emergent badge and tracking scripts from the  file on the production VPS.
 
 **Known issue recurrence from previous fork**
--   None.
+-   None in this session. The Google OAuth issue is from a prior session.
 
 **Code Architecture**
-
+The application is a standard React (frontend) + FastAPI (backend) + MongoDB (database) stack.
+It is now deployed on a **Hostinger VPS running Ubuntu**.
+-   **Nginx** acts as the web server and reverse proxy.
+    -   Serves the static build files from .
+    -   Proxies all requests starting with  to the FastAPI backend running on port 8001.
+-   The **FastAPI backend** runs as a background process using .
+-   The **MongoDB database** is running locally on the same VPS.
+-   The code is located at  on the server.
 
 **Key Technical Concepts**
-*   **UI State Persistence:** Using  to remember the user's UI preferences (e.g., collapsible sections) across sessions.
-*   **Robust PDF Generation:** Using  instead of  for vertical text to ensure consistent rendering in PDFs created by  and .
-*   **State Passing on Navigation:** Utilizing 's  function with a  object to pass the data of a copied invoice from the  to the .
-*   **Controlled Components & Input Handling:** Managing complex input fields in React to allow decimal values and perform live transformations (e.g., ).
-*   **Backend Model Extension:** Modifying Pydantic models in FastAPI to extend the database schema (adding  to the client's address) without data loss.
+*   **Manual VPS Deployment:** Full server setup from a bare Ubuntu instance (installing dependencies, configuring services).
+*   **Nginx Reverse Proxy:** Configuring Nginx to serve a React app and proxy API requests to a backend service.
+*   **SSL Configuration:** Using  with the Nginx plugin to obtain and automatically renew Let's Encrypt SSL certificates.
+*   **DNS Management:** Configuring A records to point a domain to a server IP.
+*   **Production Workflow:** Established a workflow of developing in Emergent, pushing to GitHub, then pulling and rebuilding on the production VPS.
+*   **Web Share API:** Used for sharing files directly from a web app on mobile devices.
+*   **i18next:** The internationalization library used in the project, which will be extended for the next task.
 
 **key DB schema**
 *   **users**: 
-*   **invoices**:  (The  field is now correctly persisted).
+*   **invoices**: 
 
 **changes in tech stack**
-*   None.
+*   No change in the application's tech stack, but the **entire infrastructure has been migrated to a user-owned Hostinger VPS**.
 
 **All files of reference**
-*   : Received major updates for handling copied data, persisting UI state, auto-uppercase fields, and fixing decimal quantity input.
-*   : Modified to add the Copiar button and its associated logic.
-*   : The  model was updated to include the optional  field, fixing the client NIT bug.
-*   : New component for the Moderno template, which accepts color props.
-*   : New component for the Dexter template.
-*   : Updated to support dark mode and remove the language switcher.
-*   : Updated to include definitions for the new Dexter and Moderno templates.
-*   : Updated to conditionally render the new template components.
+*   : The target for the next task (auto language detection).
+*   
+*   
+*   : Configuration file for translations.
+*   : Nginx configuration file on the VPS.
+*   : Backend environment variables on the VPS.
+*   : Frontend environment variables on the VPS.
 
 **Areas that need refactoring**:
-*   The template definitions are hardcoded in . This should be moved to a database collection and managed via an API to allow for easier updates without changing the frontend code.
-*    has grown significantly in complexity. It could benefit from being broken down into smaller, more manageable custom hooks or components to handle different concerns like data loading (new vs. edit vs. copy), state updates, and side effects.
+*   The backend is currently run with . This is fragile. A  service should be created to manage the backend process, ensuring it restarts automatically on failure or server reboot.
+*   Template definitions are still hardcoded in the frontend. They should be moved to the database.
 
 **key api endpoints**
 *   
@@ -122,52 +136,60 @@ A functional full-stack invoicing application. The latest session focused on add
 *   
 
 **Critical Info for New Agent**
-*   **Primary Language:** You must communicate with the user in **Español**.
-*   **Deployment Query:** The last user interaction was about deploying the app. Be prepared to follow up on the instructions provided by the  and answer any related questions.
-*   **Iterative Workflow:** The user provides frequent, specific feedback on UI/UX. Expect to make small, iterative changes and show the results for approval.
-*   **New Copy Feature:** The Copy Invoice functionality is a key feature added in this session. It links the Dashboard and Invoice Creator pages.
+*   **MUST communicate with the user in Español.**
+*   **The application is LIVE on a user-managed Hostinger VPS.** The development workflow is now:
+    1.  Make all changes in the **Emergent environment**.
+    2.  Once approved, the user will push the code to their GitHub repo: .
+    3.  The agent will then need to guide the user to run update commands on their VPS terminal.
+*   **Do NOT directly modify files on the VPS.** All development should happen in the sandbox environment. The VPS is for deployment only.
+*   **VPS Update Commands:**
+    root          20 13.2  0.1 267788 107000 ?       Sl   02:21   0:06 /opt/plugins-venv/bin/python /opt/plugins-venv/bin/uvicorn plugins.tools.agent.server:app --host 0.0.0.0 --port 8010 --workers 1 --no-access-log
+root          48  0.7  0.0 100600 28156 ?        Sl   02:21   0:00 /root/.venv/bin/python /root/.venv/bin/uvicorn server:app --host 0.0.0.0 --port 8001 --workers 1 --reload
+root         170  0.2  0.0   4492  3420 ?        S    02:21   0:00 /bin/bash -c mkdir -p /app/.emergent && echo "<analysis>**original_problem_statement:** The user initially requested a clone of the "Invoice Home" application. The project has since evolved based on user feedback into a feature-rich, full-stack invoicing application named "FactuYa!". The application has been successfully deployed to the user's own Hostinger VPS and is live at their custom domain.  **PRODUCT REQUIREMENTS:** 1.  **Core Functionality:** Create a full-stack invoicing application with user authentication. 2.  **Branding:** The application should be named "FactuYa!" with an apple green color scheme. 3.  **Invoicing Features:**     *   Create, Read, Update, and Delete (CRUD) invoices.     *   Support multiple document types: Invoice, Proforma Invoice, Quotation, Bill of Collection, Receipt.     *   Company logo, default notes, and default terms saved to the user's profile.     *   Default invoice template saved to the user's profile.     *   Allow changing the status of invoices (Pending, Paid, Overdue).     *   Download invoices as PDF.     *   Share invoices via email or a generated link on WhatsApp.     *   Automatic, sequential invoice numbering.     *   "NIT" (Tax ID) field for company and client.     *   Ability to copy/duplicate an existing invoice. 4.  **Internationalization:** The application must support multiple languages (Spanish and English). **The landing page should automatically detect the user's browser language.** 5.  **Custom Templates:** Allow users to upload their own PNG designs. 6.  **Subscription Model:** Free trial (10 invoices), then subscription required. 7.  **User Account Management:** Settings panel, dark/light mode, password recovery. 8.  **Authentication:** Support traditional email/password login and Google Social Login. 9.  **Deployment:** The application must be deployed on the user's own hosting (Hostinger VPS).  **User's preferred language**: Español  **what currently exists?** A full-stack invoicing application (React + FastAPI + MongoDB) that has been successfully deployed to a user-provided Hostinger VPS. The application is live and accessible via a custom domain with an SSL certificate. In this session, the agent guided the user through the entire server setup and deployment process from scratch. The agent also implemented significant mobile responsiveness improvements, fixed dark mode UI bugs, and enhanced the WhatsApp sharing feature. The user and agent have agreed on a new workflow: all future development will happen in the Emergent environment, be pushed to GitHub, and then pulled and rebuilt on the VPS.  **Last working item**: -   **Last item agent was working**: The user requested that the public-facing landing page automatically detect the visitor's browser/device language (Spanish or English) and display the content accordingly. The agent was in the process of analyzing the code to implement this using `i18next-browser-languagedetector`. -   **Status**: NOT STARTED -   **Agent Testing Done**: N -   **Which testing method agent to use?**: Frontend testing agent -   **User Testing Done**: N  **All Pending/In progress Issue list**: -   **Issue 1: Implement Automatic Language Detection on Landing Page (P0)**     -   **Description**: The landing page (`Home.jsx`) currently has hardcoded Spanish text. It needs to be updated to use the `i18next` translation files and automatically switch between Spanish and English based on the user's browser settings.     -   **Next debug checklist**:         1.  Add translation keys for all text on `Home.jsx` to `locales/en.json` and `locales/es.json`.         2.  Modify `i18n.js` to include and configure `i18next-browser-languagedetector`.         3.  Update `Home.jsx` to use the `useTranslation` hook for all text content.     -   **Why fix this issue and what will be achieved with the fix?**: Fulfills a direct user request to make the application's entry point accessible to both Spanish and English-speaking users automatically.     -   **Status**: NOT STARTED     -   **Is recurring issue?**: N     -   **Should Test frontend/backend/both after fix?**: Frontend     -   **Blocked on other issue**: None  -   **Issue 2: Google OAuth Login Redirects Incorrectly (P1)**     -   **Description**: After successful Google authentication, the user is redirected to the sign-in page instead of the dashboard, creating a login loop. This task was paused in a previous session.     -   **Next debug checklist**:         1.  Verify the redirect URI in the Emergent-managed Google Auth settings.         2.  Trace the redirect flow in browser developer tools to check for frontend errors.         3.  Check backend logs for hits to the `/api/google-auth/callback` endpoint.     -   **Why fix this issue and what will be achieved with the fix?**: Enables a crucial, user-requested alternative login method.     -   **Status**: NOT STARTED     -   **Is recurring issue?**: Y     -   **Should Test frontend/backend/both after fix?**: Both     -   **Blocked on other issue**: None  **In progress Task List**: *   None.  **Upcoming and Future Tasks** *   **Upcoming Tasks:**     *   **P1: Integrate Wompi Payment Gateway:** The user has explicitly stated this is the next major task after the current small fixes. This will replace Stripe for the Colombian market.     *   **P2: Configure Production Emailing:** The Resend integration needs to be configured for production use on the VPS.     *   **P2: Add More Custom Templates:** The user has indicated they have more designs to add. *   **Future Tasks:**     *   **P2: Client and Product Management:** Add dedicated sections to manage recurring clients and products.     *   **P2: Advanced Reporting:** Build a reports page with analytics.     *   **P3: Mobile Application:** The user has expressed long-term interest in a mobile app.  **Completed work in this session** -   **Full Manual Deployment to Hostinger VPS (DONE):**     -   Guided the user through purchasing and setting up a KVM 2 VPS plan on Hostinger.     -   Installed and configured all necessary server software: Ubuntu, Python, Node.js, MongoDB, Nginx, Git, Certbot.     -   Cloned the application code from the user's public GitHub repository.     -   Configured backend and frontend `.env` files for the production environment.     -   Built the production version of the React frontend.     -   Configured Nginx as a reverse proxy to serve the frontend and route `/api` calls to the backend.     -   Configured DNS A records to point the custom domain (`factuya.site`) to the VPS IP address (`187.77.19.47`).     -   Installed and configured a free Let's Encrypt SSL certificate, enabling HTTPS.     -   The application is now live at `https://factuya.site`. -   **Feature: Mobile Responsiveness (DONE):** Overhauled `InvoiceCreator.jsx` to be fully responsive, improving layouts and adding a floating "Preview" button on mobile. -   **Feature: Improved WhatsApp Sharing (DONE):** Implemented logic to use the Web Share API on mobile to share the PDF directly as a file, while retaining the "download + message" behavior on desktop. -   **Bug Fix: Session Expiration (DONE):** Corrected an issue where any network error would log the user out. Now, logout only occurs on authentication errors (401/403). -   **Bug Fix: Dark Mode UI (DONE):** Fixed contrast issues on the Profile and Subscription pages in dark mode. -   **Code Cleanup: Removed Emergent Badge (DONE):** Removed the "Made with Emergent" badge and tracking scripts from the `index.html` file on the production VPS.  **Known issue recurrence from previous fork** -   None in this session. The Google OAuth issue is from a prior session.  **Code Architecture** The application is a standard React (frontend) + FastAPI (backend) + MongoDB (database) stack. It is now deployed on a **Hostinger VPS running Ubuntu**. -   **Nginx** acts as the web server and reverse proxy.     -   Serves the static build files from `/var/www/factuya/frontend/build`.     -   Proxies all requests starting with `/api` to the FastAPI backend running on port 8001. -   The **FastAPI backend** runs as a background process using `nohup uvicorn`. -   The **MongoDB database** is running locally on the same VPS. -   The code is located at `/var/www/factuya` on the server.  **Key Technical Concepts** *   **Manual VPS Deployment:** Full server setup from a bare Ubuntu instance (installing dependencies, configuring services). *   **Nginx Reverse Proxy:** Configuring Nginx to serve a React app and proxy API requests to a backend service. *   **SSL Configuration:** Using `certbot` with the Nginx plugin to obtain and automatically renew Let's Encrypt SSL certificates. *   **DNS Management:** Configuring A records to point a domain to a server IP. *   **Production Workflow:** Established a workflow of developing in Emergent, pushing to GitHub, then pulling and rebuilding on the production VPS. *   **Web Share API:** Used for sharing files directly from a web app on mobile devices. *   **i18next:** The internationalization library used in the project, which will be extended for the next task.  **key DB schema** *   **users**: `{..., companyInfo: { ..., nit: String }, ...}` *   **invoices**: `{..., invoiceData: { from: { ..., nit: String }, to: { ..., nit: String } }, ...}`  **changes in tech stack** *   No change in the application's tech stack, but the **entire infrastructure has been migrated to a user-owned Hostinger VPS**.  **All files of reference** *   `/var/www/factuya/frontend/src/pages/Home.jsx`: The target for the next task (auto language detection). *   `/var/www/factuya/frontend/src/locales/en.json` *   `/var/www/factuya/frontend/src/locales/es.json` *   `/var/wwh/factuya/frontend/src/i18n.js`: Configuration file for translations. *   `/etc/nginx/sites-available/factuya`: Nginx configuration file on the VPS. *   `/var/www/factuya/backend/.env`: Backend environment variables on the VPS. *   `/var/www/factuya/frontend/.env`: Frontend environment variables on the VPS.  **Areas that need refactoring**: *   The backend is currently run with `nohup uvicorn...`. This is fragile. A `systemd` service should be created to manage the backend process, ensuring it restarts automatically on failure or server reboot. *   Template definitions are still hardcoded in the frontend. They should be moved to the database.  **key api endpoints** *   `POST /api/auth/login` *   `GET /api/invoices` *   `POST /api/invoices`  **Critical Info for New Agent** *   **MUST communicate with the user in Español.** *   **The application is LIVE on a user-managed Hostinger VPS.** The development workflow is now:     1.  Make all changes in the **Emergent environment**.     2.  Once approved, the user will push the code to their GitHub repo: `https://github.com/chatbotsmarketing21-design/factuya.git`.     3.  The agent will then need to guide the user to run update commands on their VPS terminal. *   **Do NOT directly modify files on the VPS.** All development should happen in the sandbox environment. The VPS is for deployment only. *   **VPS Update Commands:**     ```bash     # 1. Pull latest code from GitHub     cd /var/www/factuya && git pull          # 2. Update backend dependencies (if any)     cd /var/www/factuya/backend && pip3 install -r requirements.txt --break-system-packages          # 3. Rebuild frontend     cd /var/www/factuya/frontend && npm install --legacy-peer-deps && npm run build          # 4. Restart backend process     # Find process:     ps aux | grep uvicorn     # Kill process:     kill <PID>     # Restart in background:     cd /var/www/factuya/backend && nohup uvicorn server:app --host 0.0.0.0 --port 8001 > /var/log/factuya.log 2>&1 &     ``` *   The user accesses the VPS via the Hostinger web-based terminal.  **documents and test reports created in this job** *   `/app/memory/PRD.md` (updated with deployment info)  **Last 10 User Messages and any pending HUMAN messages** 10. User: Asks if the landing page is original or a copy. 9.  Agent: Confirms it's an original design inspired by the reference and can be modified. 8.  User: Requests the landing page to be bilingual (EN/ES) and auto-detect the user's language. 7.  Agent: Agrees and starts investigating the `Home.jsx` file. 6.  User: Asks if all future changes have to be done in the terminal. 5.  Agent: Proposes a better workflow: develop in Emergent, push to GitHub, then pull/rebuild on the VPS. 4.  User: Agrees this is the best strategy for all future changes. 3.  Agent: Confirms the new workflow and asks for the list of changes, starting with the bilingual landing page. 2.  User: Confirms to start with the auto-detecting bilingual landing page. 1.  Agent: Acknowledges and starts the work by viewing the `Home.jsx` file.  **Project Health Check:** *   **Broken**:     *   Google OAuth login flow (redirect loop, work is paused). *   **Mocked**:     *   The list of available invoice templates is hardcoded. *   **Needs Improvement**:     *   The backend process on the VPS is run via `nohup`, which is not robust. It should be managed by a `systemd` service file.  **3rd Party Integrations** *   **Stripe (Payments):** Integrated for subscriptions (test mode). *   **Resend (Transactional Emails):** Integrated for password recovery (test mode). *   **Emergent-managed Google Auth:** Partially integrated for social login (currently broken/paused).  **Testing status** -   **Testing agent used after significant changes**: NO (Deployment was manually verified by user). -   **Troubleshoot agent used after agent stuck in loop**: NO -   **Test files created**: [] -   **Known regressions**: None.  **Credentials to test flow:** *   **User for Emergent Environment:** `test@test.com` / `Test123!` *   **User for Live Site (factuya.site):** A test user was created with `test@test.com` / `Test123!`. The database is separate from the dev environment. *   **VPS Access:** The user logs into their Hostinger account and uses the web terminal. The agent does not have direct SSH access.     *   **Server IP:** `187.77.19.47`     *   **Live URL:** `https://factuya.site`  **What agent forgot to execute** *   Nothing was forgotten. The agent successfully followed complex and evolving user requests, culminating in a full production deployment.</analysis>" > /app/.emergent/summary.txt
+root         214  0.0  0.0   4492  2264 ?        S    02:21   0:00 /bin/bash -c mkdir -p /app/.emergent && echo "<analysis>**original_problem_statement:** The user initially requested a clone of the "Invoice Home" application. The project has since evolved based on user feedback into a feature-rich, full-stack invoicing application named "FactuYa!". The application has been successfully deployed to the user's own Hostinger VPS and is live at their custom domain.  **PRODUCT REQUIREMENTS:** 1.  **Core Functionality:** Create a full-stack invoicing application with user authentication. 2.  **Branding:** The application should be named "FactuYa!" with an apple green color scheme. 3.  **Invoicing Features:**     *   Create, Read, Update, and Delete (CRUD) invoices.     *   Support multiple document types: Invoice, Proforma Invoice, Quotation, Bill of Collection, Receipt.     *   Company logo, default notes, and default terms saved to the user's profile.     *   Default invoice template saved to the user's profile.     *   Allow changing the status of invoices (Pending, Paid, Overdue).     *   Download invoices as PDF.     *   Share invoices via email or a generated link on WhatsApp.     *   Automatic, sequential invoice numbering.     *   "NIT" (Tax ID) field for company and client.     *   Ability to copy/duplicate an existing invoice. 4.  **Internationalization:** The application must support multiple languages (Spanish and English). **The landing page should automatically detect the user's browser language.** 5.  **Custom Templates:** Allow users to upload their own PNG designs. 6.  **Subscription Model:** Free trial (10 invoices), then subscription required. 7.  **User Account Management:** Settings panel, dark/light mode, password recovery. 8.  **Authentication:** Support traditional email/password login and Google Social Login. 9.  **Deployment:** The application must be deployed on the user's own hosting (Hostinger VPS).  **User's preferred language**: Español  **what currently exists?** A full-stack invoicing application (React + FastAPI + MongoDB) that has been successfully deployed to a user-provided Hostinger VPS. The application is live and accessible via a custom domain with an SSL certificate. In this session, the agent guided the user through the entire server setup and deployment process from scratch. The agent also implemented significant mobile responsiveness improvements, fixed dark mode UI bugs, and enhanced the WhatsApp sharing feature. The user and agent have agreed on a new workflow: all future development will happen in the Emergent environment, be pushed to GitHub, and then pulled and rebuilt on the VPS.  **Last working item**: -   **Last item agent was working**: The user requested that the public-facing landing page automatically detect the visitor's browser/device language (Spanish or English) and display the content accordingly. The agent was in the process of analyzing the code to implement this using `i18next-browser-languagedetector`. -   **Status**: NOT STARTED -   **Agent Testing Done**: N -   **Which testing method agent to use?**: Frontend testing agent -   **User Testing Done**: N  **All Pending/In progress Issue list**: -   **Issue 1: Implement Automatic Language Detection on Landing Page (P0)**     -   **Description**: The landing page (`Home.jsx`) currently has hardcoded Spanish text. It needs to be updated to use the `i18next` translation files and automatically switch between Spanish and English based on the user's browser settings.     -   **Next debug checklist**:         1.  Add translation keys for all text on `Home.jsx` to `locales/en.json` and `locales/es.json`.         2.  Modify `i18n.js` to include and configure `i18next-browser-languagedetector`.         3.  Update `Home.jsx` to use the `useTranslation` hook for all text content.     -   **Why fix this issue and what will be achieved with the fix?**: Fulfills a direct user request to make the application's entry point accessible to both Spanish and English-speaking users automatically.     -   **Status**: NOT STARTED     -   **Is recurring issue?**: N     -   **Should Test frontend/backend/both after fix?**: Frontend     -   **Blocked on other issue**: None  -   **Issue 2: Google OAuth Login Redirects Incorrectly (P1)**     -   **Description**: After successful Google authentication, the user is redirected to the sign-in page instead of the dashboard, creating a login loop. This task was paused in a previous session.     -   **Next debug checklist**:         1.  Verify the redirect URI in the Emergent-managed Google Auth settings.         2.  Trace the redirect flow in browser developer tools to check for frontend errors.         3.  Check backend logs for hits to the `/api/google-auth/callback` endpoint.     -   **Why fix this issue and what will be achieved with the fix?**: Enables a crucial, user-requested alternative login method.     -   **Status**: NOT STARTED     -   **Is recurring issue?**: Y     -   **Should Test frontend/backend/both after fix?**: Both     -   **Blocked on other issue**: None  **In progress Task List**: *   None.  **Upcoming and Future Tasks** *   **Upcoming Tasks:**     *   **P1: Integrate Wompi Payment Gateway:** The user has explicitly stated this is the next major task after the current small fixes. This will replace Stripe for the Colombian market.     *   **P2: Configure Production Emailing:** The Resend integration needs to be configured for production use on the VPS.     *   **P2: Add More Custom Templates:** The user has indicated they have more designs to add. *   **Future Tasks:**     *   **P2: Client and Product Management:** Add dedicated sections to manage recurring clients and products.     *   **P2: Advanced Reporting:** Build a reports page with analytics.     *   **P3: Mobile Application:** The user has expressed long-term interest in a mobile app.  **Completed work in this session** -   **Full Manual Deployment to Hostinger VPS (DONE):**     -   Guided the user through purchasing and setting up a KVM 2 VPS plan on Hostinger.     -   Installed and configured all necessary server software: Ubuntu, Python, Node.js, MongoDB, Nginx, Git, Certbot.     -   Cloned the application code from the user's public GitHub repository.     -   Configured backend and frontend `.env` files for the production environment.     -   Built the production version of the React frontend.     -   Configured Nginx as a reverse proxy to serve the frontend and route `/api` calls to the backend.     -   Configured DNS A records to point the custom domain (`factuya.site`) to the VPS IP address (`187.77.19.47`).     -   Installed and configured a free Let's Encrypt SSL certificate, enabling HTTPS.     -   The application is now live at `https://factuya.site`. -   **Feature: Mobile Responsiveness (DONE):** Overhauled `InvoiceCreator.jsx` to be fully responsive, improving layouts and adding a floating "Preview" button on mobile. -   **Feature: Improved WhatsApp Sharing (DONE):** Implemented logic to use the Web Share API on mobile to share the PDF directly as a file, while retaining the "download + message" behavior on desktop. -   **Bug Fix: Session Expiration (DONE):** Corrected an issue where any network error would log the user out. Now, logout only occurs on authentication errors (401/403). -   **Bug Fix: Dark Mode UI (DONE):** Fixed contrast issues on the Profile and Subscription pages in dark mode. -   **Code Cleanup: Removed Emergent Badge (DONE):** Removed the "Made with Emergent" badge and tracking scripts from the `index.html` file on the production VPS.  **Known issue recurrence from previous fork** -   None in this session. The Google OAuth issue is from a prior session.  **Code Architecture** The application is a standard React (frontend) + FastAPI (backend) + MongoDB (database) stack. It is now deployed on a **Hostinger VPS running Ubuntu**. -   **Nginx** acts as the web server and reverse proxy.     -   Serves the static build files from `/var/www/factuya/frontend/build`.     -   Proxies all requests starting with `/api` to the FastAPI backend running on port 8001. -   The **FastAPI backend** runs as a background process using `nohup uvicorn`. -   The **MongoDB database** is running locally on the same VPS. -   The code is located at `/var/www/factuya` on the server.  **Key Technical Concepts** *   **Manual VPS Deployment:** Full server setup from a bare Ubuntu instance (installing dependencies, configuring services). *   **Nginx Reverse Proxy:** Configuring Nginx to serve a React app and proxy API requests to a backend service. *   **SSL Configuration:** Using `certbot` with the Nginx plugin to obtain and automatically renew Let's Encrypt SSL certificates. *   **DNS Management:** Configuring A records to point a domain to a server IP. *   **Production Workflow:** Established a workflow of developing in Emergent, pushing to GitHub, then pulling and rebuilding on the production VPS. *   **Web Share API:** Used for sharing files directly from a web app on mobile devices. *   **i18next:** The internationalization library used in the project, which will be extended for the next task.  **key DB schema** *   **users**: `{..., companyInfo: { ..., nit: String }, ...}` *   **invoices**: `{..., invoiceData: { from: { ..., nit: String }, to: { ..., nit: String } }, ...}`  **changes in tech stack** *   No change in the application's tech stack, but the **entire infrastructure has been migrated to a user-owned Hostinger VPS**.  **All files of reference** *   `/var/www/factuya/frontend/src/pages/Home.jsx`: The target for the next task (auto language detection). *   `/var/www/factuya/frontend/src/locales/en.json` *   `/var/www/factuya/frontend/src/locales/es.json` *   `/var/wwh/factuya/frontend/src/i18n.js`: Configuration file for translations. *   `/etc/nginx/sites-available/factuya`: Nginx configuration file on the VPS. *   `/var/www/factuya/backend/.env`: Backend environment variables on the VPS. *   `/var/www/factuya/frontend/.env`: Frontend environment variables on the VPS.  **Areas that need refactoring**: *   The backend is currently run with `nohup uvicorn...`. This is fragile. A `systemd` service should be created to manage the backend process, ensuring it restarts automatically on failure or server reboot. *   Template definitions are still hardcoded in the frontend. They should be moved to the database.  **key api endpoints** *   `POST /api/auth/login` *   `GET /api/invoices` *   `POST /api/invoices`  **Critical Info for New Agent** *   **MUST communicate with the user in Español.** *   **The application is LIVE on a user-managed Hostinger VPS.** The development workflow is now:     1.  Make all changes in the **Emergent environment**.     2.  Once approved, the user will push the code to their GitHub repo: `https://github.com/chatbotsmarketing21-design/factuya.git`.     3.  The agent will then need to guide the user to run update commands on their VPS terminal. *   **Do NOT directly modify files on the VPS.** All development should happen in the sandbox environment. The VPS is for deployment only. *   **VPS Update Commands:**     ```bash     # 1. Pull latest code from GitHub     cd /var/www/factuya && git pull          # 2. Update backend dependencies (if any)     cd /var/www/factuya/backend && pip3 install -r requirements.txt --break-system-packages          # 3. Rebuild frontend     cd /var/www/factuya/frontend && npm install --legacy-peer-deps && npm run build          # 4. Restart backend process     # Find process:     ps aux | grep uvicorn     # Kill process:     kill <PID>     # Restart in background:     cd /var/www/factuya/backend && nohup uvicorn server:app --host 0.0.0.0 --port 8001 > /var/log/factuya.log 2>&1 &     ``` *   The user accesses the VPS via the Hostinger web-based terminal.  **documents and test reports created in this job** *   `/app/memory/PRD.md` (updated with deployment info)  **Last 10 User Messages and any pending HUMAN messages** 10. User: Asks if the landing page is original or a copy. 9.  Agent: Confirms it's an original design inspired by the reference and can be modified. 8.  User: Requests the landing page to be bilingual (EN/ES) and auto-detect the user's language. 7.  Agent: Agrees and starts investigating the `Home.jsx` file. 6.  User: Asks if all future changes have to be done in the terminal. 5.  Agent: Proposes a better workflow: develop in Emergent, push to GitHub, then pull/rebuild on the VPS. 4.  User: Agrees this is the best strategy for all future changes. 3.  Agent: Confirms the new workflow and asks for the list of changes, starting with the bilingual landing page. 2.  User: Confirms to start with the auto-detecting bilingual landing page. 1.  Agent: Acknowledges and starts the work by viewing the `Home.jsx` file.  **Project Health Check:** *   **Broken**:     *   Google OAuth login flow (redirect loop, work is paused). *   **Mocked**:     *   The list of available invoice templates is hardcoded. *   **Needs Improvement**:     *   The backend process on the VPS is run via `nohup`, which is not robust. It should be managed by a `systemd` service file.  **3rd Party Integrations** *   **Stripe (Payments):** Integrated for subscriptions (test mode). *   **Resend (Transactional Emails):** Integrated for password recovery (test mode). *   **Emergent-managed Google Auth:** Partially integrated for social login (currently broken/paused).  **Testing status** -   **Testing agent used after significant changes**: NO (Deployment was manually verified by user). -   **Troubleshoot agent used after agent stuck in loop**: NO -   **Test files created**: [] -   **Known regressions**: None.  **Credentials to test flow:** *   **User for Emergent Environment:** `test@test.com` / `Test123!` *   **User for Live Site (factuya.site):** A test user was created with `test@test.com` / `Test123!`. The database is separate from the dev environment. *   **VPS Access:** The user logs into their Hostinger account and uses the web terminal. The agent does not have direct SSH access.     *   **Server IP:** `187.77.19.47`     *   **Live URL:** `https://factuya.site`  **What agent forgot to execute** *   Nothing was forgotten. The agent successfully followed complex and evolving user requests, culminating in a full production deployment.</analysis>" > /app/.emergent/summary.txt
+root         217  0.0  0.0   3752  1940 ?        S    02:21   0:00 grep uvicorn
+*   The user accesses the VPS via the Hostinger web-based terminal.
 
 **documents and test reports created in this job**
-*    (updated)
-*   
-*   
+*    (updated with deployment info)
 
 **Last 10 User Messages and any pending HUMAN messages**
-10. User: Changed the PDF sidebar text to be more legible.
-9.  User: The PDF text is still messy. (Provided image)
-8.  Agent: Fixed the PDF text rendering using a new technique.
-7.  User: Add a Copy button to the dashboard to duplicate invoices.
-6.  Agent: Implemented the Copy feature.
-5.  User: How do I deploy the app to a real domain?
-4.  Agent: Called the  to provide instructions.
-3.  *User is reviewing the deployment information.*
-2.  ...
-1.  ...
+10. User: Asks if the landing page is original or a copy.
+9.  Agent: Confirms it's an original design inspired by the reference and can be modified.
+8.  User: Requests the landing page to be bilingual (EN/ES) and auto-detect the user's language.
+7.  Agent: Agrees and starts investigating the  file.
+6.  User: Asks if all future changes have to be done in the terminal.
+5.  Agent: Proposes a better workflow: develop in Emergent, push to GitHub, then pull/rebuild on the VPS.
+4.  User: Agrees this is the best strategy for all future changes.
+3.  Agent: Confirms the new workflow and asks for the list of changes, starting with the bilingual landing page.
+2.  User: Confirms to start with the auto-detecting bilingual landing page.
+1.  Agent: Acknowledges and starts the work by viewing the  file.
 
 **Project Health Check:**
 *   **Broken**:
     *   Google OAuth login flow (redirect loop, work is paused).
 *   **Mocked**:
-    *   The list of available invoice templates is hardcoded in .
+    *   The list of available invoice templates is hardcoded.
+*   **Needs Improvement**:
+    *   The backend process on the VPS is run via , which is not robust. It should be managed by a  service file.
 
 **3rd Party Integrations**
-*   **Stripe (Payments):** Integrated for subscriptions. Requires a User API Key for live mode.
-*   **Resend (Transactional Emails):** Integrated for password recovery. Requires a User API Key.
+*   **Stripe (Payments):** Integrated for subscriptions (test mode).
+*   **Resend (Transactional Emails):** Integrated for password recovery (test mode).
 *   **Emergent-managed Google Auth:** Partially integrated for social login (currently broken/paused).
 
 **Testing status**
--   **Testing agent used after significant changes**: YES
+-   **Testing agent used after significant changes**: NO (Deployment was manually verified by user).
 -   **Troubleshoot agent used after agent stuck in loop**: NO
 -   **Test files created**: []
 -   **Known regressions**: None.
 
 **Credentials to test flow:**
-*   **Original User:**
-    -   Email: 
-    -   Password: 
-*   **New Test User (created this session):**
-    -   Email: 
-    -   Password: 
+*   **User for Emergent Environment:**  / 
+*   **User for Live Site (factuya.site):** A test user was created with  / . The database is separate from the dev environment.
+*   **VPS Access:** The user logs into their Hostinger account and uses the web terminal. The agent does not have direct SSH access.
+    *   **Server IP:** 
+    *   **Live URL:** 
 
 **What agent forgot to execute**
-*   None. All user requests in this session were addressed. The paused Google OAuth task was not forgotten but intentionally deferred based on user priorities from a previous session.</analysis>
+*   Nothing was forgotten. The agent successfully followed complex and evolving user requests, culminating in a full production deployment.</analysis>
