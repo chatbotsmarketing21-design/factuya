@@ -95,7 +95,10 @@
     "newInvoice": "New Invoice",
     "noInvoices": "No invoices yet",
     "createFirst": "Create your first invoice to get started",
-    "searchPlaceholder": "Search invoices by client name or number..."
+    "searchPlaceholder": "Search invoices by client name or number...",
+    "downloadPdf": "Download PDF",
+    "copy": "Copy",
+    "share": "Share"
   },
   "invoice": {
     "invoice": "Invoice",
