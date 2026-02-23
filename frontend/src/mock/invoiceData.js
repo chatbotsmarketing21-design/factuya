@@ -4,6 +4,7 @@
 export const templateColors = [
   { id: 'black', name: 'Negro', hex: '#1f2937' },
   { id: 'gray', name: 'Gris', hex: '#6b7280' },
+  { id: 'brown', name: 'Café', hex: '#92400e' },
   { id: 'red', name: 'Rojo', hex: '#DC2626' },
   { id: 'pink', name: 'Rosado', hex: '#ec4899' },
   { id: 'purple', name: 'Morado', hex: '#7c3aed' },
