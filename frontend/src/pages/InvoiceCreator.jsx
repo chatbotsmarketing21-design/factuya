@@ -34,6 +34,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
 const InvoiceCreator = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
