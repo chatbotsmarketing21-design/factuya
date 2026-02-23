@@ -1441,9 +1441,8 @@ const InvoiceCreator = () => {
                               className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
                             >
                               <Upload className="w-4 h-4" />
-                              Subir Firma (PNG, JPG)
+                              {t('invoice.uploadSignature')}
                             </label>
-                            <p className="text-xs text-gray-500 mt-1">Máximo 1MB - Fondo transparente recomendado</p>
                           </div>
                         )}
                       </div>
@@ -1471,7 +1470,7 @@ const InvoiceCreator = () => {
           className="w-full bg-lime-500 hover:bg-lime-600 text-white h-12"
         >
           <Eye className="w-5 h-5 mr-2" />
-          Ver Vista Previa
+          {t('preview.preview')}
         </Button>
       </div>
 
