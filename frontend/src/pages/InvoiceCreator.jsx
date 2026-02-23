@@ -1270,7 +1270,7 @@ const InvoiceCreator = () => {
                 {invoice.hasTax ? (
                   <div className="flex justify-between items-center bg-gray-50 dark:bg-muted p-2 sm:p-3 rounded-lg">
                     <div className="flex items-center gap-1 sm:gap-2">
-                      <span className="text-sm text-gray-700 dark:text-gray-300">{invoice.taxName || 'Impuesto'} ({invoice.taxRate}%):</span>
+                      <span className="text-sm text-gray-700 dark:text-gray-300">{invoice.taxName || t('invoice.tax')} ({invoice.taxRate}%):</span>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -1291,13 +1291,13 @@ const InvoiceCreator = () => {
                       className="text-lime-600 border-lime-300 hover:bg-lime-50 dark:hover:bg-lime-900/20 text-xs sm:text-sm"
                     >
                       <Percent className="w-4 h-4 mr-1 sm:mr-2" />
-                      Añadir Impuesto
+                      {t('invoice.addTax')}
                     </Button>
                   </div>
                 )}
 
                 <div className="flex justify-between items-center text-lg sm:text-xl font-bold border-t dark:border-border pt-2 sm:pt-3">
-                  <span className="dark:text-white">Total:</span>
+                  <span className="dark:text-white">{t('invoice.total')}:</span>
                   <span className="text-lime-700 dark:text-lime-400">${invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
                 </div>
               </div>
@@ -1306,33 +1306,33 @@ const InvoiceCreator = () => {
             {/* Notes and Terms */}
             <Card className="p-4 sm:p-6 dark:bg-card">
               <div className="flex justify-between items-center mb-4 sm:mb-6 cursor-pointer" onClick={() => toggleSection('notes')}>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Notas / Pie de Página</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('invoice.notesFooter')}</h2>
                 <Button variant="ghost" size="sm">
                   {sectionsOpen.notes ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                 </Button>
               </div>
               {sectionsOpen.notes && (
                 <>
-                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-3 sm:mb-4">Los cambios se guardan automáticamente</p>
+                  <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-3 sm:mb-4">{t('invoice.changesAutoSaved')}</p>
                   <div className="space-y-4">
                     <div>
-                      <Label htmlFor="notes" className="dark:text-gray-300 text-sm">Notas</Label>
+                      <Label htmlFor="notes" className="dark:text-gray-300 text-sm">{t('invoice.notes')}</Label>
                       <Textarea
                         id="notes"
                         value={invoice.notes}
                         onChange={(e) => handleNotesChange(e.target.value)}
-                        placeholder="¡Gracias por su preferencia!"
+                        placeholder=""
                         rows={2}
                         className="dark:bg-secondary dark:border-border dark:text-white text-sm"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="terms" className="dark:text-gray-300 text-sm">Términos y Condiciones</Label>
+                      <Label htmlFor="terms" className="dark:text-gray-300 text-sm">{t('invoice.terms')}</Label>
                       <Textarea
                         id="terms"
                         value={invoice.terms}
                         onChange={(e) => handleTermsChange(e.target.value)}
-                        placeholder="Pago a 30 días"
+                        placeholder=""
                         rows={2}
                         className="dark:bg-secondary dark:border-border dark:text-white text-sm"
                       />
@@ -1340,7 +1340,7 @@ const InvoiceCreator = () => {
                     
                     {/* Signature Upload */}
                     <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                      <Label className="dark:text-gray-300 text-sm mb-2 block">Firma</Label>
+                      <Label className="dark:text-gray-300 text-sm mb-2 block">{t('invoice.signature')}</Label>
                       <div className="flex items-center gap-4">
                         {invoice.signature ? (
                           <div className="flex items-center gap-3">
