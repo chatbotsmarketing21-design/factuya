@@ -1525,15 +1525,15 @@ const InvoiceCreator = () => {
       <Dialog open={showTaxDialog} onOpenChange={setShowTaxDialog}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Añadir Impuesto</DialogTitle>
+            <DialogTitle>{t('invoice.addTax')}</DialogTitle>
             <DialogDescription>
-              Añadir impuesto nuevo
+              {t('invoice.addTax')}
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="taxName">Nombre del impuesto</Label>
+                <Label htmlFor="taxName">{t('invoice.taxName')}</Label>
                 <Input
                   id="taxName"
                   value={tempTaxName}
@@ -1542,7 +1542,7 @@ const InvoiceCreator = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="taxRate">Porcentaje (%)</Label>
+                <Label htmlFor="taxRate">{t('invoice.taxRate')}</Label>
                 <Input
                   id="taxRate"
                   type="number"
