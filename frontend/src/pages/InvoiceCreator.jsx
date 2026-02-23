@@ -822,7 +822,7 @@ const InvoiceCreator = () => {
                 </DropdownMenu>
                 <Link to="/templates">
                   <Button variant="outline" size="sm">
-                    Cambiar Plantilla
+                    {t('invoice.changeTemplate')}
                   </Button>
                 </Link>
               </div>
@@ -835,7 +835,7 @@ const InvoiceCreator = () => {
                 disabled={loading}
               >
                 <Save className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline">{loading ? 'Guardando...' : isEditMode ? 'Actualizar' : 'Guardar'}</span>
+                <span className="hidden sm:inline">{loading ? t('invoice.saving') : isEditMode ? t('invoice.updateInvoice') : t('invoice.saveInvoice')}</span>
               </Button>
               
               {/* Mobile menu button */}
