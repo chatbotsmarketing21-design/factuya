@@ -1133,7 +1133,7 @@ const InvoiceCreator = () => {
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                   <div className="col-span-2 sm:col-span-1">
-                    <Label htmlFor="toCity" className="dark:text-gray-300 text-sm">Ciudad</Label>
+                    <Label htmlFor="toCity" className="dark:text-gray-300 text-sm">{t('invoice.city')}</Label>
                     <Input
                       id="toCity"
                       value={invoice.to.city}
@@ -1142,7 +1142,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="toState" className="dark:text-gray-300 text-sm">Dpto/Prov</Label>
+                    <Label htmlFor="toState" className="dark:text-gray-300 text-sm">{t('invoice.state')}</Label>
                     <Input
                       id="toState"
                       value={invoice.to.state}
@@ -1151,7 +1151,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="toZip" className="dark:text-gray-300 text-sm">C. Postal</Label>
+                    <Label htmlFor="toZip" className="dark:text-gray-300 text-sm">{t('invoice.zip')}</Label>
                     <Input
                       id="toZip"
                       value={invoice.to.zip}
@@ -1167,10 +1167,10 @@ const InvoiceCreator = () => {
             {/* Items Section */}
             <Card className="p-4 sm:p-6 dark:bg-card">
               <div className="flex items-center justify-between mb-4 sm:mb-6">
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Items / Servicios</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('invoice.items')}</h2>
                 <Button onClick={addItem} size="sm" className="text-xs sm:text-sm">
                   <Plus className="w-4 h-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Agregar Item</span>
+                  <span className="hidden sm:inline">{t('invoice.addItem')}</span>
                 </Button>
               </div>
               <div className="space-y-4">
@@ -1191,11 +1191,11 @@ const InvoiceCreator = () => {
                     </div>
                     <div className="space-y-3">
                       <div>
-                        <Label className="dark:text-gray-300 text-sm">Descripción *</Label>
+                        <Label className="dark:text-gray-300 text-sm">{t('invoice.description')} *</Label>
                         <Input
                           value={item.description}
                           onChange={(e) => updateItem(index, 'description', e.target.value)}
-                          placeholder="Descripción del servicio o producto"
+                          placeholder={t('invoice.description')}
                           required
                           className="dark:bg-secondary dark:border-border dark:text-white text-sm"
                         />
