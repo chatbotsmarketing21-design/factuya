@@ -1202,7 +1202,7 @@ const InvoiceCreator = () => {
                       </div>
                       <div className="grid grid-cols-3 gap-2 sm:gap-3">
                         <div>
-                          <Label className="dark:text-gray-300 text-xs sm:text-sm">Cant.</Label>
+                          <Label className="dark:text-gray-300 text-xs sm:text-sm">{t('invoice.quantity')}</Label>
                           <Input
                             type="text"
                             inputMode="decimal"
@@ -1233,7 +1233,7 @@ const InvoiceCreator = () => {
                           />
                         </div>
                         <div>
-                          <Label className="dark:text-gray-300 text-xs sm:text-sm">Precio</Label>
+                          <Label className="dark:text-gray-300 text-xs sm:text-sm">{t('invoice.rate')}</Label>
                           <Input
                             type="text"
                             value={item.rate ? Number(item.rate).toLocaleString('es-CO') : ''}
@@ -1246,7 +1246,7 @@ const InvoiceCreator = () => {
                           />
                         </div>
                         <div>
-                          <Label className="dark:text-gray-300 text-xs sm:text-sm">Monto</Label>
+                          <Label className="dark:text-gray-300 text-xs sm:text-sm">{t('invoice.amount')}</Label>
                           <Input
                             value={item.amount.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                             disabled
@@ -1262,7 +1262,7 @@ const InvoiceCreator = () => {
               {/* Totals */}
               <div className="mt-4 sm:mt-6 space-y-2 sm:space-y-3 border-t dark:border-border pt-3 sm:pt-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">Subtotal:</span>
+                  <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">{t('invoice.subtotal')}:</span>
                   <span className="font-semibold text-base sm:text-lg dark:text-white">${invoice.subtotal.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</span>
                 </div>
                 
