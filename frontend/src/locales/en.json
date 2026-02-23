@@ -50,7 +50,8 @@
     "welcome": "Welcome",
     "welcomeMale": "Welcome",
     "welcomeFemale": "Welcome",
-    "back": "Back"
+    "back": "Back",
+    "close": "Close"
   },
   "nav": {
     "home": "Home",
