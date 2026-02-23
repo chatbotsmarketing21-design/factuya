@@ -1364,8 +1364,8 @@ const InvoiceCreator = () => {
                                   try {
                                     await profileAPI.deleteSignature();
                                     toast({
-                                      title: "Firma eliminada",
-                                      description: "La firma ha sido removida de tu perfil",
+                                      title: t('invoice.signatureDeleted'),
+                                      description: t('invoice.signatureDeletedDesc'),
                                     });
                                   } catch (error) {
                                     console.error('Error deleting signature:', error);
@@ -1391,10 +1391,10 @@ const InvoiceCreator = () => {
                                   console.error('Error saving signature rotation:', error);
                                 }
                               }}
-                              title="Rotar 90°"
+                              title={t('invoice.rotate')}
                             >
                               <RotateCw className="w-4 h-4 mr-1" />
-                              Rotar
+                              {t('invoice.rotate')}
                             </Button>
                           </div>
                         ) : (
@@ -1410,7 +1410,7 @@ const InvoiceCreator = () => {
                                   if (file.size > 1024 * 1024) {
                                     toast({
                                       title: "Error",
-                                      description: "La firma no debe superar 1MB",
+                                      description: "Max 1MB",
                                       variant: "destructive"
                                     });
                                     return;
@@ -1425,8 +1425,8 @@ const InvoiceCreator = () => {
                                     try {
                                       await profileAPI.updateSignature(signatureData, 0);
                                       toast({
-                                        title: "¡Firma guardada!",
-                                        description: "La firma se ha guardado y aparecerá en tus próximos documentos",
+                                        title: t('invoice.signatureSaved'),
+                                        description: t('invoice.signatureSavedDesc'),
                                       });
                                     } catch (error) {
                                       console.error('Error saving signature:', error);
