@@ -987,7 +987,7 @@ const InvoiceCreator = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                   <div className="sm:col-span-2">
-                    <Label htmlFor="fromName" className="dark:text-gray-300 text-sm">Nombre de la Empresa</Label>
+                    <Label htmlFor="fromName" className="dark:text-gray-300 text-sm">{t('invoice.companyName')}</Label>
                     <Input
                       id="fromName"
                       value={invoice.from.name}
@@ -996,7 +996,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="fromNit" className="dark:text-gray-300 text-sm">NIT</Label>
+                    <Label htmlFor="fromNit" className="dark:text-gray-300 text-sm">{t('invoice.nit')}</Label>
                     <Input
                       id="fromNit"
                       value={invoice.from.nit}
@@ -1008,7 +1008,7 @@ const InvoiceCreator = () => {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <Label htmlFor="fromEmail" className="dark:text-gray-300 text-sm">Correo Electrónico</Label>
+                    <Label htmlFor="fromEmail" className="dark:text-gray-300 text-sm">{t('invoice.email')}</Label>
                     <Input
                       id="fromEmail"
                       type="email"
@@ -1018,7 +1018,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="fromPhone" className="dark:text-gray-300 text-sm">Teléfono</Label>
+                    <Label htmlFor="fromPhone" className="dark:text-gray-300 text-sm">{t('invoice.phone')}</Label>
                     <Input
                       id="fromPhone"
                       value={invoice.from.phone}
@@ -1028,7 +1028,7 @@ const InvoiceCreator = () => {
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="fromAddress" className="dark:text-gray-300 text-sm">Dirección</Label>
+                  <Label htmlFor="fromAddress" className="dark:text-gray-300 text-sm">{t('invoice.address')}</Label>
                   <Input
                     id="fromAddress"
                     value={invoice.from.address}
@@ -1038,7 +1038,7 @@ const InvoiceCreator = () => {
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                   <div className="col-span-2 sm:col-span-1">
-                    <Label htmlFor="fromCity" className="dark:text-gray-300 text-sm">Ciudad</Label>
+                    <Label htmlFor="fromCity" className="dark:text-gray-300 text-sm">{t('invoice.city')}</Label>
                     <Input
                       id="fromCity"
                       value={invoice.from.city}
@@ -1047,7 +1047,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="fromState" className="dark:text-gray-300 text-sm">Dpto/Prov</Label>
+                    <Label htmlFor="fromState" className="dark:text-gray-300 text-sm">{t('invoice.state')}</Label>
                     <Input
                       id="fromState"
                       value={invoice.from.state}
