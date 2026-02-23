@@ -164,6 +164,7 @@
     "receipt": "RECEIPT"
   },
   "preview": {
+    "preview": "View Preview",
     "from": "FROM",
     "billTo": "BILL TO",
     "invoiceDate": "Invoice Date",
