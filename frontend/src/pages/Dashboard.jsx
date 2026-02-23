@@ -832,7 +832,7 @@ const Dashboard = () => {
                             onClick={() => handleDownloadPDF(invoice.id)}
                           >
                             <Download className="w-4 h-4 mr-2" />
-                            Descargar PDF
+                            {t('dashboard.downloadPdf')}
                           </Button>
                           <Button 
                             variant="outline" 
@@ -841,7 +841,7 @@ const Dashboard = () => {
                             onClick={(event) => handleCopyInvoice(invoice.id, event)}
                           >
                             <Copy className="w-4 h-4 mr-2" />
-                            Copiar
+                            {t('dashboard.copy')}
                           </Button>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -851,7 +851,7 @@ const Dashboard = () => {
                                 className="rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-card hover:bg-gray-50 dark:hover:bg-muted px-4 py-2 font-medium"
                               >
                                 <Share2 className="w-4 h-4 mr-2" />
-                                Compartir
+                                {t('dashboard.share')}
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
