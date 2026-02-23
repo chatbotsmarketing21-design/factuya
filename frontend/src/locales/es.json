@@ -50,7 +50,8 @@
     "welcome": "Bienvenido",
     "welcomeMale": "Bienvenido",
     "welcomeFemale": "Bienvenida",
-    "back": "Volver"
+    "back": "Volver",
+    "close": "Cerrar"
   },
   "nav": {
     "home": "Inicio",
