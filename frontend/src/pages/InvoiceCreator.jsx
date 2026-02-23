@@ -1568,10 +1568,10 @@ const InvoiceCreator = () => {
           </div>
           <DialogFooter className="flex-col sm:flex-row gap-2">
             <Button onClick={handleSaveTax} className="bg-lime-500 hover:bg-lime-600 text-white">
-              Guardar impuesto
+              {t('invoice.saveTax')}
             </Button>
             <Button variant="ghost" onClick={() => setShowTaxDialog(false)}>
-              Cerrar
+              {t('common.close')}
             </Button>
           </DialogFooter>
         </DialogContent>
