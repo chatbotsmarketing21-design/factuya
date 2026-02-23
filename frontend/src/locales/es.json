@@ -95,7 +95,10 @@
     "newInvoice": "Nueva Factura",
     "noInvoices": "Aún no hay facturas",
     "createFirst": "Crea tu primera factura para comenzar",
-    "searchPlaceholder": "Buscar facturas por nombre de cliente o número..."
+    "searchPlaceholder": "Buscar facturas por nombre de cliente o número...",
+    "downloadPdf": "Descargar PDF",
+    "copy": "Copiar",
+    "share": "Compartir"
   },
   "invoice": {
     "invoice": "Factura",
