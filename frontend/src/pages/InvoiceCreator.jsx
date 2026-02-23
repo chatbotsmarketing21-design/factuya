@@ -871,7 +871,7 @@ const InvoiceCreator = () => {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link to="/templates" className="w-full">
-                      Cambiar Plantilla
+                      {t('invoice.changeTemplate')}
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -889,7 +889,7 @@ const InvoiceCreator = () => {
             {/* Invoice Details */}
             <Card className="p-4 sm:p-6 dark:bg-card">
               <div className="flex justify-between items-center mb-4 sm:mb-6 cursor-pointer" onClick={() => toggleSection('details')}>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Detalles de la Factura</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('invoice.details')}</h2>
                 <Button variant="ghost" size="sm">
                   {sectionsOpen.details ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                 </Button>
@@ -897,7 +897,7 @@ const InvoiceCreator = () => {
               {sectionsOpen.details && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <Label htmlFor="number" className="dark:text-gray-300 text-sm">Número de Factura</Label>
+                    <Label htmlFor="number" className="dark:text-gray-300 text-sm">{t('invoice.invoiceNumber')}</Label>
                     <Input
                       id="number"
                       value={invoice.number}
@@ -907,7 +907,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="date" className="dark:text-gray-300 text-sm">Fecha de Factura</Label>
+                    <Label htmlFor="date" className="dark:text-gray-300 text-sm">{t('invoice.invoiceDate')}</Label>
                     <Input
                       id="date"
                       type="date"
@@ -917,7 +917,7 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div className="sm:col-span-2">
-                    <Label htmlFor="dueDate" className="dark:text-gray-300 text-sm">Fecha de Vencimiento</Label>
+                    <Label htmlFor="dueDate" className="dark:text-gray-300 text-sm">{t('invoice.dueDate')}</Label>
                     <Input
                       id="dueDate"
                       type="date"
@@ -933,7 +933,7 @@ const InvoiceCreator = () => {
             {/* From Section */}
             <Card className="p-4 sm:p-6 dark:bg-card">
               <div className="flex justify-between items-center mb-4 sm:mb-6 cursor-pointer" onClick={() => toggleSection('from')}>
-                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">De (Tu Empresa)</h2>
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('invoice.from')}</h2>
                 <Button variant="ghost" size="sm">
                   {sectionsOpen.from ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                 </Button>
@@ -942,7 +942,7 @@ const InvoiceCreator = () => {
               <div className="space-y-4">
                 {/* Logo Upload Section */}
                 <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-3 sm:p-4">
-                  <Label className="text-sm sm:text-base font-semibold mb-2 sm:mb-3 block dark:text-white">Logo de la Empresa</Label>
+                  <Label className="text-sm sm:text-base font-semibold mb-2 sm:mb-3 block dark:text-white">{t('invoice.logo')}</Label>
                   {invoice.logo ? (
                     <div className="flex items-center gap-3 sm:gap-4">
                       <img 
