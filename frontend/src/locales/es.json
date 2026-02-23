@@ -164,6 +164,7 @@
     "receipt": "RECIBO"
   },
   "preview": {
+    "preview": "Ver Vista Previa",
     "from": "DE",
     "billTo": "FACTURAR A",
     "invoiceDate": "Fecha de Emisión",
