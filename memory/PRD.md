@@ -1,209 +1,105 @@
 # FactuYa! - Product Requirements Document
 
 ## Original Problem Statement
-Create a full-stack invoicing application clone of "Invoice Home" with the following features:
-- User authentication (signup/login)
-- Invoice creation, editing, and deletion
-- PDF download functionality
-- Multiple document types (Invoice, Proforma, Quotation, Bill, Receipt)
-- Company logo upload
-- Invoice status management
-- Multi-language support (Spanish/English)
-- Subscription model: 10 free invoices, then $5/month via Stripe
+Clone of "Invoice Home" application - a full-stack invoicing application named "FactuYa!" with apple green color scheme, deployed on user's Hostinger VPS.
 
-## User Personas
-1. **Small Business Owners** - Need simple invoicing without complex accounting software
-2. **Freelancers** - Need to create professional invoices quickly
-3. **Consultants** - Need multiple document types (quotes, invoices, receipts)
+## Current Status: PRODUCTION DEPLOYED ✅
+- **Live URL**: User's custom domain on Hostinger VPS
+- **Stack**: React frontend + FastAPI backend + MongoDB
 
-## Core Requirements
-### Authentication
-- [x] User registration with email/password
-- [x] User login with JWT tokens
-- [x] Protected routes
-- [x] **Google OAuth login (FIXED Feb 2026)** - Fixed redirect loop by properly updating AuthContext state
+---
 
-### Invoice Management
-- [x] Create invoices with customer details
-- [x] Edit existing invoices
-- [x] Delete invoices with confirmation dialog
-- [x] View invoice list on dashboard
-- [x] Invoice statistics (total revenue, paid, pending)
-- [x] Multiple document types (Invoice, Proforma, Quote, Bill, Receipt)
-- [x] Company logo upload (persistent in user profile)
-- [x] Invoice status management (Pending, Paid, Overdue) - Draft removed
-- [x] Auto-incrementing invoice numbers per document type
-- [x] Quotations don't show payment status (only invoices/bills do)
+## Session Completed: February 23, 2026
 
-### PDF & Export
-- [x] Download invoice as PDF (using html2canvas + jspdf)
-- [x] Multi-page PDF support for long invoices
-- [x] PDF color based on selected template (not document type)
-- [x] Share via WhatsApp with PDF link
-- [x] Share via Email
-
-### Dashboard Features
-- [x] Filter invoices by clicking on "Pagadas" or "Pendientes" cards
-- [x] Colombian currency formatting ($1.234.567,89)
-- [x] Styled action buttons (Descargar PDF, Compartir)
-- [x] Dark mode support with custom gray theme
-
-### Invoice Creator Features
-- [x] Quantity field with thousand separators
-- [x] Price field with thousand separators (no spinner)
-- [x] Auto-save Notes and Terms to user profile
-- [x] Quantity starts at 0 (not 1)
-- [x] Mobile-responsive layout with collapsible sections
-- [x] Mobile preview modal with fullscreen invoice view
-- [x] Responsive header with mobile menu
-
-### Internationalization
-- [x] Spanish language support
-- [x] English language support
-- [x] Language switcher component
-- [x] Full UI translation
-- [x] **AUTO-DETECT browser language on landing page** (Feb 2026)
-
-### Subscription Model
-- [x] 10 free invoices for trial users
-- [x] $5/month Premium plan via Stripe
-- [x] Subscription dialog when limit reached
-- [x] Stripe Checkout integration
-- [x] Payment return handling
-
-### User Profile
-- [x] Company information management
-- [x] Logo upload and persistence
-- [x] Gender selection for personalized greeting
-- [x] Default Notes and Terms auto-save
-- [x] Change password functionality
-- [x] Dark/Light mode toggle
-
-## Technical Architecture
-```
-/app
-├── backend
-│   ├── models/ (user.py, invoice.py, subscription.py)
-│   ├── routes/ (auth.py, invoices.py, profile.py, subscription.py, password_reset.py, google_auth.py)
-│   ├── utils/ (security.py, subscription_check.py)
-│   ├── pdf_storage/ (temporary PDF files for sharing)
-│   ├── .env
-│   ├── requirements.txt
-│   └── server.py
-└── frontend
-    ├── src/
-    │   ├── components/ (InvoicePreview.jsx, ProtectedRoute.jsx, SubscriptionDialog.jsx, etc.)
-    │   ├── context/ (AuthContext.jsx)
-    │   ├── locales/ (en.json, es.json)
-    │   ├── pages/ (Dashboard.jsx, InvoiceCreator.jsx, SignIn.jsx, SignUp.jsx, Profile.jsx, etc.)
-    │   ├── services/ (api.js, subscriptionApi.js)
-    │   └── i18n.js
-    └── package.json
-```
-
-## Database Schema
-- **users**: `{id, username, email, hashed_password, name, gender, companyInfo: { logo, defaultNotes, defaultTerms, nit, bank, bankAccount, ... }}`
-- **invoices**: `{id, userId, from, to, items, documentType, status, total, signature, signatureRotation, createdAt, invoiceNumber}`
-- **subscriptions**: `{userId, stripe_customer_id, status, trialInvoicesUsed}`
-- **password_reset_tokens**: `{user_id, token, expires_at, used}`
-- **pdf_files**: `{userId, filename, createdAt, expiresAt}` (for WhatsApp sharing)
-
-## 3rd Party Integrations
-- **Stripe**: Payment processing for subscriptions (test mode, to be replaced by Wompi)
-- **Resend**: Transactional emails for password recovery (test mode)
-- **Google OAuth 2.0 (Self-Managed)**: Social login - fully configured and working
-  - Client ID: 441119292026-ngpbt64126c5pnlv08rgugqhtg0fedlj.apps.googleusercontent.com
-
-## Pending Issues
-- None currently. All critical bugs have been fixed.
-
-## Recently Fixed Issues
-1. **Cuenta de Cobro Data Persistence (FIXED Feb 22, 2026)**:
-   - Issue: Signature, signatureRotation, and bank details (from.bank, from.bankAccount) were not being saved when creating/editing "Cuenta de Cobro" documents
-   - Root Cause: Actually a false positive - the bug was already resolved. Backend models already had the correct fields. The issue was a frontend routing bug where `/invoice` route was missing (only `/create` existed)
-   - Fix: Added `/invoice` as an alias route to `/create` in App.js
-   - Verification: Testing agent confirmed 100% pass rate on all backend and frontend tests
-
-2. **Google OAuth Login (FIXED Feb 2026)**:
-   - Replaced Emergent-managed Google Auth with self-managed Google OAuth 2.0
-   - Configured Google Cloud Console with proper OAuth 2.0 credentials
-   - User tested and confirmed working with multiple accounts
-
-## Completed in Latest Session (Feb 2026)
-1. **Auto-Language Detection on Landing Page (DONE)**
-   - Configured i18next-browser-languagedetector with detection order: localStorage → navigator → htmlTag
-   - Added all landing page text to translation files (en.json, es.json)
-   - Updated Home.jsx to use useTranslation() hook
-   - All 32 i18n tests passed (English & Spanish translations verified)
-   - Fallback language: Spanish (es)
-
-2. **Professional Hero Image on Landing Page (DONE)**
-   - Replaced skeleton placeholder with AI-generated professional invoice mockup image
-   - Image matches FactuYa! brand colors (lime green)
-
-3. **Google OAuth Login Fix (DONE)**
-   - Added `loginWithGoogle()` function to AuthContext that properly updates both localStorage AND React state
-   - Fixed import path in google_auth.py (utils.security → utils.auth)
-   - Fixed JWT exception handling (jwt.JWTError → jwt.exceptions.DecodeError)
-   - All 24 backend tests passed
-
-4. **Mobile Optimization (Previous)**: Complete responsive redesign of InvoiceCreator
-   - Responsive header with mobile menu dropdown
-   - Collapsible sections for all form areas
-   - Mobile-friendly field layouts (grid adjustments)
-   - Floating "Ver Vista Previa" button for mobile
-   - Fullscreen preview modal with PDF download option
-   - Desktop layout unchanged (two-column with sticky preview)
-
-## Upcoming Tasks
-1. **P1**: Integrate Wompi payment gateway (replacement for Stripe in Colombia)
-2. **P2**: Configure production emailing in Resend
-3. **P2**: Add more custom invoice templates
-4. **P2**: Client and Product management sections
-5. **P2**: Advanced reporting with charts
-
-## Deployment Information
-- **Production Server**: Hostinger VPS (Ubuntu) at IP 187.77.19.47
-- **Live URL**: https://factuya.site
-- **GitHub Repo**: https://github.com/chatbotsmarketing21-design/factuya.git
-- **Development Workflow**: Develop in Emergent → Push to GitHub → Pull/Rebuild on VPS
-
-## Session Completed: February 22, 2026
-### Changes Made This Session (Feb 22, 2026):
-- **Bug Fix: Cuenta de Cobro Data Persistence**: Verified and fixed the routing issue preventing `/invoice` URL from working. All signature, signatureRotation, and bank details now persist correctly.
-- **Route Alias Added**: Added `/invoice` route as alias for `/create` in App.js for backward compatibility
-- **Testing**: 100% pass rate on all backend and frontend tests for Cuenta de Cobro functionality
-
-## Session Completed: February 14, 2026
 ### Changes Made This Session:
-- Removed spinner from Price field in invoice creator
-- Changed "Enviar Email" button to "Compartir" with WhatsApp and Email options
-- Implemented WhatsApp sharing with PDF link (uploads PDF to server)
-- Fixed PDF download from Dashboard (was not generating real PDF)
-- Made InvoicePreview component more robust for API data
-- Added filter functionality to dashboard stats cards (Pagadas/Pendientes)
-- Implemented multi-page PDF generation for long invoices
-- Quotations now show no status badge (only invoices show Pending/Paid/Overdue)
-- PDF color now based on template selection, not document type
-- Auto-save Notes and Terms to user profile
-- Quantity field now starts at 0
-- Quantity and Price fields now show thousand separators
+1. **Bug Fix: Cuenta de Cobro Data Persistence** ✅
+   - Fixed routing issue (`/invoice` route added as alias for `/create`)
+   - Signature, signatureRotation, and bank details now persist correctly
 
-## Session: December 2025
-### Changes Made This Session:
-- Fixed Dashboard multi-page PDF generation rendering horizontally instead of vertically
-- Added fixed width (794px) to hidden PDF preview container for consistent A4 rendering
-- Synchronized PDF generation logic between Dashboard and InvoiceCreator
-- **Custom Templates**: Added "Olas Azules" template with WaveTemplate.jsx component
-- **NIT Field Integration**: Added "NIT" (Tax ID) fields for company and client across entire stack
-- **Collapsible Sections**: Made "Detalles de la Factura" and "Información Adicional" sections collapsible
-- **Bug Fix (NIT Loading)**: Fixed issue where company NIT was not loading for existing invoices - modified loadInvoice() to merge NIT from profile
-- **PAGADO Stamp**: Added red rectangular diagonal "PAGADO" stamp on paid invoices
-- **PDF Filename**: Updated to cleaner format (DOC-NUM_Client-Name.pdf)
-- **Due Date**: Auto-calculated to one month from issue date
-- **Templates Page**: Fully translated to Spanish/English with correct navigation
-- **NEW Template "Dexter"**: Added new colorful template with green/yellow/blue wave design on both sides. Template includes: FACTURAR A, ENVIAR A sections, items table, totals, signature area, and payment conditions section.
+2. **Feature: Signature Auto-Save to Profile** ✅
+   - Signatures now save to user profile automatically
+   - Load automatically when creating new documents
 
-## Test Credentials
-- **Trial User**: chatbotsmarketing21@gmail.com / Test123!
-- **Premium User**: tecnogramasmedellin@gmail.com
+3. **Feature: Dynamic Template Colors** ✅
+   - Simplified to 5 base templates (Clásica, Moderno, Olas, Dexter, Cuenta de Cobro)
+   - Added color picker with 12 colors (black, gray, brown, red, pink, purple, orange, yellow, blue, cyan, green, lime)
+   - All templates now support dynamic color changes
+   - Color preference saved to user profile
+
+4. **UI Fix: Document Type Switching** ✅
+   - Fixed issue where switching from "Cuenta de Cobro" to other document types wasn't changing the template
+   - Now restores user's default template when switching away from Cuenta de Cobro
+
+5. **Feature: Full Internationalization (i18n)** ✅
+   - Dashboard buttons (Download PDF, Copy, Share) now translate
+   - Invoice Creator page fully internationalized:
+     - Invoice Details section
+     - From (Your Company) section
+     - To (Client) section
+     - Items/Services section
+     - Notes/Footer section
+     - All form labels and buttons
+
+6. **UX: Home Page Navigation** ✅
+   - "Create Invoice" buttons now redirect to Dashboard when user is logged in
+
+7. **Deployment to VPS** ✅
+   - Code pushed to GitHub
+   - VPS updated with latest changes
+
+---
+
+## Implemented Features
+
+### Core Features
+- [x] User authentication (email/password + Google OAuth 2.0)
+- [x] Invoice CRUD operations
+- [x] Multiple document types (Invoice, Proforma, Quotation, Bill of Collection, Receipt)
+- [x] Company profile with logo, notes, terms, bank details
+- [x] Invoice templates with dynamic colors (5 base templates, 12 colors)
+- [x] Exclusive "Cuenta de Cobro" template
+- [x] Sequential invoice numbering
+- [x] PDF download and sharing
+- [x] Invoice duplication
+- [x] Signature upload with rotation
+- [x] Full Spanish/English internationalization
+
+### 3rd Party Integrations
+- [x] Stripe (payments - test mode, to be replaced by Wompi)
+- [x] Resend (transactional emails - test mode)
+- [x] Google OAuth 2.0 (self-managed)
+
+---
+
+## Upcoming Tasks (P1)
+- [ ] **Integrate Wompi Payment Gateway** - Replace Stripe for Colombian market
+- [ ] **Configure Production Emailing** - Resend for VPS
+
+## Future Tasks (P2)
+- [ ] Add more custom invoice templates
+- [ ] Client and Product management sections
+- [ ] Advanced reporting with charts
+
+## Backlog (P3)
+- [ ] Mobile application
+- [ ] Migrate backend to systemd service (currently using nohup)
+
+---
+
+## Technical Details
+
+### Database Schema
+- **users**: `{id, email, hashed_password, name, companyInfo: {logo, nit, bank, bankAccount, defaultNotes, defaultTerms, defaultTemplate, defaultColor, signature, signatureRotation}}`
+- **invoices**: `{id, userId, number, from, to, items, documentType, status, total, signature, signatureRotation, template, createdAt}`
+
+### Key Files
+- `/app/frontend/src/pages/InvoiceCreator.jsx` - Main invoice creation page
+- `/app/frontend/src/pages/Templates.jsx` - Template selection with color picker
+- `/app/frontend/src/mock/invoiceData.js` - Template and color definitions
+- `/app/frontend/src/locales/es.json` & `en.json` - Translations
+- `/app/backend/routes/profile.py` - Profile/signature endpoints
+- `/app/backend/routes/invoices.py` - Invoice CRUD endpoints
+
+### Test Credentials
+- **Test User**: test@test.com / Test123!
+- **Google OAuth Client ID**: 441119292026-ngpbt64126c5pnlv08rgugqhtg0fedlj.apps.googleusercontent.com
