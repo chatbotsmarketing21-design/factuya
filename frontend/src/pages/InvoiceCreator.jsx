@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { getTemplateById, mockTemplates } from '../mock/invoiceData';
 import { invoiceAPI, profileAPI } from '../services/api';
 import { Button } from '../components/ui/button';
