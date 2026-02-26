@@ -1479,7 +1479,7 @@ const InvoiceCreator = () => {
       {/* Mobile Preview Modal */}
       {showMobilePreview && (
         <div className="lg:hidden fixed inset-0 z-50 bg-black/50">
-          <div className="absolute inset-0 bg-white dark:bg-background overflow-auto">
+          <div className="absolute inset-0 bg-gray-100 dark:bg-background overflow-auto">
             {/* Modal Header */}
             <div className="sticky top-0 bg-white dark:bg-card border-b dark:border-border p-3 flex items-center justify-between z-10">
               <h3 className="font-semibold text-gray-900 dark:text-white">Vista Previa</h3>
@@ -1502,10 +1502,18 @@ const InvoiceCreator = () => {
                 </Button>
               </div>
             </div>
-            {/* Preview Content */}
-            <div className="p-4 pb-20">
-              <div className="transform scale-90 origin-top">
-                <div ref={invoicePreviewRef}>
+            {/* Preview Content - Centered and Scaled */}
+            <div className="p-2 pb-20 flex justify-center">
+              <div 
+                className="origin-top"
+                style={{ 
+                  transform: 'scale(0.45)',
+                  transformOrigin: 'top center',
+                  width: '210mm',
+                  minWidth: '210mm'
+                }}
+              >
+                <div ref={invoicePreviewRef} className="bg-white shadow-lg">
                   <InvoicePreview invoice={invoice} template={template} companyInfo={invoice.from} templateColor={templateColor} />
                 </div>
               </div>
