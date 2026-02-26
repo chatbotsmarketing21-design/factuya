@@ -1467,18 +1467,21 @@ const InvoiceCreator = () => {
         <div className="lg:hidden mt-6 mb-24">
           <div className="bg-white dark:bg-card rounded-lg shadow-sm border border-gray-200 dark:border-border overflow-hidden mx-2">
             <h3 className="font-semibold text-gray-900 dark:text-white py-2 text-center text-sm bg-gray-50 dark:bg-secondary border-b border-gray-200 dark:border-border">Vista Previa</h3>
-            <div className="bg-gray-100 dark:bg-gray-800 p-2 overflow-x-auto">
+            <div className="bg-gray-100 dark:bg-gray-800 p-3">
               <div 
-                className="mx-auto"
+                className="relative w-full"
                 style={{ 
-                  width: 'fit-content'
+                  paddingBottom: '141.4%', /* A4 aspect ratio (297/210) */
+                  overflow: 'hidden'
                 }}
               >
                 <div 
+                  className="absolute top-0 left-0"
                   style={{ 
-                    transform: 'scale(0.46)',
+                    width: '794px',
+                    transform: 'scale(var(--preview-scale))',
                     transformOrigin: 'top left',
-                    width: '794px'
+                    '--preview-scale': 'calc((100vw - 48px) / 794)'
                   }}
                 >
                   <div ref={invoicePreviewRef} className="bg-white shadow-xl rounded" style={{ width: '794px' }}>
