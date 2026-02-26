@@ -1465,20 +1465,19 @@ const InvoiceCreator = () => {
 
         {/* Mobile Inline Preview - Shows below form on mobile */}
         <div className="lg:hidden mt-6 mb-24">
-          <div className="bg-white dark:bg-card rounded-lg shadow-sm border border-gray-200 dark:border-border p-3">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-3 text-center">Vista Previa</h3>
-            <div className="overflow-x-auto">
+          <div className="bg-white dark:bg-card rounded-lg shadow-sm border border-gray-200 dark:border-border p-2">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-2 text-center text-sm">Vista Previa</h3>
+            <div className="overflow-hidden bg-gray-50 rounded-lg p-2">
               <div 
                 className="mx-auto"
                 style={{ 
-                  transform: 'scale(0.48)',
+                  transform: 'scale(0.42)',
                   transformOrigin: 'top center',
-                  width: '210mm',
-                  minWidth: '210mm',
-                  marginBottom: '-52%'
+                  width: '794px',
+                  marginBottom: '-58%'
                 }}
               >
-                <div ref={invoicePreviewRef} className="bg-white shadow-lg">
+                <div ref={invoicePreviewRef} className="bg-white shadow-lg" style={{ width: '794px' }}>
                   <InvoicePreview invoice={invoice} template={template} companyInfo={invoice.from} templateColor={templateColor} />
                 </div>
               </div>
