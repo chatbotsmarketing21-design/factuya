@@ -759,15 +759,15 @@ const Dashboard = () => {
           </div>
         </Card>
 
-        {/* Invoices Table */}
+        {/* Invoices - Cards for Mobile, Table for Desktop */}
         <Card className="dark:bg-card">
-          <div className="p-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">{t('dashboard.allInvoices')}</h2>
+          <div className="p-4 sm:p-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6">{t('dashboard.allInvoices')}</h2>
             {filteredInvoices.length === 0 ? (
-              <div className="text-center py-12">
-                <FileText className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-                <p className="text-xl text-gray-600 dark:text-gray-300 mb-2">{t('dashboard.noInvoices')}</p>
-                <p className="text-gray-500 dark:text-gray-400 mb-4">{t('dashboard.createFirst')}</p>
+              <div className="text-center py-8 sm:py-12">
+                <FileText className="w-12 h-12 sm:w-16 sm:h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-2">{t('dashboard.noInvoices')}</p>
+                <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-4">{t('dashboard.createFirst')}</p>
                 <Link to="/create">
                   <Button className="bg-lime-500 hover:bg-lime-600 text-white">
                     <Plus className="w-4 h-4 mr-2" />
@@ -776,120 +776,200 @@ const Dashboard = () => {
                 </Link>
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow className="dark:border-border">
-                    <TableHead className="dark:text-gray-300">{t('table.invoiceNumber')}</TableHead>
-                    <TableHead className="dark:text-gray-300">{t('table.client')}</TableHead>
-                    <TableHead className="dark:text-gray-300">{t('table.date')}</TableHead>
-                    <TableHead className="dark:text-gray-300">{t('table.dueDate')}</TableHead>
-                    <TableHead className="dark:text-gray-300">{t('table.amount')}</TableHead>
-                    <TableHead className="dark:text-gray-300">{t('table.status')}</TableHead>
-                    <TableHead className="text-right dark:text-gray-300">{t('table.actions')}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+              <>
+                {/* Mobile View - Cards */}
+                <div className="sm:hidden space-y-3">
                   {filteredInvoices.map((invoice) => (
-                    <TableRow 
+                    <div
                       key={invoice.id}
-                      className="cursor-pointer hover:bg-lime-50 dark:hover:bg-lime-900/20 transition-colors dark:border-border"
+                      className="bg-gray-50 dark:bg-secondary rounded-lg p-4 cursor-pointer hover:bg-lime-50 dark:hover:bg-lime-900/20 transition-colors"
                       onClick={() => handleView(invoice.id)}
-                      data-testid={`invoice-row-${invoice.id}`}
+                      data-testid={`invoice-card-${invoice.id}`}
                     >
-                      <TableCell className="font-medium dark:text-white">{invoice.number}</TableCell>
-                      <TableCell className="dark:text-gray-300">{invoice.clientName}</TableCell>
-                      <TableCell className="dark:text-gray-300">{invoice.date}</TableCell>
-                      <TableCell className="dark:text-gray-300">{invoice.dueDate}</TableCell>
-                      <TableCell className="font-semibold dark:text-white">${invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell onClick={(e) => e.stopPropagation()}>
-                        {/* Solo mostrar estado para facturas, no para cotizaciones */}
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <p className="font-semibold text-gray-900 dark:text-white">{invoice.number}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">{invoice.clientName}</p>
+                        </div>
                         {!invoice.number?.startsWith('COT') && (
+                          <Badge className={getStatusColor(invoice.status)}>
+                            {invoice.status === 'paid' ? t('status.paid') : 
+                             invoice.status === 'pending' ? t('status.pending') : 
+                             t('status.overdue')}
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="flex justify-between items-center mb-3">
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{invoice.date}</p>
+                        <p className="font-bold text-lime-600 dark:text-lime-400">${invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+                      </div>
+                      <div className="flex items-center justify-between gap-2 pt-2 border-t border-gray-200 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex gap-1">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                            onClick={() => handleDownloadPDF(invoice.id)}
+                          >
+                            <Download className="w-4 h-4" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="h-8 w-8 p-0"
+                            onClick={(event) => handleCopyInvoice(invoice.id, event)}
+                          >
+                            <Copy className="w-4 h-4" />
+                          </Button>
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                <Badge className={getStatusColor(invoice.status) + " cursor-pointer"}>
-                                  {invoice.status === 'paid' ? t('status.paid') : 
-                                   invoice.status === 'pending' ? t('status.pending') : 
-                                   t('status.overdue')}
-                                </Badge>
+                                <Share2 className="w-4 h-4" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>{t('status.changeStatus')}</DropdownMenuLabel>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'pending')}>
-                                <Clock className="w-4 h-4 mr-2 text-yellow-600" />
-                                {t('status.pending')}
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'paid')}>
-                                <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
-                                {t('status.paid')}
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'overdue')}>
-                                <XCircle className="w-4 h-4 mr-2 text-red-600" />
-                                {t('status.overdue')}
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center justify-end gap-3">
-                          <Button 
-                            variant="outline" 
-                            size="default"
-                            className="rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-card hover:bg-gray-50 dark:hover:bg-muted px-4 py-2 font-medium"
-                            onClick={() => handleDownloadPDF(invoice.id)}
-                          >
-                            <Download className="w-4 h-4 mr-2" />
-                            {t('dashboard.downloadPdf')}
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="default"
-                            className="rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-card hover:bg-gray-50 dark:hover:bg-muted px-4 py-2 font-medium"
-                            onClick={(event) => handleCopyInvoice(invoice.id, event)}
-                          >
-                            <Copy className="w-4 h-4 mr-2" />
-                            {t('dashboard.copy')}
-                          </Button>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button 
-                                variant="outline" 
-                                size="default"
-                                className="rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-card hover:bg-gray-50 dark:hover:bg-muted px-4 py-2 font-medium"
-                              >
-                                <Share2 className="w-4 h-4 mr-2" />
-                                {t('dashboard.share')}
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
+                            <DropdownMenuContent align="start">
                               <DropdownMenuItem onClick={() => handleShareWhatsApp(invoice.id)}>
                                 <MessageCircle className="w-4 h-4 mr-2 text-green-600" />
                                 WhatsApp
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleShareEmail(invoice)}>
                                 <Mail className="w-4 h-4 mr-2 text-blue-600" />
-                                Correo Electrónico
+                                Email
                               </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            title="Eliminar" 
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-                            onClick={(event) => handleDelete(invoice.id, event)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
                         </div>
-                      </TableCell>
-                    </TableRow>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                          onClick={(event) => handleDelete(invoice.id, event)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
                   ))}
-                </TableBody>
-              </Table>
+                </div>
+
+                {/* Desktop View - Table */}
+                <div className="hidden sm:block">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="dark:border-border">
+                        <TableHead className="dark:text-gray-300">{t('table.invoiceNumber')}</TableHead>
+                        <TableHead className="dark:text-gray-300">{t('table.client')}</TableHead>
+                        <TableHead className="dark:text-gray-300">{t('table.date')}</TableHead>
+                        <TableHead className="dark:text-gray-300">{t('table.dueDate')}</TableHead>
+                        <TableHead className="dark:text-gray-300">{t('table.amount')}</TableHead>
+                        <TableHead className="dark:text-gray-300">{t('table.status')}</TableHead>
+                        <TableHead className="text-right dark:text-gray-300">{t('table.actions')}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredInvoices.map((invoice) => (
+                        <TableRow 
+                          key={invoice.id}
+                          className="cursor-pointer hover:bg-lime-50 dark:hover:bg-lime-900/20 transition-colors dark:border-border"
+                          onClick={() => handleView(invoice.id)}
+                          data-testid={`invoice-row-${invoice.id}`}
+                        >
+                          <TableCell className="font-medium dark:text-white">{invoice.number}</TableCell>
+                          <TableCell className="dark:text-gray-300">{invoice.clientName}</TableCell>
+                          <TableCell className="dark:text-gray-300">{invoice.date}</TableCell>
+                          <TableCell className="dark:text-gray-300">{invoice.dueDate}</TableCell>
+                          <TableCell className="font-semibold dark:text-white">${invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                          <TableCell onClick={(e) => e.stopPropagation()}>
+                            {/* Solo mostrar estado para facturas, no para cotizaciones */}
+                            {!invoice.number?.startsWith('COT') && (
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                    <Badge className={getStatusColor(invoice.status) + " cursor-pointer"}>
+                                      {invoice.status === 'paid' ? t('status.paid') : 
+                                       invoice.status === 'pending' ? t('status.pending') : 
+                                       t('status.overdue')}
+                                    </Badge>
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuLabel>{t('status.changeStatus')}</DropdownMenuLabel>
+                                  <DropdownMenuSeparator />
+                                  <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'pending')}>
+                                    <Clock className="w-4 h-4 mr-2 text-yellow-600" />
+                                    {t('status.pending')}
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'paid')}>
+                                    <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
+                                    {t('status.paid')}
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'overdue')}>
+                                    <XCircle className="w-4 h-4 mr-2 text-red-600" />
+                                    {t('status.overdue')}
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex items-center justify-end gap-3">
+                              <Button 
+                                variant="outline" 
+                                size="default"
+                                className="rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-card hover:bg-gray-50 dark:hover:bg-muted px-4 py-2 font-medium"
+                                onClick={() => handleDownloadPDF(invoice.id)}
+                              >
+                                <Download className="w-4 h-4 mr-2" />
+                                {t('dashboard.downloadPdf')}
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="default"
+                                className="rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-card hover:bg-gray-50 dark:hover:bg-muted px-4 py-2 font-medium"
+                                onClick={(event) => handleCopyInvoice(invoice.id, event)}
+                              >
+                                <Copy className="w-4 h-4 mr-2" />
+                                {t('dashboard.copy')}
+                              </Button>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button 
+                                    variant="outline" 
+                                    size="default"
+                                    className="rounded-xl border-gray-200 dark:border-gray-600 bg-white dark:bg-card hover:bg-gray-50 dark:hover:bg-muted px-4 py-2 font-medium"
+                                  >
+                                    <Share2 className="w-4 h-4 mr-2" />
+                                    {t('dashboard.share')}
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem onClick={() => handleShareWhatsApp(invoice.id)}>
+                                    <MessageCircle className="w-4 h-4 mr-2 text-green-600" />
+                                    WhatsApp
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem onClick={() => handleShareEmail(invoice)}>
+                                    <Mail className="w-4 h-4 mr-2 text-blue-600" />
+                                    Correo Electrónico
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                title="Eliminar" 
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                onClick={(event) => handleDelete(invoice.id, event)}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </>
             )}
           </div>
         </Card>
