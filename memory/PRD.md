@@ -9,7 +9,36 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 
-## Session Completed: February 23, 2026
+## Session Completed: February 26, 2026
+
+### Changes Made This Session:
+
+1. **Feature: PWA (Progressive Web App)** ✅
+   - Created manifest.json with app metadata
+   - Service worker for caching and offline support
+   - App icons in multiple sizes (16px, 32px, 192px, 384px, 512px)
+   - Apple touch icon for iOS
+   - Theme color set to lime green (#84cc16)
+   - App can be installed on mobile home screen
+   - Opens in standalone mode (no browser UI)
+   - Shortcuts for "Create Invoice" and "Dashboard"
+
+2. **Feature: Mobile Responsive Dashboard** ✅
+   - Stats cards now 2x2 grid on mobile
+   - Invoice list shows as cards (not table) on mobile
+   - Header made sticky with compact buttons
+   - Language switcher moved to settings menu on mobile
+   - All text sizes adjusted for mobile readability
+
+3. **CSS Improvements for PWA** ✅
+   - Safe area insets for iPhone notch support
+   - Prevented pull-to-refresh interference
+   - Smooth scrolling enabled
+   - Better touch tap highlight handling
+
+---
+
+## Previous Session: February 23, 2026
 
 ### Changes Made This Session:
 1. **Bug Fix: Cuenta de Cobro Data Persistence** ✅
