@@ -1464,26 +1464,24 @@ const InvoiceCreator = () => {
         </div>
 
         {/* Mobile Inline Preview - Shows below form on mobile */}
-        <div className="lg:hidden mt-6 mb-24 px-2">
-          <div className="bg-white dark:bg-card rounded-lg shadow-sm border border-gray-200 dark:border-border overflow-hidden">
+        <div className="lg:hidden mt-6 mb-24">
+          <div className="bg-white dark:bg-card rounded-lg shadow-sm border border-gray-200 dark:border-border overflow-hidden mx-2">
             <h3 className="font-semibold text-gray-900 dark:text-white py-2 text-center text-sm bg-gray-50 dark:bg-secondary border-b border-gray-200 dark:border-border">Vista Previa</h3>
-            <div className="bg-gray-100 dark:bg-gray-800 p-3 flex justify-center">
+            <div className="bg-gray-100 dark:bg-gray-800 p-2 overflow-x-auto">
               <div 
+                className="mx-auto"
                 style={{ 
-                  width: '100%',
-                  maxWidth: '360px',
-                  overflow: 'hidden'
+                  width: 'fit-content'
                 }}
               >
                 <div 
                   style={{ 
-                    transform: 'scale(0.45)',
+                    transform: 'scale(0.46)',
                     transformOrigin: 'top left',
-                    width: '794px',
-                    marginBottom: '-55%'
+                    width: '794px'
                   }}
                 >
-                  <div ref={invoicePreviewRef} className="bg-white shadow-xl" style={{ width: '794px' }}>
+                  <div ref={invoicePreviewRef} className="bg-white shadow-xl rounded" style={{ width: '794px' }}>
                     <InvoicePreview invoice={invoice} template={template} companyInfo={invoice.from} templateColor={templateColor} />
                   </div>
                 </div>
