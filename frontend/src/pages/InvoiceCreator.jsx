@@ -1462,18 +1462,52 @@ const InvoiceCreator = () => {
             </div>
           </div>
         </div>
+
+        {/* Mobile Inline Preview - Shows below form on mobile */}
+        <div className="lg:hidden mt-6 mb-24">
+          <div className="bg-white dark:bg-card rounded-lg shadow-sm border border-gray-200 dark:border-border p-3">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-3 text-center">Vista Previa</h3>
+            <div className="overflow-x-auto">
+              <div 
+                className="mx-auto"
+                style={{ 
+                  transform: 'scale(0.48)',
+                  transformOrigin: 'top center',
+                  width: '210mm',
+                  minWidth: '210mm',
+                  marginBottom: '-52%'
+                }}
+              >
+                <div ref={invoicePreviewRef} className="bg-white shadow-lg">
+                  <InvoicePreview invoice={invoice} template={template} companyInfo={invoice.from} templateColor={templateColor} />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Mobile Preview Button - Fixed at bottom */}
+      {/* Mobile Save/Download Buttons - Fixed at bottom */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 p-3 pb-4 bg-white dark:bg-card border-t border-gray-200 dark:border-border shadow-lg z-[100]">
-        <Button 
-          data-testid="mobile-preview-btn"
-          onClick={() => setShowMobilePreview(true)}
-          className="w-full bg-lime-500 hover:bg-lime-600 text-white h-12"
-        >
-          <Eye className="w-5 h-5 mr-2" />
-          {t('preview.preview')}
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={handleDownload}
+            variant="outline"
+            className="flex-1 h-12"
+          >
+            <Download className="w-5 h-5 mr-2" />
+            PDF
+          </Button>
+          <Button 
+            data-testid="mobile-save-btn"
+            onClick={handleSave}
+            disabled={loading}
+            className="flex-1 bg-lime-500 hover:bg-lime-600 text-white h-12"
+          >
+            <Save className="w-5 h-5 mr-2" />
+            {loading ? 'Guardando...' : (isEditMode ? t('invoice.update') : t('invoice.saveInvoice'))}
+          </Button>
+        </div>
       </div>
 
       {/* Mobile Preview Modal */}
