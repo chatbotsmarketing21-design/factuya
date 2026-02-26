@@ -598,42 +598,52 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-background">
       {/* Header */}
-      <header className="bg-white dark:bg-card border-b border-gray-200 dark:border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <header className="bg-white dark:bg-card border-b border-gray-200 dark:border-border sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            {/* Logo and welcome - stack on mobile */}
+            <div className="flex items-center gap-2 sm:gap-4">
               <Link to="/">
                 <div className="flex items-center cursor-pointer">
-                  <span className="text-2xl font-bold text-gray-900 dark:text-white">Factu</span>
-                  <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
+                  <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Factu</span>
+                  <span className="text-xl sm:text-2xl font-bold text-white bg-lime-500 px-1.5 sm:px-2 ml-1">Ya!</span>
                 </div>
               </Link>
               {user && (
-                <span className="text-sm text-gray-600 dark:text-gray-300">
+                <span className="hidden md:inline text-sm text-gray-600 dark:text-gray-300">
                   {user.gender === 'female' ? t('common.welcomeFemale') : t('common.welcomeMale')}, {user.name}
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-3">
-              <LanguageSwitcher />
+            
+            {/* Actions - responsive */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="hidden sm:block">
+                <LanguageSwitcher />
+              </div>
               <Link to="/create">
-                <Button className="bg-lime-500 hover:bg-lime-600 text-white">
-                  <Plus className="w-4 h-4 mr-2" />
-                  {t('dashboard.newInvoice')}
+                <Button className="bg-lime-500 hover:bg-lime-600 text-white text-xs sm:text-sm px-2 sm:px-4">
+                  <Plus className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">{t('dashboard.newInvoice')}</span>
                 </Button>
               </Link>
               
               {/* Configuración Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Settings className="w-4 h-4 mr-2" />
-                    {t('settings.title')}
+                  <Button variant="outline" size="sm" className="px-2 sm:px-3">
+                    <Settings className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">{t('settings.title')}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>{t('settings.myAccount')}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  {/* Language switcher for mobile */}
+                  <div className="sm:hidden px-2 py-1.5">
+                    <LanguageSwitcher />
+                  </div>
+                  <DropdownMenuSeparator className="sm:hidden" />
                   <DropdownMenuItem onClick={() => navigate('/profile')}>
                     <User className="w-4 h-4 mr-2" />
                     {t('settings.profile')}
@@ -673,11 +683,11 @@ const Dashboard = () => {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Stats */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <Card className="p-6 dark:bg-card">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+            <Card className="p-4 sm:p-6 dark:bg-card">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalRevenue')}</p>
