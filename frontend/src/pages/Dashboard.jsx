@@ -690,53 +690,53 @@ const Dashboard = () => {
             <Card className="p-4 sm:p-6 dark:bg-card">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalRevenue')}</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">${stats.totalRevenue.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalRevenue')}</p>
+                  <p className="text-lg sm:text-3xl font-bold text-gray-900 dark:text-white mt-1 sm:mt-2">${stats.totalRevenue.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
                 </div>
-                <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-full">
-                  <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                <div className="bg-blue-100 dark:bg-blue-900/30 p-2 sm:p-3 rounded-full">
+                  <FileText className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
             </Card>
             <Card 
-              className="p-6 dark:bg-card cursor-pointer hover:shadow-lg transition-shadow"
+              className="p-4 sm:p-6 dark:bg-card cursor-pointer hover:shadow-lg transition-shadow"
               onClick={() => setStatusFilter(null)}
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalInvoices')}</p>
-                  <p className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{stats.totalInvoices}</p>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalInvoices')}</p>
+                  <p className="text-lg sm:text-3xl font-bold text-gray-900 dark:text-white mt-1 sm:mt-2">{stats.totalInvoices}</p>
                 </div>
-                <div className="bg-purple-100 dark:bg-purple-900/30 p-3 rounded-full">
-                  <FileText className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+                <div className="bg-purple-100 dark:bg-purple-900/30 p-2 sm:p-3 rounded-full">
+                  <FileText className="w-4 h-4 sm:w-6 sm:h-6 text-purple-600 dark:text-purple-400" />
                 </div>
               </div>
             </Card>
             <Card 
-              className={`p-6 dark:bg-card cursor-pointer hover:shadow-lg transition-all ${statusFilter === 'paid' ? 'ring-2 ring-green-500 shadow-lg' : ''}`}
+              className={`p-4 sm:p-6 dark:bg-card cursor-pointer hover:shadow-lg transition-all ${statusFilter === 'paid' ? 'ring-2 ring-green-500 shadow-lg' : ''}`}
               onClick={() => handleStatusFilterClick('paid')}
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('dashboard.paid')}</p>
-                  <p className="text-3xl font-bold text-green-600 dark:text-green-400 mt-2">{stats.paidInvoices}</p>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.paid')}</p>
+                  <p className="text-lg sm:text-3xl font-bold text-green-600 dark:text-green-400 mt-1 sm:mt-2">{stats.paidInvoices}</p>
                 </div>
-                <div className="bg-green-100 dark:bg-green-900/30 p-3 rounded-full">
-                  <FileText className="w-6 h-6 text-green-600 dark:text-green-400" />
+                <div className="bg-green-100 dark:bg-green-900/30 p-2 sm:p-3 rounded-full">
+                  <FileText className="w-4 h-4 sm:w-6 sm:h-6 text-green-600 dark:text-green-400" />
                 </div>
               </div>
             </Card>
             <Card 
-              className={`p-6 dark:bg-card cursor-pointer hover:shadow-lg transition-all ${statusFilter === 'pending' ? 'ring-2 ring-yellow-500 shadow-lg' : ''}`}
+              className={`p-4 sm:p-6 dark:bg-card cursor-pointer hover:shadow-lg transition-all ${statusFilter === 'pending' ? 'ring-2 ring-yellow-500 shadow-lg' : ''}`}
               onClick={() => handleStatusFilterClick('pending')}
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{t('dashboard.pending')}</p>
-                  <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-2">{stats.pendingInvoices}</p>
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.pending')}</p>
+                  <p className="text-lg sm:text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-1 sm:mt-2">{stats.pendingInvoices}</p>
                 </div>
-                <div className="bg-yellow-100 dark:bg-yellow-900/30 p-3 rounded-full">
-                  <FileText className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
+                <div className="bg-yellow-100 dark:bg-yellow-900/30 p-2 sm:p-3 rounded-full">
+                  <FileText className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-600 dark:text-yellow-400" />
                 </div>
               </div>
             </Card>
@@ -744,7 +744,7 @@ const Dashboard = () => {
         )}
 
         {/* Search and Filter */}
-        <Card className="p-6 mb-6 dark:bg-card">
+        <Card className="p-4 sm:p-6 mb-4 sm:mb-6 dark:bg-card">
           <div className="flex items-center gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
