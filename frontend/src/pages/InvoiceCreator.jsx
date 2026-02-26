@@ -1510,52 +1510,6 @@ const InvoiceCreator = () => {
         </div>
       </div>
 
-      {/* Mobile Preview Modal */}
-      {showMobilePreview && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-black/50">
-          <div className="absolute inset-0 bg-gray-100 dark:bg-background overflow-auto">
-            {/* Modal Header */}
-            <div className="sticky top-0 bg-white dark:bg-card border-b dark:border-border p-3 flex items-center justify-between z-10">
-              <h3 className="font-semibold text-gray-900 dark:text-white">Vista Previa</h3>
-              <div className="flex items-center gap-2">
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  onClick={handleDownload}
-                  className="text-xs"
-                >
-                  <Download className="w-4 h-4 mr-1" />
-                  PDF
-                </Button>
-                <Button 
-                  size="icon" 
-                  variant="ghost"
-                  onClick={() => setShowMobilePreview(false)}
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
-            </div>
-            {/* Preview Content - Centered and Scaled */}
-            <div className="p-2 pb-20 flex justify-center">
-              <div 
-                className="origin-top"
-                style={{ 
-                  transform: 'scale(0.45)',
-                  transformOrigin: 'top center',
-                  width: '210mm',
-                  minWidth: '210mm'
-                }}
-              >
-                <div ref={invoicePreviewRef} className="bg-white shadow-lg">
-                  <InvoicePreview invoice={invoice} template={template} companyInfo={invoice.from} templateColor={templateColor} />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Subscription Dialog */}
       <SubscriptionDialog 
         open={showSubscriptionDialog} 
