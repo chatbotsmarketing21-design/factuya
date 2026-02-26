@@ -30,7 +30,18 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
    - Language switcher moved to settings menu on mobile
    - All text sizes adjusted for mobile readability
 
-3. **CSS Improvements for PWA** ✅
+3. **Feature: Inline Invoice Preview on Mobile** ✅
+   - Removed modal preview, now shows inline below the form
+   - Preview scales automatically to fit screen width
+   - Fixed buttons "PDF" and "Guardar" at bottom
+   - Similar UX to InvoiceHome app
+
+4. **UI Fix: Templates Page Header** ✅
+   - Removed "Mis Facturas" button
+   - Moved FactuYa! logo to the right side
+   - Cleaner header design
+
+5. **CSS Improvements for PWA** ✅
    - Safe area insets for iPhone notch support
    - Prevented pull-to-refresh interference
    - Smooth scrolling enabled
