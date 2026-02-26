@@ -92,6 +92,8 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 - [x] Invoice duplication
 - [x] Signature upload with rotation
 - [x] Full Spanish/English internationalization
+- [x] **PWA Support** - Install as app on mobile devices
+- [x] **Mobile Responsive** - Dashboard and all pages optimized for mobile
 
 ### 3rd Party Integrations
 - [x] Stripe (payments - test mode, to be replaced by Wompi)
@@ -100,8 +102,12 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 
+## Pending Issues (To Fix Later)
+- [ ] **WhatsApp PDF Sharing** - Desktop can't attach files directly, only sends text message
+- [ ] **Google OAuth on Production** - Need to verify redirect URIs are configured correctly
+
 ## Upcoming Tasks (P1)
-- [ ] **Integrate Wompi Payment Gateway** - Replace Stripe for Colombian market
+- [ ] **Integrate Wompi Payment Gateway** - Replace Stripe for Colombian market (waiting for company bank account)
 - [ ] **Configure Production Emailing** - Resend for VPS
 
 ## Future Tasks (P2)
@@ -110,7 +116,7 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 - [ ] Advanced reporting with charts
 
 ## Backlog (P3)
-- [ ] Mobile application
+- [ ] Mobile application (native)
 - [ ] Migrate backend to systemd service (currently using nohup)
 
 ---
