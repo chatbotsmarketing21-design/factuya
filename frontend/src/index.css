@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* PWA & Mobile Optimizations */
+html {
+    /* Support for iPhone notch/safe areas */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
 body {
     margin: 0;
     font-family:
@@ -10,6 +16,32 @@ body {
         sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Prevent pull-to-refresh on mobile */
+    overscroll-behavior-y: contain;
+    /* Prevent text selection on double-tap */
+    -webkit-user-select: none;
+    user-select: none;
+    /* Better touch experience */
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Allow text selection in inputs and text areas */
+input, textarea, [contenteditable="true"] {
+    -webkit-user-select: auto;
+    user-select: auto;
+}
+
+/* Smooth scrolling */
+* {
+    scroll-behavior: smooth;
+}
+
+/* PWA Standalone mode adjustments */
+@media all and (display-mode: standalone) {
+    body {
+        /* Extra padding for status bar in standalone mode */
+        padding-top: env(safe-area-inset-top);
+    }
 }
 
 code {
