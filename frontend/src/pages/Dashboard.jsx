@@ -635,8 +635,8 @@ const Dashboard = () => {
               {/* Configuración Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="px-2 sm:px-3">
-                    <Settings className="w-4 h-4 sm:mr-2" />
+                  <Button variant="outline" size="sm" className="px-2.5 sm:px-3 h-10 sm:h-9">
+                    <Settings className="w-5 h-5 sm:w-4 sm:h-4 sm:mr-2" />
                     <span className="hidden sm:inline">{t('settings.title')}</span>
                   </Button>
                 </DropdownMenuTrigger>
