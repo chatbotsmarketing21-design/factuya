@@ -9,10 +9,19 @@ const Home = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showInstallButton, setShowInstallButton] = useState(false);
+  const [showInstallButton, setShowInstallButton] = useState(true);
 
   // Listen for the beforeinstallprompt event
   useEffect(() => {
+    // Check if app is already installed (running in standalone mode)
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches 
+      || window.navigator.standalone === true; // iOS Safari
+    
+    if (isStandalone) {
+      setShowInstallButton(false);
+      return;
+    }
+
     const handleBeforeInstallPrompt = (e) => {
       // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
@@ -24,10 +33,11 @@ const Home = () => {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    // Check if app is already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    // Also listen for app installed event
+    window.addEventListener('appinstalled', () => {
       setShowInstallButton(false);
-    }
+      setDeferredPrompt(null);
+    });
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -205,15 +215,18 @@ const Home = () => {
                 {t('landing.ctaButton')}
               </Button>
             </Link>
-            <Button 
-              size="lg" 
-              onClick={handleInstallClick}
-              className="bg-white hover:bg-gray-100 text-blue-600 font-semibold text-xl px-12 py-6 rounded-lg"
-              data-testid="landing-install-btn"
-            >
-              <Download className="w-6 h-6 mr-2" />
-              Descargar App
-            </Button>
+            {/* Solo mostrar botón de descarga si la app NO está instalada */}
+            {showInstallButton && (
+              <Button 
+                size="lg" 
+                onClick={handleInstallClick}
+                className="bg-white hover:bg-gray-100 text-blue-600 font-semibold text-xl px-12 py-6 rounded-lg"
+                data-testid="landing-install-btn"
+              >
+                <Download className="w-6 h-6 mr-2" />
+                Descargar App
+              </Button>
+            )}
           </div>
         </div>
       </section>
