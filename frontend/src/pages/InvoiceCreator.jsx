@@ -563,26 +563,31 @@ const InvoiceCreator = () => {
     const documentTypes = {
       invoice: {
         name: 'FACTURA',
+        shortName: 'Factura',
         icon: <FileText className="w-4 h-4" />,
         color: '#2563eb'
       },
       proforma: {
         name: 'FACTURA PROFORMA',
+        shortName: 'Proforma',
         icon: <FileCheck className="w-4 h-4" />,
         color: '#7c3aed'
       },
       quotation: {
         name: 'COTIZACIÓN',
+        shortName: 'Cotización',
         icon: <Calculator className="w-4 h-4" />,
         color: '#059669'
       },
       bill: {
         name: 'CUENTA DE COBRO',
+        shortName: 'Cuenta',
         icon: <DollarSign className="w-4 h-4" />,
         color: '#ea580c'
       },
       receipt: {
         name: 'RECIBO',
+        shortName: 'Recibo',
         icon: <Receipt className="w-4 h-4" />,
         color: '#0891b2'
       }
@@ -880,11 +885,17 @@ const InvoiceCreator = () => {
                 <span className="hidden sm:inline">{loading ? t('invoice.saving') : isEditMode ? t('invoice.updateInvoice') : t('invoice.saveInvoice')}</span>
               </Button>
               
-              {/* Mobile menu button */}
+              {/* Mobile menu button - Shows document type selector */}
               <DropdownMenu open={showMobileMenu} onOpenChange={setShowMobileMenu}>
                 <DropdownMenuTrigger asChild className="md:hidden">
-                  <Button variant="outline" size="icon">
-                    <Menu className="w-5 h-5" />
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="text-xs px-2 gap-1"
+                    style={{ borderColor: getDocumentInfo(invoice.documentType).color, color: getDocumentInfo(invoice.documentType).color }}
+                  >
+                    {getDocumentInfo(invoice.documentType).icon}
+                    <span className="max-w-[80px] truncate">{getDocumentInfo(invoice.documentType).shortName || getDocumentInfo(invoice.documentType).name}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
