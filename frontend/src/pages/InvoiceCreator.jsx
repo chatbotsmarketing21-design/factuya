@@ -647,27 +647,53 @@ const InvoiceCreator = () => {
 
   const handleDownload = async () => {
     try {
-      if (!invoicePreviewRef.current) {
-        toast({
-          title: "Error",
-          description: "No se pudo generar el PDF",
-          variant: "destructive"
-        });
-        return;
-      }
-
       toast({
         title: "Generando PDF...",
         description: "Por favor espera un momento",
       });
 
-      // Capturar el preview como imagen con alta calidad
-      const canvas = await html2canvas(invoicePreviewRef.current, {
+      // Crear un contenedor temporal oculto para renderizar el PDF sin transformaciones
+      const tempContainer = document.createElement('div');
+      tempContainer.style.position = 'absolute';
+      tempContainer.style.left = '-9999px';
+      tempContainer.style.top = '0';
+      tempContainer.style.width = '794px';
+      tempContainer.style.backgroundColor = '#ffffff';
+      document.body.appendChild(tempContainer);
+
+      // Renderizar el componente InvoicePreview en el contenedor temporal
+      const { createRoot } = await import('react-dom/client');
+      const React = await import('react');
+      const { default: InvoicePreviewComponent } = await import('../components/InvoicePreview');
+      
+      const root = createRoot(tempContainer);
+      
+      await new Promise((resolve) => {
+        root.render(
+          React.createElement(InvoicePreviewComponent, {
+            invoice: invoice,
+            template: template,
+            companyInfo: invoice.from,
+            templateColor: templateColor
+          })
+        );
+        // Esperar a que se renderice
+        setTimeout(resolve, 500);
+      });
+
+      // Capturar el contenedor temporal como imagen con alta calidad
+      const canvas = await html2canvas(tempContainer, {
         scale: 2,
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        width: 794,
+        windowWidth: 794
       });
+
+      // Limpiar
+      root.unmount();
+      document.body.removeChild(tempContainer);
 
       const pdf = new jsPDF('p', 'mm', 'a4');
       
@@ -719,7 +745,7 @@ const InvoiceCreator = () => {
         }
       }
       
-      pdf.save(`${invoice.number}_${invoice.to.name}.pdf`);
+      pdf.save(`${invoice.number}_${invoice.to.name || 'factura'}.pdf`);
 
       toast({
         title: "¡Descarga Completa!",
