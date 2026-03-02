@@ -126,7 +126,7 @@ const Templates = () => {
         </div>
 
         {/* Templates Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {mockTemplates.map((template) => (
             <Card
               key={template.id}
@@ -139,11 +139,11 @@ const Templates = () => {
                 {/* Template Preview */}
                 {template.thumbnail ? (
                   // Mostrar imagen real para plantillas con thumbnail
-                  <div className="h-48 overflow-hidden relative">
+                  <div className="aspect-[210/297] overflow-hidden relative bg-white">
                     <img 
                       src={template.thumbnail} 
                       alt={template.name}
-                      className="w-full h-full object-cover object-top"
+                      className="w-full h-full object-contain object-top"
                     />
                     {/* Color overlay indicator */}
                     <div 
@@ -154,8 +154,8 @@ const Templates = () => {
                 ) : (
                   // Preview genérico para plantilla clásica
                   <div
-                    className="h-48 p-4 flex flex-col justify-between"
-                    style={{ backgroundColor: `${selectedColor}15` }}
+                    className="aspect-[210/297] p-4 flex flex-col justify-between bg-white"
+                    style={{ backgroundColor: `${selectedColor}10` }}
                   >
                     <div>
                       <div
@@ -166,6 +166,13 @@ const Templates = () => {
                         <div className="h-2 bg-gray-300 dark:bg-gray-600 rounded w-full"></div>
                         <div className="h-2 bg-gray-300 dark:bg-gray-600 rounded w-5/6"></div>
                         <div className="h-2 bg-gray-300 dark:bg-gray-600 rounded w-4/6"></div>
+                      </div>
+                    </div>
+                    <div className="flex-1 flex flex-col justify-center my-4">
+                      <div className="space-y-1">
+                        <div className="h-1.5 bg-gray-200 dark:bg-gray-600 rounded w-full"></div>
+                        <div className="h-1.5 bg-gray-200 dark:bg-gray-600 rounded w-full"></div>
+                        <div className="h-1.5 bg-gray-200 dark:bg-gray-600 rounded w-full"></div>
                       </div>
                     </div>
                     <div className="space-y-2">
