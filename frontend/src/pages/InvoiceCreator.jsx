@@ -769,14 +769,23 @@ const InvoiceCreator = () => {
                   Volver al Dashboard
                 </Button>
               </Link>
+              {/* Mobile: Back arrow */}
               <Link to="/dashboard" className="sm:hidden">
                 <Button variant="ghost" size="icon">
                   <ArrowLeft className="w-5 h-5" />
                 </Button>
               </Link>
-              <div className="flex items-center">
-                <span className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Factu</span>
-                <span className="text-lg sm:text-xl font-bold text-white bg-lime-500 px-1.5 sm:px-2 ml-1">Ya!</span>
+              {/* Logo - clickable on mobile to go back */}
+              <Link to="/dashboard" className="sm:hidden">
+                <div className="flex items-center">
+                  <span className="text-lg font-bold text-gray-900 dark:text-white">Factu</span>
+                  <span className="text-lg font-bold text-white bg-lime-500 px-1.5 ml-1">Ya!</span>
+                </div>
+              </Link>
+              {/* Logo - desktop (not clickable, just display) */}
+              <div className="hidden sm:flex items-center">
+                <span className="text-xl font-bold text-gray-900 dark:text-white">Factu</span>
+                <span className="text-xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
               </div>
             </div>
             
