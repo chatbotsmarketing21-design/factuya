@@ -1451,22 +1451,51 @@ const InvoiceCreator = () => {
                             <input
                               type="file"
                               id="signature-upload"
-                              accept="image/png,image/jpeg,image/jpg"
+                              accept="image/png,image/jpeg,image/jpg,image/webp,image/heic"
                               className="hidden"
                               onChange={async (e) => {
                                 const file = e.target.files?.[0];
                                 if (file) {
-                                  if (file.size > 1024 * 1024) {
-                                    toast({
-                                      title: "Error",
-                                      description: "Max 1MB",
-                                      variant: "destructive"
-                                    });
-                                    return;
-                                  }
-                                  const reader = new FileReader();
-                                  reader.onload = async (event) => {
-                                    const signatureData = event.target?.result;
+                                  // Mostrar loading
+                                  toast({
+                                    title: "Procesando imagen...",
+                                    description: "Por favor espera",
+                                  });
+                                  
+                                  try {
+                                    // Comprimir imagen si es muy grande
+                                    const compressImage = (file, maxWidth = 800, quality = 0.7) => {
+                                      return new Promise((resolve) => {
+                                        const reader = new FileReader();
+                                        reader.onload = (e) => {
+                                          const img = new Image();
+                                          img.onload = () => {
+                                            const canvas = document.createElement('canvas');
+                                            let width = img.width;
+                                            let height = img.height;
+                                            
+                                            // Reducir tamaño si es muy grande
+                                            if (width > maxWidth) {
+                                              height = (height * maxWidth) / width;
+                                              width = maxWidth;
+                                            }
+                                            
+                                            canvas.width = width;
+                                            canvas.height = height;
+                                            const ctx = canvas.getContext('2d');
+                                            ctx.fillStyle = '#FFFFFF';
+                                            ctx.fillRect(0, 0, width, height);
+                                            ctx.drawImage(img, 0, 0, width, height);
+                                            
+                                            resolve(canvas.toDataURL('image/jpeg', quality));
+                                          };
+                                          img.src = e.target.result;
+                                        };
+                                        reader.readAsDataURL(file);
+                                      });
+                                    };
+                                    
+                                    const signatureData = await compressImage(file);
                                     updateInvoice('signature', signatureData);
                                     updateInvoice('signatureRotation', 0);
                                     
@@ -1479,9 +1508,20 @@ const InvoiceCreator = () => {
                                       });
                                     } catch (error) {
                                       console.error('Error saving signature:', error);
+                                      toast({
+                                        title: "Error",
+                                        description: "No se pudo guardar la firma en el perfil",
+                                        variant: "destructive"
+                                      });
                                     }
-                                  };
-                                  reader.readAsDataURL(file);
+                                  } catch (error) {
+                                    console.error('Error processing image:', error);
+                                    toast({
+                                      title: "Error",
+                                      description: "No se pudo procesar la imagen",
+                                      variant: "destructive"
+                                    });
+                                  }
                                 }
                               }}
                             />
