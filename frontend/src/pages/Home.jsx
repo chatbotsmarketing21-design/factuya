@@ -1,13 +1,65 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FileText, Send, CreditCard, CheckCircle } from 'lucide-react';
+import { FileText, Send, CreditCard, CheckCircle, Download } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallButton, setShowInstallButton] = useState(false);
+
+  // Listen for the beforeinstallprompt event
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      // Prevent the mini-infobar from appearing on mobile
+      e.preventDefault();
+      // Save the event so it can be triggered later
+      setDeferredPrompt(e);
+      // Show the install button
+      setShowInstallButton(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    // Check if app is already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setShowInstallButton(false);
+    }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) {
+      // If no deferred prompt, show instructions based on device
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        alert('Para instalar la app en iPhone:\n\n1. Toca el botón de compartir (□↑)\n2. Selecciona "Agregar a pantalla de inicio"');
+      } else {
+        alert('Para instalar la app:\n\n1. Abre el menú del navegador (⋮)\n2. Selecciona "Instalar app" o "Agregar a pantalla de inicio"');
+      }
+      return;
+    }
+
+    // Show the install prompt
+    deferredPrompt.prompt();
+    
+    // Wait for the user's response
+    const { outcome } = await deferredPrompt.userChoice;
+    
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+      setShowInstallButton(false);
+    }
+    
+    // Clear the deferred prompt
+    setDeferredPrompt(null);
+  };
 
   const features = [
     {
@@ -147,11 +199,22 @@ const Home = () => {
           <p className="text-xl text-blue-100 mb-8">
             {t('landing.ctaSubtitle')}
           </p>
-          <Link to={user ? "/dashboard" : "/create"}>
-            <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white font-semibold text-xl px-12 py-6 rounded-lg" data-testid="landing-cta-btn">
-              {t('landing.ctaButton')}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link to={user ? "/dashboard" : "/create"}>
+              <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white font-semibold text-xl px-12 py-6 rounded-lg" data-testid="landing-cta-btn">
+                {t('landing.ctaButton')}
+              </Button>
+            </Link>
+            <Button 
+              size="lg" 
+              onClick={handleInstallClick}
+              className="bg-white hover:bg-gray-100 text-blue-600 font-semibold text-xl px-12 py-6 rounded-lg"
+              data-testid="landing-install-btn"
+            >
+              <Download className="w-6 h-6 mr-2" />
+              Descargar App
             </Button>
-          </Link>
+          </div>
         </div>
       </section>
 
