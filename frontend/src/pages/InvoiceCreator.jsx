@@ -1513,14 +1513,14 @@ const InvoiceCreator = () => {
         {/* Mobile Inline Preview - Shows below form on mobile */}
         <div className="lg:hidden mt-6 px-1">
           <div 
-            className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden cursor-pointer active:bg-gray-200 dark:active:bg-gray-700 transition-colors"
+            className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden cursor-pointer active:opacity-90 transition-colors shadow-sm border border-gray-200 dark:border-gray-700"
             onClick={handleDownload}
           >
             <div 
               className="w-full"
               style={{ 
                 overflow: 'hidden',
-                maxHeight: '420px'
+                maxHeight: '400px'
               }}
             >
               <div 
@@ -1533,18 +1533,18 @@ const InvoiceCreator = () => {
               >
                 <div 
                   ref={invoicePreviewRef} 
-                  className="bg-white shadow-xl rounded" 
+                  className="bg-white" 
                   style={{ width: '794px' }}
                 >
                   <InvoicePreview invoice={invoice} template={template} companyInfo={invoice.from} templateColor={templateColor} />
                 </div>
               </div>
             </div>
+            {/* Message inside the card */}
+            <p className="text-center text-xs text-gray-500 dark:text-gray-400 py-2 px-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+              Toca para descargar PDF
+            </p>
           </div>
-          {/* Message below preview */}
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2 pb-16 px-4">
-            Sólo vista preliminar de la primera página, toca para descargar la factura en formato PDF
-          </p>
         </div>
       </div>
 
