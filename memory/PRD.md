@@ -16,6 +16,19 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 1. **Responsive Header on Home Page** ✅
    - Desktop: Shows logo + "Iniciar Sesión" (text) + "Crear Factura" (green button)
    - Mobile: Shows only logo + "Iniciar Sesión" (green button)
+
+2. **Dashboard Mobile Improvements** ✅
+   - Removed "+" button from header on mobile
+   - Added floating "Crear nueva factura" button at bottom
+   - Invoice list redesigned as clean single-line cards (like Invoice Home)
+   - Swipe gestures: Left reveals "Compartir", Right reveals "Pagado"
+   - Search focus hides stats cards to show more results
+   - Settings button made slightly bigger on mobile
+
+3. **Swipeable Invoice Cards** ✅
+   - New component: SwipeableInvoiceCard.jsx
+   - Swipe sensitivity adjusted to prioritize vertical scrolling
+   - Clean design: status dot, client name, invoice number, amount, date, arrow
    - Same website, different content based on device
 
 ---
