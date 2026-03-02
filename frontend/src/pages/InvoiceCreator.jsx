@@ -1542,7 +1542,7 @@ const InvoiceCreator = () => {
             </div>
           </div>
           {/* Message below preview */}
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-3 pb-20 px-4">
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2 pb-16 px-4">
             Sólo vista preliminar de la primera página, toca para descargar la factura en formato PDF
           </p>
         </div>
