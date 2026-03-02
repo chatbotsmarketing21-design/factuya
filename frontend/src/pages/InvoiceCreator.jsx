@@ -1520,7 +1520,7 @@ const InvoiceCreator = () => {
               className="w-full"
               style={{ 
                 overflow: 'hidden',
-                maxHeight: '380px'
+                maxHeight: '320px'
               }}
             >
               <div 
