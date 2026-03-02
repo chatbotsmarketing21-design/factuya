@@ -1509,10 +1509,6 @@ const InvoiceCreator = () => {
             className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 overflow-hidden cursor-pointer active:bg-gray-200 dark:active:bg-gray-700 transition-colors"
             onClick={handleDownload}
           >
-            {/* Hint to tap for download */}
-            <p className="text-center text-xs text-gray-500 dark:text-gray-400 mb-2">
-              Toca para descargar y ver con zoom
-            </p>
             <div 
               className="w-full"
               style={{ 
