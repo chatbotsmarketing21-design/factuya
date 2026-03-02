@@ -104,12 +104,12 @@ const Templates = () => {
               ></span>
             )}
           </h2>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-2">
             {templateColors.map((color) => (
               <button
                 key={color.id}
                 onClick={() => handleColorSelect(color)}
-                className={`w-10 h-10 rounded-full transition-all duration-200 hover:scale-110 flex items-center justify-center ${
+                className={`w-7 h-7 sm:w-10 sm:h-10 rounded-full transition-all duration-200 hover:scale-110 flex items-center justify-center ${
                   selectedColor === color.hex 
                     ? 'ring-2 ring-offset-2 ring-gray-400' 
                     : 'hover:ring-2 hover:ring-offset-2 hover:ring-gray-300'
@@ -118,7 +118,7 @@ const Templates = () => {
                 title={color.name}
               >
                 {selectedColor === color.hex && (
-                  <Check className="w-5 h-5 text-white drop-shadow-md" />
+                  <Check className="w-4 h-4 sm:w-5 sm:h-5 text-white drop-shadow-md" />
                 )}
               </button>
             ))}
