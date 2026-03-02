@@ -869,10 +869,10 @@ const InvoiceCreator = () => {
                 </Link>
               </div>
               
-              {/* Save button - Always visible */}
+              {/* Save button - Only visible on desktop */}
               <Button 
                 size="sm" 
-                className="bg-lime-500 hover:bg-lime-600 text-white text-xs sm:text-sm px-2 sm:px-4" 
+                className="hidden sm:flex bg-lime-500 hover:bg-lime-600 text-white text-xs sm:text-sm px-2 sm:px-4" 
                 onClick={handleSave} 
                 disabled={loading}
               >
