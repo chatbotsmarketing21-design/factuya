@@ -891,9 +891,9 @@ const InvoiceCreator = () => {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    className="text-xs px-3"
+                    className="text-sm px-3 font-semibold"
                   >
-                    Tipo de documento
+                    Tipo de Documento
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
