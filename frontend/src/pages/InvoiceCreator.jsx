@@ -1511,7 +1511,7 @@ const InvoiceCreator = () => {
         </div>
 
         {/* Mobile Inline Preview - Shows below form on mobile */}
-        <div className="lg:hidden mt-6 mb-24 px-1">
+        <div className="lg:hidden mt-6 mb-16 px-1">
           <div 
             className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden cursor-pointer active:bg-gray-200 dark:active:bg-gray-700 transition-colors"
             onClick={handleDownload}
@@ -1520,7 +1520,7 @@ const InvoiceCreator = () => {
               className="w-full"
               style={{ 
                 overflow: 'hidden',
-                maxHeight: '320px'
+                maxHeight: '500px'
               }}
             >
               <div 
