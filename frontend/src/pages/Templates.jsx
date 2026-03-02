@@ -113,7 +113,7 @@ const Templates = () => {
                   selectedColor === color.hex 
                     ? 'ring-2 ring-offset-2 ring-gray-400' 
                     : 'hover:ring-2 hover:ring-offset-2 hover:ring-gray-300'
-                } ${color.hex === '#000000' || color.hex === '#1f2937' ? 'border-2 border-gray-300 dark:border-white' : ''}`}
+                } ${color.hex === '#000000' || color.hex === '#1f2937' ? 'border border-gray-400 dark:border-gray-400' : ''}`}
                 style={{ backgroundColor: color.hex }}
                 title={color.name}
               >
