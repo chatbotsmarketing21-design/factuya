@@ -9,6 +9,17 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 
+## Session: March 2, 2026
+
+### Changes Made This Session:
+
+1. **Responsive Header on Home Page** ✅
+   - Desktop: Shows logo + "Iniciar Sesión" (text) + "Crear Factura" (green button)
+   - Mobile: Shows only logo + "Iniciar Sesión" (green button)
+   - Same website, different content based on device
+
+---
+
 ## Session Completed: February 26, 2026
 
 ### Changes Made This Session:
