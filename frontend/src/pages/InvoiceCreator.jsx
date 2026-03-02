@@ -897,8 +897,6 @@ const InvoiceCreator = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>Tipo de Documento</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => { changeDocumentType('invoice'); setShowMobileMenu(false); }}>
                     <FileText className="w-4 h-4 mr-2 text-blue-600" />
                     FACTURA
