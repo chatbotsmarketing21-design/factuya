@@ -891,11 +891,9 @@ const InvoiceCreator = () => {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    className="text-xs px-2 gap-1"
-                    style={{ borderColor: getDocumentInfo(invoice.documentType).color, color: getDocumentInfo(invoice.documentType).color }}
+                    className="text-xs px-3"
                   >
-                    {getDocumentInfo(invoice.documentType).icon}
-                    <span className="max-w-[80px] truncate">{getDocumentInfo(invoice.documentType).shortName || getDocumentInfo(invoice.documentType).name}</span>
+                    Tipo de documento
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
