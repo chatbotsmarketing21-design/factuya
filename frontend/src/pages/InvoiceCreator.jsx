@@ -1475,7 +1475,6 @@ const InvoiceCreator = () => {
         {/* Mobile Inline Preview - Shows below form on mobile */}
         <div className="lg:hidden mt-6 mb-24">
           <div className="bg-white dark:bg-card rounded-lg shadow-sm border border-gray-200 dark:border-border overflow-hidden mx-2">
-            <h3 className="font-semibold text-gray-900 dark:text-white py-2 text-center text-sm bg-gray-50 dark:bg-secondary border-b border-gray-200 dark:border-border">Vista Previa</h3>
             <div className="bg-gray-100 dark:bg-gray-800 p-3">
               <div 
                 className="relative w-full"
