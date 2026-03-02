@@ -621,7 +621,8 @@ const Dashboard = () => {
               <div className="hidden sm:block">
                 <LanguageSwitcher />
               </div>
-              <Link to="/create">
+              {/* Botón crear factura - solo visible en desktop */}
+              <Link to="/create" className="hidden sm:block">
                 <Button className="bg-lime-500 hover:bg-lime-600 text-white text-xs sm:text-sm px-2 sm:px-4">
                   <Plus className="w-4 h-4 sm:mr-2" />
                   <span className="hidden sm:inline">{t('dashboard.newInvoice')}</span>
@@ -1017,6 +1018,17 @@ const Dashboard = () => {
           </div>
         </div>
       )}
+
+      {/* Botón flotante "Crear nueva factura" - Solo visible en móvil */}
+      <Link to="/create" className="sm:hidden">
+        <div 
+          className="fixed bottom-20 right-4 z-[9998] flex items-center gap-2 bg-lime-500 hover:bg-lime-600 text-white font-semibold px-4 py-3 rounded-full shadow-lg transition-all"
+          style={{ boxShadow: '0 4px 14px rgba(132, 204, 22, 0.4)' }}
+        >
+          <Plus className="w-5 h-5" />
+          <span>Crear nueva factura</span>
+        </div>
+      </Link>
     </div>
   );
 };
