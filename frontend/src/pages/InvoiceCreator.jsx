@@ -1473,28 +1473,29 @@ const InvoiceCreator = () => {
         </div>
 
         {/* Mobile Inline Preview - Shows below form on mobile */}
-        <div className="lg:hidden mt-6 mb-24">
-          <div className="bg-white dark:bg-card rounded-lg shadow-sm border border-gray-200 dark:border-border overflow-hidden mx-2">
-            <div className="bg-gray-100 dark:bg-gray-800 p-3">
+        <div className="lg:hidden mt-6 mb-24 px-1">
+          <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 overflow-hidden">
+            <div 
+              className="w-full"
+              style={{ 
+                overflow: 'hidden'
+              }}
+            >
               <div 
-                className="relative w-full"
                 style={{ 
-                  paddingBottom: '141.4%', /* A4 aspect ratio (297/210) */
-                  overflow: 'hidden'
+                  width: '794px',
+                  transform: 'scale(0.44)',
+                  transformOrigin: 'top left',
+                  marginBottom: '-56%',
+                  marginLeft: 'calc((100vw - 794px * 0.44) / 2 - 8px)'
                 }}
               >
                 <div 
-                  className="absolute top-0 left-0"
-                  style={{ 
-                    width: '794px',
-                    transform: 'scale(var(--preview-scale))',
-                    transformOrigin: 'top left',
-                    '--preview-scale': 'calc((100vw - 48px) / 794)'
-                  }}
+                  ref={invoicePreviewRef} 
+                  className="bg-white shadow-xl rounded" 
+                  style={{ width: '794px' }}
                 >
-                  <div ref={invoicePreviewRef} className="bg-white shadow-xl rounded" style={{ width: '794px' }}>
-                    <InvoicePreview invoice={invoice} template={template} companyInfo={invoice.from} templateColor={templateColor} />
-                  </div>
+                  <InvoicePreview invoice={invoice} template={template} companyInfo={invoice.from} templateColor={templateColor} />
                 </div>
               </div>
             </div>
