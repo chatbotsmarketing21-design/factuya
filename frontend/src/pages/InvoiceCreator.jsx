@@ -745,11 +745,16 @@ const InvoiceCreator = () => {
         }
       }
       
-      pdf.save(`${invoice.number}_${invoice.to.name || 'factura'}.pdf`);
+      // Crear blob y abrir directamente en el navegador/visor del sistema
+      const pdfBlob = pdf.output('blob');
+      const blobUrl = URL.createObjectURL(pdfBlob);
+      
+      // Abrir en nueva pestaña - esto activa el visor del sistema en móvil
+      window.open(blobUrl, '_blank');
 
       toast({
-        title: "¡Descarga Completa!",
-        description: "Tu factura PDF ha sido descargada",
+        title: "¡PDF Listo!",
+        description: "El PDF se ha abierto para visualizar",
       });
     } catch (error) {
       console.error('Error generating PDF:', error);
