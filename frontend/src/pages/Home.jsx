@@ -46,7 +46,9 @@ const Home = () => {
               <span className="text-2xl font-bold text-gray-900">Factu</span>
               <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
             </div>
-            <div className="flex items-center gap-4">
+            
+            {/* Desktop: Mostrar ambos botones */}
+            <div className="hidden sm:flex items-center gap-4">
               <Link to="/signin">
                 <Button variant="ghost" className="text-gray-700 hover:text-gray-900" data-testid="landing-signin-btn">
                   {t('landing.signIn')}
@@ -55,6 +57,15 @@ const Home = () => {
               <Link to={user ? "/dashboard" : "/create"}>
                 <Button className="bg-lime-500 hover:bg-lime-600 text-white font-semibold" data-testid="landing-create-invoice-btn">
                   {t('landing.createInvoice')}
+                </Button>
+              </Link>
+            </div>
+
+            {/* Mobile: Solo botón "Iniciar Sesión" con estilo verde */}
+            <div className="sm:hidden">
+              <Link to="/signin">
+                <Button className="bg-lime-500 hover:bg-lime-600 text-white font-semibold" data-testid="landing-signin-btn-mobile">
+                  {t('landing.signIn')}
                 </Button>
               </Link>
             </div>
