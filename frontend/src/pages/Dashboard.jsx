@@ -50,6 +50,7 @@ const Dashboard = () => {
   const [invoices, setInvoices] = useState([]);
   const [stats, setStats] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false); // Track if search is focused
   const [statusFilter, setStatusFilter] = useState(null); // null = all, 'paid' = pagadas, 'pending' = pendientes
   const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -58,6 +59,7 @@ const Dashboard = () => {
   const [pdfInvoice, setPdfInvoice] = useState(null);
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const pdfPreviewRef = useRef(null);
+  const searchInputRef = useRef(null);
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('darkMode');
     return saved ? JSON.parse(saved) : false;
@@ -686,9 +688,9 @@ const Dashboard = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        {/* Stats */}
+        {/* Stats - Hidden on mobile when search is focused */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+          <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8 ${searchFocused ? 'hidden sm:grid' : ''}`}>
             <Card className="p-4 sm:p-6 dark:bg-card">
               <div className="flex items-center justify-between">
                 <div>
@@ -746,15 +748,21 @@ const Dashboard = () => {
         )}
 
         {/* Search and Filter */}
-        <Card className="p-4 sm:p-6 mb-4 sm:mb-6 dark:bg-card">
+        <Card className={`p-4 sm:p-6 mb-4 sm:mb-6 dark:bg-card ${searchFocused ? 'sm:relative' : ''}`}>
           <div className="flex items-center gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
               <Input
+                ref={searchInputRef}
                 type="text"
                 placeholder={t('dashboard.searchPlaceholder')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => {
+                  // Small delay to allow click events to fire first
+                  setTimeout(() => setSearchFocused(false), 150);
+                }}
                 className="pl-10"
               />
             </div>
