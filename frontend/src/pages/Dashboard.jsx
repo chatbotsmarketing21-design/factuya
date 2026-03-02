@@ -643,11 +643,6 @@ const Dashboard = () => {
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>{t('settings.myAccount')}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  {/* Language switcher for mobile */}
-                  <div className="sm:hidden px-2 py-1.5">
-                    <LanguageSwitcher />
-                  </div>
-                  <DropdownMenuSeparator className="sm:hidden" />
                   <DropdownMenuItem onClick={() => navigate('/profile')}>
                     <User className="w-4 h-4 mr-2" />
                     {t('settings.profile')}
@@ -675,6 +670,10 @@ const Dashboard = () => {
                       </>
                     )}
                   </DropdownMenuItem>
+                  {/* Language switcher - below dark mode */}
+                  <div className="sm:hidden px-2 py-1.5">
+                    <LanguageSwitcher />
+                  </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                     <LogOut className="w-4 h-4 mr-2" />
