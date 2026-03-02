@@ -7,6 +7,7 @@ import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import SwipeableInvoiceCard from '../components/SwipeableInvoiceCard';
 import {
   Table,
   TableBody,
@@ -778,78 +779,16 @@ const Dashboard = () => {
               </div>
             ) : (
               <>
-                {/* Mobile View - Cards */}
-                <div className="sm:hidden space-y-3">
+                {/* Mobile View - Swipeable Cards */}
+                <div className="sm:hidden">
                   {filteredInvoices.map((invoice) => (
-                    <div
+                    <SwipeableInvoiceCard
                       key={invoice.id}
-                      className="bg-gray-50 dark:bg-secondary rounded-lg p-4 cursor-pointer hover:bg-lime-50 dark:hover:bg-lime-900/20 transition-colors"
-                      onClick={() => handleView(invoice.id)}
-                      data-testid={`invoice-card-${invoice.id}`}
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <p className="font-semibold text-gray-900 dark:text-white">{invoice.number}</p>
-                          <p className="text-sm text-gray-600 dark:text-gray-400">{invoice.clientName}</p>
-                        </div>
-                        {!invoice.number?.startsWith('COT') && (
-                          <Badge className={getStatusColor(invoice.status)}>
-                            {invoice.status === 'paid' ? t('status.paid') : 
-                             invoice.status === 'pending' ? t('status.pending') : 
-                             t('status.overdue')}
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="flex justify-between items-center mb-3">
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{invoice.date}</p>
-                        <p className="font-bold text-lime-600 dark:text-lime-400">${invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
-                      </div>
-                      <div className="flex items-center justify-between gap-2 pt-2 border-t border-gray-200 dark:border-gray-700" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex gap-1">
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                            onClick={() => handleDownloadPDF(invoice.id)}
-                          >
-                            <Download className="w-4 h-4" />
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                            onClick={(event) => handleCopyInvoice(invoice.id, event)}
-                          >
-                            <Copy className="w-4 h-4" />
-                          </Button>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                <Share2 className="w-4 h-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="start">
-                              <DropdownMenuItem onClick={() => handleShareWhatsApp(invoice.id)}>
-                                <MessageCircle className="w-4 h-4 mr-2 text-green-600" />
-                                WhatsApp
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => handleShareEmail(invoice)}>
-                                <Mail className="w-4 h-4 mr-2 text-blue-600" />
-                                Email
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
-                          onClick={(event) => handleDelete(invoice.id, event)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
+                      invoice={invoice}
+                      onView={handleView}
+                      onMarkPaid={handleStatusChange}
+                      onShare={handleShareWhatsApp}
+                    />
                   ))}
                 </div>
 
