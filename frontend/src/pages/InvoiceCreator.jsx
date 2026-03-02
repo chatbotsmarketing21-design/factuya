@@ -1487,7 +1487,7 @@ const InvoiceCreator = () => {
                   transform: 'scale(0.44)',
                   transformOrigin: 'top left',
                   marginBottom: '-56%',
-                  marginLeft: 'calc((100vw - 794px * 0.44) / 2 - 8px)'
+                  marginLeft: '4px'
                 }}
               >
                 <div 
