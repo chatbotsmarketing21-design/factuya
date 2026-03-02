@@ -1513,13 +1513,14 @@ const InvoiceCreator = () => {
         {/* Mobile Inline Preview - Shows below form on mobile */}
         <div className="lg:hidden mt-6 mb-24 px-1">
           <div 
-            className="bg-gray-100 dark:bg-gray-800 rounded-lg p-2 overflow-hidden cursor-pointer active:bg-gray-200 dark:active:bg-gray-700 transition-colors"
+            className="bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden cursor-pointer active:bg-gray-200 dark:active:bg-gray-700 transition-colors"
             onClick={handleDownload}
           >
             <div 
               className="w-full"
               style={{ 
-                overflow: 'hidden'
+                overflow: 'hidden',
+                maxHeight: '380px'
               }}
             >
               <div 
@@ -1541,6 +1542,10 @@ const InvoiceCreator = () => {
               </div>
             </div>
           </div>
+          {/* Message below preview */}
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-3 px-4">
+            Sólo vista preliminar de la primera página, toca para descargar la factura en formato PDF
+          </p>
         </div>
       </div>
 
