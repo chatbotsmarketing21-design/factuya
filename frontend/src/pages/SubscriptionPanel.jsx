@@ -78,21 +78,35 @@ const SubscriptionPanel = () => {
 
     setSendingMessage(true);
     
-    // Create mailto link with form data
-    const subject = encodeURIComponent(`Soporte FactuYa! - ${contactForm.name}`);
-    const body = encodeURIComponent(
-      `Nombre: ${contactForm.name}\nEmail: ${contactForm.email}\n\nMensaje:\n${contactForm.message}`
-    );
-    
-    window.location.href = `mailto:soportefactuya@gmail.com?subject=${subject}&body=${body}`;
-    
-    setSendingMessage(false);
-    setShowContactDialog(false);
-    
-    toast({
-      title: "Correo abierto",
-      description: "Se ha abierto tu aplicación de correo para enviar el mensaje",
-    });
+    try {
+      const API_URL = process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${API_URL}/api/contact/send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(contactForm)
+      });
+      
+      if (response.ok) {
+        toast({
+          title: "Mensaje enviado",
+          description: "Hemos recibido tu mensaje. Te responderemos pronto.",
+        });
+        setShowContactDialog(false);
+        setContactForm({ ...contactForm, message: '' });
+      } else {
+        throw new Error('Error al enviar');
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "No se pudo enviar el mensaje. Intenta de nuevo.",
+        variant: "destructive"
+      });
+    } finally {
+      setSendingMessage(false);
+    }
   };
 
   useEffect(() => {
