@@ -699,7 +699,7 @@ const Dashboard = () => {
             <Card className="p-4 sm:p-6 dark:bg-card">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalRevenue')}</p>
+                  <p className="text-sm sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalRevenue')}</p>
                   <p className="text-lg sm:text-3xl font-bold text-gray-900 dark:text-white mt-1 sm:mt-2">${stats.totalRevenue.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
                 </div>
                 <div className="bg-blue-100 dark:bg-blue-900/30 p-2 sm:p-3 rounded-full">
@@ -713,7 +713,7 @@ const Dashboard = () => {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalInvoices')}</p>
+                  <p className="text-sm sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalInvoices')}</p>
                   <p className="text-lg sm:text-3xl font-bold text-gray-900 dark:text-white mt-1 sm:mt-2">{stats.totalInvoices}</p>
                 </div>
                 <div className="bg-purple-100 dark:bg-purple-900/30 p-2 sm:p-3 rounded-full">
@@ -727,7 +727,7 @@ const Dashboard = () => {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.paid')}</p>
+                  <p className="text-sm sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.paid')}</p>
                   <p className="text-lg sm:text-3xl font-bold text-green-600 dark:text-green-400 mt-1 sm:mt-2">{stats.paidInvoices}</p>
                 </div>
                 <div className="bg-green-100 dark:bg-green-900/30 p-2 sm:p-3 rounded-full">
@@ -741,7 +741,7 @@ const Dashboard = () => {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.pending')}</p>
+                  <p className="text-sm sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.pending')}</p>
                   <p className="text-lg sm:text-3xl font-bold text-yellow-600 dark:text-yellow-400 mt-1 sm:mt-2">{stats.pendingInvoices}</p>
                 </div>
                 <div className="bg-yellow-100 dark:bg-yellow-900/30 p-2 sm:p-3 rounded-full">
