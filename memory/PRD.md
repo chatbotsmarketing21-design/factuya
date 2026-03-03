@@ -13,7 +13,14 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ### Changes Made This Session:
 
-1. **Feature: Invoice Detail Page (Mobile Only)** ✅
+1. **Bug Fix: Settings Menu Closing Behavior** ✅
+   - Fixed: Clicking outside the settings menu now only closes the menu without reloading the page
+   - Root cause: The logo Link component was capturing clicks even when dropdown menu was open
+   - Solution: Changed logo from Link to div with onClick handler that checks if any dropdown menu is open using DOM query (`document.querySelector('[data-state="open"][role="menu"]')`)
+   - Modified file: `/app/frontend/src/pages/Dashboard.jsx`
+   - Tested on both mobile and desktop viewports
+
+2. **Feature: Invoice Detail Page (Mobile Only)** ✅
    - New page at route `/invoice/:id` for mobile users
    - Central hub for invoice actions after creating/viewing an invoice
    - Shows invoice preview with header (number + status + logo)
@@ -160,6 +167,7 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ## Pending Issues (To Fix Later)
 - [ ] **WhatsApp PDF Sharing** - Desktop can't attach files directly, only sends text message
+- [x] ~~**Settings Menu Bug** - Clicking outside menu caused page reload~~ ✅ FIXED March 3, 2026
 - [ ] **Google OAuth on Production** - Need to verify redirect URIs are configured correctly
 
 ## Upcoming Tasks (P1)

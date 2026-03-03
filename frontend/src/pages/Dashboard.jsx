@@ -552,12 +552,19 @@ const Dashboard = () => {
           <div className="flex items-center justify-between">
             {/* Logo and welcome - stack on mobile */}
             <div className="flex items-center gap-2 sm:gap-4">
-              <Link to="/dashboard">
-                <div className="flex items-center cursor-pointer">
-                  <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Factu</span>
-                  <span className="text-xl sm:text-2xl font-bold text-white bg-lime-500 px-1.5 sm:px-2 ml-1">Ya!</span>
-                </div>
-              </Link>
+              <div 
+                className="flex items-center cursor-pointer"
+                onClick={(e) => {
+                  // Check if any dropdown menu is open
+                  const openMenu = document.querySelector('[data-state="open"][role="menu"]');
+                  if (!openMenu) {
+                    navigate('/dashboard');
+                  }
+                }}
+              >
+                <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Factu</span>
+                <span className="text-xl sm:text-2xl font-bold text-white bg-lime-500 px-1.5 sm:px-2 ml-1">Ya!</span>
+              </div>
               {user && (
                 <span className="hidden md:inline text-sm text-gray-600 dark:text-gray-300">
                   {user.gender === 'female' ? t('common.welcomeFemale') : t('common.welcomeMale')}, {user.name}
@@ -579,14 +586,14 @@ const Dashboard = () => {
               </Link>
               
               {/* Configuración Dropdown */}
-              <DropdownMenu modal={true}>
+              <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" className="px-3 sm:px-3 h-11 sm:h-9">
                     <Settings className="w-7 h-7 sm:w-4 sm:h-4 sm:mr-2" />
                     <span className="hidden sm:inline">{t('settings.title')}</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56" onCloseAutoFocus={(e) => e.preventDefault()}>
+                <DropdownMenuContent align="end" className="w-56 z-[60]" onCloseAutoFocus={(e) => e.preventDefault()}>
                   <DropdownMenuLabel>{t('settings.myAccount')}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate('/profile')} className="text-base py-3">
@@ -635,6 +642,9 @@ const Dashboard = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+
+
+
             </div>
           </div>
         </div>
