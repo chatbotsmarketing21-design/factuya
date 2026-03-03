@@ -9,6 +9,26 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 
+## Session: March 3, 2026
+
+### Changes Made This Session:
+
+1. **Feature: Invoice Detail Page (Mobile Only)** ✅
+   - New page at route `/invoice/:id` for mobile users
+   - Central hub for invoice actions after creating/viewing an invoice
+   - Shows invoice preview with header (number + status + logo)
+   - Action buttons: Editar, Descargar PDF, WhatsApp, Correo, Copiar Factura, Marcar como Pagada, Eliminar
+   - Desktop users still go directly to editor (unchanged behavior)
+   - After saving invoice on mobile, redirects to this detail page
+
+2. **Files Created/Modified:**
+   - `/app/frontend/src/pages/InvoiceDetailPage.jsx` - New page component
+   - `/app/frontend/src/App.js` - Added route `/invoice/:id`
+   - `/app/frontend/src/components/SwipeableInvoiceCard.jsx` - Navigate to detail page on tap
+   - `/app/frontend/src/pages/InvoiceCreator.jsx` - Mobile save redirects to detail page
+
+---
+
 ## Session: March 2, 2026
 
 ### Changes Made This Session:
@@ -129,6 +149,7 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 - [x] Full Spanish/English internationalization
 - [x] **PWA Support** - Install as app on mobile devices
 - [x] **Mobile Responsive** - Dashboard and all pages optimized for mobile
+- [x] **Invoice Detail Page** - Mobile-only hub for invoice actions
 
 ### 3rd Party Integrations
 - [x] Stripe (payments - test mode, to be replaced by Wompi)
@@ -164,7 +185,9 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ### Key Files
 - `/app/frontend/src/pages/InvoiceCreator.jsx` - Main invoice creation page
+- `/app/frontend/src/pages/InvoiceDetailPage.jsx` - Mobile invoice detail page
 - `/app/frontend/src/pages/Templates.jsx` - Template selection with color picker
+- `/app/frontend/src/components/SwipeableInvoiceCard.jsx` - Mobile invoice cards with swipe
 - `/app/frontend/src/mock/invoiceData.js` - Template and color definitions
 - `/app/frontend/src/locales/es.json` & `en.json` - Translations
 - `/app/backend/routes/profile.py` - Profile/signature endpoints
