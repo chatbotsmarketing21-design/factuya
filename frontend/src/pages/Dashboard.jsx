@@ -642,7 +642,7 @@ const Dashboard = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm" className="px-3 sm:px-3 h-11 sm:h-9">
-                    <Settings className="w-6 h-6 sm:w-4 sm:h-4 sm:mr-2" />
+                    <Settings className="w-7 h-7 sm:w-4 sm:h-4 sm:mr-2" />
                     <span className="hidden sm:inline">{t('settings.title')}</span>
                   </Button>
                 </DropdownMenuTrigger>
