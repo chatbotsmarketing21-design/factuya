@@ -464,7 +464,7 @@ const Dashboard = () => {
       if (isMobile && canShareFiles) {
         // MOBILE: Share PDF directly as file attachment
         const pdfBlob = pdf.output('blob');
-        const pdfFile = new File([pdfBlob], `Factura_${invoiceNumber}_${clientName}.pdf`, { type: 'application/pdf' });
+        const pdfFile = new File([pdfBlob], `${invoiceNumber}_${clientName}.pdf`, { type: 'application/pdf' });
         
         const shareData = {
           title: `Factura ${invoiceNumber}`,
@@ -481,7 +481,7 @@ const Dashboard = () => {
       } else {
         // DESKTOP: Download PDF + Open WhatsApp with message
         // 1. Download PDF automatically
-        const fileName = `Factura_${invoiceNumber}_${clientName}.pdf`;
+        const fileName = `${invoiceNumber}_${clientName}.pdf`;
         pdf.save(fileName);
         
         // 2. Prepare WhatsApp message (without link)

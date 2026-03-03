@@ -302,7 +302,7 @@ const InvoiceDetailPage = () => {
       
       // Mobile: Use Web Share API
       const pdfBlob = pdf.output('blob');
-      const pdfFile = new File([pdfBlob], `Factura_${invoiceNumber}_${clientName}.pdf`, { type: 'application/pdf' });
+      const pdfFile = new File([pdfBlob], `${invoiceNumber}_${clientName}.pdf`, { type: 'application/pdf' });
       
       const shareData = {
         title: `Factura ${invoiceNumber}`,
