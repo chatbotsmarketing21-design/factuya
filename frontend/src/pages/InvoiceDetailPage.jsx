@@ -475,12 +475,12 @@ const InvoiceDetailPage = () => {
             >
               {invoice.status === 'paid' ? (
                 <>
-                  <CheckCircle className="w-5 h-5 text-yellow-500" />
+                  <div className="w-5 h-5 rounded-full bg-green-500" />
                   <span className="ml-4 text-gray-900 dark:text-white font-medium">Marcar como no pagada</span>
                 </>
               ) : (
                 <>
-                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <div className="w-5 h-5 rounded-full bg-orange-500" />
                   <span className="ml-4 text-gray-900 dark:text-white font-medium">Marcar como Pagada</span>
                 </>
               )}
