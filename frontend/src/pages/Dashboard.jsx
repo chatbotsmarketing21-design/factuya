@@ -269,12 +269,7 @@ const Dashboard = () => {
         status: newStatus
       });
       
-      toast({
-        title: "¡Estado Actualizado!",
-        description: `La factura ahora está marcada como ${newStatus === 'paid' ? 'Pagada' : newStatus === 'pending' ? 'Pendiente' : newStatus === 'overdue' ? 'Vencida' : 'Borrador'}`,
-      });
-      
-      // Recargar datos
+      // Recargar datos sin mostrar notificación
       loadData();
     } catch (error) {
       console.error('Error updating status:', error);
