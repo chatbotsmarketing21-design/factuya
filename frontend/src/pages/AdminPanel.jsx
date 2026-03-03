@@ -21,7 +21,9 @@ import {
   Loader2,
   ShieldAlert,
   TrendingUp,
-  Calendar
+  Calendar,
+  UserPlus,
+  RefreshCw
 } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
@@ -183,89 +185,124 @@ const AdminPanel = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Cards */}
+        {/* Stats Cards - Row 1: General */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-            {/* 1. Usuarios */}
-            <Card className="p-4 dark:bg-card">
-              <div className="flex items-center gap-3">
-                <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full">
-                  <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <>
+            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">General</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+              {/* 1. Usuarios */}
+              <Card className="p-4 dark:bg-card">
+                <div className="flex items-center gap-3">
+                  <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full">
+                    <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Usuarios</p>
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.totalUsers}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Usuarios</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.totalUsers}</p>
-                </div>
-              </div>
-            </Card>
+              </Card>
 
-            {/* 2. Premium */}
-            <Card className="p-4 dark:bg-card">
-              <div className="flex items-center gap-3">
-                <div className="bg-lime-100 dark:bg-lime-900/30 p-2 rounded-full">
-                  <Crown className="w-5 h-5 text-lime-600 dark:text-lime-400" />
+              {/* 2. Premium */}
+              <Card className="p-4 dark:bg-card">
+                <div className="flex items-center gap-3">
+                  <div className="bg-lime-100 dark:bg-lime-900/30 p-2 rounded-full">
+                    <Crown className="w-5 h-5 text-lime-600 dark:text-lime-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Premium</p>
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.premiumUsers}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Premium</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.premiumUsers}</p>
-                </div>
-              </div>
-            </Card>
+              </Card>
 
-            {/* 3. Usuarios/Mes */}
-            <Card className="p-4 dark:bg-card">
-              <div className="flex items-center gap-3">
-                <div className="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-full">
-                  <TrendingUp className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+              {/* 3. Usuarios/Mes */}
+              <Card className="p-4 dark:bg-card">
+                <div className="flex items-center gap-3">
+                  <div className="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-full">
+                    <TrendingUp className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Usuarios/Mes</p>
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.usersThisMonth}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Usuarios/Mes</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.usersThisMonth}</p>
-                </div>
-              </div>
-            </Card>
+              </Card>
 
-            {/* 4. Facturas */}
-            <Card className="p-4 dark:bg-card">
-              <div className="flex items-center gap-3">
-                <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-full">
-                  <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              {/* 4. Facturas */}
+              <Card className="p-4 dark:bg-card">
+                <div className="flex items-center gap-3">
+                  <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-full">
+                    <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Facturas</p>
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.totalInvoices}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Facturas</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.totalInvoices}</p>
-                </div>
-              </div>
-            </Card>
+              </Card>
+            </div>
 
-            {/* 5. Ingresos */}
-            <Card className="p-4 dark:bg-card">
-              <div className="flex items-center gap-3">
-                <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
-                  <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
+            {/* Stats Cards - Row 2: Ingresos del Mes */}
+            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Ingresos del Mes</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              {/* Nuevos Premium */}
+              <Card className="p-4 dark:bg-card">
+                <div className="flex items-center gap-3">
+                  <div className="bg-emerald-100 dark:bg-emerald-900/30 p-2 rounded-full">
+                    <UserPlus className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Nuevos Premium</p>
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.newPremiumThisMonth}</p>
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400">${stats.newPremiumRevenue} USD</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Ingresos</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">
-                    ${stats.totalRevenue} USD
-                  </p>
-                </div>
-              </div>
-            </Card>
+              </Card>
 
-            {/* 6. Fact./Mes */}
-            <Card className="p-4 dark:bg-card">
-              <div className="flex items-center gap-3">
-                <div className="bg-cyan-100 dark:bg-cyan-900/30 p-2 rounded-full">
-                  <Calendar className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+              {/* Renovaciones */}
+              <Card className="p-4 dark:bg-card">
+                <div className="flex items-center gap-3">
+                  <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full">
+                    <RefreshCw className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Renovaciones</p>
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.renewalsThisMonth}</p>
+                    <p className="text-xs text-blue-600 dark:text-blue-400">${stats.renewalsRevenue} USD</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Fact./Mes</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.invoicesThisMonth}</p>
+              </Card>
+
+              {/* Ingresos del Mes */}
+              <Card className="p-4 dark:bg-card">
+                <div className="flex items-center gap-3">
+                  <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
+                    <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Total del Mes</p>
+                    <p className="text-xl font-bold text-green-600 dark:text-green-400">
+                      ${stats.totalMonthlyRevenue} USD
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Card>
-          </div>
+              </Card>
+
+              {/* Fact./Mes */}
+              <Card className="p-4 dark:bg-card">
+                <div className="flex items-center gap-3">
+                  <div className="bg-cyan-100 dark:bg-cyan-900/30 p-2 rounded-full">
+                    <Calendar className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Fact./Mes</p>
+                    <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.invoicesThisMonth}</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </>
         )}
 
         {/* Users Table */}

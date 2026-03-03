@@ -41,14 +41,6 @@ async def get_admin_stats(user_id: str = Depends(verify_admin)):
     # Total invoices
     total_invoices = await db.invoices.count_documents({})
     
-    # Total revenue (sum of all paid invoices)
-    pipeline = [
-        {"$match": {"status": "paid"}},
-        {"$group": {"_id": None, "total": {"$sum": "$total"}}}
-    ]
-    revenue_result = await db.invoices.aggregate(pipeline).to_list(1)
-    total_revenue = revenue_result[0]["total"] if revenue_result else 0
-    
     # Users registered this month
     now = datetime.now(timezone.utc)
     first_day_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
@@ -61,19 +53,40 @@ async def get_admin_stats(user_id: str = Depends(verify_admin)):
         "createdAt": {"$gte": first_day_of_month}
     })
     
-    # Premium subscribers
+    # Premium subscribers (active)
     premium_users = await db.subscriptions.count_documents({"status": "active"})
     
-    # App revenue (premium users * $5 USD per month)
-    app_revenue = premium_users * 5
+    # New premium this month (subscriptions created this month)
+    new_premium_this_month = await db.subscriptions.count_documents({
+        "status": "active",
+        "createdAt": {"$gte": first_day_of_month}
+    })
+    
+    # Renewals this month (active subscriptions created before this month but renewed this month)
+    renewals_this_month = await db.subscriptions.count_documents({
+        "status": "active",
+        "createdAt": {"$lt": first_day_of_month},
+        "currentPeriodStart": {"$gte": first_day_of_month}
+    })
+    
+    # Calculate revenues
+    new_premium_revenue = new_premium_this_month * 5
+    renewals_revenue = renewals_this_month * 5
+    total_monthly_revenue = new_premium_revenue + renewals_revenue
+    total_revenue = premium_users * 5
     
     return {
         "totalUsers": total_users,
         "totalInvoices": total_invoices,
-        "totalRevenue": app_revenue,
+        "totalRevenue": total_revenue,
         "usersThisMonth": users_this_month,
         "invoicesThisMonth": invoices_this_month,
-        "premiumUsers": premium_users
+        "premiumUsers": premium_users,
+        "newPremiumThisMonth": new_premium_this_month,
+        "renewalsThisMonth": renewals_this_month,
+        "newPremiumRevenue": new_premium_revenue,
+        "renewalsRevenue": renewals_revenue,
+        "totalMonthlyRevenue": total_monthly_revenue
     }
 
 @router.get("/users")
