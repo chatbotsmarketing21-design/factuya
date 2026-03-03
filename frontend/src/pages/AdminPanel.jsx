@@ -185,7 +185,8 @@ const AdminPanel = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Cards */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            {/* 1. Usuarios */}
             <Card className="p-4 dark:bg-card">
               <div className="flex items-center gap-3">
                 <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-full">
@@ -198,32 +199,7 @@ const AdminPanel = () => {
               </div>
             </Card>
 
-            <Card className="p-4 dark:bg-card">
-              <div className="flex items-center gap-3">
-                <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-full">
-                  <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Facturas</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.totalInvoices}</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-4 dark:bg-card">
-              <div className="flex items-center gap-3">
-                <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
-                  <DollarSign className="w-5 h-5 text-green-600 dark:text-green-400" />
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Ingresos</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">
-                    {stats.totalRevenue.toLocaleString('es-CO')}
-                  </p>
-                </div>
-              </div>
-            </Card>
-
+            {/* 2. Premium */}
             <Card className="p-4 dark:bg-card">
               <div className="flex items-center gap-3">
                 <div className="bg-lime-100 dark:bg-lime-900/30 p-2 rounded-full">
@@ -236,6 +212,7 @@ const AdminPanel = () => {
               </div>
             </Card>
 
+            {/* 3. Usuarios/Mes */}
             <Card className="p-4 dark:bg-card">
               <div className="flex items-center gap-3">
                 <div className="bg-orange-100 dark:bg-orange-900/30 p-2 rounded-full">
@@ -248,14 +225,15 @@ const AdminPanel = () => {
               </div>
             </Card>
 
+            {/* 4. Facturas */}
             <Card className="p-4 dark:bg-card">
               <div className="flex items-center gap-3">
-                <div className="bg-cyan-100 dark:bg-cyan-900/30 p-2 rounded-full">
-                  <Calendar className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+                <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-full">
+                  <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">Fact./Mes</p>
-                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.invoicesThisMonth}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Facturas</p>
+                  <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.totalInvoices}</p>
                 </div>
               </div>
             </Card>
