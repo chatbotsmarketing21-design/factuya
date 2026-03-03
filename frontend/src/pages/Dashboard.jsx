@@ -928,7 +928,7 @@ const Dashboard = () => {
       {/* Botón flotante "Crear nueva factura" - Solo visible en móvil */}
       <Link to="/create" className="sm:hidden">
         <div 
-          className="fixed bottom-4 left-4 z-[9998] flex items-center gap-2 bg-lime-500 hover:bg-lime-600 text-white font-semibold px-4 py-3 rounded-full shadow-lg transition-all"
+          className="fixed bottom-4 right-4 z-[9998] flex items-center gap-2 bg-lime-500 hover:bg-lime-600 text-white font-semibold px-4 py-3 rounded-full shadow-lg transition-all"
           style={{ boxShadow: '0 4px 14px rgba(132, 204, 22, 0.4)' }}
         >
           <Plus className="w-5 h-5" />

@@ -565,7 +565,7 @@ const InvoiceDetailPage = () => {
       </AlertDialog>
 
       {/* Floating Exit Button - Same style as Save button in InvoiceCreator */}
-      <div className="fixed bottom-4 left-4 z-[100]">
+      <div className="fixed bottom-4 right-4 z-[100]">
         <Button 
           data-testid="exit-button"
           onClick={() => navigate('/dashboard')}
