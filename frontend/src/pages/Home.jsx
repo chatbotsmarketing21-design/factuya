@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FileText, Send, CreditCard, CheckCircle, Download } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -8,8 +8,16 @@ import { useAuth } from '../context/AuthContext';
 const Home = () => {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showInstallButton, setShowInstallButton] = useState(true);
+
+  // Redirect logged-in users to dashboard
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   // Listen for the beforeinstallprompt event
   useEffect(() => {
