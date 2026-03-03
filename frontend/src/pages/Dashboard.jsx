@@ -552,7 +552,7 @@ const Dashboard = () => {
           <div className="flex items-center justify-between">
             {/* Logo and welcome - stack on mobile */}
             <div className="flex items-center gap-2 sm:gap-4">
-              <Link to="/">
+              <Link to="/dashboard">
                 <div className="flex items-center cursor-pointer">
                   <span className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Factu</span>
                   <span className="text-xl sm:text-2xl font-bold text-white bg-lime-500 px-1.5 sm:px-2 ml-1">Ya!</span>
