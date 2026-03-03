@@ -87,7 +87,9 @@ const SwipeableInvoiceCard = ({
   const handleActionClick = (action, e) => {
     e.stopPropagation();
     if (action === 'paid') {
-      onMarkPaid(invoice.id, 'paid');
+      // Toggle: if paid -> pending, if pending -> paid
+      const newStatus = invoice.status === 'paid' ? 'pending' : 'paid';
+      onMarkPaid(invoice.id, newStatus);
     } else if (action === 'share') {
       onShare(invoice.id);
     }
@@ -120,14 +122,14 @@ const SwipeableInvoiceCard = ({
     <div className="relative overflow-hidden bg-gray-50 dark:bg-gray-800 mb-1">
       {/* Background actions */}
       <div className="absolute inset-0 flex">
-        {/* Left action - Pagado (revealed when swiping RIGHT) */}
+        {/* Left action - Toggle Paid Status (revealed when swiping RIGHT) */}
         <div 
-          className="w-1/2 bg-green-500 flex items-center justify-start pl-4"
+          className={`w-1/2 flex items-center justify-start pl-4 ${invoice.status === 'paid' ? 'bg-yellow-500' : 'bg-green-500'}`}
           onClick={(e) => handleActionClick('paid', e)}
         >
           <div className="flex items-center gap-2 text-white font-medium">
             <CheckCircle className="w-5 h-5" />
-            <span>Pagado</span>
+            <span>{invoice.status === 'paid' ? 'No pagada' : 'Pagada'}</span>
           </div>
         </div>
         {/* Right action - Compartir (revealed when swiping LEFT) */}
