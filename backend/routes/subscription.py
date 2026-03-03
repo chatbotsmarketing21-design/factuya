@@ -35,6 +35,9 @@ class SubscriptionStatus(BaseModel):
     maxInvoices: Optional[int] = None
     canCreateInvoice: bool
     message: str
+    currentPeriodStart: Optional[str] = None
+    currentPeriodEnd: Optional[str] = None
+    daysRemaining: Optional[int] = None
 
 class CreateCheckoutRequest(BaseModel):
     originUrl: str  # Frontend envia solo el origin URL
@@ -64,6 +67,35 @@ async def get_subscription_status(user_id: str = Depends(get_current_user_id)):
     invoices_used = subscription.get("trialInvoicesUsed", 0)
     max_trial = subscription.get("maxTrialInvoices", 10)
     
+    # Get subscription dates
+    current_period_start = subscription.get("currentPeriodStart")
+    current_period_end = subscription.get("currentPeriodEnd")
+    created_at = subscription.get("createdAt")
+    
+    # Calculate days remaining
+    days_remaining = None
+    if current_period_end:
+        now = datetime.now(timezone.utc)
+        if isinstance(current_period_end, datetime):
+            # Ensure both datetimes are timezone-aware
+            if current_period_end.tzinfo is None:
+                current_period_end = current_period_end.replace(tzinfo=timezone.utc)
+            delta = current_period_end - now
+            days_remaining = max(0, delta.days)
+    
+    # Format dates for response
+    period_start_str = None
+    period_end_str = None
+    
+    if status == "active":
+        if current_period_start and isinstance(current_period_start, datetime):
+            period_start_str = current_period_start.strftime("%Y-%m-%d")
+        if current_period_end and isinstance(current_period_end, datetime):
+            period_end_str = current_period_end.strftime("%Y-%m-%d")
+    elif created_at and isinstance(created_at, datetime):
+        # For trial users, show creation date
+        period_start_str = created_at.strftime("%Y-%m-%d")
+    
     # Check if user can create invoices
     can_create = False
     message = ""
@@ -92,7 +124,10 @@ async def get_subscription_status(user_id: str = Depends(get_current_user_id)):
         invoicesUsed=invoices_used,
         maxInvoices=max_invoices,
         canCreateInvoice=can_create,
-        message=message
+        message=message,
+        currentPeriodStart=period_start_str,
+        currentPeriodEnd=period_end_str,
+        daysRemaining=days_remaining
     )
 
 @router.post("/create-checkout-session")
