@@ -9,31 +9,49 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 
-## Session: March 3, 2026
+## Session: March 3, 2026 (Continued)
 
 ### Changes Made This Session:
 
 1. **Bug Fix: Settings Menu Closing Behavior** ✅
    - Fixed: Clicking outside the settings menu now only closes the menu without reloading the page
-   - Root cause: The logo Link component was capturing clicks even when dropdown menu was open
-   - Solution: Changed logo from Link to div with onClick handler that checks if any dropdown menu is open using DOM query
-   - Modified file: `/app/frontend/src/pages/Dashboard.jsx`
 
 2. **UI Fix: Removed Dark Mode Toast Notification** ✅
-   - Removed the "Modo Oscuro Activado" / "Modo Claro Activado" notification when toggling theme
-   - Modified file: `/app/frontend/src/pages/Dashboard.jsx`
+   - Removed the notification when toggling theme
 
 3. **Feature: Subscription Dates in Mi Suscripción Page** ✅
    - Added "Próxima renovación" date with days remaining for Premium users
-   - Backend now returns `currentPeriodEnd` and `daysRemaining` fields
-   - Shows date in Spanish format (ej: "3 de abril de 2026") with "(X días restantes)"
-   - Modified files: 
-     - `/app/backend/routes/subscription.py`
-     - `/app/frontend/src/pages/SubscriptionPanel.jsx`
-     - `/app/frontend/src/locales/es.json`
-     - `/app/frontend/src/locales/en.json`
 
-4. **Feature: Invoice Detail Page (Mobile Only)** ✅ (from previous session)
+4. **UI Fix: Moved Floating Buttons to Right** ✅
+   - "Crear nueva factura" button moved to right
+   - "Salir" button on invoice detail page moved to right
+
+5. **Feature: Contact Support Form** ✅
+   - Created contact form with Name, Email, Message fields
+   - Emails sent from soporte@factuya.site to soportefactuya@gmail.com
+   - Configured Resend with factuya.site domain (verified)
+
+6. **Feature: Admin Panel** ✅
+   - Created /admin page (access only for soportefactuya@gmail.com)
+   - Stats: Users, Premium, Users/Month, Invoices
+   - Monthly revenue: New Premium, Renewals, Total
+   - List of all registered users
+
+7. **Feature: Annual Balance Page** ✅
+   - Created /admin/balance page
+   - Monthly breakdown: New subscribers, Renewals, Revenue
+   - Year selector to view historical data
+   - Annual totals summary
+
+8. **Removed Emergent Watermark** ✅
+   - Removed "Made with Emergent" badge from production
+
+9. **Configured Resend Domain** ✅
+   - Verified factuya.site domain in Resend
+   - Added DNS records (DKIM, SPF, MX, DMARC) in Hostinger
+
+### Deployed to Production ✅
+All changes deployed to factuya.site VPS
    - New page at route `/invoice/:id` for mobile users
    - Central hub for invoice actions after creating/viewing an invoice
    - Shows invoice preview with header (number + status + logo)
