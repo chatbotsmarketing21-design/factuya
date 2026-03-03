@@ -403,39 +403,8 @@ const InvoiceDetailPage = () => {
         </div>
       </header>
 
-      {/* Invoice Preview */}
-      <div className="p-4">
-        <div 
-          className="bg-white rounded-lg shadow-sm overflow-hidden"
-          style={{ 
-            aspectRatio: '210/297',
-            maxHeight: '40vh'
-          }}
-        >
-          <div 
-            className="origin-top-left"
-            style={{
-              transform: 'scale(0.35)',
-              transformOrigin: 'top left',
-              width: '286%',
-              height: '286%'
-            }}
-          >
-            <InvoicePreview 
-              invoice={{
-                ...invoice,
-                from: invoice.fromAddress || invoice.from,
-                to: invoice.toAddress || invoice.to,
-                items: invoice.items || []
-              }} 
-              template={template}
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Action Buttons */}
-      <div className="px-4 pb-8 space-y-3">
+      <div className="px-4 pt-4 pb-4 space-y-3">
         {/* Primary Actions */}
         <div className="grid grid-cols-2 gap-3">
           <Button 
@@ -518,6 +487,50 @@ const InvoiceDetailPage = () => {
           <Trash2 className="w-5 h-5 mr-2" />
           Eliminar
         </Button>
+      </div>
+
+      {/* Invoice Preview - Same style as InvoiceCreator */}
+      <div className="px-4 pb-8">
+        <div 
+          className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden cursor-pointer active:opacity-90 transition-colors shadow-sm border border-gray-200 dark:border-gray-700"
+          onClick={handleDownloadPdf}
+        >
+          <div 
+            className="w-full"
+            style={{ 
+              overflow: 'hidden',
+              maxHeight: '400px'
+            }}
+          >
+            <div 
+              style={{ 
+                width: '794px',
+                transform: 'scale(0.44)',
+                transformOrigin: 'top left',
+                marginLeft: '4px'
+              }}
+            >
+              <div 
+                className="bg-white" 
+                style={{ width: '794px' }}
+              >
+                <InvoicePreview 
+                  invoice={{
+                    ...invoice,
+                    from: invoice.fromAddress || invoice.from,
+                    to: invoice.toAddress || invoice.to,
+                    items: invoice.items || []
+                  }} 
+                  template={template}
+                />
+              </div>
+            </div>
+          </div>
+          {/* Message inside the card */}
+          <p className="text-center text-xs text-gray-500 dark:text-gray-400 py-2 px-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+            Toca para descargar PDF
+          </p>
+        </div>
       </div>
 
       {/* Delete Confirmation Dialog */}
