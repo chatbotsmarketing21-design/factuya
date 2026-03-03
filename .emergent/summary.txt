@@ -1,161 +1,194 @@
-<analysis>**original_problem_statement:** The user initially requested a clone of the Invoice Home application. The project has since evolved based on user feedback into a feature-rich, full-stack invoicing application named FactuYa!. The application has been successfully deployed to the user's own Hostinger VPS and is live at their custom domain.
+<analysis>**original_problem_statement:**
+The user initially requested a clone of the Invoice Home application. The project has since evolved based on user feedback into a feature-rich, full-stack invoicing application named FactuYa!. The application has been successfully deployed to the user's own Hostinger VPS.
 
 **PRODUCT REQUIREMENTS:**
 1.  **Core Functionality:** Create a full-stack invoicing application with user authentication.
-2.  **Branding:** The application should be named FactuYa! with a dynamic color scheme selected by the user.
+2.  **Branding:** The application should be named FactuYa! with a dynamic color scheme.
 3.  **Invoicing Features:**
-    *   CRUD for invoices, supporting multiple document types (Invoice, Proforma, Quotation, Bill of Collection, Receipt).
-    *   Company profile for logo, notes, terms, and bank details.
-    *   A simplified set of base templates (Classic, Modern, Wave, Dexter, Cuenta de Cobro) with a dynamic color picker.
-    *   The Cuenta de Cobro template is a highly-detailed, exclusive design.
-    *   Invoice status management, PDF download, and sharing.
-    *   Sequential numbering, NIT fields, and invoice duplication.
-    *   Ability to upload a signature image to the user's profile, which is then automatically applied to specific document types.
-4.  **Internationalization:** Support for Spanish and English, with automatic language detection and manual switching. The UI should be fully translated.
-5.  **Authentication:** Support traditional email/password login and a self-managed Google Social Login.
-6.  **Deployment:** Deployed on the user's Hostinger VPS, with a development workflow of Emergent -> GitHub -> VPS.
+    *   CRUD for invoices, supporting multiple document types.
+    *   Company profile for branding and details.
+    *   A set of base templates with a dynamic color picker.
+    *   Invoice status management, PDF download, sharing, and duplication.
+    *   Signature upload and automatic application to documents.
+4.  **Internationalization:** Support for Spanish and English.
+5.  **Authentication:** Support email/password and self-managed Google Social Login.
+6.  **PWA:** The application should be installable on mobile devices and feel like a native app.
+7.  **Deployment:** Deployed on the user's Hostinger VPS.
 
 **User's preferred language**: Español
 
 **what currently exists?**
-A fully functional and deployed full-stack invoicing application. This session was highly productive, focusing on fixing a critical data persistence bug for the Cuenta de Cobro template. Following the fix, the agent, guided by extensive user feedback, implemented a series of significant features and improvements. The most notable was a major refactoring of the template system to allow dynamic color selection for all templates, greatly improving customization. The entire Invoice Creator page and parts of the Dashboard were also fully internationalized (Spanish/English). The session concluded with the agent successfully guiding the user through deploying all the new changes to their production Hostinger VPS.
+A functional full-stack invoicing application. This session was heavily focused on improving the mobile user experience. The agent successfully implemented Progressive Web App (PWA) functionality, making the application installable on mobile devices. A major effort was dedicated to making the UI responsive, including a complete overhaul of the Dashboard (with swipeable cards for invoices), the Invoice Creator (with an inline preview), and the Home page. Several mobile-specific bugs, such as a signature upload issue and PDF generation distortion, were also fixed. The user is very satisfied with the mobile improvements.
 
 **Last working item**:
-*   **Last item agent was working**: Assisting the user with the step-by-step deployment process of the latest changes onto their production VPS. The user has confirmed the deployment was successful and all new features are working correctly. The work for the session was concluded, and the agent is now awaiting the user's next set of tasks.
-*   **Status**: NONE
-*   **Agent Testing Done**: Y
-*   **Which testing method agent to use?**: NA
-*   **User Testing Done**: Y
+- **Last item agent was working**: The user requested the creation of a new Invoice Detail page. This page should appear after creating/saving an invoice or when selecting an existing one from the dashboard. It serves as a central hub for actions like sharing, editing, downloading, etc. The user provided a screenshot from the Invoice Home app as a reference. The agent had just acknowledged this new feature request and was about to start implementation.
+- **Status**: NOT STARTED
+- **Agent Testing Done**: N
+- **Which testing method agent to use?**: both. This is a new feature involving a new frontend page and routing. The testing agent should be used to verify the new page and ensure it doesn't break existing functionality.
+- **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
-*   None. All issues raised during this session were resolved, tested, and deployed.
+-   **Issue 1**: Google Login is not working (Priority: P2).
+-   **Issue 2**: WhatsApp sharing on desktop does not attach the PDF file automatically (Priority: P3).
+
+**Issues Detail**:
+-   **Issue 1**:
+    -   **Description**: The Login with Google feature is failing. The agent identified the likely cause as a  error because the preview environment's URL is not authorized in the user's Google Cloud Console project.
+    -   **Attempted fixes**: The agent investigated the code and configuration and correctly diagnosed the issue. No fix was implemented as the user decided to postpone it.
+    -   **Next debug checklist**:
+        1.  Confirm with the user if the issue is happening in production () or only in the preview environment.
+        2.  If in preview, guide the user to add the preview URL () as an authorized redirect URI in their Google Cloud Console.
+        3.  If in production, verify the existing  URI is correct and enabled.
+    -   **Why fix this issue and what will be achieved with the fix?**: This will restore a key authentication method for users who prefer social login.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: both
+    -   **Blocked on other issue**: None.
+
+-   **Issue 2**:
+    -   **Description**: When sharing an invoice to WhatsApp from a desktop browser, only a text message is sent, not the PDF file itself.
+    -   **Attempted fixes**: The agent investigated and explained that this is a limitation of WhatsApp Web, which does not support programmatically attaching files via a URL link. The user accepted this explanation and decided to postpone any changes.
+    -   **Next debug checklist**:
+        1.  Re-engage with the user on the proposed solutions:
+            -   Improve the UI message to instruct users to attach the downloaded file manually.
+            -   (Advanced) Implement a temporary file upload service to share a download link.
+    -   **Why fix this issue and what will be achieved with the fix?**: Would improve the user experience for sharing invoices on desktop, although it has technical limitations.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: frontend
+    -   **Blocked on other issue**: None.
 
 **In progress Task List**:
-*   None.
+-   **Task 1**: Implement the Invoice Detail page (Priority: P0).
+
+**Task Detail**:
+-   **Task 1**:
+    -   **Where to resume**:
+        1.  Create a new page component: .
+        2.  Add a new route in  like .
+        3.  Update the logic in  and  to navigate to this new page after an invoice is clicked or saved.
+        4.  Build the UI based on the user's screenshot, including the header, a list of action buttons (Copy, Share, Edit, Download, etc.), and the embedded invoice preview.
+    -   **What will be achieved with this?**: A streamlined user experience for managing individual invoices, matching the workflow of the user's reference application.
+    -   **Status**: NOT STARTED
+    -   **Should Test frontend/backend/both after fix?**: both
+    -   **Blocked on something**: None.
 
 **Upcoming and Future Tasks**
-*   **Upcoming Tasks:**
-    *   **P1: Integrate Wompi Payment Gateway:** The user has previously stated this is the next major task. This will replace Stripe for the Colombian market.
-    *   **P2: Add More Custom Templates:** The user has mentioned they wish to add more base template designs in the future (más adelante le vamos a agregar otras plantillas).
-    *   **P2: Configure Production Emailing:** The Resend integration needs to be configured for production use on the VPS.
-*   **Future Tasks:**
-    *   **P2: Client and Product Management:** Add dedicated sections to manage recurring clients and products.
-    *   **P2: Advanced Reporting:** Build a reports page with analytics.
-    *   **P3: Mobile Application:** The user has expressed long-term interest in a mobile app.
+-   **Upcoming Tasks:**
+    -   **P1: Integrate Wompi Payment Gateway:** The user has explicitly stated this is the next major task after the current mobile UI work is finished.
+    -   **P1: Continue Mobile Responsiveness Review:** The user may find more pages (Profile, Subscription) that need mobile UI adjustments.
+    -   **P2: Configure Production Emailing:** The Resend integration needs to be configured for production use on the VPS.
+-   **Future Tasks:**
+    -   **P2: Add More Custom Templates.**
+    -   **P2: Client and Product Management:** Add dedicated sections to manage clients and products.
+    -   **P2: Advanced Reporting:** Build a reports page with analytics.
 
 **Completed work in this session**
-- **Bug Fix: Cuenta de Cobro Data Persistence (DONE)**: Fixed the critical bug where signature and bank details were not being saved. Verified with .
-- **Feature: Persistent User Signature (DONE)**: Implemented functionality for the user's signature to be saved to their profile and automatically loaded when creating new Cuenta de Cobro documents.
-- **Feature: Dynamic Template Coloring (DONE)**: Refactored the entire template system. Replaced numerous static colored templates with 5 base templates and a dynamic color picker, allowing users to apply one of 12 colors to any template.
-- **Feature: Full Internationalization of Invoice Creator (DONE)**: Translated all static text and labels on the  page to be bilingual (English/Spanish).
-- **UX/UI Improvements:**
-  - Added i18n for Dashboard search placeholder and action buttons (Download, Copy, Share).
-  - Fixed a bug where switching away from the Cuenta de Cobro document type would not restore the user's preferred template.
-  - Rerouted homepage Create Invoice buttons to lead to the dashboard for logged-in users.
-  - Made several layout adjustments to the Cuenta de Cobro template based on user feedback.
-- **Deployment Guidance (DONE)**: Successfully guided the user through a full deployment cycle (, dependency installation, build, and service restart) on their production VPS.
+- **PWA Implementation**: Made the application installable on mobile devices with a custom icon, splash screen, and offline capabilities by creating , , and updating .
+- **Mobile Responsive UI Overhaul**:
+  - **Dashboard ():** Converted the invoice table into a list of clean, swipeable cards for mobile, and added a floating action button.
+  - **Invoice Creator ():** Replaced the preview modal with an inline, scrollable preview that can be tapped to download a clean PDF.
+  - **Home Page ():** Added a custom Download App button that intelligently hides itself if the app is already installed.
+  - **Templates Page ():** Redesigned the previews to show the full A4 ratio, making them more informative.
+- **Bug Fixes**:
+  - **Signature Upload**: Fixed a bug that prevented uploading large signature photos from a mobile device by implementing client-side image compression.
+  - **PDF Generation**: Fixed an issue where the downloaded PDF from the mobile preview was distorted and unreadable.
 
 **Earlier issues found/mentioned but not fixed**
-*   None.
+-   **Issue 1**: Google Login is not working in the preview environment.
+-   **Issue 2**: WhatsApp sharing on desktop does not attach the PDF automatically.
 
 **Known issue recurrence from previous fork**
-*   None.
+-   None.
 
 **Code Architecture**
 *   **Stack**: React frontend, FastAPI backend, MongoDB database.
-*   **Deployment**: Hosted on a user-owned Hostinger VPS running Ubuntu. Nginx serves as a reverse proxy.
-*   **Workflow**: Development in the Emergent environment -> Push to user's GitHub -> User pulls and rebuilds on the production VPS.
+*   **Structure**: Standard React project structure () with , , , etc. The backend follows a standard FastAPI structure with  and .
+*   **Deployment**: Hosted on a user-owned Hostinger VPS. Development occurs in the Emergent preview environment.
 
 **Key Technical Concepts**
-*   **Dynamic Template Coloring**: Refactoring React components to accept a  prop and apply it using inline styles, making the UI highly customizable.
-*   **User Preference Persistence**: Extending the user profile schema and API to store preferences like  and , and applying them throughout the application.
-*   **Advanced i18next Usage**: Full internationalization of a large, stateful React component () with numerous text labels, placeholders, and dynamic content.
-*   **Production Deployment on VPS**: Guiding a user through the command-line steps to update a live application, including handling OS-specific package manager issues ( for pip) and Node.js dependency conflicts ( for npm).
+*   **PWA (Progressive Web App):** Use of  and a  to enable native-like app installation and experience on mobile devices.
+*   **Responsive Design (Tailwind CSS):** Extensive use of responsive prefixes (, , ) to create different layouts for mobile and desktop.
+*   **Client-Side Image Compression:** Use of the  library to handle large file uploads from mobile cameras without overwhelming the backend.
+*   **Swipe Gestures:** Use of the  library to implement interactive, swipeable actions on the mobile invoice list.
+*   **Dynamic PDF Generation Fix:** Solved a distortion issue by rendering a clean, un-scaled version of a component in an off-screen div before capturing it with  for PDF generation.
 
 **key DB schema**
-*   **users**:  (Added , , and ).
-*   **invoices**:  (No changes to schema, but logic to handle fields was fixed).
+- No schema changes were made in this session.
 
 **changes in tech stack**
-*   None.
+- **Added Frontend Libraries:**
+  - : To enable swipe actions on the mobile dashboard.
+  - : To fix signature uploads from mobile devices.
 
 **All files of reference**
-*   **Backend**:
-    -   : Added , ,  to  model.
-    -   : Added endpoints for managing user signature and saving .
-*   **Frontend (Core Logic & Pages)**:
-    -   : Major refactoring for i18n, loading/saving profile signature, and handling dynamic template/color restoration.
-    -   : Completely refactored to show 5 base templates and a dynamic color picker.
-    -   : Modified button logic to redirect to dashboard for authenticated users.
-    -   : Added i18n for search placeholder and action buttons.
-    -   : Added  route alias.
-*   **Frontend (Templates & Components)**:
-    -   : Modified to accept and pass  to child templates.
-    -    (and , , , ): Modified to accept a  prop and render colors dynamically.
-*   **Configuration & Data**:
-    -    & : Heavily updated with dozens of new keys.
-    -   : Simplified to define 5 base templates and the list of available colors.
+- **Newly Created:**
+  - : PWA configuration file.
+  - : PWA service worker.
+  - : Directory for PWA icons.
+  - : New component for the mobile dashboard's swipeable invoice items.
+- **Significantly Modified:**
+  - : Major responsive overhaul, integrated .
+  - : Major responsive overhaul, inline preview, PDF generation fix, signature upload fix.
+  - : Added Download App button and detection logic.
+  - : Modified to show full A4 ratio previews.
+  - : Added PWA meta tags.
+  - : Added service worker registration logic.
 
 **Areas that need refactoring**:
-*   The production backend process on the user's VPS is run with . This should be migrated to a more robust  service to ensure it restarts automatically on server reboot or failure.
-*   The frontend build process generates several  warnings about missing dependencies in  hooks. While not breaking, these should be fixed to follow React best practices.
+*   The production backend process on the user's VPS runs via  and should be migrated to a more robust  service for auto-restarts.
+*   The frontend codebase has several  warnings related to missing dependencies in  hooks that should be cleaned up.
 
 **key api endpoints**
-*   : Uploads/updates the user's signature image (base64).
-*   : Deletes the user's signature.
-*   : Updates the rotation value for the user's signature.
-*   : Updated to save .
+*   The session was focused on frontend work. The  endpoint was implicitly involved in the signature bug fix, but no changes were made to the endpoint itself.
 
 **Critical Info for New Agent**
-*   **MUST communicate in Español.**
-*   All work from this session has been successfully deployed by the user to their production VPS.
-*   The agent is currently idle, waiting for the user to initiate the next task.
-*   The next logical tasks are integrating the Wompi payment gateway or adding more templates. Present these options to the user or ask for their preference.
-*   The user is hands-on with deployment. Be prepared to guide them again through the established command-line process for their Ubuntu VPS if needed.
+*   **You MUST communicate in Español.** The user only communicates in Spanish.
+*   The user is highly engaged and focused on making the mobile experience match the Invoice Home application. Expect specific feedback with screenshots.
+*   The current top priority is mobile UI/UX. The user has explicitly postponed fixes for Google Login and WhatsApp sharing. Do not work on them unless requested.
+*   The user understands the difference between the preview environment (which has an Emergent badge) and their production VPS on Hostinger (which does not). They have decided to deploy to production only after the current batch of features is complete.
+*   Your immediate task is to begin creating the new Invoice Detail page as per the user's last request.
 
 **documents and test reports created in this job**
-*    (updated)
-*   
-*   
-*   
+-  was updated.
 
 **Last 10 User Messages and any pending HUMAN messages**
-10. **User:** Asks if the build output, which includes warnings, is finished or if they need to wait. (Status: Addressed)
-9.  **User:** Confirms they executed the final command to restart the backend. (Status: Completed)
-8.  **User:** Provides the output of the  command. (Status: Addressed)
-7.  **User:** Asks for the next command after the  failed and was corrected. (Status: Addressed)
-6.  **User:** Provides the terminal output showing the  error (). (Status: Addressed)
-5.  **User:** Provides the terminal output showing the successful . (Status: Addressed)
-4.  **User:** Provides the terminal output showing the location of the project directory. (Status: Addressed)
-3.  **User:** Provides the initial terminal login screen from their VPS. (Status: Addressed)
-2.  **User:** Confirms they have saved the repository to GitHub and asks for the deployment commands for their VPS. (Status: Addressed)
-1.  **User:** A new message initiating the next session: Hola, ¿cómo estás? (Status: Addressed, awaiting next task).
+- **10. User:** Asks to create a new Invoice Detail page and provides a screenshot from Invoice Home as an example, explaining its purpose. (Status: **Pending Implementation**)
+- **9. User:** Reports that uploading a signature by taking a photo on the phone doesn't work. (Status: **Completed/Fixed**)
+- **8. User:** Points out the large empty space at the bottom of the Invoice Creator page and asks to reduce it. (Status: **Completed/Fixed**)
+- **7. User:** Asks if the invoice preview can be tapped to download and view it with zoom. (Status: **Completed/Implemented**)
+- **6. User:** Reports that the downloaded PDF from the preview is distorted and unreadable, provides a screenshot. (Status: **Completed/Fixed**)
+- **5. User:** States the PDF preview is the right size but still slightly misaligned to the right. (Status: **Completed/Fixed**)
+- **4. User:** Reports the PDF preview in the creator is cut off and needs to be fully visible. (Status: **Completed/Fixed**)
+- **3. User:** Asks to remove the Vista previa title because the preview is already visible inline. (Status: **Completed/Fixed**)
+- **2. User:** Asks about the Made with Emergent badge and whether it can be removed. (Status: **Addressed**)
+- **1. User:** Confirms that the app can be downloaded and asks if the Download App button can be hidden once the app is installed. (Status: **Completed/Implemented**)
 
 **Project Health Check:**
-*   **Broken**: None.
+*   **Broken**:
+    *   Google Login in the preview environment.
 *   **Mocked**: None.
 *   **Needs Improvement**:
-    *   The production backend process on the VPS runs via  instead of a robust  service.
-    *   The frontend codebase has several  warnings related to  dependency arrays that should be cleaned up.
+    *   Desktop WhatsApp sharing functionality is incomplete.
+    *   The production backend is run with  instead of a  service.
+    *    warnings in the frontend codebase.
 
 **3rd Party Integrations**
-*   **Stripe (Payments):** Integrated for subscriptions (test mode). Slated to be replaced by Wompi.
-*   **Resend (Transactional Emails):** Integrated for password recovery (test mode).
-*   **Google OAuth 2.0 (Self-Managed):** Fully configured and operational.
+*   **Stripe (Payments):** Integrated (test mode). Slated to be replaced by Wompi.
+*   **Resend (Transactional Emails):** Integrated (test mode).
+- **Google OAuth 2.0 (Self-Managed):** Integrated but currently not working in the preview environment.
+*   **react-swipeable-list (UI):** Newly added for swipe gestures.
+*   **browser-image-compression (Utility):** Newly added for client-side image optimization.
 
 **Testing status**
-*   **Testing agent used after significant changes**: YES (For the initial data persistence bug fix).
-*   **Troubleshoot agent used after agent stuck in loop**: NO
-*   **Test files created**:
-    - 
-    - 
-*   **Known regressions**: None.
+- **Testing agent used after significant changes**: NO
+- **Troubleshoot agent used after agent stuck in loop**: NO
+- **Test files created**: None.
+- **Known regressions**: None.
 
 **Credentials to test flow:**
 *   **User for Emergent Environment:**  / 
-*   **Google OAuth Credentials (New):**
-    *   **Client ID:** 
-    *   **Client Secret:** 
+*   **Google OAuth Credentials:** Available in the initial handoff, but known not to work in the preview environment due to misconfigured redirect URIs.
 
 **What agent forgot to execute**
-*   None. The agent successfully addressed all user requests and feedback during the session.</analysis>
+- The agent was highly responsive to the user's dynamic requests and did not forget to execute any tasks. They correctly prioritized the user's immediate focus on mobile UI and postponed other issues as requested.</analysis>

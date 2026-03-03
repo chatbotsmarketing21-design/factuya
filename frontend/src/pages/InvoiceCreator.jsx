@@ -617,6 +617,8 @@ const InvoiceCreator = () => {
     try {
       setLoading(true);
       
+      let savedInvoiceId = invoiceId;
+      
       if (isEditMode && invoiceId) {
         // Actualizar factura existente
         await invoiceAPI.update(invoiceId, invoice);
@@ -626,14 +628,21 @@ const InvoiceCreator = () => {
         });
       } else {
         // Crear nueva factura
-        await invoiceAPI.create(invoice);
+        const response = await invoiceAPI.create(invoice);
+        savedInvoiceId = response.data.id;
         toast({
           title: "¡Factura Guardada!",
           description: "Tu factura ha sido creada exitosamente.",
         });
       }
       
-      navigate('/dashboard');
+      // On mobile, navigate to invoice detail page; on desktop, go to dashboard
+      const isMobile = window.innerWidth < 640;
+      if (isMobile && savedInvoiceId) {
+        navigate(`/invoice/${savedInvoiceId}`);
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error) {
       // Si el error es 403 (límite alcanzado), mostrar diálogo de suscripción
       if (error.response?.status === 403) {

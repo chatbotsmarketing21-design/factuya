@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
 import { CheckCircle, Share2, ChevronRight } from 'lucide-react';
 
@@ -9,6 +10,7 @@ const SwipeableInvoiceCard = ({
   onShare,
   statusColors 
 }) => {
+  const navigate = useNavigate();
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isRevealed, setIsRevealed] = useState(null); // 'left' | 'right' | null
 
@@ -48,7 +50,8 @@ const SwipeableInvoiceCard = ({
         setSwipeOffset(0);
         setIsRevealed(null);
       } else {
-        onView(invoice.id);
+        // Navigate to invoice detail page on mobile
+        navigate(`/invoice/${invoice.id}`);
       }
     },
     trackMouse: false,
@@ -118,6 +121,12 @@ const SwipeableInvoiceCard = ({
       {/* Main card content */}
       <div 
         {...handlers}
+        onClick={() => {
+          // Fallback click handler for when swipe is not active
+          if (!isRevealed && swipeOffset === 0) {
+            navigate(`/invoice/${invoice.id}`);
+          }
+        }}
         className="relative bg-white dark:bg-card flex items-center py-3 px-3 cursor-pointer border-b border-gray-100 dark:border-gray-700"
         style={{ 
           transform: `translateX(${swipeOffset}px)`,

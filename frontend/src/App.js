@@ -5,6 +5,7 @@ import Home from "./pages/Home";
 import Templates from "./pages/Templates";
 import InvoiceCreator from "./pages/InvoiceCreator";
 import Dashboard from "./pages/Dashboard";
+import InvoiceDetailPage from "./pages/InvoiceDetailPage";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import SubscriptionPanel from "./pages/SubscriptionPanel";
@@ -63,6 +64,14 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/invoice/:id"
+        element={
+          <ProtectedRoute>
+            <InvoiceDetailPage />
           </ProtectedRoute>
         }
       />
