@@ -14,8 +14,8 @@ router = APIRouter(prefix="/contact", tags=["Contact"])
 
 # Configure Resend
 resend.api_key = os.environ.get('RESEND_API_KEY')
-SUPPORT_EMAIL = "chatbotsmarketing21@gmail.com"  # Temporal hasta verificar dominio en Resend
-SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
+SUPPORT_EMAIL = "soportefactuya@gmail.com"  # Donde llegan los mensajes
+SENDER_EMAIL = "soporte@factuya.site"  # Desde donde se envían
 
 class ContactForm(BaseModel):
     name: str
