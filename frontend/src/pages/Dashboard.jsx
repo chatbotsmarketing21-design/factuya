@@ -77,10 +77,6 @@ const Dashboard = () => {
     } else {
       document.documentElement.classList.remove('dark');
     }
-    toast({
-      title: newMode ? "Modo Oscuro Activado" : "Modo Claro Activado",
-      description: `El tema ha sido cambiado a modo ${newMode ? 'oscuro' : 'claro'}`,
-    });
   };
 
   // Poll payment status when returning from Stripe
