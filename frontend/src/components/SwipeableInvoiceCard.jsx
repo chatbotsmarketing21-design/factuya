@@ -150,7 +150,7 @@ const SwipeableInvoiceCard = ({
         {/* Amount and date - right side */}
         <div className="text-right ml-3 flex-shrink-0">
           <p className="font-bold text-gray-900 dark:text-white">
-            ${invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} COP
+            {invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} COP
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {invoice.date}
