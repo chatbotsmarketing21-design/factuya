@@ -123,18 +123,22 @@ const InvoiceDetailPage = () => {
     }
   };
 
-  const handleMarkAsPaid = async () => {
+  const handleTogglePaidStatus = async () => {
     try {
+      const newStatus = invoice.status === 'paid' ? 'pending' : 'paid';
+      
       await invoiceAPI.update(id, {
         ...invoice,
-        status: 'paid'
+        status: newStatus
       });
       
-      setInvoice(prev => ({ ...prev, status: 'paid' }));
+      setInvoice(prev => ({ ...prev, status: newStatus }));
       
       toast({
         title: "Estado actualizado",
-        description: "La factura ha sido marcada como pagada",
+        description: newStatus === 'paid' 
+          ? "La factura ha sido marcada como pagada"
+          : "La factura ha sido marcada como pendiente",
       });
     } catch (error) {
       console.error('Error updating status:', error);
@@ -462,15 +466,24 @@ const InvoiceDetailPage = () => {
             <span className="ml-4 text-gray-900 dark:text-white font-medium">Copiar Factura</span>
           </button>
 
-          {/* Marcar como Pagada - Only show if not already paid and not a quotation */}
-          {invoice.status !== 'paid' && !invoice.number?.startsWith('COT') && (
+          {/* Toggle Paid Status - Show for all invoices except quotations */}
+          {!invoice.number?.startsWith('COT') && (
             <button 
               className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
-              onClick={handleMarkAsPaid}
-              data-testid="mark-paid-button"
+              onClick={handleTogglePaidStatus}
+              data-testid="toggle-paid-button"
             >
-              <CheckCircle className="w-5 h-5 text-green-600" />
-              <span className="ml-4 text-gray-900 dark:text-white font-medium">Marcar como Pagada</span>
+              {invoice.status === 'paid' ? (
+                <>
+                  <CheckCircle className="w-5 h-5 text-yellow-500" />
+                  <span className="ml-4 text-gray-900 dark:text-white font-medium">Marcar como no pagada</span>
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span className="ml-4 text-gray-900 dark:text-white font-medium">Marcar como Pagada</span>
+                </>
+              )}
             </button>
           )}
 
