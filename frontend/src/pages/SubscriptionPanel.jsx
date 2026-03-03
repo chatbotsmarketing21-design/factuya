@@ -260,23 +260,6 @@ const SubscriptionPanel = () => {
                 <span className="font-semibold dark:text-white">{t('subscription.premiumMonthly')} - $5/{t('subscription.month')}</span>
               </div>
 
-              {/* Fecha de suscripción */}
-              {subscription?.currentPeriodStart && (
-                <div className="flex items-center justify-between py-3 border-b dark:border-gray-700">
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-5 h-5 text-gray-400" />
-                    <span className="text-gray-600 dark:text-gray-400">{t('subscription.startDate')}</span>
-                  </div>
-                  <span className="font-semibold dark:text-white">
-                    {new Date(subscription.currentPeriodStart).toLocaleDateString('es-CO', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}
-                  </span>
-                </div>
-              )}
-
               {/* Fecha de vencimiento */}
               {subscription?.currentPeriodEnd && (
                 <div className="flex items-center justify-between py-3 border-b dark:border-gray-700">
