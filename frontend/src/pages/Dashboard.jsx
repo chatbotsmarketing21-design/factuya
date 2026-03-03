@@ -479,51 +479,37 @@ const Dashboard = () => {
       const phone = invoice.to?.phone || invoice.toAddress?.phone || '';
       const cleanPhone = phone.replace(/\D/g, '');
       
-      // Check if device supports Web Share API with files (usually mobile)
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const canShareFiles = navigator.canShare && navigator.canShare({ files: [new File([], 'test.pdf', { type: 'application/pdf' })] });
+      // Download PDF first
+      const pdfBlob = pdf.output('blob');
+      const fileName = `${invoiceNumber}_${clientName}.pdf`;
       
-      if (isMobile && canShareFiles) {
-        // MOBILE: Share PDF directly as file attachment
-        const pdfBlob = pdf.output('blob');
-        const pdfFile = new File([pdfBlob], `${invoiceNumber}_${clientName}.pdf`, { type: 'application/pdf' });
-        
-        const shareData = {
-          title: `Factura ${invoiceNumber}`,
-          text: `Hola ${clientName}, le comparto su factura N° ${invoiceNumber} por un total de $${total}.\n\n¡Gracias por su preferencia!\n- FactuYa!`,
-          files: [pdfFile]
-        };
-        
-        await navigator.share(shareData);
-        
-        toast({
-          title: "¡Compartido!",
-          description: "El PDF se ha compartido exitosamente",
-        });
-      } else {
-        // DESKTOP: Download PDF + Open WhatsApp with message
-        // 1. Download PDF automatically
-        const fileName = `${invoiceNumber}_${clientName}.pdf`;
-        pdf.save(fileName);
-        
-        // 2. Prepare WhatsApp message (without link)
-        const message = `Hola ${clientName}, le comparto su factura N° ${invoiceNumber} por un total de $${total}.\n\n📎 *El PDF está adjunto o descargado en su computador*\n\n¡Gracias por su preferencia!\n- FactuYa!`;
-        const encodedMessage = encodeURIComponent(message);
-        
-        const whatsappUrl = cleanPhone 
-          ? `https://wa.me/${cleanPhone}?text=${encodedMessage}`
-          : `https://wa.me/?text=${encodedMessage}`;
-        
-        // Small delay to ensure PDF download starts first
-        setTimeout(() => {
-          window.open(whatsappUrl, '_blank');
-        }, 500);
-        
-        toast({
-          title: "¡PDF Descargado!",
-          description: "Adjunta el PDF descargado en la conversación de WhatsApp",
-        });
-      }
+      // Create download link and trigger download
+      const downloadUrl = URL.createObjectURL(pdfBlob);
+      const downloadLink = document.createElement('a');
+      downloadLink.href = downloadUrl;
+      downloadLink.download = fileName;
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+      URL.revokeObjectURL(downloadUrl);
+      
+      // Prepare WhatsApp message
+      const message = `Hola ${clientName}, le comparto su factura N° ${invoiceNumber} por un total de $${total}.\n\n¡Gracias por su preferencia!\n- FactuYa!`;
+      const encodedMessage = encodeURIComponent(message);
+      
+      const whatsappUrl = cleanPhone 
+        ? `https://wa.me/${cleanPhone}?text=${encodedMessage}`
+        : `https://wa.me/?text=${encodedMessage}`;
+      
+      // Small delay to ensure PDF download starts first, then open WhatsApp
+      setTimeout(() => {
+        window.open(whatsappUrl, '_blank');
+      }, 300);
+      
+      toast({
+        title: "¡PDF Descargado!",
+        description: "Adjunta el PDF en la conversación de WhatsApp",
+      });
     } catch (error) {
       console.error('Error sharing via WhatsApp:', error);
       console.error('Error details:', error.message, error.stack);
