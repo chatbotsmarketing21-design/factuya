@@ -166,9 +166,12 @@ const Profile = () => {
                   id="name"
                   name="name"
                   value={profile.name}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                    handleChange(e);
+                  }}
                   placeholder={t('profile.fullNamePlaceholder')}
-                  className="mt-1"
+                  className="mt-1 uppercase"
                 />
               </div>
               <div>
@@ -215,9 +218,12 @@ const Profile = () => {
                   id="company.name"
                   name="company.name"
                   value={profile.companyInfo.name}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                    handleChange(e);
+                  }}
                   placeholder={t('profile.companyNamePlaceholder')}
-                  className="mt-1"
+                  className="mt-1 uppercase"
                 />
               </div>
               <div>
