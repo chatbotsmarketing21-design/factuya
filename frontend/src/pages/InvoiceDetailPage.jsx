@@ -403,90 +403,87 @@ const InvoiceDetailPage = () => {
         </div>
       </header>
 
-      {/* Action Buttons */}
-      <div className="px-4 pt-4 pb-4 space-y-3">
-        {/* Primary Actions */}
-        <div className="grid grid-cols-2 gap-3">
-          <Button 
-            className="h-14 bg-lime-500 hover:bg-lime-600 text-white font-semibold"
+      {/* Action Buttons - List style like Invoice Home */}
+      <div className="px-4 pt-4 pb-4">
+        <div className="bg-white dark:bg-card rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
+          {/* Editar */}
+          <button 
+            className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
             onClick={handleEdit}
             data-testid="edit-button"
           >
-            <FileEdit className="w-5 h-5 mr-2" />
-            Editar
-          </Button>
-          <Button 
-            className="h-14 bg-blue-500 hover:bg-blue-600 text-white font-semibold"
+            <FileEdit className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="ml-4 text-gray-900 dark:text-white font-medium">Editar</span>
+          </button>
+
+          {/* Descargar PDF */}
+          <button 
+            className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
             onClick={handleDownloadPdf}
             disabled={generatingPdf}
             data-testid="download-button"
           >
             {generatingPdf ? (
-              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              <Loader2 className="w-5 h-5 text-gray-600 dark:text-gray-400 animate-spin" />
             ) : (
-              <Download className="w-5 h-5 mr-2" />
+              <Download className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             )}
-            Descargar
-          </Button>
-        </div>
+            <span className="ml-4 text-gray-900 dark:text-white font-medium">Descargar PDF</span>
+          </button>
 
-        {/* Share Actions */}
-        <div className="grid grid-cols-2 gap-3">
-          <Button 
-            variant="outline"
-            className="h-14 border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 font-semibold"
+          {/* WhatsApp */}
+          <button 
+            className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
             onClick={handleShareWhatsApp}
             disabled={generatingPdf}
             data-testid="whatsapp-button"
           >
-            <MessageCircle className="w-5 h-5 mr-2" />
-            WhatsApp
-          </Button>
-          <Button 
-            variant="outline"
-            className="h-14 border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 font-semibold"
+            <MessageCircle className="w-5 h-5 text-green-600" />
+            <span className="ml-4 text-gray-900 dark:text-white font-medium">WhatsApp</span>
+          </button>
+
+          {/* Correo */}
+          <button 
+            className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
             onClick={handleShareEmail}
             data-testid="email-button"
           >
-            <Mail className="w-5 h-5 mr-2" />
-            Correo
-          </Button>
-        </div>
+            <Mail className="w-5 h-5 text-blue-600" />
+            <span className="ml-4 text-gray-900 dark:text-white font-medium">Correo</span>
+          </button>
 
-        {/* Secondary Actions */}
-        <Button 
-          variant="outline"
-          className="w-full h-14 font-semibold"
-          onClick={handleCopy}
-          data-testid="copy-button"
-        >
-          <Copy className="w-5 h-5 mr-2" />
-          Copiar Factura
-        </Button>
-
-        {/* Mark as Paid - Only show if not already paid and not a quotation */}
-        {invoice.status !== 'paid' && !invoice.number?.startsWith('COT') && (
-          <Button 
-            variant="outline"
-            className="w-full h-14 border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20 font-semibold"
-            onClick={handleMarkAsPaid}
-            data-testid="mark-paid-button"
+          {/* Copiar Factura */}
+          <button 
+            className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
+            onClick={handleCopy}
+            data-testid="copy-button"
           >
-            <CheckCircle className="w-5 h-5 mr-2" />
-            Marcar como Pagada
-          </Button>
-        )}
+            <Copy className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            <span className="ml-4 text-gray-900 dark:text-white font-medium">Copiar Factura</span>
+          </button>
 
-        {/* Delete */}
-        <Button 
-          variant="outline"
-          className="w-full h-14 border-red-300 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 font-semibold"
-          onClick={() => setDeleteDialogOpen(true)}
-          data-testid="delete-button"
-        >
-          <Trash2 className="w-5 h-5 mr-2" />
-          Eliminar
-        </Button>
+          {/* Marcar como Pagada - Only show if not already paid and not a quotation */}
+          {invoice.status !== 'paid' && !invoice.number?.startsWith('COT') && (
+            <button 
+              className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
+              onClick={handleMarkAsPaid}
+              data-testid="mark-paid-button"
+            >
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              <span className="ml-4 text-gray-900 dark:text-white font-medium">Marcar como Pagada</span>
+            </button>
+          )}
+
+          {/* Eliminar */}
+          <button 
+            className="w-full flex items-center px-4 py-4 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            onClick={() => setDeleteDialogOpen(true)}
+            data-testid="delete-button"
+          >
+            <Trash2 className="w-5 h-5 text-red-500" />
+            <span className="ml-4 text-red-500 font-medium">Eliminar</span>
+          </button>
+        </div>
       </div>
 
       {/* Invoice Preview - Same style as InvoiceCreator */}
