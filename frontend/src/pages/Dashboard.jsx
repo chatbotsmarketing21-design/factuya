@@ -649,29 +649,29 @@ const Dashboard = () => {
                 <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>{t('settings.myAccount')}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/profile')}>
-                    <User className="w-4 h-4 mr-2" />
+                  <DropdownMenuItem onClick={() => navigate('/profile')} className="text-base py-3">
+                    <User className="w-5 h-5 mr-3" />
                     {t('settings.profile')}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/subscription')}>
-                    <CreditCard className="w-4 h-4 mr-2" />
+                  <DropdownMenuItem onClick={() => navigate('/subscription')} className="text-base py-3">
+                    <CreditCard className="w-5 h-5 mr-3" />
                     {t('settings.subscription')}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/change-password')}>
-                    <Key className="w-4 h-4 mr-2" />
+                  <DropdownMenuItem onClick={() => navigate('/change-password')} className="text-base py-3">
+                    <Key className="w-5 h-5 mr-3" />
                     {t('settings.changePassword')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuLabel>{t('settings.appearance')}</DropdownMenuLabel>
-                  <DropdownMenuItem onClick={toggleDarkMode}>
+                  <DropdownMenuItem onClick={toggleDarkMode} className="text-base py-3">
                     {darkMode ? (
                       <>
-                        <Sun className="w-4 h-4 mr-2" />
+                        <Sun className="w-5 h-5 mr-3" />
                         {t('settings.lightMode')}
                       </>
                     ) : (
                       <>
-                        <Moon className="w-4 h-4 mr-2" />
+                        <Moon className="w-5 h-5 mr-3" />
                         {t('settings.darkMode')}
                       </>
                     )}
@@ -681,8 +681,8 @@ const Dashboard = () => {
                     <LanguageSwitcher />
                   </div>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                    <LogOut className="w-4 h-4 mr-2" />
+                  <DropdownMenuItem onClick={handleLogout} className="text-red-600 text-base py-3">
+                    <LogOut className="w-5 h-5 mr-3" />
                     {t('settings.logout')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
