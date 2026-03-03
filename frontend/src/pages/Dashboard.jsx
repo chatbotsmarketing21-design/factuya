@@ -453,78 +453,9 @@ const Dashboard = () => {
   };
 
   const handleShareWhatsApp = async (invoiceId) => {
-    try {
-      toast({
-        title: "Preparando PDF...",
-        description: "Generando factura para compartir",
-      });
-
-      console.log('Starting share for invoice:', invoiceId);
-
-      // Load full invoice data
-      const response = await invoiceAPI.getById(invoiceId);
-      const invoice = response.data;
-      
-      console.log('Invoice loaded:', invoice?.number, 'Template:', invoice?.template);
-
-      // Generate PDF
-      const pdf = await generatePdfFromInvoice(invoice);
-      
-      console.log('PDF generated successfully');
-      
-      // Get invoice details for message
-      const invoiceNumber = invoice.invoiceNumber || invoice.number || 'factura';
-      const clientName = invoice.clientName || invoice.to?.name || invoice.toAddress?.name || 'Cliente';
-      const total = invoice.total?.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) || '0';
-      const phone = invoice.to?.phone || invoice.toAddress?.phone || '';
-      const cleanPhone = phone.replace(/\D/g, '');
-      
-      // Download PDF first
-      const pdfBlob = pdf.output('blob');
-      const fileName = `${invoiceNumber}_${clientName}.pdf`;
-      
-      // Create download link and trigger download
-      const downloadUrl = URL.createObjectURL(pdfBlob);
-      const downloadLink = document.createElement('a');
-      downloadLink.href = downloadUrl;
-      downloadLink.download = fileName;
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-      URL.revokeObjectURL(downloadUrl);
-      
-      // Prepare WhatsApp message
-      const message = `Hola ${clientName}, le comparto su factura N° ${invoiceNumber} por un total de $${total}.\n\n¡Gracias por su preferencia!\n- FactuYa!`;
-      const encodedMessage = encodeURIComponent(message);
-      
-      const whatsappUrl = cleanPhone 
-        ? `https://wa.me/${cleanPhone}?text=${encodedMessage}`
-        : `https://wa.me/?text=${encodedMessage}`;
-      
-      // Small delay to ensure PDF download starts first, then open WhatsApp
-      setTimeout(() => {
-        window.open(whatsappUrl, '_blank');
-      }, 300);
-      
-      toast({
-        title: "¡PDF Descargado!",
-        description: "Adjunta el PDF en la conversación de WhatsApp",
-      });
-    } catch (error) {
-      console.error('Error sharing via WhatsApp:', error);
-      console.error('Error details:', error.message, error.stack);
-      
-      // If share was cancelled by user, don't show error
-      if (error.name === 'AbortError') {
-        return;
-      }
-      
-      toast({
-        title: "Error",
-        description: error.message || "No se pudo preparar el PDF para compartir",
-        variant: "destructive"
-      });
-    }
+    // Navigate to invoice detail page where share works correctly
+    // This avoids the "user gesture" issue with Web Share API
+    navigate(`/invoice/${invoiceId}`);
   };
 
   const handleShareEmail = (invoice) => {

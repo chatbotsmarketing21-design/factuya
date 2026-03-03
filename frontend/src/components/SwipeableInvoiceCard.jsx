@@ -132,13 +132,13 @@ const SwipeableInvoiceCard = ({
             <span>{invoice.status === 'paid' ? 'No pagada' : 'Pagada'}</span>
           </div>
         </div>
-        {/* Right action - Compartir (revealed when swiping LEFT) */}
+        {/* Right action - Ver detalle (revealed when swiping LEFT) */}
         <div 
           className="w-1/2 bg-blue-500 flex items-center justify-end pr-4 pointer-events-auto"
           onClick={(e) => handleActionClick('share', e)}
         >
           <div className="flex items-center gap-2 text-white font-medium">
-            <span>Compartir</span>
+            <span>Ver</span>
             <Share2 className="w-5 h-5" />
           </div>
         </div>
