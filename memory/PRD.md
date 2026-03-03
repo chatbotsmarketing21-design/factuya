@@ -16,11 +16,24 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 1. **Bug Fix: Settings Menu Closing Behavior** ✅
    - Fixed: Clicking outside the settings menu now only closes the menu without reloading the page
    - Root cause: The logo Link component was capturing clicks even when dropdown menu was open
-   - Solution: Changed logo from Link to div with onClick handler that checks if any dropdown menu is open using DOM query (`document.querySelector('[data-state="open"][role="menu"]')`)
+   - Solution: Changed logo from Link to div with onClick handler that checks if any dropdown menu is open using DOM query
    - Modified file: `/app/frontend/src/pages/Dashboard.jsx`
-   - Tested on both mobile and desktop viewports
 
-2. **Feature: Invoice Detail Page (Mobile Only)** ✅
+2. **UI Fix: Removed Dark Mode Toast Notification** ✅
+   - Removed the "Modo Oscuro Activado" / "Modo Claro Activado" notification when toggling theme
+   - Modified file: `/app/frontend/src/pages/Dashboard.jsx`
+
+3. **Feature: Subscription Dates in Mi Suscripción Page** ✅
+   - Added "Próxima renovación" date with days remaining for Premium users
+   - Backend now returns `currentPeriodEnd` and `daysRemaining` fields
+   - Shows date in Spanish format (ej: "3 de abril de 2026") with "(X días restantes)"
+   - Modified files: 
+     - `/app/backend/routes/subscription.py`
+     - `/app/frontend/src/pages/SubscriptionPanel.jsx`
+     - `/app/frontend/src/locales/es.json`
+     - `/app/frontend/src/locales/en.json`
+
+4. **Feature: Invoice Detail Page (Mobile Only)** ✅ (from previous session)
    - New page at route `/invoice/:id` for mobile users
    - Central hub for invoice actions after creating/viewing an invoice
    - Shows invoice preview with header (number + status + logo)
