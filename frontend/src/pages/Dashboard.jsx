@@ -297,6 +297,8 @@ const Dashboard = () => {
       try {
         setGeneratingPdf(true);
         
+        console.log('generatePdfFromInvoice: Starting for invoice', invoice?.number);
+        
         // Create a temporary hidden container for clean PDF render
         const tempContainer = document.createElement('div');
         tempContainer.style.position = 'absolute';
@@ -306,26 +308,37 @@ const Dashboard = () => {
         tempContainer.style.backgroundColor = '#ffffff';
         document.body.appendChild(tempContainer);
 
+        console.log('generatePdfFromInvoice: Container created');
+
         const { createRoot } = await import('react-dom/client');
         const React = await import('react');
         const { default: InvoicePreviewComponent } = await import('../components/InvoicePreview');
         
+        console.log('generatePdfFromInvoice: Modules imported');
+        
         const root = createRoot(tempContainer);
+        
+        const invoiceData = {
+          ...invoice,
+          from: invoice.fromAddress || invoice.from,
+          to: invoice.toAddress || invoice.to,
+          items: invoice.items || []
+        };
+        const templateData = getTemplateById(invoice.template || 1);
+        
+        console.log('generatePdfFromInvoice: Rendering with template', invoice.template || 1);
         
         await new Promise((resolveRender) => {
           root.render(
             React.createElement(InvoicePreviewComponent, {
-              invoice: {
-                ...invoice,
-                from: invoice.fromAddress || invoice.from,
-                to: invoice.toAddress || invoice.to,
-                items: invoice.items || []
-              },
-              template: getTemplateById(invoice.template || 1)
+              invoice: invoiceData,
+              template: templateData
             })
           );
           setTimeout(resolveRender, 500);
         });
+
+        console.log('generatePdfFromInvoice: Rendered, capturing canvas');
 
         const canvas = await html2canvas(tempContainer, {
           scale: 2,
@@ -335,6 +348,8 @@ const Dashboard = () => {
           width: 794,
           windowWidth: 794
         });
+
+        console.log('generatePdfFromInvoice: Canvas captured', canvas.width, 'x', canvas.height);
 
         root.unmount();
         document.body.removeChild(tempContainer);
@@ -444,12 +459,18 @@ const Dashboard = () => {
         description: "Generando factura para compartir",
       });
 
+      console.log('Starting share for invoice:', invoiceId);
+
       // Load full invoice data
       const response = await invoiceAPI.getById(invoiceId);
       const invoice = response.data;
+      
+      console.log('Invoice loaded:', invoice?.number, 'Template:', invoice?.template);
 
       // Generate PDF
       const pdf = await generatePdfFromInvoice(invoice);
+      
+      console.log('PDF generated successfully');
       
       // Get invoice details for message
       const invoiceNumber = invoice.invoiceNumber || invoice.number || 'factura';
@@ -505,6 +526,7 @@ const Dashboard = () => {
       }
     } catch (error) {
       console.error('Error sharing via WhatsApp:', error);
+      console.error('Error details:', error.message, error.stack);
       
       // If share was cancelled by user, don't show error
       if (error.name === 'AbortError') {
@@ -513,7 +535,7 @@ const Dashboard = () => {
       
       toast({
         title: "Error",
-        description: "No se pudo preparar el PDF para compartir",
+        description: error.message || "No se pudo preparar el PDF para compartir",
         variant: "destructive"
       });
     }
