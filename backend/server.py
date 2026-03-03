@@ -13,6 +13,7 @@ from routes.profile import router as profile_router
 from routes.subscription import router as subscription_router
 from routes.password_reset import router as password_reset_router
 from routes.google_auth import router as google_auth_router
+from routes.admin import router as admin_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -40,6 +41,7 @@ api_router.include_router(profile_router)
 api_router.include_router(subscription_router)
 api_router.include_router(password_reset_router)
 api_router.include_router(google_auth_router)
+api_router.include_router(admin_router)
 
 # Include the router in the main app
 app.include_router(api_router)
