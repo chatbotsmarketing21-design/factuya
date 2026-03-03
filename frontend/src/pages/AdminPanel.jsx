@@ -289,15 +289,18 @@ const AdminPanel = () => {
                 </div>
               </Card>
 
-              {/* Fact./Mes */}
-              <Card className="p-4 dark:bg-card">
+              {/* Balance - Link to Balance Page */}
+              <Card 
+                className="p-4 dark:bg-card cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                onClick={() => navigate('/admin/balance')}
+              >
                 <div className="flex items-center gap-3">
                   <div className="bg-cyan-100 dark:bg-cyan-900/30 p-2 rounded-full">
-                    <Calendar className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
+                    <TrendingUp className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
                   </div>
                   <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">Fact./Mes</p>
-                    <p className="text-xl font-bold text-gray-900 dark:text-white">{stats.invoicesThisMonth}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Balance Anual</p>
+                    <p className="text-sm font-semibold text-cyan-600 dark:text-cyan-400">Ver detalles →</p>
                   </div>
                 </div>
               </Card>

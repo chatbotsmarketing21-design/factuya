@@ -126,3 +126,79 @@ async def check_admin_access(user_id: str = Depends(get_current_user_id)):
     
     is_admin = user.get("email", "").lower() == ADMIN_EMAIL.lower()
     return {"isAdmin": is_admin}
+
+@router.get("/balance")
+async def get_balance(user_id: str = Depends(verify_admin), year: int = None):
+    """Get monthly revenue balance for a specific year"""
+    
+    if year is None:
+        year = datetime.now(timezone.utc).year
+    
+    monthly_data = []
+    
+    for month in range(1, 13):
+        # First day of the month
+        first_day = datetime(year, month, 1, tzinfo=timezone.utc)
+        
+        # Last day of the month
+        if month == 12:
+            last_day = datetime(year + 1, 1, 1, tzinfo=timezone.utc)
+        else:
+            last_day = datetime(year, month + 1, 1, tzinfo=timezone.utc)
+        
+        # New premium subscriptions this month
+        new_premium = await db.subscriptions.count_documents({
+            "status": "active",
+            "createdAt": {"$gte": first_day, "$lt": last_day}
+        })
+        
+        # Renewals this month
+        renewals = await db.subscriptions.count_documents({
+            "status": "active",
+            "createdAt": {"$lt": first_day},
+            "currentPeriodStart": {"$gte": first_day, "$lt": last_day}
+        })
+        
+        # Calculate revenue
+        new_revenue = new_premium * 5
+        renewal_revenue = renewals * 5
+        total_revenue = new_revenue + renewal_revenue
+        
+        monthly_data.append({
+            "month": month,
+            "newPremium": new_premium,
+            "renewals": renewals,
+            "newRevenue": new_revenue,
+            "renewalRevenue": renewal_revenue,
+            "totalRevenue": total_revenue
+        })
+    
+    # Calculate year total
+    year_total = sum(m["totalRevenue"] for m in monthly_data)
+    
+    return {
+        "year": year,
+        "months": monthly_data,
+        "yearTotal": year_total
+    }
+
+@router.get("/balance/years")
+async def get_available_years(user_id: str = Depends(verify_admin)):
+    """Get list of years with subscription data"""
+    
+    # Get the earliest subscription
+    earliest = await db.subscriptions.find_one(
+        {},
+        sort=[("createdAt", 1)]
+    )
+    
+    current_year = datetime.now(timezone.utc).year
+    
+    if earliest and earliest.get("createdAt"):
+        start_year = earliest["createdAt"].year
+    else:
+        start_year = current_year
+    
+    years = list(range(start_year, current_year + 1))
+    
+    return {"years": years}

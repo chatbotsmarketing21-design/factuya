@@ -18,6 +18,7 @@ import Terms from "./pages/Terms";
 import GoogleCallback from "./pages/GoogleCallback";
 import AuthCallback from "./components/AuthCallback";
 import AdminPanel from "./pages/AdminPanel";
+import AdminBalance from "./pages/AdminBalance";
 import { Toaster } from "./components/ui/toaster";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -105,6 +106,14 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             <AdminPanel />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/balance"
+        element={
+          <ProtectedRoute>
+            <AdminBalance />
           </ProtectedRoute>
         }
       />
