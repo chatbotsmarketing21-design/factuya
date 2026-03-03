@@ -35,7 +35,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
-import { Plus, Search, Download, Send, Trash2, FileText, LogOut, CheckCircle, Clock, XCircle, FileEdit, Loader2, CreditCard, Settings, User, Key, Sun, Moon, Share2, MessageCircle, Mail, Copy } from 'lucide-react';
+import { Plus, Search, Download, Send, Trash2, FileText, LogOut, CheckCircle, Clock, XCircle, FileEdit, Loader2, CreditCard, Settings, User, Key, Sun, Moon, Share2, MessageCircle, Mail, Copy, Globe } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 import InvoicePreview from '../components/InvoicePreview';
@@ -46,7 +46,7 @@ import jsPDF from 'jspdf';
 const Dashboard = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [invoices, setInvoices] = useState([]);
   const [stats, setStats] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -677,9 +677,17 @@ const Dashboard = () => {
                     )}
                   </DropdownMenuItem>
                   {/* Language switcher - below dark mode */}
-                  <div className="sm:hidden px-2 py-1.5">
-                    <LanguageSwitcher />
-                  </div>
+                  <DropdownMenuItem 
+                    className="sm:hidden text-base py-3"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      const newLang = i18n.language === 'es' ? 'en' : 'es';
+                      i18n.changeLanguage(newLang);
+                    }}
+                  >
+                    <Globe className="w-5 h-5 mr-3" />
+                    {i18n.language === 'es' ? 'Español' : 'English'}
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600 text-base py-3">
                     <LogOut className="w-5 h-5 mr-3" />
