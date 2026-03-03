@@ -410,7 +410,17 @@ const InvoiceDetailPage = () => {
       {/* Action Buttons - List style like Invoice Home */}
       <div className="px-4 pt-4 pb-4">
         <div className="bg-white dark:bg-card rounded-xl overflow-hidden shadow-sm border border-gray-200 dark:border-gray-700">
-          {/* Editar */}
+          {/* 1. Eliminar */}
+          <button 
+            className="w-full flex items-center px-4 py-4 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border-b border-gray-100 dark:border-gray-700"
+            onClick={() => setDeleteDialogOpen(true)}
+            data-testid="delete-button"
+          >
+            <Trash2 className="w-5 h-5 text-red-500" />
+            <span className="ml-4 text-red-500 font-medium">Eliminar</span>
+          </button>
+
+          {/* 2. Editar */}
           <button 
             className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
             onClick={handleEdit}
@@ -420,7 +430,7 @@ const InvoiceDetailPage = () => {
             <span className="ml-4 text-gray-900 dark:text-white font-medium">Editar</span>
           </button>
 
-          {/* Descargar PDF */}
+          {/* 3. Descargar PDF */}
           <button 
             className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
             onClick={handleDownloadPdf}
@@ -435,28 +445,7 @@ const InvoiceDetailPage = () => {
             <span className="ml-4 text-gray-900 dark:text-white font-medium">Descargar PDF</span>
           </button>
 
-          {/* WhatsApp */}
-          <button 
-            className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
-            onClick={handleShareWhatsApp}
-            disabled={generatingPdf}
-            data-testid="whatsapp-button"
-          >
-            <MessageCircle className="w-5 h-5 text-green-600" />
-            <span className="ml-4 text-gray-900 dark:text-white font-medium">WhatsApp</span>
-          </button>
-
-          {/* Correo */}
-          <button 
-            className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
-            onClick={handleShareEmail}
-            data-testid="email-button"
-          >
-            <Mail className="w-5 h-5 text-blue-600" />
-            <span className="ml-4 text-gray-900 dark:text-white font-medium">Correo</span>
-          </button>
-
-          {/* Copiar Factura */}
+          {/* 4. Copiar Factura */}
           <button 
             className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
             onClick={handleCopy}
@@ -466,7 +455,7 @@ const InvoiceDetailPage = () => {
             <span className="ml-4 text-gray-900 dark:text-white font-medium">Copiar Factura</span>
           </button>
 
-          {/* Toggle Paid Status - Show for all invoices except quotations */}
+          {/* 5. Toggle Paid Status - Show for all invoices except quotations */}
           {!invoice.number?.startsWith('COT') && (
             <button 
               className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
@@ -487,14 +476,25 @@ const InvoiceDetailPage = () => {
             </button>
           )}
 
-          {/* Eliminar */}
+          {/* 6. Correo */}
           <button 
-            className="w-full flex items-center px-4 py-4 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
-            onClick={() => setDeleteDialogOpen(true)}
-            data-testid="delete-button"
+            className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
+            onClick={handleShareEmail}
+            data-testid="email-button"
           >
-            <Trash2 className="w-5 h-5 text-red-500" />
-            <span className="ml-4 text-red-500 font-medium">Eliminar</span>
+            <Mail className="w-5 h-5 text-blue-600" />
+            <span className="ml-4 text-gray-900 dark:text-white font-medium">Correo</span>
+          </button>
+
+          {/* 7. WhatsApp */}
+          <button 
+            className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+            onClick={handleShareWhatsApp}
+            disabled={generatingPdf}
+            data-testid="whatsapp-button"
+          >
+            <MessageCircle className="w-5 h-5 text-green-600" />
+            <span className="ml-4 text-gray-900 dark:text-white font-medium">WhatsApp</span>
           </button>
         </div>
       </div>
