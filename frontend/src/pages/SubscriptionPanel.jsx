@@ -7,6 +7,9 @@ import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
+import { Input } from '../components/ui/input';
+import { Textarea } from '../components/ui/textarea';
+import { Label } from '../components/ui/label';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,6 +20,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '../components/ui/alert-dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../components/ui/dialog';
 import { 
   ArrowLeft, 
   Crown, 
@@ -26,7 +37,8 @@ import {
   Check, 
   Loader2,
   AlertTriangle,
-  Sparkles
+  Sparkles,
+  Send
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
@@ -39,6 +51,49 @@ const SubscriptionPanel = () => {
   const [subscription, setSubscription] = useState(null);
   const [showCancelDialog, setShowCancelDialog] = useState(false);
   const [canceling, setCanceling] = useState(false);
+  const [showContactDialog, setShowContactDialog] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+  const [sendingMessage, setSendingMessage] = useState(false);
+
+  useEffect(() => {
+    // Pre-fill email if user is logged in
+    if (user?.email) {
+      setContactForm(prev => ({ ...prev, email: user.email, name: user.name || '' }));
+    }
+  }, [user]);
+
+  const handleContactSubmit = async () => {
+    if (!contactForm.name || !contactForm.email || !contactForm.message) {
+      toast({
+        title: "Campos requeridos",
+        description: "Por favor completa todos los campos",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setSendingMessage(true);
+    
+    // Create mailto link with form data
+    const subject = encodeURIComponent(`Soporte FactuYa! - ${contactForm.name}`);
+    const body = encodeURIComponent(
+      `Nombre: ${contactForm.name}\nEmail: ${contactForm.email}\n\nMensaje:\n${contactForm.message}`
+    );
+    
+    window.location.href = `mailto:soportefactuya@gmail.com?subject=${subject}&body=${body}`;
+    
+    setSendingMessage(false);
+    setShowContactDialog(false);
+    
+    toast({
+      title: "Correo abierto",
+      description: "Se ha abierto tu aplicación de correo para enviar el mensaje",
+    });
+  };
 
   useEffect(() => {
     loadSubscriptionStatus();
@@ -317,7 +372,7 @@ const SubscriptionPanel = () => {
           </p>
           <Button 
             variant="outline"
-            onClick={() => window.location.href = 'mailto:soportefactuya@gmail.com?subject=Soporte FactuYa!'}
+            onClick={() => setShowContactDialog(true)}
           >
             {t('subscription.contactSupport')}
           </Button>
@@ -354,6 +409,66 @@ const SubscriptionPanel = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Contact Support Dialog */}
+      <Dialog open={showContactDialog} onOpenChange={setShowContactDialog}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Contactar Soporte</DialogTitle>
+            <DialogDescription>
+              Envíanos tu mensaje y te responderemos lo antes posible.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Nombre</Label>
+              <Input
+                id="name"
+                placeholder="Tu nombre"
+                value={contactForm.name}
+                onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="tu@email.com"
+                value={contactForm.email}
+                onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="message">Mensaje</Label>
+              <Textarea
+                id="message"
+                placeholder="¿En qué podemos ayudarte?"
+                rows={4}
+                value={contactForm.message}
+                onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowContactDialog(false)}>
+              Cancelar
+            </Button>
+            <Button 
+              onClick={handleContactSubmit} 
+              disabled={sendingMessage}
+              className="bg-lime-500 hover:bg-lime-600"
+            >
+              {sendingMessage ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4 mr-2" />
+              )}
+              Enviar Mensaje
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
