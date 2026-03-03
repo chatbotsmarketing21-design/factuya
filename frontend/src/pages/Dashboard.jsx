@@ -700,7 +700,7 @@ const Dashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalRevenue')}</p>
-                  <p className="text-lg sm:text-3xl font-bold text-gray-900 dark:text-white mt-1 sm:mt-2">${stats.totalRevenue.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+                  <p className="text-lg sm:text-3xl font-bold text-gray-900 dark:text-white mt-1 sm:mt-2">{stats.totalRevenue.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} COP</p>
                 </div>
                 <div className="bg-blue-100 dark:bg-blue-900/30 p-2 sm:p-3 rounded-full">
                   <FileText className="w-4 h-4 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400" />
