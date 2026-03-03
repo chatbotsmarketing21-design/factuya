@@ -14,20 +14,38 @@ const SwipeableInvoiceCard = ({
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isRevealed, setIsRevealed] = useState(null); // 'left' | 'right' | null
 
-  const SWIPE_THRESHOLD = 60;
+  const SWIPE_THRESHOLD = 80; // Increased threshold for less sensitivity
   const MAX_SWIPE = 90;
 
   const handlers = useSwipeable({
     onSwiping: (e) => {
       // Only allow horizontal swipe if it's clearly horizontal (not vertical scroll)
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY) * 2) {
-        const offset = Math.max(-MAX_SWIPE, Math.min(MAX_SWIPE, e.deltaX));
-        setSwipeOffset(offset);
+        // If already revealed, only allow swipe in closing direction
+        if (isRevealed === 'left') {
+          // Only allow right swipe to close
+          const offset = Math.max(-MAX_SWIPE, Math.min(0, -MAX_SWIPE + e.deltaX));
+          setSwipeOffset(offset);
+        } else if (isRevealed === 'right') {
+          // Only allow left swipe to close
+          const offset = Math.max(0, Math.min(MAX_SWIPE, MAX_SWIPE + e.deltaX));
+          setSwipeOffset(offset);
+        } else {
+          // Normal swipe behavior when nothing is revealed
+          const offset = Math.max(-MAX_SWIPE, Math.min(MAX_SWIPE, e.deltaX));
+          setSwipeOffset(offset);
+        }
       }
     },
     onSwipedLeft: (e) => {
-      // Only trigger if horizontal movement is dominant
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.5 && Math.abs(e.deltaX) > SWIPE_THRESHOLD) {
+      // If right action is revealed, close it
+      if (isRevealed === 'right') {
+        setSwipeOffset(0);
+        setIsRevealed(null);
+        return;
+      }
+      // Only open left action if nothing is revealed and swipe is strong enough
+      if (!isRevealed && Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.5 && Math.abs(e.deltaX) > SWIPE_THRESHOLD) {
         setIsRevealed('left');
         setSwipeOffset(-MAX_SWIPE);
       } else {
@@ -36,8 +54,14 @@ const SwipeableInvoiceCard = ({
       }
     },
     onSwipedRight: (e) => {
-      // Only trigger if horizontal movement is dominant
-      if (Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.5 && Math.abs(e.deltaX) > SWIPE_THRESHOLD) {
+      // If left action is revealed, close it
+      if (isRevealed === 'left') {
+        setSwipeOffset(0);
+        setIsRevealed(null);
+        return;
+      }
+      // Only open right action if nothing is revealed and swipe is strong enough
+      if (!isRevealed && Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.5 && Math.abs(e.deltaX) > SWIPE_THRESHOLD) {
         setIsRevealed('right');
         setSwipeOffset(MAX_SWIPE);
       } else {
@@ -57,7 +81,7 @@ const SwipeableInvoiceCard = ({
     trackMouse: false,
     trackTouch: true,
     preventScrollOnSwipe: false, // Allow vertical scroll
-    delta: 15, // Minimum distance before detecting swipe
+    delta: 20, // Increased minimum distance before detecting swipe
   });
 
   const handleActionClick = (action, e) => {
