@@ -303,13 +303,22 @@ const Dashboard = () => {
       setPdfInvoice(invoice);
       setGeneratingPdf(true);
       
-      // Wait for the preview to render
-      setTimeout(async () => {
+      // Function to check if preview is ready and generate PDF
+      const attemptGeneration = async (attempts = 0) => {
+        if (attempts > 20) {
+          setGeneratingPdf(false);
+          setPdfInvoice(null);
+          reject(new Error("PDF preview timeout"));
+          return;
+        }
+        
+        if (!pdfPreviewRef.current) {
+          // Wait and retry
+          setTimeout(() => attemptGeneration(attempts + 1), 100);
+          return;
+        }
+        
         try {
-          if (!pdfPreviewRef.current) {
-            throw new Error("PDF preview not ready");
-          }
-          
           // Capture the preview as image with high quality (same as InvoiceCreator)
           const canvas = await html2canvas(pdfPreviewRef.current, {
             scale: 2,
@@ -377,7 +386,10 @@ const Dashboard = () => {
           setPdfInvoice(null);
           reject(error);
         }
-      }, 800);
+      };
+      
+      // Start attempting generation after initial render
+      setTimeout(() => attemptGeneration(0), 200);
     });
   };
 
