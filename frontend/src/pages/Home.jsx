@@ -111,11 +111,11 @@ const Home = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-background">
         <div className="text-center">
-          <div className="flex items-center justify-center mb-4">
-            <span className="text-2xl font-bold text-gray-900 dark:text-white">Factu</span>
-            <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
+          <div className="flex items-center justify-center mb-6">
+            <span className="text-4xl font-bold text-gray-900 dark:text-white">Factu</span>
+            <span className="text-4xl font-bold text-white bg-lime-500 px-3 ml-1">Ya!</span>
           </div>
-          <Loader2 className="w-8 h-8 animate-spin text-lime-500 mx-auto" />
+          <Loader2 className="w-10 h-10 animate-spin text-lime-500 mx-auto" />
         </div>
       </div>
     );
