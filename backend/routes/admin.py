@@ -64,10 +64,13 @@ async def get_admin_stats(user_id: str = Depends(verify_admin)):
     # Premium subscribers
     premium_users = await db.subscriptions.count_documents({"status": "active"})
     
+    # App revenue (premium users * $5 USD per month)
+    app_revenue = premium_users * 5
+    
     return {
         "totalUsers": total_users,
         "totalInvoices": total_invoices,
-        "totalRevenue": total_revenue,
+        "totalRevenue": app_revenue,
         "usersThisMonth": users_this_month,
         "invoicesThisMonth": invoices_this_month,
         "premiumUsers": premium_users

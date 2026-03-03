@@ -247,7 +247,7 @@ const AdminPanel = () => {
                 <div>
                   <p className="text-xs text-gray-500 dark:text-gray-400">Ingresos</p>
                   <p className="text-xl font-bold text-gray-900 dark:text-white">
-                    {stats.totalRevenue.toLocaleString('es-CO')}
+                    ${stats.totalRevenue} USD
                   </p>
                 </div>
               </div>
