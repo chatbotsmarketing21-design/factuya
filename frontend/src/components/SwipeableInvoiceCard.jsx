@@ -121,10 +121,10 @@ const SwipeableInvoiceCard = ({
   return (
     <div className="relative overflow-hidden bg-gray-50 dark:bg-gray-800 mb-1">
       {/* Background actions */}
-      <div className="absolute inset-0 flex">
+      <div className="absolute inset-0 flex pointer-events-none">
         {/* Left action - Toggle Paid Status (revealed when swiping RIGHT) */}
         <div 
-          className={`w-1/2 flex items-center justify-start pl-4 ${invoice.status === 'paid' ? 'bg-yellow-500' : 'bg-green-500'}`}
+          className={`w-1/2 flex items-center justify-start pl-4 pointer-events-auto ${invoice.status === 'paid' ? 'bg-yellow-500' : 'bg-green-500'}`}
           onClick={(e) => handleActionClick('paid', e)}
         >
           <div className="flex items-center gap-2 text-white font-medium">
@@ -134,7 +134,7 @@ const SwipeableInvoiceCard = ({
         </div>
         {/* Right action - Compartir (revealed when swiping LEFT) */}
         <div 
-          className="w-1/2 bg-blue-500 flex items-center justify-end pr-4"
+          className="w-1/2 bg-blue-500 flex items-center justify-end pr-4 pointer-events-auto"
           onClick={(e) => handleActionClick('share', e)}
         >
           <div className="flex items-center gap-2 text-white font-medium">
@@ -147,9 +147,20 @@ const SwipeableInvoiceCard = ({
       {/* Main card content */}
       <div 
         {...handlers}
-        onClick={() => {
-          // Fallback click handler for when swipe is not active
-          if (!isRevealed && swipeOffset === 0) {
+        onClick={(e) => {
+          // If swipe is revealed and user clicks, execute the revealed action
+          if (isRevealed === 'left') {
+            // Share button is revealed (swiped left)
+            handleActionClick('share', e);
+            return;
+          }
+          if (isRevealed === 'right') {
+            // Paid button is revealed (swiped right)
+            handleActionClick('paid', e);
+            return;
+          }
+          // No swipe revealed, navigate to invoice detail
+          if (swipeOffset === 0) {
             navigate(`/invoice/${invoice.id}`);
           }
         }}
