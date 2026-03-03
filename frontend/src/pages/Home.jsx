@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FileText, Send, CreditCard, CheckCircle, Download } from 'lucide-react';
+import { FileText, Send, CreditCard, CheckCircle, Download, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useAuth } from '../context/AuthContext';
 
 const Home = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showInstallButton, setShowInstallButton] = useState(true);
 
   // Redirect logged-in users to dashboard
   useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
+    if (!loading && user) {
+      navigate('/dashboard', { replace: true });
     }
-  }, [user, navigate]);
+  }, [user, loading, navigate]);
 
   // Listen for the beforeinstallprompt event
   useEffect(() => {
@@ -105,6 +105,21 @@ const Home = () => {
     { icon: <CheckCircle className="w-5 h-5" />, text: t('landing.benefit5') },
     { icon: <CheckCircle className="w-5 h-5" />, text: t('landing.benefit6') }
   ];
+
+  // Show loading screen while checking auth
+  if (loading || user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-background">
+        <div className="text-center">
+          <div className="flex items-center justify-center mb-4">
+            <span className="text-2xl font-bold text-gray-900 dark:text-white">Factu</span>
+            <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
+          </div>
+          <Loader2 className="w-8 h-8 animate-spin text-lime-500 mx-auto" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
