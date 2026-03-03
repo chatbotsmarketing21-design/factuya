@@ -315,7 +315,10 @@ const SubscriptionPanel = () => {
           <p className="text-gray-600 dark:text-gray-400 mb-4">
             {t('subscription.helpDesc')}
           </p>
-          <Button variant="outline">
+          <Button 
+            variant="outline"
+            onClick={() => window.location.href = 'mailto:soportefactuya@gmail.com?subject=Soporte FactuYa!'}
+          >
             {t('subscription.contactSupport')}
           </Button>
         </Card>
