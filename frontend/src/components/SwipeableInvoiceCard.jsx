@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
-import { CheckCircle, Share2, ChevronRight } from 'lucide-react';
+import { CheckCircle, ChevronRight } from 'lucide-react';
 
 const SwipeableInvoiceCard = ({ 
   invoice, 
@@ -12,67 +12,49 @@ const SwipeableInvoiceCard = ({
 }) => {
   const navigate = useNavigate();
   const [swipeOffset, setSwipeOffset] = useState(0);
-  const [isRevealed, setIsRevealed] = useState(null); // 'left' | 'right' | null
+  const [isRevealed, setIsRevealed] = useState(false);
 
-  const SWIPE_THRESHOLD = 80; // Increased threshold for less sensitivity
+  const SWIPE_THRESHOLD = 80;
   const MAX_SWIPE = 90;
 
   const handlers = useSwipeable({
     onSwiping: (e) => {
       // Only allow horizontal swipe if it's clearly horizontal (not vertical scroll)
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY) * 2) {
-        // If already revealed, only allow swipe in closing direction
-        if (isRevealed === 'left') {
-          // Only allow right swipe to close
-          const offset = Math.max(-MAX_SWIPE, Math.min(0, -MAX_SWIPE + e.deltaX));
-          setSwipeOffset(offset);
-        } else if (isRevealed === 'right') {
+        if (isRevealed) {
           // Only allow left swipe to close
           const offset = Math.max(0, Math.min(MAX_SWIPE, MAX_SWIPE + e.deltaX));
           setSwipeOffset(offset);
         } else {
-          // Normal swipe behavior when nothing is revealed
-          const offset = Math.max(-MAX_SWIPE, Math.min(MAX_SWIPE, e.deltaX));
-          setSwipeOffset(offset);
+          // Only allow right swipe (positive deltaX)
+          if (e.deltaX > 0) {
+            const offset = Math.min(MAX_SWIPE, e.deltaX);
+            setSwipeOffset(offset);
+          }
         }
       }
     },
     onSwipedLeft: (e) => {
-      // If right action is revealed, close it
-      if (isRevealed === 'right') {
+      // Close if revealed
+      if (isRevealed) {
         setSwipeOffset(0);
-        setIsRevealed(null);
-        return;
-      }
-      // Only open left action if nothing is revealed and swipe is strong enough
-      if (!isRevealed && Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.5 && Math.abs(e.deltaX) > SWIPE_THRESHOLD) {
-        setIsRevealed('left');
-        setSwipeOffset(-MAX_SWIPE);
-      } else {
-        setSwipeOffset(0);
-        setIsRevealed(null);
+        setIsRevealed(false);
       }
     },
     onSwipedRight: (e) => {
-      // If left action is revealed, close it
-      if (isRevealed === 'left') {
-        setSwipeOffset(0);
-        setIsRevealed(null);
-        return;
-      }
-      // Only open right action if nothing is revealed and swipe is strong enough
+      // Only open if swipe is strong enough
       if (!isRevealed && Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.5 && Math.abs(e.deltaX) > SWIPE_THRESHOLD) {
-        setIsRevealed('right');
+        setIsRevealed(true);
         setSwipeOffset(MAX_SWIPE);
       } else {
         setSwipeOffset(0);
-        setIsRevealed(null);
+        setIsRevealed(false);
       }
     },
     onTap: () => {
       if (isRevealed) {
-        setSwipeOffset(0);
-        setIsRevealed(null);
+        // Execute paid action when tapped while revealed
+        handleActionClick('paid');
       } else {
         // Navigate to invoice detail page on mobile
         navigate(`/invoice/${invoice.id}`);
@@ -85,24 +67,22 @@ const SwipeableInvoiceCard = ({
   });
 
   const handleActionClick = (action, e) => {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     if (action === 'paid') {
       // Toggle: if paid -> pending, if pending -> paid
       const newStatus = invoice.status === 'paid' ? 'pending' : 'paid';
       onMarkPaid(invoice.id, newStatus);
-    } else if (action === 'share') {
-      onShare(invoice.id);
     }
     // Reset swipe after action
     setTimeout(() => {
       setSwipeOffset(0);
-      setIsRevealed(null);
+      setIsRevealed(false);
     }, 200);
   };
 
   const resetSwipe = () => {
     setSwipeOffset(0);
-    setIsRevealed(null);
+    setIsRevealed(false);
   };
 
   const getStatusColor = (status) => {
@@ -120,26 +100,15 @@ const SwipeableInvoiceCard = ({
 
   return (
     <div className="relative overflow-hidden bg-gray-50 dark:bg-gray-800 mb-1">
-      {/* Background actions */}
-      <div className="absolute inset-0 flex pointer-events-none">
-        {/* Left action - Toggle Paid Status (revealed when swiping RIGHT) */}
+      {/* Background action - Toggle Paid Status (revealed when swiping RIGHT) */}
+      <div className="absolute inset-0 pointer-events-none">
         <div 
-          className={`w-1/2 flex items-center justify-start pl-4 pointer-events-auto ${invoice.status === 'paid' ? 'bg-yellow-500' : 'bg-green-500'}`}
+          className={`w-full h-full flex items-center justify-start pl-4 pointer-events-auto ${invoice.status === 'paid' ? 'bg-yellow-500' : 'bg-green-500'}`}
           onClick={(e) => handleActionClick('paid', e)}
         >
           <div className="flex items-center gap-2 text-white font-medium">
             <CheckCircle className="w-5 h-5" />
             <span>{invoice.status === 'paid' ? 'No pagada' : 'Pagada'}</span>
-          </div>
-        </div>
-        {/* Right action - Ver detalle (revealed when swiping LEFT) */}
-        <div 
-          className="w-1/2 bg-blue-500 flex items-center justify-end pr-4 pointer-events-auto"
-          onClick={(e) => handleActionClick('share', e)}
-        >
-          <div className="flex items-center gap-2 text-white font-medium">
-            <span>Ver</span>
-            <Share2 className="w-5 h-5" />
           </div>
         </div>
       </div>
@@ -148,14 +117,8 @@ const SwipeableInvoiceCard = ({
       <div 
         {...handlers}
         onClick={(e) => {
-          // If swipe is revealed and user clicks, execute the revealed action
-          if (isRevealed === 'left') {
-            // Share button is revealed (swiped left)
-            handleActionClick('share', e);
-            return;
-          }
-          if (isRevealed === 'right') {
-            // Paid button is revealed (swiped right)
+          // If swipe is revealed and user clicks, execute the paid action
+          if (isRevealed) {
             handleActionClick('paid', e);
             return;
           }
