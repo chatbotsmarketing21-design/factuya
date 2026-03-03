@@ -298,98 +298,92 @@ const Dashboard = () => {
   // Helper function to generate PDF from invoice
   // This logic mirrors the InvoiceCreator.jsx implementation exactly
   const generatePdfFromInvoice = async (invoice) => {
-    return new Promise((resolve, reject) => {
-      // Set the invoice for PDF preview
-      setPdfInvoice(invoice);
-      setGeneratingPdf(true);
-      
-      // Function to check if preview is ready and generate PDF
-      const attemptGeneration = async (attempts = 0) => {
-        if (attempts > 20) {
-          setGeneratingPdf(false);
-          setPdfInvoice(null);
-          reject(new Error("PDF preview timeout"));
-          return;
-        }
+    return new Promise(async (resolve, reject) => {
+      try {
+        setGeneratingPdf(true);
         
-        if (!pdfPreviewRef.current) {
-          // Wait and retry
-          setTimeout(() => attemptGeneration(attempts + 1), 100);
-          return;
-        }
+        // Create a temporary hidden container for clean PDF render
+        const tempContainer = document.createElement('div');
+        tempContainer.style.position = 'absolute';
+        tempContainer.style.left = '-9999px';
+        tempContainer.style.top = '0';
+        tempContainer.style.width = '794px';
+        tempContainer.style.backgroundColor = '#ffffff';
+        document.body.appendChild(tempContainer);
+
+        const { createRoot } = await import('react-dom/client');
+        const React = await import('react');
+        const { default: InvoicePreviewComponent } = await import('../components/InvoicePreview');
         
-        try {
-          // Capture the preview as image with high quality (same as InvoiceCreator)
-          const canvas = await html2canvas(pdfPreviewRef.current, {
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            backgroundColor: '#ffffff'
-          });
+        const root = createRoot(tempContainer);
+        
+        await new Promise((resolveRender) => {
+          root.render(
+            React.createElement(InvoicePreviewComponent, {
+              invoice: {
+                ...invoice,
+                from: invoice.fromAddress || invoice.from,
+                to: invoice.toAddress || invoice.to,
+                items: invoice.items || []
+              },
+              template: getTemplateById(invoice.template || 1)
+            })
+          );
+          setTimeout(resolveRender, 500);
+        });
+
+        const canvas = await html2canvas(tempContainer, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#ffffff',
+          width: 794,
+          windowWidth: 794
+        });
+
+        root.unmount();
+        document.body.removeChild(tempContainer);
+
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = 210;
+        const pageHeight = 297;
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        if (imgHeight <= pageHeight) {
+          const imgData = canvas.toDataURL('image/png');
+          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        } else {
+          const totalPages = Math.ceil(imgHeight / pageHeight);
+          const sourceWidth = canvas.width;
+          const sourcePageHeight = (canvas.width * pageHeight) / pageWidth;
           
-          const pdf = new jsPDF('p', 'mm', 'a4');
-          
-          const pageWidth = 210; // A4 width in mm
-          const pageHeight = 297; // A4 height in mm
-          
-          // Calculate dimensions
-          const imgWidth = pageWidth;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-          
-          // If fits in one page
-          if (imgHeight <= pageHeight) {
-            const imgData = canvas.toDataURL('image/png');
-            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-          } else {
-            // Multiple pages - slice the canvas vertically (identical to InvoiceCreator)
-            const totalPages = Math.ceil(imgHeight / pageHeight);
-            const sourceWidth = canvas.width;
-            const sourcePageHeight = (canvas.width * pageHeight) / pageWidth;
+          for (let page = 0; page < totalPages; page++) {
+            if (page > 0) pdf.addPage();
             
-            for (let page = 0; page < totalPages; page++) {
-              if (page > 0) {
-                pdf.addPage();
-              }
-              
-              // Create a temporary canvas for this page section
-              const pageCanvas = document.createElement('canvas');
-              pageCanvas.width = sourceWidth;
-              pageCanvas.height = sourcePageHeight;
-              
-              const ctx = pageCanvas.getContext('2d');
-              
-              // Draw the portion of the original canvas for this page
-              const sourceY = page * sourcePageHeight;
-              const drawHeight = Math.min(sourcePageHeight, canvas.height - sourceY);
-              
-              ctx.fillStyle = '#ffffff';
-              ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
-              ctx.drawImage(
-                canvas,
-                0, sourceY,                    // Source x, y
-                sourceWidth, drawHeight,       // Source width, height
-                0, 0,                          // Destination x, y
-                sourceWidth, drawHeight        // Destination width, height
-              );
-              
-              const pageImgData = pageCanvas.toDataURL('image/png');
-              pdf.addImage(pageImgData, 'PNG', 0, 0, pageWidth, pageHeight);
-            }
+            const pageCanvas = document.createElement('canvas');
+            pageCanvas.width = sourceWidth;
+            pageCanvas.height = sourcePageHeight;
+            
+            const ctx = pageCanvas.getContext('2d');
+            const sourceY = page * sourcePageHeight;
+            const drawHeight = Math.min(sourcePageHeight, canvas.height - sourceY);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+            ctx.drawImage(canvas, 0, sourceY, sourceWidth, drawHeight, 0, 0, sourceWidth, drawHeight);
+            
+            const pageImgData = pageCanvas.toDataURL('image/png');
+            pdf.addImage(pageImgData, 'PNG', 0, 0, pageWidth, pageHeight);
           }
-          
-          setGeneratingPdf(false);
-          setPdfInvoice(null);
-          
-          resolve(pdf);
-        } catch (error) {
-          setGeneratingPdf(false);
-          setPdfInvoice(null);
-          reject(error);
         }
-      };
-      
-      // Start attempting generation after initial render
-      setTimeout(() => attemptGeneration(0), 200);
+        
+        setGeneratingPdf(false);
+        resolve(pdf);
+      } catch (error) {
+        setGeneratingPdf(false);
+        reject(error);
+      }
     });
   };
 
