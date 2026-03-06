@@ -233,7 +233,7 @@ const Profile = () => {
                   name="company.nit"
                   value={profile.companyInfo.nit || ''}
                   onChange={handleChange}
-                  placeholder="900.123.456-7"
+                  placeholder="000.000.000-0"
                   className="mt-1"
                 />
               </div>
