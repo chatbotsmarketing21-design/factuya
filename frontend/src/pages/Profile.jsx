@@ -330,7 +330,7 @@ const Profile = () => {
                     name="company.bank"
                     value={profile.companyInfo.bank}
                     onChange={handleChange}
-                    placeholder="Ej: BANCOLOMBIA"
+                    placeholder="Ej: Nombre del banco"
                     className="mt-1"
                   />
                 </div>
@@ -341,7 +341,7 @@ const Profile = () => {
                     name="company.bankAccount"
                     value={profile.companyInfo.bankAccount}
                     onChange={handleChange}
-                    placeholder="Ej: 614-122666-08"
+                    placeholder="Ej: 000-000000-00"
                     className="mt-1"
                   />
                 </div>
