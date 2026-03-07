@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FileText, Send, CreditCard, CheckCircle, Download, Loader2 } from 'lucide-react';
+import { FileText, Send, CreditCard, CheckCircle, Download, Loader2, ClipboardList } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useAuth } from '../context/AuthContext';
 
@@ -81,17 +81,17 @@ const Home = () => {
 
   const features = [
     {
-      icon: <FileText className="w-12 h-12" />,
+      icon: <FileText className="w-12 h-12 text-blue-600" />,
       title: t('landing.feature1Title'),
       description: t('landing.feature1Desc')
     },
     {
-      icon: <Send className="w-12 h-12" />,
+      icon: <Send className="w-12 h-12 text-blue-600" />,
       title: t('landing.feature2Title'),
       description: t('landing.feature2Desc')
     },
     {
-      icon: <CreditCard className="w-12 h-12" />,
+      icon: <ClipboardList className="w-12 h-12 text-blue-600" />,
       title: t('landing.feature3Title'),
       description: t('landing.feature3Desc')
     }
@@ -206,10 +206,8 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {features.map((feature, index) => (
               <div key={index} className="text-center" data-testid={`landing-feature-${index + 1}`}>
-                <div className="inline-flex items-center justify-center w-24 h-24 bg-yellow-100 rounded-full mb-6">
-                  <div className="text-yellow-600">
-                    {feature.icon}
-                  </div>
+                <div className="inline-flex items-center justify-center w-24 h-24 bg-blue-100 rounded-full mb-6">
+                  {feature.icon}
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">{feature.title}</h3>
                 <p className="text-gray-600 text-lg">{feature.description}</p>
