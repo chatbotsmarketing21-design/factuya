@@ -79,14 +79,14 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-gray-50 dark:bg-background flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-white dark:bg-card border-b border-gray-200 dark:border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <Link to="/">
               <div className="flex items-center cursor-pointer">
-                <span className="text-2xl font-bold text-gray-900">Factu</span>
+                <span className="text-2xl font-bold text-gray-900 dark:text-white">Factu</span>
                 <span className="text-2xl font-bold text-white bg-lime-500 px-2 ml-1">Ya!</span>
               </div>
             </Link>
@@ -102,10 +102,10 @@ const SignUp = () => {
 
       {/* Sign Up Form */}
       <div className="flex-1 flex items-center justify-center py-12 px-4">
-        <Card className="w-full max-w-md p-8">
+        <Card className="w-full max-w-md p-8 dark:bg-card">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Crear Cuenta</h1>
-            <p className="text-gray-600">Comienza a crear facturas profesionales gratis</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Crear Cuenta</h1>
+            <p className="text-gray-600 dark:text-gray-300">Comienza a crear facturas profesionales gratis</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -214,16 +214,16 @@ const SignUp = () => {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-300">
               ¿Ya tienes una cuenta?{' '}
-              <Link to="/signin" className="text-lime-600 hover:text-lime-700 font-semibold">
+              <Link to="/signin" className="text-lime-600 hover:text-lime-700 dark:text-lime-400 dark:hover:text-lime-300 font-semibold">
                 Inicia sesión
               </Link>
             </p>
           </div>
 
           <div className="mt-6 text-center">
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               Al registrarte, aceptas nuestros términos de servicio y política de privacidad
             </p>
           </div>
