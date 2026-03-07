@@ -246,25 +246,11 @@ const Home = () => {
           <p className="text-xl text-blue-100 mb-8">
             {t('landing.ctaSubtitle')}
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link to={user ? "/dashboard" : "/create"}>
-              <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white font-semibold text-xl px-12 py-6 rounded-lg" data-testid="landing-cta-btn">
-                {t('landing.ctaButton')}
-              </Button>
-            </Link>
-            {/* Solo mostrar botón de descarga si la app NO está instalada */}
-            {showInstallButton && (
-              <Button 
-                size="lg" 
-                onClick={handleInstallClick}
-                className="bg-white hover:bg-gray-100 text-blue-600 font-semibold text-xl px-12 py-6 rounded-lg"
-                data-testid="landing-install-btn"
-              >
-                <Download className="w-6 h-6 mr-2" />
-                Descargar App
-              </Button>
-            )}
-          </div>
+          <Link to={user ? "/dashboard" : "/create"}>
+            <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white font-semibold text-xl px-12 py-6 rounded-lg" data-testid="landing-cta-btn">
+              {t('landing.ctaButton')}
+            </Button>
+          </Link>
         </div>
       </section>
 
