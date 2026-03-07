@@ -236,6 +236,11 @@ const InvoiceCreator = () => {
         setTemplate(getTemplateById(invoiceData.template));
       }
       
+      // Cargar el color guardado en la factura
+      if (invoiceData.templateColor) {
+        setTemplateColor(invoiceData.templateColor);
+      }
+      
       setIsEditMode(true);
       
       toast({
@@ -619,16 +624,22 @@ const InvoiceCreator = () => {
       
       let savedInvoiceId = invoiceId;
       
+      // Include templateColor in the invoice data
+      const invoiceDataToSave = {
+        ...invoice,
+        templateColor: templateColor
+      };
+      
       if (isEditMode && invoiceId) {
         // Actualizar factura existente
-        await invoiceAPI.update(invoiceId, invoice);
+        await invoiceAPI.update(invoiceId, invoiceDataToSave);
         toast({
           title: "¡Factura Actualizada!",
           description: "Los cambios han sido guardados exitosamente.",
         });
       } else {
         // Crear nueva factura
-        const response = await invoiceAPI.create(invoice);
+        const response = await invoiceAPI.create(invoiceDataToSave);
         savedInvoiceId = response.data.id;
         toast({
           title: "¡Factura Guardada!",

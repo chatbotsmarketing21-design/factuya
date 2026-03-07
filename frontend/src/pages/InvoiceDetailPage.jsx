@@ -199,7 +199,8 @@ const InvoiceDetailPage = () => {
                 to: invoice.toAddress || invoice.to,
                 items: invoice.items || []
               },
-              template: getTemplateById(invoice.template || 1)
+              template: getTemplateById(invoice.template || 1),
+              templateColor: invoice.templateColor
             })
           );
           setTimeout(resolveRender, 500);
@@ -533,6 +534,7 @@ const InvoiceDetailPage = () => {
                     items: invoice.items || []
                   }} 
                   template={template}
+                  templateColor={invoice.templateColor}
                 />
               </div>
             </div>

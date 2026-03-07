@@ -41,6 +41,7 @@ class InvoiceBase(BaseModel):
     notes: Optional[str] = None
     terms: Optional[str] = None
     template: int = 1
+    templateColor: Optional[str] = None  # Color hex code for the template
     signature: Optional[str] = None
     signatureRotation: Optional[int] = 0
 
