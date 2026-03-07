@@ -37,8 +37,8 @@ const SignIn = () => {
     
     if (result.success) {
       toast({
-        title: "Sign In Successful",
-        description: "Welcome back to Invoice Home!",
+        title: "Inicio de Sesión Exitoso",
+        description: "¡Bienvenido de nuevo a FactuYa!",
       });
       navigate('/dashboard');
     } else {
