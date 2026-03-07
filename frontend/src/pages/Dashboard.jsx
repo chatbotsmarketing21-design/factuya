@@ -302,6 +302,7 @@ const Dashboard = () => {
         tempContainer.style.top = '0';
         tempContainer.style.width = '794px';
         tempContainer.style.backgroundColor = '#ffffff';
+        tempContainer.className = 'light'; // Force light mode for PDF
         document.body.appendChild(tempContainer);
 
         console.log('generatePdfFromInvoice: Container created');

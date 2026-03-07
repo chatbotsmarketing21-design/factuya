@@ -181,6 +181,7 @@ const InvoiceDetailPage = () => {
         tempContainer.style.top = '0';
         tempContainer.style.width = '794px';
         tempContainer.style.backgroundColor = '#ffffff';
+        tempContainer.className = 'light'; // Force light mode for PDF
         document.body.appendChild(tempContainer);
 
         const { createRoot } = await import('react-dom/client');
