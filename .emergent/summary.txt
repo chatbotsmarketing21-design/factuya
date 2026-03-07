@@ -10,192 +10,187 @@ The user initially requested a clone of the Invoice Home application. The projec
     *   A set of base templates with a dynamic color picker.
     *   Invoice status management, PDF download, sharing, and duplication.
     *   Signature upload and automatic application to documents.
-4.  **Internationalization:** Support for Spanish and English.
-5.  **Authentication:** Support email/password and self-managed Google Social Login.
-6.  **PWA:** The application should be installable on mobile devices and feel like a native app.
-7.  **Deployment:** Deployed on the user's Hostinger VPS.
+4.  **Admin Panel:** A dedicated dashboard for the admin to view user statistics and application revenue.
+5.  **Internationalization:** Support for Spanish and English.
+6.  **Authentication:** Support email/password and self-managed Google Social Login.
+7.  **PWA:** The application should be installable on mobile devices and feel like a native app.
+8.  **Deployment:** Deployed on the user's Hostinger VPS.
+9.  **Payment Gateway:** Integration with Wompi for handling subscriptions.
 
 **User's preferred language**: Español
 
 **what currently exists?**
-A functional full-stack invoicing application named FactuYa!. This session was dedicated to building a new mobile-only Invoice Detail page and making extensive UI/UX improvements based on highly-detailed, iterative user feedback. Major changes include a complete redesign of the detail page's action buttons, implementing a status-toggling feature, fixing PDF generation filenames, and resolving issues with the mobile swipe-to-action feature on the dashboard. The agent also fixed the Google Login flow by guiding the user to update their Google Cloud Console settings and assisted with a complex deployment to the user's Hostinger VPS.
+A fully functional, deployed full-stack invoicing application named FactuYa!. This session saw the completion of numerous bug fixes and the implementation of significant new features based on user requests. Key accomplishments include: fixing a critical menu bug, creating a comprehensive Admin Panel with revenue tracking, implementing a direct-to-email contact form with a verified domain via Resend, fixing Google Login on the production server, and making extensive UI/UX improvements to the home, profile, and auth pages. All changes were successfully deployed to the user's Hostinger VPS.
 
 **Last working item**:
-- **Last item agent was working**: The user reported that when the configuration menu is open, clicking anywhere else on the screen to close it also incorrectly triggers a page reload (showing a loading screen). The user wants the click to *only* close the menu. The agent correctly identified the cause (a link on the logo capturing the click) and proposed a fix using a background overlay to capture outside clicks, but was interrupted before implementing it.
-- **Status**: IN PROGRESS
+- **Last item agent was working**: The user reported that the Contact Support form was failing on the production server () after the latest deployment. The agent correctly diagnosed that the  was missing from the  file on the production VPS. The agent provided the commands to add the key and restart the backend. The user executed them and confirmed that the form was now working correctly.
+- **Status**: USER VERIFICATION PENDING
 - **Agent Testing Done**: N
-- **Which testing method agent to use?**: frontend testing agent
-- **User Testing Done**: N
+- **Which testing method agent to use?**: Manual testing by curl
+- **User Testing Done**: Y
 
 **All Pending/In progress Issue list**:
--   **Issue 1**: Clicking outside the open configuration menu reloads the page (Priority: P0).
--   **Issue 2**: Google Login functionality needs verification in the production environment after deployment (Priority: P2).
--   **Issue 3**: WhatsApp sharing on desktop does not attach the PDF file automatically (Priority: P3).
+- **Issue 1**: Google Login functionality needs final verification from the user in the production environment after recent fixes (Priority: P1).
+- **Issue 2**: WhatsApp sharing on desktop does not attach the PDF file automatically (Priority: P3).
 
 **Issues Detail**:
--   **Issue 1**:
-    -   **Description**: When the configuration dropdown menu is open, if the user clicks anywhere outside of it to close it, the app reloads. This is because the click is being registered by other elements, specifically the logo which links to .
-    -   **Attempted fixes**: The agent identified the root cause. The proposed next step is to add a semi-transparent overlay behind the menu when it's open. This overlay will cover the entire screen and its only job is to capture clicks and close the menu, preventing clicks from reaching elements underneath.
-    -   **Next debug checklist**:
-        1.  In , modify the component to render an overlay  when  is true.
-        2.  The overlay should have a , cover the whole screen (), have a low  (e.g., ) that places it just below the menu (), and can have a subtle background (e.g., ).
-        3.  Add an  handler to the overlay that calls .
-    -   **Why fix this issue and what will be achieved with the fix?**: This will provide a standard, intuitive UX for closing dropdown menus and prevent unexpected page reloads.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: frontend
-    -   **Blocked on other issue**: None.
+- **Issue 1**:
+    - **Description**: The Google Login was failing in production due to missing  and  in the VPS  file.
+    - **Attempted fixes**: The agent guided the user to add the required environment variables to the  file on their Hostinger VPS and restart the backend.
+    - **Next debug checklist**: User needs to perform a final test of the Google Login functionality on  to confirm the fix.
+    - **Why fix this issue and what will be achieved with the fix?**: This is a critical authentication feature for the application.
+    - **Status**: USER VERIFICATION PENDING
+    - **Is recurring issue?**: Y
+    - **Should Test frontend/backend/both after fix?**: frontend
+    - **Blocked on other issue**: None.
 
--   **Issue 2**:
-    -   **Description**: The Google Login was failing due to a . The agent guided the user to add the correct preview and production URLs to their Google Cloud Console.
-    -   **Attempted fixes**: The agent successfully tested the fix in the preview environment.
-    -   **Next debug checklist**: The user needs to confirm that the Google Login works as expected on their production site () after the deployment.
-    -   **Why fix this issue and what will be achieved with the fix?**: To confirm the fix for a key authentication method is working in production.
-    -   **Status**: USER VERIFICATION PENDING
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: frontend
-    -   **Blocked on other issue**: None.
-
--   **Issue 3**:
-    -   **Description**: Sharing an invoice to WhatsApp from a desktop browser sends a text message but not the PDF file.
-    -   **Attempted fixes**: This is a known limitation of WhatsApp Web. No fix was attempted as the user accepted the explanation.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: frontend
-    -   **Blocked on other issue**: None.
+- **Issue 2**:
+    - **Description**: Sharing an invoice to WhatsApp from a desktop browser sends a text message but not the PDF file.
+    - **Attempted fixes**: This is a known limitation of the WhatsApp Web API. No fix was attempted as the user previously accepted the explanation. This is a low-priority issue.
+    - **Status**: NOT STARTED
+    - **Is recurring issue?**: N
+    - **Should Test frontend/backend/both after fix?**: frontend
+    - **Blocked on other issue**: None.
 
 **In progress Task List**:
--   **Task 1**: Implement an overlay to properly handle closing the configuration menu (Priority: P0).
-
-**Task Detail**:
--   **Task 1**:
-    -   **Where to resume**: . Implement the overlay solution as described in Issue 1 of the .
-    -   **What will be achieved with this?**: Corrects the UI behavior to match user expectations for closing a dropdown menu.
-    -   **Status**: IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?**: frontend
-    -   **Blocked on something**: None.
+- None. All tasks from this session are complete.
 
 **Upcoming and Future Tasks**
--   **Upcoming Tasks:**
-    -   **P0: Deploy recent changes to Hostinger:** The user has requested to deploy the latest batch of mobile UI improvements and fixes to their production VPS.
-    -   **P1: Integrate Wompi Payment Gateway:** The user has mentioned this as the next major feature.
-    -   **P1: Continue Mobile Responsiveness Review:** The user may find more pages (e.g., Subscription) that need mobile UI adjustments.
--   **Future Tasks:**
-    -   **P2: Add More Custom Templates.**
-    -   **P2: Client and Product Management:** Add dedicated sections to manage clients and products.
-    -   **P2: Advanced Reporting:** Build a reports page with analytics.
+- **Upcoming Tasks:**
+    - **P0: Integrate Wompi Payment Gateway:** The user has registered their business and is ready to set up a business bank account. The next step is to create a Wompi account and integrate it to handle premium subscriptions.
+    - **P1: Submit App to Google Play Store:** The user has expressed interest in publishing the PWA to the Google Play Store. The agent explained the TWA (Trusted Web Activity) approach.
+- **Future Tasks:**
+    - **P2: Add More Custom Templates.**
+    - **P2: Client and Product Management:** Add dedicated sections to manage clients and products.
+    - **P2: Advanced Reporting:** Expand on the existing admin panel with more detailed reports.
 
 **Completed work in this session**
-- **Mobile Invoice Detail Page**: Created a new, mobile-only page at  to manage individual invoices.
-- **UI/UX Refinements (iterative, based on user feedback)**:
-    - Redesigned action buttons on the detail page from a grid to a list style.
-    - Reordered action buttons multiple times per user request.
-    - Implemented a Marcar como Pagada / Marcar como no pagada toggle button with correct state and color changes.
-    - Fixed PDF download filename to be  (e.g., ).
-    - Added a floating Salir button on the detail page.
-- **Profile Page**: Made the Full Name and Company Name fields automatically convert input to uppercase.
-- **Google Login Fix**: Guided the user to add the correct redirect URIs to their Google Cloud Console and verified the fix in the preview environment.
-- **App Startup Flow**: Implemented a loading screen with the app logo to prevent a flash of the home page before redirecting logged-in users to the dashboard.
-- **Dashboard UI Enhancements**:
-    - Increased font size on statistics cards for better readability.
-    - Removed the  currency symbol from amounts for a cleaner look.
-    - Redesigned the Total de Ingresos icon to be a  in a circle for visual consistency.
-    - Increased the size of the settings (gear) icon in the header.
-    - Improved styling and alignment of the settings dropdown menu items.
-    - Removed the left-swipe action entirely, leaving only the right-swipe to change payment status.
-    - Removed the success notification toast when changing an invoice's status via swipe.
-- **Deployment to Hostinger**: Successfully guided the user through a complex , , and service restart process on their VPS to deploy all changes.
+- **Admin Panel & Balance Page (New Feature)**:
+  - Created a new secure endpoint  and page at  accessible only by .
+  - Implemented stats cards for Users, Premium, Users/Month, Invoices, and Revenue.
+  - Created a new Balance page at  with a detailed yearly/monthly breakdown of revenue from new and renewing subscriptions.
+- **Contact Form (New Feature)**:
+  - Created a Contact Support modal form on the subscription page.
+  - Implemented a backend endpoint  using Resend to send emails directly to .
+  - Guided the user through verifying their  domain on Resend and configuring DNS records in Hostinger.
+  - Fixed the feature in production by adding the  to the VPS  file.
+- **Bug Fixes & Production Hardening**:
+  - **Google Login**: Fixed failure in production by adding  and  to the VPS  file.
+  - **Menu Closing**: Fixed a P0 bug where clicking outside the settings menu reloaded the page.
+  - **Made with Emergent Watermark**: Diagnosed and removed injected scripts from  that caused the watermark to appear in production.
+  - **PDF Dark Mode**: Fixed a bug where PDFs were generated with a dark background when the user was in dark mode.
+- **UI/UX Improvements**:
+  - Removed the toast notification when switching between light/dark modes.
+  - Added Next renewal date to the subscription page.
+  - Moved floating action buttons to the right side of the screen on Dashboard and Invoice Detail pages.
+  - Updated placeholder text on the Profile page to be generic.
+  - Improved text legibility on SignUp/SignIn pages in dark mode.
+  - Refined marketing copy, button layout, and icon styles on the Home page.
+  - Changed Welcome back to Invoice Home toast to ¡Bienvenido de nuevo a FactuYa!.
+- **Deployment**: Guided the user through multiple successful deployments to their Hostinger VPS.
 
 **Earlier issues found/mentioned but not fixed**
--   **Issue 1**: WhatsApp sharing on desktop does not attach the PDF automatically due to platform limitations.
+- **Issue 1**:  warnings persist in the frontend build process, particularly related to missing dependencies in  hooks. This is a code quality issue.
+- **Issue 2**: The production backend process on the user's VPS runs via . Migrating this to a  service would make it more robust.
 
 **Known issue recurrence from previous fork**
--   None.
+- The bug where clicking outside the settings menu reloaded the page was a recurring issue from the previous fork and was successfully resolved in this session.
 
 **Code Architecture**
-*   **Stack**: React frontend, FastAPI backend, MongoDB database.
-*   **Structure**: Standard monorepo with  and  directories.
-*   **Deployment**: User-managed Hostinger VPS.
+- **Stack**: React frontend, FastAPI backend, MongoDB database.
+- **Structure**: Standard monorepo with  and  directories.
+- **New Routes**:
+    - Backend: , , 
+    - Frontend: , 
+- **Deployment**: User-managed Hostinger VPS via  and manual build/restart scripts.
 
 **Key Technical Concepts**
-*   **Conditional Rendering**: Extensive use of media queries in Tailwind CSS and logic in React to create mobile-only components and different layouts for desktop vs. mobile.
-*   **State Management**: Use of  and  for managing UI state like menu visibility, invoice data, and loading states.
-*   **React Hooks**: Heavy reliance on  for data fetching and  for component state.
-*   **Event Handling**: Addressed complex event propagation issues, particularly with swipeable components and outside-click detection for menus.
-*   **Asynchronous Operations**: Refactored PDF generation and sharing logic to handle browser security restrictions related to user gestures ().
-*   **Dynamic UI**: Code was constantly updated to reflect granular user feedback on styling, layout, icons, and text.
+- **Role-Based Access Control (RBAC)**: Implemented a simple RBAC for the admin panel by hardcoding the admin email in the backend endpoint.
+- **Email Service Integration (Resend)**: Integrated Resend for transactional emails, including domain verification (DKIM, MX, SPF) via DNS configuration.
+- **Environment Variable Management**: Diagnosed and fixed multiple production issues by adding missing environment variables (, , ) to the server's  file.
+- **Production Deployment**: Repeatedly guided the user through a multi-step deployment process involving , Unknown command: "install/build"
+
+To see a list of supported npm commands, run:
+  npm help, , and restarting the  process with  and .
 
 **key DB schema**
-- No schema changes were made.
+- No schema changes were made. The admin panel reads from the existing  and  collections.
 
 **changes in tech stack**
-- No new libraries were added.  was used on the production server to resolve dependency conflicts.
+- No changes to the core tech stack.
 
 **All files of reference**
 - **Newly Created:**
-  - : The core new feature of this session.
+  - : Logic for admin statistics and balance data.
+  - : Endpoint for the Resend-powered contact form.
+  - : The main admin dashboard UI.
+  - : The detailed annual revenue balance page.
 - **Significantly Modified:**
-  - : Major changes to swipe actions, statistics UI, and connecting to PDF generation logic.
-  - : Logic for swipe actions was heavily modified (sensitivity, actions, disabled left swipe).
-  - : Modified for settings icon size, menu item styling, and fixing the logo link.
-  - : Added the loading screen and auto-redirect logic for logged-in users.
-  - : Updated to change the PDF filename format.
-  - : Added  logic to input fields.
-  - : Added the new  route.
+  - : Added the contact form modal and logic.
+  - : Registered the new  and  API routers.
+  - : Added the new  and  routes.
+  - : Removed injected Emergent scripts to fix the watermark issue.
+  - : Fixed PDF generation in dark mode.
+  - : Fixed PDF generation in dark mode.
+  - : Updated placeholder text.
+  - : Major UI and text changes.
+  - : Fixed text color in dark mode.
+  -  (on VPS): Added keys for Resend and Google OAuth.
 
 **Areas that need refactoring**:
-*   The production backend process on the user's VPS runs via . Migrating this to a  service would make it more robust.
-*   The frontend codebase has several  warnings related to missing dependencies in  hooks that should be addressed for code quality.
+- The  warnings should be addressed to improve code quality.
+- The  deployment method should be replaced with a  service for better process management and robustness.
 
 **key api endpoints**
-*   No changes to API endpoints. The frontend consumed existing endpoints for fetching and updating invoices.
+- : Sends a support message via the contact form.
+- : Retrieves statistics for the admin panel.
+- : Retrieves yearly revenue data for the balance page.
+- : Handles the Google OAuth callback.
 
 **Critical Info for New Agent**
-*   **You MUST communicate in Español.** The user is a native Spanish speaker.
-*   The user provides extremely detailed, iterative feedback on the mobile UI. Be prepared for many small, specific adjustment requests.
-*   The immediate priority is to fix the bug with the settings menu closing behavior. The user has mentioned it multiple times.
-*   After fixing the menu, the user will likely want to deploy the changes to their Hostinger VPS again. Be prepared to provide clear, simple, step-by-step commands, as the user has difficulty with the terminal.
+- **You MUST communicate in Español.**
+- The user's immediate goal is to integrate the **Wompi** payment gateway. They are in the process of setting up their business bank account to facilitate this.
+- Be prepared to guide the user through technical processes on their Hostinger VPS. The user is non-technical but follows instructions well. The existing set of deployment commands is reliable.
+- The user has two test accounts:  (password: ) and  (password: ). The admin account is . Use these for testing.
 
 **documents and test reports created in this job**
 -  (updated)
-- 
 
 **Last 10 User Messages and any pending HUMAN messages**
-- **10. User:** I want it so that when you open the configuration menu and click anywhere on the screen outside of that menu, it just closes. The action should be to close. (Status: **IN PROGRESS**)
-- **9. User:** Repeats the same request as message 10, indicating its importance. (Status: **IN PROGRESS**)
-- **8. User:** Reports that clicking outside the settings menu closes it but also shows a loading screen. (Status: **Completed/Fixed**)
-- **7. User:** Asks to remove the left-swipe action entirely and only keep the right-swipe for changing payment status. (Status: **Completed**)
-- **6. User:** Didn't like the workaround for sharing (downloading file then opening WhatsApp). Asks for it to work like the detail page. (Status: **Completed**, implemented a new flow where swipe leads to detail page).
-- **5. User:** Reports an error when trying to share from the dashboard swipe action: Could not prepare PDF for sharing. (Status: **Partially Fixed/Workaround Implemented**)
-- **4. User:** Does not want the Estado actualizado (Status updated) notification to appear when changing status via swipe. (Status: **Completed**)
-- **3. User:** Reports that the PDF generation for sharing from the dashboard is still failing. (Status: **Partially Fixed/Workaround Implemented**)
-- **2. User:** Wants the toggle button for Mark as paid to also work in the swipe-to-action on the dashboard. (Status: **Completed**)
-- **1. User:** Reports that the swipe action on the dashboard is too sensitive and often opens the other side when trying to close one. (Status: **Completed**)
+- **10. User:** Im testing the contact support button... its showing an error. (Status: **RESOLVED**)
+- **9. User:** Ive added the API key and restarted. Now its working. (Status: **RESOLVED**)
+- **8. User:** Ive registered my company. What do I do when I have the business bank account to link it to the app?" (Status: **Completed**)
+- **7. User:** Discussion about getting the app on the Google Play Store. (Status: **Completed**)
+- **6. User:** "Lets continue with the Google login on production. (Status: **IN PROGRESS**)
+- **5. User:** User confirms Google Login is working after adding credentials to the VPS  file. (Status: **RESOLVED**)
+- **4. User:** Requests to change placeholder text on the profile page to be more generic. (Status: **RESOLVED**)
+- **3. User:** Reports that text on the sign-up page is not legible in dark mode. (Status: **RESOLVED**)
+- **2. User:** Requests multiple UI changes to the home page (text, button positions, icons). (Status: **RESOLVED**)
+- **1. User:** Reports that generated PDFs are black/dark when using the app on a phone in dark mode. (Status: **RESOLVED**)
 
 **Project Health Check:**
-*   **Broken**:
-    *   The settings menu closing behavior triggers an unwanted page reload.
-*   **Mocked**: None.
-*   **Needs Improvement**:
-    *   WhatsApp sharing on desktop is a known limitation.
-    *   The production deployment process () could be improved with a  service.
-    *   Several  warnings persist in the frontend code.
+- **Broken**: None. All reported issues were fixed.
+- **Mocked**: None.
+- **Needs Improvement**:
+    - The deployment process relies on  instead of a more robust service manager like .
+    - Numerous  warnings exist in the frontend codebase.
 
 **3rd Party Integrations**
-*   **Stripe (Payments):** Integrated (test mode), but slated to be replaced by Wompi.
-*   **Resend (Transactional Emails):** Integrated (test mode).
-*   **Google OAuth 2.0 (Self-Managed):** Fix implemented, pending user verification in production.
-*   **react-swipeable-list (UI):** Used for swipe gestures on the dashboard.
+- **Stripe (Payments):** Integrated (test mode), slated to be replaced by Wompi.
+- **Resend (Transactional Emails):** Fully integrated and configured with a user-verified domain (). Works in production.
+- **Google OAuth 2.0 (Self-Managed):** Fully integrated. Works in production after fixing missing environment variables on the VPS.
+- **react-swipeable-list (UI):** Used for swipe gestures on the dashboard.
 
 **Testing status**
-- **Testing agent used after significant changes**: YES, for the initial implementation of the Invoice Detail Page.
+- **Testing agent used after significant changes**: NO
 - **Troubleshoot agent used after agent stuck in loop**: NO
 - **Test files created**: None.
-- **Known regressions**: The Share functionality via swipe was intermittently buggy and was replaced by a View action that navigates to the detail page, which has a working share button.
+- **Known regressions**: None.
 
 **Credentials to test flow:**
-*   **Email:** 
-*   **Password:** 
+- **Admin User:**  (password chosen by user)
+- **Primary Test User:**  (password: )
+- **Standard Test User:**  (password: )
 
 **What agent forgot to execute**
-- The agent was interrupted while implementing the final fix for the settings menu overlay. The user had to repeat the request, highlighting its priority. The agent acknowledged the need for an overlay but did not get to write the code for it.</analysis>
+- The agent did not address the  warnings that appeared during the  process. While not critical, fixing them is good practice for code quality.</analysis>
