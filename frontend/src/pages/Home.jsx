@@ -165,11 +165,25 @@ const Home = () => {
             <h1 className="text-5xl font-bold text-gray-900 mb-6" data-testid="landing-hero-title">
               {t('landing.heroTitle')}
             </h1>
-            <Link to={user ? "/dashboard" : "/create"}>
-              <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white text-xl px-12 py-6 rounded-lg mt-8" data-testid="landing-hero-cta">
-                {t('landing.heroButton')}
-              </Button>
-            </Link>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+              <Link to={user ? "/dashboard" : "/create"}>
+                <Button size="lg" className="bg-lime-500 hover:bg-lime-600 text-white text-xl px-12 py-6 rounded-lg" data-testid="landing-hero-cta">
+                  {t('landing.heroButton')}
+                </Button>
+              </Link>
+              {/* Botón de descarga en el hero */}
+              {showInstallButton && (
+                <Button 
+                  size="lg" 
+                  onClick={handleInstallClick}
+                  className="bg-white hover:bg-gray-100 text-blue-600 border-2 border-blue-600 font-semibold text-xl px-12 py-6 rounded-lg"
+                  data-testid="landing-hero-install-btn"
+                >
+                  <Download className="w-6 h-6 mr-2" />
+                  Descargar App
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Hero Image */}
