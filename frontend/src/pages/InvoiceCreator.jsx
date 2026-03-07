@@ -236,8 +236,12 @@ const InvoiceCreator = () => {
         setTemplate(getTemplateById(invoiceData.template));
       }
       
-      // Cargar el color guardado en la factura
-      if (invoiceData.templateColor) {
+      // Cargar el color: prioridad al color de URL (cuando viene de plantillas) sobre el guardado
+      if (colorFromUrl) {
+        // El usuario viene de la página de plantillas con un color específico
+        setTemplateColor(colorFromUrl);
+      } else if (invoiceData.templateColor) {
+        // Usar el color guardado en la factura
         setTemplateColor(invoiceData.templateColor);
       }
       
