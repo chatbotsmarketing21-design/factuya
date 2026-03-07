@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FileText, Send, CreditCard, CheckCircle, Download, Loader2, ClipboardList } from 'lucide-react';
+import { FileText, Send, CreditCard, CheckCircle, Download, Loader2, ClipboardList, Rocket } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useAuth } from '../context/AuthContext';
 
@@ -86,7 +86,7 @@ const Home = () => {
       description: t('landing.feature1Desc')
     },
     {
-      icon: <Send className="w-12 h-12 text-blue-600" />,
+      icon: <Rocket className="w-12 h-12 text-blue-600" />,
       title: t('landing.feature2Title'),
       description: t('landing.feature2Desc')
     },
