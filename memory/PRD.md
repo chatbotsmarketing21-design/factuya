@@ -9,6 +9,44 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 
+## Session: March 16, 2026
+
+### Changes Made This Session:
+
+1. **Feature: Abono (Partial Payment) System** ✅ (TESTED)
+   - Added ability to record partial payments against invoices
+   - New status "Abono" (blue badge) for invoices with partial payments
+   - Modal shows: Client name, invoice number, total, amount paid, and balance
+   - Auto-status transitions: pending → partial → paid
+   - Quotations cannot have payments (validation added)
+
+2. **Backend Endpoints Added:**
+   - `POST /api/invoices/{id}/payments` - Register a new payment
+   - `GET /api/invoices/{id}/payments` - Get payment history
+   - `DELETE /api/invoices/{id}/payments/{paymentId}` - Delete a payment
+   
+3. **Frontend Updates:**
+   - Dashboard dropdown now includes "Agregar Abono" option
+   - Payment modal with amount and optional note fields
+   - Invoice list shows totalPaid and balance for each invoice
+   - Stats update automatically after payment registration
+
+4. **Backend Model Updates:**
+   - `InvoiceListItem` now includes: totalPaid, balance, documentType
+   - `PaymentRecord` model for storing individual payments
+   - `AddPaymentRequest` model for payment API validation
+
+5. **Test Suite Created:**
+   - `/app/backend/tests/test_abono_payments.py` - 12 comprehensive tests
+   - Tests: payment addition, status transitions, payment history, deletion, edge cases
+
+### Testing Results: ✅ ALL PASSED
+- Backend: 100% (12/12 tests)
+- Frontend: 100% 
+- Status transitions verified: pending → partial → paid
+
+---
+
 ## Session: March 3, 2026 (Continued)
 
 ### Changes Made This Session:
@@ -188,10 +226,11 @@ All changes deployed to factuya.site VPS
 - [x] **PWA Support** - Install as app on mobile devices
 - [x] **Mobile Responsive** - Dashboard and all pages optimized for mobile
 - [x] **Invoice Detail Page** - Mobile-only hub for invoice actions
+- [x] **Abono (Partial Payments)** - Record partial payments, track balance, auto-status transitions
 
 ### 3rd Party Integrations
-- [x] Stripe (payments - test mode, to be replaced by Wompi)
-- [x] Resend (transactional emails - test mode)
+- [x] Wompi (payments - production mode, replaced Stripe)
+- [x] Resend (transactional emails - configured with factuya.site domain)
 - [x] Google OAuth 2.0 (self-managed)
 
 ---
@@ -202,17 +241,20 @@ All changes deployed to factuya.site VPS
 - [ ] **Google OAuth on Production** - Need to verify redirect URIs are configured correctly
 
 ## Upcoming Tasks (P1)
-- [ ] **Integrate Wompi Payment Gateway** - Replace Stripe for Colombian market (waiting for company bank account)
-- [ ] **Configure Production Emailing** - Resend for VPS
+- [ ] **DUNS Number for Google Play Store** - User needs guidance for registration
+- [ ] **Submit to Google Play Store** - As Trusted Web Activity (TWA) after DUNS
 
 ## Future Tasks (P2)
 - [ ] Add more custom invoice templates
 - [ ] Client and Product management sections
 - [ ] Advanced reporting with charts
+- [ ] Payment history view in Invoice Detail page
 
 ## Backlog (P3)
 - [ ] Mobile application (native)
 - [ ] Migrate backend to systemd service (currently using nohup)
+- [ ] Fix eslint warnings in frontend build
+- [ ] WhatsApp PDF sharing on desktop (API limitation)
 
 ---
 
@@ -220,17 +262,21 @@ All changes deployed to factuya.site VPS
 
 ### Database Schema
 - **users**: `{id, email, hashed_password, name, companyInfo: {logo, nit, bank, bankAccount, defaultNotes, defaultTerms, defaultTemplate, defaultColor, signature, signatureRotation}}`
-- **invoices**: `{id, userId, number, from, to, items, documentType, status, total, signature, signatureRotation, template, createdAt}`
+- **invoices**: `{id, userId, number, from, to, items, documentType, status, total, signature, signatureRotation, template, payments: [], totalPaid, balance, createdAt}`
+- **payments**: Embedded in invoices as `{id, amount, date, note, createdAt}`
 
 ### Key Files
 - `/app/frontend/src/pages/InvoiceCreator.jsx` - Main invoice creation page
 - `/app/frontend/src/pages/InvoiceDetailPage.jsx` - Mobile invoice detail page
+- `/app/frontend/src/pages/Dashboard.jsx` - Invoice list with abono modal
 - `/app/frontend/src/pages/Templates.jsx` - Template selection with color picker
 - `/app/frontend/src/components/SwipeableInvoiceCard.jsx` - Mobile invoice cards with swipe
 - `/app/frontend/src/mock/invoiceData.js` - Template and color definitions
 - `/app/frontend/src/locales/es.json` & `en.json` - Translations
 - `/app/backend/routes/profile.py` - Profile/signature endpoints
-- `/app/backend/routes/invoices.py` - Invoice CRUD endpoints
+- `/app/backend/routes/invoices.py` - Invoice CRUD + payment endpoints
+- `/app/backend/routes/wompi.py` - Wompi payment gateway integration
+- `/app/backend/tests/test_abono_payments.py` - Payment feature tests
 
 ### Test Credentials
 - **Test User**: test@test.com / Test123!
