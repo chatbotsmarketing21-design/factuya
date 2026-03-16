@@ -1152,86 +1152,16 @@ const InvoiceCreator = () => {
               </div>
               {sectionsOpen.to && (
               <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                  <div className="sm:col-span-2">
-                    <Label htmlFor="toName" className="dark:text-gray-300 text-sm">{t('invoice.clientName')} *</Label>
-                    <Input
-                      id="toName"
-                      value={invoice.to.name}
-                      onChange={(e) => updateTo('name', e.target.value.toUpperCase())}
-                      required
-                      className="dark:bg-secondary dark:border-border dark:text-white uppercase"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="toNit" className="dark:text-gray-300 text-sm">{t('invoice.nitCedula')}</Label>
-                    <Input
-                      id="toNit"
-                      value={invoice.to.nit}
-                      onChange={(e) => updateTo('nit', e.target.value)}
-                      placeholder="123.456.789"
-                      className="dark:bg-secondary dark:border-border dark:text-white"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div>
-                    <Label htmlFor="toEmail" className="dark:text-gray-300 text-sm">{t('invoice.email')}</Label>
-                    <Input
-                      id="toEmail"
-                      type="email"
-                      value={invoice.to.email}
-                      onChange={(e) => updateTo('email', e.target.value)}
-                      className="dark:bg-secondary dark:border-border dark:text-white"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="toPhone" className="dark:text-gray-300 text-sm">{t('invoice.phone')}</Label>
-                    <Input
-                      id="toPhone"
-                      value={invoice.to.phone}
-                      onChange={(e) => updateTo('phone', e.target.value)}
-                      className="dark:bg-secondary dark:border-border dark:text-white"
-                    />
-                  </div>
-                </div>
                 <div>
-                  <Label htmlFor="toAddress" className="dark:text-gray-300 text-sm">{t('invoice.address')}</Label>
-                  <Input
-                    id="toAddress"
-                    value={invoice.to.address}
-                    onChange={(e) => updateTo('address', e.target.value)}
-                    className="dark:bg-secondary dark:border-border dark:text-white"
+                  <Label htmlFor="toName" className="dark:text-gray-300 text-sm">{t('invoice.clientInfo')}</Label>
+                  <Textarea
+                    id="toName"
+                    value={invoice.to.name}
+                    onChange={(e) => updateTo('name', e.target.value.toUpperCase())}
+                    placeholder="Nombre del cliente, NIT, dirección, teléfono..."
+                    className="dark:bg-secondary dark:border-border dark:text-white uppercase min-h-[100px]"
+                    rows={4}
                   />
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
-                  <div className="col-span-2 sm:col-span-1">
-                    <Label htmlFor="toCity" className="dark:text-gray-300 text-sm">{t('invoice.city')}</Label>
-                    <Input
-                      id="toCity"
-                      value={invoice.to.city}
-                      onChange={(e) => updateTo('city', e.target.value)}
-                      className="dark:bg-secondary dark:border-border dark:text-white"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="toState" className="dark:text-gray-300 text-sm">{t('invoice.state')}</Label>
-                    <Input
-                      id="toState"
-                      value={invoice.to.state}
-                      onChange={(e) => updateTo('state', e.target.value)}
-                      className="dark:bg-secondary dark:border-border dark:text-white"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="toZip" className="dark:text-gray-300 text-sm">{t('invoice.zip')}</Label>
-                    <Input
-                      id="toZip"
-                      value={invoice.to.zip}
-                      onChange={(e) => updateTo('zip', e.target.value)}
-                      className="dark:bg-secondary dark:border-border dark:text-white"
-                    />
-                  </div>
                 </div>
               </div>
               )}
