@@ -14,11 +14,17 @@ const SwipeableInvoiceCard = ({
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isRevealed, setIsRevealed] = useState(false);
 
+  // Las cotizaciones no pueden marcarse como pagadas
+  const isQuotation = invoice.documentType === 'quotation';
+
   const SWIPE_THRESHOLD = 80;
   const MAX_SWIPE = 90;
 
   const handlers = useSwipeable({
     onSwiping: (e) => {
+      // No permitir swipe en cotizaciones
+      if (isQuotation) return;
+      
       // Only allow horizontal swipe if it's clearly horizontal (not vertical scroll)
       if (Math.abs(e.deltaX) > Math.abs(e.deltaY) * 2) {
         if (isRevealed) {
@@ -42,6 +48,9 @@ const SwipeableInvoiceCard = ({
       }
     },
     onSwipedRight: (e) => {
+      // No permitir swipe en cotizaciones
+      if (isQuotation) return;
+      
       // Only open if swipe is strong enough
       if (!isRevealed && Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.5 && Math.abs(e.deltaX) > SWIPE_THRESHOLD) {
         setIsRevealed(true);
@@ -52,7 +61,7 @@ const SwipeableInvoiceCard = ({
       }
     },
     onTap: () => {
-      if (isRevealed) {
+      if (isRevealed && !isQuotation) {
         // Execute paid action when tapped while revealed
         handleActionClick('paid');
       } else {

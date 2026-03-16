@@ -807,10 +807,13 @@ const Dashboard = () => {
                                     <Clock className="w-4 h-4 mr-2 text-yellow-600" />
                                     {t('status.pending')}
                                   </DropdownMenuItem>
-                                  <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'paid')}>
-                                    <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
-                                    {t('status.paid')}
-                                  </DropdownMenuItem>
+                                  {/* No mostrar opción de pagado para cotizaciones */}
+                                  {invoice.documentType !== 'quotation' && (
+                                    <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'paid')}>
+                                      <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
+                                      {t('status.paid')}
+                                    </DropdownMenuItem>
+                                  )}
                                   <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'overdue')}>
                                     <XCircle className="w-4 h-4 mr-2 text-red-600" />
                                     {t('status.overdue')}
