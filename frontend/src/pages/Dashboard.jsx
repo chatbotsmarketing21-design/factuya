@@ -1036,7 +1036,7 @@ const Dashboard = () => {
 
       {/* Modal de Abono */}
       <Dialog open={paymentDialogOpen} onOpenChange={setPaymentDialogOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md top-[30%] sm:top-[50%] translate-y-[-30%] sm:translate-y-[-50%]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <DollarSign className="w-5 h-5 text-blue-600" />
