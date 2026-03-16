@@ -373,11 +373,12 @@ const SubscriptionPanel = () => {
                   <CreditCard className="w-4 h-4 mr-2" />
                   {t('subscription.subscribeNow')}
                 </Button>
-                {/* Métodos de pago */}
-                <div className="flex items-center justify-center gap-2 mt-3">
-                  <img src="https://cdn-icons-png.flaticon.com/32/349/349221.png" alt="Visa" className="h-6 opacity-70" />
-                  <img src="https://cdn-icons-png.flaticon.com/32/349/349228.png" alt="Mastercard" className="h-6 opacity-70" />
-                  <img src="https://cdn-icons-png.flaticon.com/32/13426/13426485.png" alt="PSE" className="h-6 opacity-70" />
+                {/* Métodos de pago Wompi */}
+                <div className="flex items-center justify-center gap-3 mt-3">
+                  <img src="https://cdn-icons-png.flaticon.com/24/349/349221.png" alt="Visa" className="h-5 opacity-60" />
+                  <img src="https://cdn-icons-png.flaticon.com/24/349/349228.png" alt="Mastercard" className="h-5 opacity-60" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/PSE_logo.svg/32px-PSE_logo.svg.png" alt="PSE" className="h-5 opacity-60" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Nequi-logo.svg/32px-Nequi-logo.svg.png" alt="Nequi" className="h-5 opacity-60" />
                 </div>
               </div>
             </div>
