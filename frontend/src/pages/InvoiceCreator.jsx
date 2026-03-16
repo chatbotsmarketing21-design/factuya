@@ -438,6 +438,15 @@ const InvoiceCreator = () => {
       amount: 0
     };
     setInvoice(prev => ({ ...prev, items: [...prev.items, newItem] }));
+    
+    // Enfocar el campo de descripción del nuevo ítem después de renderizar
+    setTimeout(() => {
+      const newIndex = invoice.items.length; // El índice del nuevo ítem
+      const newDescriptionField = document.getElementById(`item-description-${newIndex}`);
+      if (newDescriptionField) {
+        newDescriptionField.focus();
+      }
+    }, 100);
   };
 
   const removeItem = (index) => {
@@ -1195,6 +1204,7 @@ const InvoiceCreator = () => {
                       <div>
                         <Label className="dark:text-gray-300 text-sm">{t('invoice.description')} *</Label>
                         <Input
+                          id={`item-description-${index}`}
                           value={item.description}
                           onChange={(e) => updateItem(index, 'description', e.target.value)}
                           placeholder={t('invoice.description')}
