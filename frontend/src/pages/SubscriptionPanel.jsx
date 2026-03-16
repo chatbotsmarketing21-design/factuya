@@ -373,9 +373,12 @@ const SubscriptionPanel = () => {
                   <CreditCard className="w-4 h-4 mr-2" />
                   {t('subscription.subscribeNow')}
                 </Button>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-                  {t('subscription.cancelAnytime')}
-                </p>
+                {/* Métodos de pago */}
+                <div className="flex items-center justify-center gap-2 mt-3">
+                  <img src="https://cdn-icons-png.flaticon.com/32/349/349221.png" alt="Visa" className="h-6 opacity-70" />
+                  <img src="https://cdn-icons-png.flaticon.com/32/349/349228.png" alt="Mastercard" className="h-6 opacity-70" />
+                  <img src="https://cdn-icons-png.flaticon.com/32/13426/13426485.png" alt="PSE" className="h-6 opacity-70" />
+                </div>
               </div>
             </div>
           </Card>
