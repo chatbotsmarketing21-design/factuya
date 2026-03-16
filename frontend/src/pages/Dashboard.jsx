@@ -520,11 +520,31 @@ const Dashboard = () => {
     setPaymentDialogOpen(true);
   };
 
+  // Formatear número con puntos de miles
+  const formatNumberWithDots = (value) => {
+    // Remover todo excepto números
+    const numbers = value.replace(/\D/g, '');
+    // Formatear con puntos de miles
+    return numbers.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  };
+
+  // Manejar cambio en el input de monto
+  const handlePaymentAmountChange = (e) => {
+    const rawValue = e.target.value.replace(/\./g, ''); // Quitar puntos existentes
+    const formatted = formatNumberWithDots(rawValue);
+    setPaymentAmount(formatted);
+  };
+
+  // Obtener el valor numérico sin formato
+  const getNumericAmount = () => {
+    return parseFloat(paymentAmount.replace(/\./g, '')) || 0;
+  };
+
   // Función para agregar un abono
   const handleAddPayment = async () => {
     if (!selectedInvoiceForPayment || !paymentAmount) return;
     
-    const amount = parseFloat(paymentAmount);
+    const amount = getNumericAmount();
     if (isNaN(amount) || amount <= 0) {
       toast({
         title: "Error",
@@ -543,7 +563,7 @@ const Dashboard = () => {
       
       toast({
         title: t('payments.paymentAdded'),
-        description: `Abono de $${amount.toLocaleString()} registrado`,
+        description: `Abono de $${amount.toLocaleString('es-CO')} registrado`,
       });
       
       setPaymentDialogOpen(false);
@@ -1046,13 +1066,12 @@ const Dashboard = () => {
               <Label htmlFor="paymentAmount">{t('payments.amount')} *</Label>
               <Input
                 id="paymentAmount"
-                type="number"
+                type="text"
+                inputMode="numeric"
                 value={paymentAmount}
-                onChange={(e) => setPaymentAmount(e.target.value)}
+                onChange={handlePaymentAmountChange}
                 placeholder={t('payments.enterAmount')}
                 className="mt-1"
-                min="0"
-                step="1000"
               />
             </div>
             <div>
