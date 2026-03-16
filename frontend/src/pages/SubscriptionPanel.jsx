@@ -375,10 +375,10 @@ const SubscriptionPanel = () => {
                 </Button>
                 {/* Métodos de pago Wompi */}
                 <div className="flex items-center justify-center gap-3 mt-3">
-                  <img src="https://cdn-icons-png.flaticon.com/24/349/349221.png" alt="Visa" className="h-5 opacity-60" />
-                  <img src="https://cdn-icons-png.flaticon.com/24/349/349228.png" alt="Mastercard" className="h-5 opacity-60" />
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/PSE_logo.svg/32px-PSE_logo.svg.png" alt="PSE" className="h-5 opacity-60" />
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Nequi-logo.svg/32px-Nequi-logo.svg.png" alt="Nequi" className="h-5 opacity-60" />
+                  <img src="https://cdn-icons-png.flaticon.com/24/349/349221.png" alt="Visa" className="h-5 opacity-70" />
+                  <img src="https://cdn-icons-png.flaticon.com/24/349/349228.png" alt="Mastercard" className="h-5 opacity-70" />
+                  <span className="text-xs font-bold text-blue-600 opacity-70">PSE</span>
+                  <span className="text-xs font-bold text-pink-500 opacity-70">Nequi</span>
                 </div>
               </div>
             </div>
