@@ -1026,7 +1026,7 @@ const Dashboard = () => {
               <div>
                 {selectedInvoiceForPayment && (
                   <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                    <p className="font-medium">{selectedInvoiceForPayment.clientName}</p>
+                    <p className="font-medium">{selectedInvoiceForPayment.clientName?.split('\n')[0]}</p>
                     <p className="text-sm text-gray-500">
                       {selectedInvoiceForPayment.number} - Total: ${selectedInvoiceForPayment.total?.toLocaleString()}
                     </p>

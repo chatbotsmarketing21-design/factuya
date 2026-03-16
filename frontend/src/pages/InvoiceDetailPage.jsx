@@ -661,7 +661,7 @@ const InvoiceDetailPage = () => {
             </DialogTitle>
             <DialogDescription asChild>
               <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                <p className="font-medium">{invoice?.to?.name || invoice?.toAddress?.name}</p>
+                <p className="font-medium">{invoice?.to?.name?.split('\n')[0] || invoice?.toAddress?.name?.split('\n')[0]}</p>
                 <p className="text-sm text-gray-500">
                   {invoice?.number} - Total: ${invoice?.total?.toLocaleString()}
                 </p>
