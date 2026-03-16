@@ -26,8 +26,20 @@ import {
   Trash2,
   MessageCircle,
   Mail,
-  Loader2
+  Loader2,
+  DollarSign
 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Textarea } from '../components/ui/textarea';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -41,6 +53,10 @@ const InvoiceDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
+  const [paymentAmount, setPaymentAmount] = useState('');
+  const [paymentNote, setPaymentNote] = useState('');
+  const [addingPayment, setAddingPayment] = useState(false);
   const pdfPreviewRef = useRef(null);
 
   useEffect(() => {
@@ -69,6 +85,8 @@ const InvoiceDetailPage = () => {
     switch (status) {
       case 'paid':
         return 'bg-green-500';
+      case 'partial':
+        return 'bg-blue-500';
       case 'pending':
         return 'bg-yellow-500';
       case 'overdue':
@@ -82,6 +100,8 @@ const InvoiceDetailPage = () => {
     switch (status) {
       case 'paid':
         return t('status.paid');
+      case 'partial':
+        return t('status.partial');
       case 'pending':
         return t('status.pending');
       case 'overdue':
@@ -358,6 +378,53 @@ const InvoiceDetailPage = () => {
     });
   };
 
+  // Función para abrir el modal de abono
+  const openPaymentDialog = () => {
+    setPaymentAmount('');
+    setPaymentNote('');
+    setPaymentDialogOpen(true);
+  };
+
+  // Función para agregar un abono
+  const handleAddPayment = async () => {
+    if (!paymentAmount) return;
+    
+    const amount = parseFloat(paymentAmount);
+    if (isNaN(amount) || amount <= 0) {
+      toast({
+        title: "Error",
+        description: "Ingresa un monto válido",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setAddingPayment(true);
+    try {
+      await invoiceAPI.addPayment(id, {
+        amount: amount,
+        note: paymentNote || null
+      });
+      
+      toast({
+        title: t('payments.paymentAdded'),
+        description: `Abono de $${amount.toLocaleString()} registrado`,
+      });
+      
+      setPaymentDialogOpen(false);
+      loadInvoice(); // Recargar datos de la factura
+    } catch (error) {
+      console.error('Error adding payment:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo registrar el abono",
+        variant: "destructive"
+      });
+    } finally {
+      setAddingPayment(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-background">
@@ -457,7 +524,24 @@ const InvoiceDetailPage = () => {
             <span className="ml-4 text-gray-900 dark:text-white font-medium">Copiar Factura</span>
           </button>
 
-          {/* 5. Toggle Paid Status - Show for all invoices except quotations */}
+          {/* 5. Agregar Abono - Solo para facturas (no cotizaciones) */}
+          {!invoice.number?.startsWith('COT') && (
+            <button 
+              className="w-full flex items-center px-4 py-4 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors border-b border-gray-100 dark:border-gray-700"
+              onClick={openPaymentDialog}
+              data-testid="add-payment-button"
+            >
+              <DollarSign className="w-5 h-5 text-blue-600" />
+              <span className="ml-4 text-blue-600 font-medium">{t('payments.addPayment')}</span>
+              {invoice.totalPaid > 0 && (
+                <span className="ml-auto text-sm text-blue-500">
+                  Saldo: ${(invoice.total - invoice.totalPaid)?.toLocaleString()}
+                </span>
+              )}
+            </button>
+          )}
+
+          {/* 6. Toggle Paid Status - Show for all invoices except quotations */}
           {!invoice.number?.startsWith('COT') && (
             <button 
               className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
@@ -471,14 +555,14 @@ const InvoiceDetailPage = () => {
                 </>
               ) : (
                 <>
-                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
+                  <CheckCircle className="w-5 h-5 text-green-600" />
                   <span className="ml-4 text-gray-900 dark:text-white font-medium">Marcar como Pagada</span>
                 </>
               )}
             </button>
           )}
 
-          {/* 6. Correo */}
+          {/* 7. Correo */}
           <button 
             className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-100 dark:border-gray-700"
             onClick={handleShareEmail}
@@ -488,7 +572,7 @@ const InvoiceDetailPage = () => {
             <span className="ml-4 text-gray-900 dark:text-white font-medium">Correo</span>
           </button>
 
-          {/* 7. WhatsApp */}
+          {/* 8. WhatsApp */}
           <button 
             className="w-full flex items-center px-4 py-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             onClick={handleShareWhatsApp}
@@ -566,6 +650,80 @@ const InvoiceDetailPage = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Modal de Abono */}
+      <Dialog open={paymentDialogOpen} onOpenChange={setPaymentDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <DollarSign className="w-5 h-5 text-blue-600" />
+              {t('payments.addPayment')}
+            </DialogTitle>
+            <DialogDescription asChild>
+              <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <p className="font-medium">{invoice?.to?.name || invoice?.toAddress?.name}</p>
+                <p className="text-sm text-gray-500">
+                  {invoice?.number} - Total: ${invoice?.total?.toLocaleString()}
+                </p>
+                {invoice?.totalPaid > 0 && (
+                  <p className="text-sm text-blue-600 mt-1">
+                    {t('payments.totalPaid')}: ${invoice?.totalPaid?.toLocaleString()} | 
+                    {t('payments.balance')}: ${(invoice?.total - invoice?.totalPaid)?.toLocaleString()}
+                  </p>
+                )}
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="paymentAmount">{t('payments.amount')} *</Label>
+              <Input
+                id="paymentAmount"
+                type="number"
+                value={paymentAmount}
+                onChange={(e) => setPaymentAmount(e.target.value)}
+                placeholder={t('payments.enterAmount')}
+                className="mt-1"
+                min="0"
+                step="1000"
+              />
+            </div>
+            <div>
+              <Label htmlFor="paymentNote">{t('payments.note')} ({t('payments.optional')})</Label>
+              <Textarea
+                id="paymentNote"
+                value={paymentNote}
+                onChange={(e) => setPaymentNote(e.target.value)}
+                placeholder="Ej: Transferencia Bancolombia, Efectivo..."
+                className="mt-1"
+                rows={2}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPaymentDialogOpen(false)}>
+              Cancelar
+            </Button>
+            <Button 
+              onClick={handleAddPayment} 
+              disabled={addingPayment || !paymentAmount}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {addingPayment ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Guardando...
+                </>
+              ) : (
+                <>
+                  <DollarSign className="w-4 h-4 mr-2" />
+                  Registrar Abono
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Floating Exit Button - Same style as Save button in InvoiceCreator */}
       <div className="fixed bottom-4 right-4 z-[100]">

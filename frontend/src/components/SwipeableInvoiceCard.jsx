@@ -98,6 +98,8 @@ const SwipeableInvoiceCard = ({
     switch (status) {
       case 'paid':
         return 'bg-green-500';
+      case 'partial':
+        return 'bg-blue-500';
       case 'pending':
         return 'bg-yellow-500';
       case 'overdue':
