@@ -15,6 +15,7 @@ from routes.password_reset import router as password_reset_router
 from routes.google_auth import router as google_auth_router
 from routes.admin import router as admin_router
 from routes.contact import router as contact_router
+from routes.wompi import router as wompi_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -44,6 +45,7 @@ api_router.include_router(password_reset_router)
 api_router.include_router(google_auth_router)
 api_router.include_router(admin_router)
 api_router.include_router(contact_router)
+api_router.include_router(wompi_router)
 
 # Include the router in the main app
 app.include_router(api_router)

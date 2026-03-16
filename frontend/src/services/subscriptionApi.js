@@ -7,6 +7,14 @@ export const subscriptionAPI = {
   }),
   getCheckoutStatus: (sessionId) => api.get(`/subscription/checkout-status/${sessionId}`),
   cancelSubscription: () => api.post('/subscription/cancel'),
+  
+  // Wompi integration
+  getWompiConfig: () => api.get('/wompi/config'),
+  createWompiCheckout: () => api.post('/wompi/create-checkout', {
+    originUrl: window.location.origin
+  }),
+  verifyWompiPayment: (reference) => api.get(`/wompi/verify/${reference}`),
+  getWompiTransactions: () => api.get('/wompi/transactions'),
 };
 
 export default subscriptionAPI;

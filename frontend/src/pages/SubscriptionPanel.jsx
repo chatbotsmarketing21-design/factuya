@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { subscriptionAPI } from '../services/subscriptionApi';
 import { useAuth } from '../context/AuthContext';
@@ -38,12 +38,15 @@ import {
   Loader2,
   AlertTriangle,
   Sparkles,
-  Send
+  Send,
+  CheckCircle,
+  XCircle
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
 const SubscriptionPanel = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -58,6 +61,8 @@ const SubscriptionPanel = () => {
     message: ''
   });
   const [sendingMessage, setSendingMessage] = useState(false);
+  const [verifyingPayment, setVerifyingPayment] = useState(false);
+  const [paymentResult, setPaymentResult] = useState(null);
 
   useEffect(() => {
     // Pre-fill email if user is logged in
@@ -111,7 +116,49 @@ const SubscriptionPanel = () => {
 
   useEffect(() => {
     loadSubscriptionStatus();
-  }, []);
+    
+    // Check if returning from Wompi payment
+    const payment = searchParams.get('payment');
+    const reference = searchParams.get('reference');
+    
+    if (payment === 'wompi' && reference) {
+      verifyWompiPayment(reference);
+    }
+  }, [searchParams]);
+
+  const verifyWompiPayment = async (reference) => {
+    setVerifyingPayment(true);
+    try {
+      const response = await subscriptionAPI.verifyWompiPayment(reference);
+      setPaymentResult(response.data);
+      
+      if (response.data.approved) {
+        toast({
+          title: "¡Pago exitoso!",
+          description: "Tu suscripción Premium ha sido activada.",
+        });
+        // Reload subscription status
+        loadSubscriptionStatus();
+      } else {
+        toast({
+          title: "Pago no completado",
+          description: response.data.message || "El pago no fue aprobado. Intenta de nuevo.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Error verifying payment:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo verificar el pago. Contacta a soporte.",
+        variant: "destructive"
+      });
+    } finally {
+      setVerifyingPayment(false);
+      // Clean URL params
+      window.history.replaceState({}, '', '/subscription');
+    }
+  };
 
   const loadSubscriptionStatus = async () => {
     try {
@@ -132,12 +179,13 @@ const SubscriptionPanel = () => {
 
   const handleUpgrade = async () => {
     try {
-      const response = await subscriptionAPI.createCheckoutSession();
-      if (response.data.url) {
-        window.location.href = response.data.url;
+      // Use Wompi instead of Stripe
+      const response = await subscriptionAPI.createWompiCheckout();
+      if (response.data.checkoutUrl) {
+        window.location.href = response.data.checkoutUrl;
       }
     } catch (error) {
-      console.error('Error creating checkout:', error);
+      console.error('Error creating Wompi checkout:', error);
       toast({
         title: t('messages.error'),
         description: t('subscription.errorCheckout'),
@@ -168,10 +216,13 @@ const SubscriptionPanel = () => {
     }
   };
 
-  if (loading) {
+  if (loading || verifyingPayment) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-background">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-background">
         <Loader2 className="w-8 h-8 animate-spin text-lime-500" />
+        {verifyingPayment && (
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Verificando tu pago...</p>
+        )}
       </div>
     );
   }
@@ -206,6 +257,29 @@ const SubscriptionPanel = () => {
       </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Payment Result Banner */}
+        {paymentResult && (
+          <Card className={`p-4 mb-6 ${paymentResult.approved ? 'bg-green-50 dark:bg-green-900/20 border-green-500' : 'bg-red-50 dark:bg-red-900/20 border-red-500'}`}>
+            <div className="flex items-center gap-3">
+              {paymentResult.approved ? (
+                <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+              ) : (
+                <XCircle className="w-6 h-6 text-red-600 dark:text-red-400" />
+              )}
+              <div>
+                <h3 className={`font-semibold ${paymentResult.approved ? 'text-green-800 dark:text-green-200' : 'text-red-800 dark:text-red-200'}`}>
+                  {paymentResult.approved ? '¡Pago exitoso!' : 'Pago no completado'}
+                </h3>
+                <p className={`text-sm ${paymentResult.approved ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                  {paymentResult.approved 
+                    ? 'Tu suscripción Premium está activa. ¡Disfruta de facturas ilimitadas!' 
+                    : (paymentResult.message || 'El pago no fue aprobado. Intenta de nuevo.')}
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
+
         {/* Current Plan Card */}
         <Card className="p-6 mb-6 dark:bg-card">
           <div className="flex items-start justify-between">
@@ -289,8 +363,9 @@ const SubscriptionPanel = () => {
               </div>
               
               <div className="flex flex-col justify-center items-center bg-white dark:bg-gray-800 rounded-lg p-6">
-                <p className="text-4xl font-bold text-gray-900 dark:text-white">$5</p>
-                <p className="text-gray-500 dark:text-gray-400 mb-4">/{t('subscription.month')}</p>
+                <p className="text-4xl font-bold text-gray-900 dark:text-white">$20.000</p>
+                <p className="text-gray-500 dark:text-gray-400 mb-1">COP/{t('subscription.month')}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">(~$5 USD)</p>
                 <Button 
                   onClick={handleUpgrade}
                   className="w-full bg-lime-500 hover:bg-lime-600 text-white"
@@ -300,7 +375,7 @@ const SubscriptionPanel = () => {
                   {t('subscription.subscribeNow')}
                 </Button>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-                  {t('subscription.cancelAnytime')}
+                  Paga con tarjeta, PSE o Nequi
                 </p>
               </div>
             </div>
