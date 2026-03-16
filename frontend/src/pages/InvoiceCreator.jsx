@@ -60,22 +60,13 @@ const InvoiceCreator = () => {
   
   // Estados para secciones colapsables - cargar desde localStorage
   const [sectionsOpen, setSectionsOpen] = useState(() => {
-    const saved = localStorage.getItem('invoiceSectionsState');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return { details: true, from: true, to: true, items: true, notes: true };
-      }
-    }
-    return { details: true, from: true, to: true, items: true, notes: true };
+    // Por defecto: todas cerradas excepto items
+    return { details: false, from: false, to: false, items: true, notes: false };
   });
   
   const toggleSection = (section) => {
     setSectionsOpen(prev => {
       const newState = { ...prev, [section]: !prev[section] };
-      // Guardar en localStorage
-      localStorage.setItem('invoiceSectionsState', JSON.stringify(newState));
       return newState;
     });
   };
