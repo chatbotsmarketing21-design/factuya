@@ -116,15 +116,7 @@ const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
           <div>
             <h3 className="text-sm font-semibold text-gray-500 mb-2">{t('preview.billTo')}</h3>
             <div className="text-sm">
-              <p className="font-bold text-gray-900">{to.name || ''}</p>
-              {to.nit && <p className="text-gray-600">NIT/CC: {to.nit}</p>}
-              <p className="text-gray-600">{to.email || ''}</p>
-              <p className="text-gray-600">{to.phone || ''}</p>
-              <p className="text-gray-600">{to.address || ''}</p>
-              <p className="text-gray-600">
-                {to.city || ''}{to.city && to.state ? ', ' : ''}{to.state || ''} {to.zip || ''}
-              </p>
-              <p className="text-gray-600">{to.country || ''}</p>
+              <div className="text-gray-900 whitespace-pre-line">{to.name || ''}</div>
             </div>
           </div>
         </div>

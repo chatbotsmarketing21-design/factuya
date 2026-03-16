@@ -109,18 +109,7 @@ const InvoiceTemplateWave = ({ invoice, template, templateColor }) => {
         <div className="grid grid-cols-2 gap-4 mb-8 text-sm">
           <div>
             <h3 className="font-semibold" style={{ color: waveColor }}>Facturar a</h3>
-            <p className="font-bold text-gray-800 mt-1">{to.name || ''}</p>
-            {to.nit && <p className="text-gray-600">NIT/CC: {to.nit}</p>}
-            {(to.email || to.phone) && (
-              <p className="text-gray-600">
-                {to.email}{to.email && to.phone ? ' | ' : ''}{to.phone}
-              </p>
-            )}
-            {to.address && <p className="text-gray-600">{to.address}</p>}
-            {to.city && <p className="text-gray-600">{to.city}</p>}
-            {to.state && <p className="text-gray-600">{to.state}</p>}
-            {to.zip && <p className="text-gray-600">{to.zip}</p>}
-            {to.country && <p className="text-gray-600">{to.country}</p>}
+            <div className="text-gray-800 whitespace-pre-line mt-1">{to.name || ''}</div>
           </div>
           <div className="text-right">
             <div className="mb-2">

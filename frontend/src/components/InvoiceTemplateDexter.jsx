@@ -97,14 +97,7 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
           {/* Bill To */}
           <div>
             <h3 className="font-bold text-gray-700 mb-2" style={{ color: primaryColor }}>FACTURAR A</h3>
-            <p className="text-gray-800">{to.name || ''}</p>
-            {to.nit && <p className="text-gray-600">NIT: {to.nit}</p>}
-            {to.address && <p className="text-gray-600">{to.address}</p>}
-            {(to.city || to.state || to.zip) && (
-              <p className="text-gray-600">
-                {to.zip && `${to.zip} `}{to.city}{to.city && to.state ? ', ' : ''}{to.state}
-              </p>
-            )}
+            <div className="text-gray-800 whitespace-pre-line">{to.name || ''}</div>
           </div>
 
           {/* Document Info */}
