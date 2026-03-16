@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, Query, UploadFile, File
 from fastapi.responses import FileResponse
 from typing import List, Optional
-from models.invoice import InvoiceCreate, InvoiceUpdate, InvoiceInDB, InvoiceListItem, InvoiceStats
+from models.invoice import InvoiceCreate, InvoiceUpdate, InvoiceInDB, InvoiceListItem, InvoiceStats, AddPaymentRequest
 from utils.auth import get_current_user_id
 from utils.subscription_check import check_can_create_invoice, increment_trial_invoice_count
 import os
@@ -108,6 +108,10 @@ async def get_invoices(
     # Transform to list items
     result = []
     for inv in invoices:
+        total_paid = inv.get("totalPaid", 0)
+        total = inv.get("total", 0)
+        balance = inv.get("balance", total - total_paid if total_paid > 0 else None)
+        
         result.append(InvoiceListItem(
             id=inv["id"],
             number=inv["number"],
@@ -116,7 +120,10 @@ async def get_invoices(
             dueDate=inv["dueDate"],
             total=inv["total"],
             status=inv["status"],
-            createdAt=inv["createdAt"]
+            createdAt=inv["createdAt"],
+            totalPaid=total_paid,
+            balance=balance,
+            documentType=inv.get("documentType", "invoice")
         ))
     
     return result
@@ -304,3 +311,144 @@ async def get_pdf(filename: str):
         media_type="application/pdf",
         filename=filename
     )
+
+
+# ==================== ENDPOINTS DE ABONOS ====================
+
+@router.post("/{invoice_id}/payments")
+async def add_payment(
+    invoice_id: str,
+    payment: AddPaymentRequest,
+    user_id: str = Depends(get_current_user_id)
+):
+    """Agregar un abono/pago parcial a una factura"""
+    # Buscar la factura
+    invoice = await db.invoices.find_one({"id": invoice_id, "userId": user_id})
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Factura no encontrada")
+    
+    # No permitir abonos en cotizaciones
+    if invoice.get("documentType") == "quotation":
+        raise HTTPException(status_code=400, detail="Las cotizaciones no pueden tener abonos")
+    
+    # Crear el registro de pago
+    payment_record = {
+        "id": str(uuid.uuid4()),
+        "amount": payment.amount,
+        "date": payment.date or datetime.now().strftime("%Y-%m-%d"),
+        "note": payment.note,
+        "createdAt": datetime.now()
+    }
+    
+    # Obtener pagos existentes
+    existing_payments = invoice.get("payments", [])
+    existing_payments.append(payment_record)
+    
+    # Calcular total pagado
+    total_paid = sum(p.get("amount", 0) for p in existing_payments)
+    total = invoice.get("total", 0)
+    balance = total - total_paid
+    
+    # Determinar el nuevo estado
+    if balance <= 0:
+        new_status = "paid"
+        balance = 0
+    else:
+        new_status = "partial"
+    
+    # Actualizar la factura
+    await db.invoices.update_one(
+        {"id": invoice_id, "userId": user_id},
+        {
+            "$set": {
+                "payments": existing_payments,
+                "totalPaid": total_paid,
+                "balance": balance,
+                "status": new_status,
+                "updatedAt": datetime.now()
+            }
+        }
+    )
+    
+    return {
+        "message": "Abono registrado exitosamente",
+        "payment": payment_record,
+        "totalPaid": total_paid,
+        "balance": balance,
+        "status": new_status
+    }
+
+@router.get("/{invoice_id}/payments")
+async def get_payments(
+    invoice_id: str,
+    user_id: str = Depends(get_current_user_id)
+):
+    """Obtener historial de abonos de una factura"""
+    invoice = await db.invoices.find_one({"id": invoice_id, "userId": user_id})
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Factura no encontrada")
+    
+    payments = invoice.get("payments", [])
+    total_paid = invoice.get("totalPaid", 0)
+    total = invoice.get("total", 0)
+    balance = invoice.get("balance", total - total_paid)
+    
+    return {
+        "payments": payments,
+        "totalPaid": total_paid,
+        "total": total,
+        "balance": balance
+    }
+
+@router.delete("/{invoice_id}/payments/{payment_id}")
+async def delete_payment(
+    invoice_id: str,
+    payment_id: str,
+    user_id: str = Depends(get_current_user_id)
+):
+    """Eliminar un abono de una factura"""
+    invoice = await db.invoices.find_one({"id": invoice_id, "userId": user_id})
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Factura no encontrada")
+    
+    # Filtrar el pago a eliminar
+    existing_payments = invoice.get("payments", [])
+    new_payments = [p for p in existing_payments if p.get("id") != payment_id]
+    
+    if len(new_payments) == len(existing_payments):
+        raise HTTPException(status_code=404, detail="Abono no encontrado")
+    
+    # Recalcular totales
+    total_paid = sum(p.get("amount", 0) for p in new_payments)
+    total = invoice.get("total", 0)
+    balance = total - total_paid
+    
+    # Determinar el nuevo estado
+    if total_paid == 0:
+        new_status = "pending"
+    elif balance <= 0:
+        new_status = "paid"
+        balance = 0
+    else:
+        new_status = "partial"
+    
+    # Actualizar la factura
+    await db.invoices.update_one(
+        {"id": invoice_id, "userId": user_id},
+        {
+            "$set": {
+                "payments": new_payments,
+                "totalPaid": total_paid,
+                "balance": balance,
+                "status": new_status,
+                "updatedAt": datetime.now()
+            }
+        }
+    )
+    
+    return {
+        "message": "Abono eliminado exitosamente",
+        "totalPaid": total_paid,
+        "balance": balance,
+        "status": new_status
+    }

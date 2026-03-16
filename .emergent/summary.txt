@@ -1,196 +1,280 @@
 <analysis>**original_problem_statement:**
-The user initially requested a clone of the Invoice Home application. The project has since evolved based on user feedback into a feature-rich, full-stack invoicing application named FactuYa!. The application has been successfully deployed to the user's own Hostinger VPS in previous sessions.
+The user initially requested a clone of the Invoice Home application. The project has since evolved into a feature-rich, full-stack invoicing application named FactuYa!. The application is deployed on the user's Hostinger VPS.
+
+The main goals for this session were to integrate the Wompi payment gateway, fix a PDF color inconsistency bug, and implement several UI/UX improvements requested by the user, particularly in the invoice creation flow. A new feature to handle partial payments (Abonos) was also started.
 
 **PRODUCT REQUIREMENTS:**
-1.  **Core Functionality:** Create a full-stack invoicing application with user authentication.
-2.  **Branding:** The application should be named FactuYa! with a dynamic color scheme.
-3.  **Invoicing Features:**
+1.  **Core Functionality:** A full-stack invoicing application with user authentication (FactuYa!).
+2.  **Invoicing Features:**
     *   CRUD for invoices, supporting multiple document types.
     *   Company profile for branding and details.
-    *   A set of base templates with a dynamic color picker.
-    *   Invoice status management, PDF download, sharing, and duplication.
+    *   Base templates with a dynamic color picker.
+    *   Invoice status management (Pending, Paid, Partial, Overdue), PDF download, sharing, and duplication.
+    *   Ability to record partial payments (Abonos) against an invoice.
     *   Signature upload and automatic application to documents.
-4.  **Admin Panel:** A dedicated dashboard for the admin to view user statistics and application revenue.
-5.  **Internationalization:** Support for Spanish and English.
-6.  **Authentication:** Support email/password and self-managed Google Social Login.
-7.  **PWA:** The application should be installable on mobile devices and feel like a native app.
-8.  **Deployment:** Deployed on the user's Hostinger VPS.
-9.  **Payment Gateway:** Integration with Wompi for handling subscriptions.
+3.  **Admin Panel:** A dashboard for the admin to view user statistics and application revenue.
+4.  **Internationalization:** Support for Spanish and English.
+5.  **Authentication:** Support for email/password and self-managed Google Social Login.
+6.  **PWA:** The application should be installable and automatically update to the latest version.
+7.  **Deployment:** Deployed on the user's Hostinger VPS.
+8.  **Payment Gateway:** Integration with Wompi for handling subscriptions.
+9.  **Google Play Store:** The user wants to publish the app on the Google Play Store, which requires obtaining a DUNS number.
 
 **User's preferred language**: Español
 
 **what currently exists?**
-A fully functional, deployed full-stack invoicing application named FactuYa!. This session saw the completion of numerous bug fixes and the implementation of significant new features based on user requests. Key accomplishments include: fixing a critical menu bug, creating a comprehensive Admin Panel with revenue tracking, implementing a direct-to-email contact form with a verified domain via Resend, fixing Google Login on the production server, and making extensive UI/UX improvements to the home, profile, and auth pages. All changes were successfully deployed to the user's Hostinger VPS.
+A full-stack invoicing application (React, FastAPI, MongoDB) named FactuYa!, which is deployed and operational on the user's Hostinger VPS. This session successfully integrated the Wompi payment gateway for real-money transactions, replacing Stripe. Numerous UI/UX enhancements were completed, including simplifying the invoice creator, making sections collapsible, and fixing a PWA cache issue that prevented automatic updates. The agent started implementing a feature to record partial payments (abonos) but introduced a bug that caused the dashboard to go blank.
 
 **Last working item**:
-- **Last item agent was working**: The user reported that the Contact Support form was failing on the production server () after the latest deployment. The agent correctly diagnosed that the  was missing from the  file on the production VPS. The agent provided the commands to add the key and restart the backend. The user executed them and confirmed that the form was now working correctly.
-- **Status**: USER VERIFICATION PENDING
-- **Agent Testing Done**: N
-- **Which testing method agent to use?**: Manual testing by curl
-- **User Testing Done**: Y
+- **Last item agent was working**: Implementing the Abono (partial payment) feature. This involved adding a Payment model and a new endpoint in the backend. On the frontend, changes were made to the Dashboard to include a modal for adding payments. However, these changes introduced a bug.
+- **Status**: IN PROGRESS
+- **Agent Testing Done**: N (The change broke the dashboard, resulting in a blank screen.)
+- **Which testing method agent to use?**: both
+- **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
-- **Issue 1**: Google Login functionality needs final verification from the user in the production environment after recent fixes (Priority: P1).
-- **Issue 2**: WhatsApp sharing on desktop does not attach the PDF file automatically (Priority: P3).
+- **Issue 1**: Dashboard page is blank (P0)
+- **Issue 2**: Abono (partial payment) feature is incomplete (P1)
+- **Issue 3**: User needs guidance to obtain a DUNS number (P2)
+- **Issue 4**: WhatsApp sharing on desktop does not attach the PDF file (P3)
+- **Issue 5**: Frontend codebase has persistent  warnings (P4)
+- **Issue 6**: Production deployment uses  instead of a robust service like  (P4)
 
 **Issues Detail**:
 - **Issue 1**:
-    - **Description**: The Google Login was failing in production due to missing  and  in the VPS  file.
-    - **Attempted fixes**: The agent guided the user to add the required environment variables to the  file on their Hostinger VPS and restart the backend.
-    - **Next debug checklist**: User needs to perform a final test of the Google Login functionality on  to confirm the fix.
-    - **Why fix this issue and what will be achieved with the fix?**: This is a critical authentication feature for the application.
-    - **Status**: USER VERIFICATION PENDING
-    - **Is recurring issue?**: Y
-    - **Should Test frontend/backend/both after fix?**: frontend
-    - **Blocked on other issue**: None.
-
-- **Issue 2**:
-    - **Description**: Sharing an invoice to WhatsApp from a desktop browser sends a text message but not the PDF file.
-    - **Attempted fixes**: This is a known limitation of the WhatsApp Web API. No fix was attempted as the user previously accepted the explanation. This is a low-priority issue.
-    - **Status**: NOT STARTED
+    - **Description**: The  page is rendering a blank white screen after the agent added the code for the Abono (partial payment) modal.
+    - **Attempted fixes**: The agent had just started to investigate by viewing the  file before the session ended.
+    - **Next debug checklist**:
+        1.  Check the browser's developer console for JavaScript errors.
+        2.  Review the recent changes in , specifically the new state variables (, , ) and the  function.
+        3.  Verify all imported components (, , ) are used correctly and have been imported.
+        4.  Temporarily comment out the new modal and its related logic to confirm it's the source of the error.
+    - **Why fix this issue and what will be achieved with the fix?**: The dashboard is a critical page. Fixing this will restore access to all invoice management functionality and unblock further development.
+    - **Status**: IN PROGRESS
     - **Is recurring issue?**: N
     - **Should Test frontend/backend/both after fix?**: frontend
-    - **Blocked on other issue**: None.
+    - **Blocked on other issue**: None. This is the primary blocker.
+
+- **Issue 2**:
+    - **Description**: The feature to record partial payments (Abonos) is not finished. The backend models and endpoints have been created, but the frontend implementation is broken.
+    - **Attempted fixes**: The frontend code was written but caused the blank screen issue.
+    - **Next debug checklist**: Once the blank screen is fixed, the full flow needs to be tested:
+        1. Open the Add Payment modal from the invoice dropdown.
+        2. Submit a partial payment.
+        3. Verify the backend saves the payment correctly.
+        4. Verify the invoice status in the UI changes to Abono (blue badge).
+        5. Verify the invoice details page shows the payment history and remaining balance.
+    - **Why fix this issue and what will be achieved with the fix?**: This is a key feature requested by the user to manage invoice payments more flexibly.
+    - **Status**: IN PROGRESS
+    - **Is recurring issue?**: N
+    - **Should Test frontend/backend/both after fix?**: both
+    - **Blocked on other issue**: Issue 1: Dashboard page is blank
+
+- **Issue 3**:
+    - **Description**: The user needs a DUNS number for their company Innova App Solutions to complete registration on the Google Play Console. The user was having trouble navigating the Dun & Bradstreet website.
+    - **Attempted fixes**: The agent provided several links. The user got stuck because Colombia was not an option in some forms.
+    - **Next debug checklist**: Guide the user to try the direct link for Google developers again: . This form is specifically for developers in international markets.
+    - **Why fix this issue and what will be achieved with the fix?**: This is a prerequisite for publishing the app on the Google Play Store.
+    - **Status**: BLOCKED (on user action)
+    - **Is recurring issue?**: N
+    - **Should Test frontend/backend/both after fix?**: NA
+    - **Blocked on other issue**: None
+
+- **Issue 4**:
+    - **Description**: Sharing an invoice to WhatsApp from a desktop browser sends a text message but not the PDF file. This is a known limitation of the WhatsApp Web API.
+    - **Status**: NOT STARTED
+    - **Is recurring issue?**: N
+
+- **Issue 5**:
+    - **Description**: The frontend build process shows numerous  warnings, mostly related to missing dependencies in  hooks.
+    - **Status**: NOT STARTED
+    - **Is recurring issue?**: Y
+
+- **Issue 6**:
+    - **Description**: The production backend process on the user's VPS runs via , which is not robust. It should be migrated to a  service.
+    - **Status**: NOT STARTED
+    - **Is recurring issue?**: Y
 
 **In progress Task List**:
-- None. All tasks from this session are complete.
+- **Task 1**: Complete Abono (Partial Payment) Feature
+    - **Where to resume**: Debug the blank screen error in .
+    - **What will be achieved with this?**: Users will be able to record partial payments for invoices, which will be reflected in the invoice status and details.
+    - **Status**: IN PROGRESS
+    - **Should Test frontend/backend/both after fix?**: both
+    - **Blocked on something**: The Dashboard page is broken.
 
 **Upcoming and Future Tasks**
 - **Upcoming Tasks:**
-    - **P0: Integrate Wompi Payment Gateway:** The user has registered their business and is ready to set up a business bank account. The next step is to create a Wompi account and integrate it to handle premium subscriptions.
-    - **P1: Submit App to Google Play Store:** The user has expressed interest in publishing the PWA to the Google Play Store. The agent explained the TWA (Trusted Web Activity) approach.
+    - **P1**: Assist the user in completing the DUNS registration process.
+    - **P2**: Submit the app to the Google Play Store as a Trusted Web Activity (TWA) once the DUNS number is obtained.
 - **Future Tasks:**
-    - **P2: Add More Custom Templates.**
-    - **P2: Client and Product Management:** Add dedicated sections to manage clients and products.
-    - **P2: Advanced Reporting:** Expand on the existing admin panel with more detailed reports.
+    - **P2**: Add more custom templates for invoices.
+    - **P2**: Implement dedicated sections for Client and Product management.
+    - **P2**: Enhance the Admin Panel with more advanced reporting features.
 
 **Completed work in this session**
-- **Admin Panel & Balance Page (New Feature)**:
-  - Created a new secure endpoint  and page at  accessible only by .
-  - Implemented stats cards for Users, Premium, Users/Month, Invoices, and Revenue.
-  - Created a new Balance page at  with a detailed yearly/monthly breakdown of revenue from new and renewing subscriptions.
-- **Contact Form (New Feature)**:
-  - Created a Contact Support modal form on the subscription page.
-  - Implemented a backend endpoint  using Resend to send emails directly to .
-  - Guided the user through verifying their  domain on Resend and configuring DNS records in Hostinger.
-  - Fixed the feature in production by adding the  to the VPS  file.
-- **Bug Fixes & Production Hardening**:
-  - **Google Login**: Fixed failure in production by adding  and  to the VPS  file.
-  - **Menu Closing**: Fixed a P0 bug where clicking outside the settings menu reloaded the page.
-  - **Made with Emergent Watermark**: Diagnosed and removed injected scripts from  that caused the watermark to appear in production.
-  - **PDF Dark Mode**: Fixed a bug where PDFs were generated with a dark background when the user was in dark mode.
-- **UI/UX Improvements**:
-  - Removed the toast notification when switching between light/dark modes.
-  - Added Next renewal date to the subscription page.
-  - Moved floating action buttons to the right side of the screen on Dashboard and Invoice Detail pages.
-  - Updated placeholder text on the Profile page to be generic.
-  - Improved text legibility on SignUp/SignIn pages in dark mode.
-  - Refined marketing copy, button layout, and icon styles on the Home page.
-  - Changed Welcome back to Invoice Home toast to ¡Bienvenido de nuevo a FactuYa!.
-- **Deployment**: Guided the user through multiple successful deployments to their Hostinger VPS.
+- **Wompi Payment Gateway Integration**: Successfully integrated Wompi as the payment provider, replacing Stripe. The full flow was implemented and tested in production with a real payment.
+- **Bug Fix: PDF Color Inconsistency**: Fixed an issue where the color of generated PDFs was inconsistent across devices by adding a  field to the invoice model and ensuring it's saved and used consistently.
+- **Bug Fix: PWA Cache Not Updating**: Improved the frontend service worker () to automatically check for and apply updates, ensuring users always have the latest version of the app without needing a manual refresh.
+- **UI/UX Improvements:**
+  - **Invoice Creator Simplification**: Replaced multiple client input fields with a single, multi-line textarea and ensured line breaks are preserved in the PDF.
+  - **Collapsible Sections**: Made sections in the invoice creator collapsible by default, with different behavior on mobile vs. desktop for a cleaner interface.
+  - **Auto-focus on New Item**: The cursor now automatically focuses on the description field of a new item when added.
+  - **Subscription Page UI**: Updated the subscription page to display the price as  /mes and handle the currency conversion to COP on the backend during the Wompi checkout.
+  - **Home Page Text**: Updated marketing copy on the home page as requested.
+- **Feature Enhancement: Disable Paid for Quotes**: Removed the ability to mark Quotations as paid, both in the desktop dropdown and the mobile swipe action.
+- **Deployment Guidance**: Guided the user through several successful deployments to their Hostinger VPS, including adding new environment variables for Wompi and troubleshooting npm <command>
+
+Usage:
+
+npm install        install all the dependencies in your project
+npm install <foo>  add the <foo> dependency to your project
+npm test           run this project's tests
+npm run <foo>      run the script named <foo>
+npm <command> -h   quick help on <command>
+npm -l             display usage info for all commands
+npm help <term>    search for help on <term>
+npm help npm       more involved overview
+
+All commands:
+
+    access, adduser, audit, bugs, cache, ci, completion,
+    config, dedupe, deprecate, diff, dist-tag, docs, doctor,
+    edit, exec, explain, explore, find-dupes, fund, get, help,
+    help-search, hook, init, install, install-ci-test,
+    install-test, link, ll, login, logout, ls, org, outdated,
+    owner, pack, ping, pkg, prefix, profile, prune, publish,
+    query, rebuild, repo, restart, root, run-script, sbom,
+    search, set, shrinkwrap, star, stars, start, stop, team,
+    test, token, uninstall, unpublish, unstar, update, version,
+    view, whoami
+
+Specify configs in the ini-formatted file:
+    /root/.npmrc
+or on the command line via: npm <command> --key=value
+
+More configuration info: npm help config
+Configuration fields: npm help 7 config
+
+npm@10.8.2 /usr/lib/node_modules/npm dependency conflicts.
 
 **Earlier issues found/mentioned but not fixed**
-- **Issue 1**:  warnings persist in the frontend build process, particularly related to missing dependencies in  hooks. This is a code quality issue.
-- **Issue 2**: The production backend process on the user's VPS runs via . Migrating this to a  service would make it more robust.
+- **Issue 1**:  warnings persist in the frontend build process.
+- **Issue 2**: The production backend process on the user's VPS runs via  instead of a  service.
 
 **Known issue recurrence from previous fork**
-- The bug where clicking outside the settings menu reloaded the page was a recurring issue from the previous fork and was successfully resolved in this session.
+- None.
 
 **Code Architecture**
 - **Stack**: React frontend, FastAPI backend, MongoDB database.
 - **Structure**: Standard monorepo with  and  directories.
-- **New Routes**:
-    - Backend: , , 
-    - Frontend: , 
-- **Deployment**: User-managed Hostinger VPS via  and manual build/restart scripts.
+- **New Backend Components**:
+    - : Modified to include  and a  field that now supports .
+    - : New Pydantic model to represent a single payment (abono).
+    - : New router to handle all Wompi integration logic (config, checkout creation, webhooks).
+    - : Modified to include a new endpoint  to register an abono.
+- **New Frontend Components**:
+    - : New file to handle Wompi API calls from the frontend.
+- **Significantly Modified Files**:
+    - : Modified to add the Abono modal and state management, which is currently causing a blank screen.
+    - : Logic completely changed to use Wompi instead of Stripe.
+    - : Major refactoring to simplify the client section and implement collapsible sections.
+    -  & : Updated to implement a robust auto-update mechanism for the PWA.
 
 **Key Technical Concepts**
-- **Role-Based Access Control (RBAC)**: Implemented a simple RBAC for the admin panel by hardcoding the admin email in the backend endpoint.
-- **Email Service Integration (Resend)**: Integrated Resend for transactional emails, including domain verification (DKIM, MX, SPF) via DNS configuration.
-- **Environment Variable Management**: Diagnosed and fixed multiple production issues by adding missing environment variables (, , ) to the server's  file.
-- **Production Deployment**: Repeatedly guided the user through a multi-step deployment process involving , Unknown command: "install/build"
-
-To see a list of supported npm commands, run:
-  npm help, , and restarting the  process with  and .
+- **Payment Gateway Integration (Wompi)**: Implemented Wompi's Web Checkout. This involved backend API calls to create a checkout session and frontend logic to redirect the user. The implementation handles both  and  environments based on the provided API keys.
+- **PWA Service Worker Management**: Re-engineered the service worker to be stateful, automatically checking for updates and forcing a refresh when a new version is detected, solving a critical usability issue with cached versions.
+- **Complex State Management**: Implemented responsive UI state in the  to have different sections collapsible by default based on screen size (mobile vs. desktop).
+- **DOM Manipulation**: Used  and  to programmatically set focus on a newly created input field () to improve user workflow.
 
 **key DB schema**
-- No schema changes were made. The admin panel reads from the existing  and  collections.
+- :
+  -  (new field, references the  collection)
+  -  (can now be pending, paid, overdue, or partial)
+  - : The  sub-document now primarily uses the  field as a multi-line text block for all client info.
+- : (New Collection)
+  - 
+  - 
+  - 
+  - 
 
 **changes in tech stack**
-- No changes to the core tech stack.
+- **Stripe** has been fully replaced by **Wompi** for subscription payments.
 
 **All files of reference**
 - **Newly Created:**
-  - : Logic for admin statistics and balance data.
-  - : Endpoint for the Resend-powered contact form.
-  - : The main admin dashboard UI.
-  - : The detailed annual revenue balance page.
+  - : Contains all backend logic for Wompi integration.
+  - : Defines the data model for a single partial payment.
+  - : Frontend service for Wompi API calls.
 - **Significantly Modified:**
-  - : Added the contact form modal and logic.
-  - : Registered the new  and  API routers.
-  - : Added the new  and  routes.
-  - : Removed injected Emergent scripts to fix the watermark issue.
-  - : Fixed PDF generation in dark mode.
-  - : Fixed PDF generation in dark mode.
-  - : Updated placeholder text.
-  - : Major UI and text changes.
-  - : Fixed text color in dark mode.
-  -  (on VPS): Added keys for Resend and Google OAuth.
+  - : Heavily modified to add the Abono feature, currently broken.
+  - : Re-written to use Wompi instead of Stripe.
+  - : Refactored for client info simplification and collapsible sections.
+  - : Re-written for automatic PWA updates.
+  - : Modified to register the new service worker logic.
+  - : Added fields to support partial payments.
+  - : Registered the new  router.
+  - : Added the endpoint to register payments.
 
 **Areas that need refactoring**:
-- The  warnings should be addressed to improve code quality.
-- The  deployment method should be replaced with a  service for better process management and robustness.
+- The  warnings should be addressed. This has been a recurring low-priority task.
+- The  deployment method should be replaced with a  service for better process management.
 
 **key api endpoints**
-- : Sends a support message via the contact form.
-- : Retrieves statistics for the admin panel.
-- : Retrieves yearly revenue data for the balance page.
-- : Handles the Google OAuth callback.
+- **Wompi Endpoints:**
+  - : Provides the frontend with the public key and pricing info.
+  - : Creates a Wompi checkout session and returns a redirect URL.
+  - : Listens for payment status updates from Wompi.
+- **Payment Endpoints:**
+  - : Registers a new partial payment (abono) for an invoice.
 
 **Critical Info for New Agent**
 - **You MUST communicate in Español.**
-- The user's immediate goal is to integrate the **Wompi** payment gateway. They are in the process of setting up their business bank account to facilitate this.
-- Be prepared to guide the user through technical processes on their Hostinger VPS. The user is non-technical but follows instructions well. The existing set of deployment commands is reliable.
-- The user has two test accounts:  (password: ) and  (password: ). The admin account is . Use these for testing.
+- **The Dashboard is broken.** The highest priority is to fix the blank screen on the  page. This is blocking all other invoice-related work.
+- The user is actively deploying all changes to their own Hostinger VPS. You must provide clear, complete, and correct command-line instructions for deployment. They are comfortable with  and running shell scripts.
+- The user's next functional goal is to complete the Abono (partial payment) feature.
+- The user is also trying to get a DUNS number to publish the app on the Google Play Store and may need further guidance.
 
 **documents and test reports created in this job**
--  (updated)
+- None.
 
 **Last 10 User Messages and any pending HUMAN messages**
-- **10. User:** Im testing the contact support button... its showing an error. (Status: **RESOLVED**)
-- **9. User:** Ive added the API key and restarted. Now its working. (Status: **RESOLVED**)
-- **8. User:** Ive registered my company. What do I do when I have the business bank account to link it to the app?" (Status: **Completed**)
-- **7. User:** Discussion about getting the app on the Google Play Store. (Status: **Completed**)
-- **6. User:** "Lets continue with the Google login on production. (Status: **IN PROGRESS**)
-- **5. User:** User confirms Google Login is working after adding credentials to the VPS  file. (Status: **RESOLVED**)
-- **4. User:** Requests to change placeholder text on the profile page to be more generic. (Status: **RESOLVED**)
-- **3. User:** Reports that text on the sign-up page is not legible in dark mode. (Status: **RESOLVED**)
-- **2. User:** Requests multiple UI changes to the home page (text, button positions, icons). (Status: **RESOLVED**)
-- **1. User:** Reports that generated PDFs are black/dark when using the app on a phone in dark mode. (Status: **RESOLVED**)
+- **10. User:** Asks to implement the Abono (partial payment) feature and wants an explanation of how it would work. (Status: **IN PROGRESS**)
+- **9. User:** Agrees with the proposed Option 2 for the Abono feature, which includes recording the payment amount. (Status: **IN PROGRESS**)
+- **8. User:** Noticed that app updates aren't showing without a manual refresh and asked why. (Status: **RESOLVED**)
+- **7. User:** Confirmed they are ready to deploy the service worker fix. (Status: **RESOLVED**)
+- **6. User:** Provided terminal output showing the successful deployment of the service worker fix. (Status: **RESOLVED**)
+- **5. User:** Confirmed successful deployment and is ready for the next steps. (Status: **Completed**)
+- **4. User:** Confirmed successful deployment and is ready to continue tomorrow. (Status: **Completed**)
+- **3. User:** States they are ready to deploy changes to the VPS and have saved to GitHub. (Status: **Completed**)
+- **2. User:** Requests to stop for the day and deploy all changes to the VPS. (Status: **Completed**)
+- **1. User:** After seeing the pagado option removed from quotations, confirmed they are happy with the changes and ready for the next task. (Status: **Completed**)
 
 **Project Health Check:**
-- **Broken**: None. All reported issues were fixed.
+- **Broken**:
+    - The  route is currently rendering a blank page, preventing users from viewing or managing their invoices.
 - **Mocked**: None.
 - **Needs Improvement**:
     - The deployment process relies on  instead of a more robust service manager like .
     - Numerous  warnings exist in the frontend codebase.
 
 **3rd Party Integrations**
-- **Stripe (Payments):** Integrated (test mode), slated to be replaced by Wompi.
-- **Resend (Transactional Emails):** Fully integrated and configured with a user-verified domain (). Works in production.
-- **Google OAuth 2.0 (Self-Managed):** Fully integrated. Works in production after fixing missing environment variables on the VPS.
+- **Wompi (Payments):** Fully integrated and configured for **production** (real money). Replaces Stripe.
+- **Resend (Transactional Emails):** Fully integrated and configured with a user-verified domain ().
+- **Google OAuth 2.0 (Self-Managed):** Fully integrated and working in production.
 - **react-swipeable-list (UI):** Used for swipe gestures on the dashboard.
 
 **Testing status**
 - **Testing agent used after significant changes**: NO
 - **Troubleshoot agent used after agent stuck in loop**: NO
 - **Test files created**: None.
-- **Known regressions**: None.
+- **Known regressions**: The dashboard page is now broken after recent changes.
 
 **Credentials to test flow:**
 - **Admin User:**  (password chosen by user)
-- **Primary Test User:**  (password: )
-- **Standard Test User:**  (password: )
+- **Primary Test User:**  (password: ) - This user now has an active premium subscription.
+- **Standard Test User:**  (password: ) - Use this user to test the subscription flow.
 
 **What agent forgot to execute**
-- The agent did not address the  warnings that appeared during the  process. While not critical, fixing them is good practice for code quality.</analysis>
+- The agent did not fix the long-standing  warnings which appear in every  log.
+- The agent has not yet addressed the recommendation to migrate the production deployment from  to a  service for improved stability.</analysis>

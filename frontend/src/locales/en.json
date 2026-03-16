@@ -192,9 +192,24 @@
   "status": {
     "draft": "Draft",
     "pending": "Pending",
+    "partial": "Partial",
     "paid": "Paid",
     "overdue": "Overdue",
     "changeStatus": "Change Status"
+  },
+  "payments": {
+    "addPayment": "Add Payment",
+    "paymentHistory": "Payment History",
+    "amount": "Amount",
+    "date": "Date",
+    "note": "Note",
+    "totalPaid": "Total Paid",
+    "balance": "Balance Due",
+    "noPayments": "No payments recorded",
+    "paymentAdded": "Payment recorded successfully",
+    "paymentDeleted": "Payment deleted successfully",
+    "enterAmount": "Enter payment amount",
+    "optional": "Optional"
   },
   "messages": {
     "invoiceSaved": "Invoice saved successfully",

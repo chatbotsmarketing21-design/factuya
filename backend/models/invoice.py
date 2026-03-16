@@ -22,11 +22,19 @@ class InvoiceItem(BaseModel):
     rate: float
     amount: float
 
+# Modelo para registrar abonos/pagos parciales
+class PaymentRecord(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    amount: float
+    date: str
+    note: Optional[str] = None
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+
 class InvoiceBase(BaseModel):
     number: str
     date: str
     dueDate: str
-    status: str = "pending"  # pending, paid, overdue
+    status: str = "pending"  # pending, partial, paid, overdue
     documentType: str = "invoice"  # invoice, proforma, quotation, bill, receipt
     fromAddress: Address = Field(alias="from")
     toAddress: Address = Field(alias="to")
@@ -44,6 +52,10 @@ class InvoiceBase(BaseModel):
     templateColor: Optional[str] = None  # Color hex code for the template
     signature: Optional[str] = None
     signatureRotation: Optional[int] = 0
+    # Campos para abonos
+    payments: Optional[List[PaymentRecord]] = []
+    totalPaid: Optional[float] = 0
+    balance: Optional[float] = None  # Lo que falta por pagar
 
     class Config:
         populate_by_name = True
@@ -69,6 +81,10 @@ class InvoiceListItem(BaseModel):
     total: float
     status: str
     createdAt: datetime
+    # Campos para abonos
+    totalPaid: Optional[float] = 0
+    balance: Optional[float] = None
+    documentType: Optional[str] = "invoice"
 
 class InvoiceStats(BaseModel):
     totalRevenue: float
@@ -82,3 +98,9 @@ class EmailInvoiceRequest(BaseModel):
     to: str
     subject: str
     message: str
+
+# Request para agregar un abono
+class AddPaymentRequest(BaseModel):
+    amount: float
+    date: Optional[str] = None
+    note: Optional[str] = None

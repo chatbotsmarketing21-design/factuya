@@ -192,9 +192,24 @@
   "status": {
     "draft": "Borrador",
     "pending": "Pendiente",
+    "partial": "Abono",
     "paid": "Pagada",
     "overdue": "Vencida",
     "changeStatus": "Cambiar Estado"
+  },
+  "payments": {
+    "addPayment": "Agregar Abono",
+    "paymentHistory": "Historial de Abonos",
+    "amount": "Monto",
+    "date": "Fecha",
+    "note": "Nota",
+    "totalPaid": "Total Abonado",
+    "balance": "Saldo Pendiente",
+    "noPayments": "No hay abonos registrados",
+    "paymentAdded": "Abono registrado exitosamente",
+    "paymentDeleted": "Abono eliminado exitosamente",
+    "enterAmount": "Ingresa el monto del abono",
+    "optional": "Opcional"
   },
   "messages": {
     "invoiceSaved": "Factura guardada exitosamente",

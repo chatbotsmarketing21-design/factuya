@@ -53,6 +53,10 @@ export const invoiceAPI = {
   getStats: () => api.get('/invoices/stats'),
   getNextNumber: (documentType) => api.get(`/invoices/next-number/${documentType}`),
   uploadPdf: (data) => api.post('/invoices/upload-pdf', data),
+  // Payment/Abono APIs
+  addPayment: (invoiceId, data) => api.post(`/invoices/${invoiceId}/payments`, data),
+  getPayments: (invoiceId) => api.get(`/invoices/${invoiceId}/payments`),
+  deletePayment: (invoiceId, paymentId) => api.delete(`/invoices/${invoiceId}/payments/${paymentId}`),
 };
 
 // Profile APIs

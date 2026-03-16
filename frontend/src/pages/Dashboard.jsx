@@ -6,6 +6,8 @@ import { subscriptionAPI } from '../services/subscriptionApi';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Textarea } from '../components/ui/textarea';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import SwipeableInvoiceCard from '../components/SwipeableInvoiceCard';
 import {
@@ -28,6 +30,14 @@ import {
   AlertDialogTitle,
 } from '../components/ui/alert-dialog';
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../components/ui/dialog';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -35,7 +45,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
-import { Plus, Search, Download, Send, Trash2, FileText, LogOut, CheckCircle, Clock, XCircle, FileEdit, Loader2, CreditCard, Settings, User, Key, Sun, Moon, Share2, MessageCircle, Mail, Copy, Globe } from 'lucide-react';
+import { Plus, Search, Download, Send, Trash2, FileText, LogOut, CheckCircle, Clock, XCircle, FileEdit, Loader2, CreditCard, Settings, User, Key, Sun, Moon, Share2, MessageCircle, Mail, Copy, Globe, DollarSign } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 import InvoicePreview from '../components/InvoicePreview';
@@ -66,6 +76,13 @@ const Dashboard = () => {
   });
   const { toast } = useToast();
   const { logout, user } = useAuth();
+  
+  // Estado para modal de abono
+  const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
+  const [selectedInvoiceForPayment, setSelectedInvoiceForPayment] = useState(null);
+  const [paymentAmount, setPaymentAmount] = useState('');
+  const [paymentNote, setPaymentNote] = useState('');
+  const [addingPayment, setAddingPayment] = useState(false);
 
   // Toggle dark mode
   const toggleDarkMode = () => {
@@ -482,6 +499,8 @@ const Dashboard = () => {
     switch (status) {
       case 'paid':
         return 'bg-green-100 text-green-800 hover:bg-green-200';
+      case 'partial':
+        return 'bg-blue-100 text-blue-800 hover:bg-blue-200';
       case 'pending':
         return 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200';
       case 'draft':
@@ -490,6 +509,54 @@ const Dashboard = () => {
         return 'bg-red-100 text-red-800 hover:bg-red-200';
       default:
         return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  // Función para abrir el modal de abono
+  const openPaymentDialog = (invoice) => {
+    setSelectedInvoiceForPayment(invoice);
+    setPaymentAmount('');
+    setPaymentNote('');
+    setPaymentDialogOpen(true);
+  };
+
+  // Función para agregar un abono
+  const handleAddPayment = async () => {
+    if (!selectedInvoiceForPayment || !paymentAmount) return;
+    
+    const amount = parseFloat(paymentAmount);
+    if (isNaN(amount) || amount <= 0) {
+      toast({
+        title: "Error",
+        description: "Ingresa un monto válido",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setAddingPayment(true);
+    try {
+      await invoiceAPI.addPayment(selectedInvoiceForPayment.id, {
+        amount: amount,
+        note: paymentNote || null
+      });
+      
+      toast({
+        title: t('payments.paymentAdded'),
+        description: `Abono de $${amount.toLocaleString()} registrado`,
+      });
+      
+      setPaymentDialogOpen(false);
+      loadData(); // Recargar datos
+    } catch (error) {
+      console.error('Error adding payment:', error);
+      toast({
+        title: "Error",
+        description: "No se pudo registrar el abono",
+        variant: "destructive"
+      });
+    } finally {
+      setAddingPayment(false);
     }
   };
 
@@ -795,6 +862,7 @@ const Dashboard = () => {
                                   <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                                     <Badge className={getStatusColor(invoice.status) + " cursor-pointer"}>
                                       {invoice.status === 'paid' ? t('status.paid') : 
+                                       invoice.status === 'partial' ? t('status.partial') :
                                        invoice.status === 'pending' ? t('status.pending') : 
                                        t('status.overdue')}
                                     </Badge>
@@ -807,12 +875,18 @@ const Dashboard = () => {
                                     <Clock className="w-4 h-4 mr-2 text-yellow-600" />
                                     {t('status.pending')}
                                   </DropdownMenuItem>
-                                  {/* No mostrar opción de pagado para cotizaciones */}
+                                  {/* No mostrar opciones de pago para cotizaciones */}
                                   {invoice.documentType !== 'quotation' && (
-                                    <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'paid')}>
-                                      <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
-                                      {t('status.paid')}
-                                    </DropdownMenuItem>
+                                    <>
+                                      <DropdownMenuItem onClick={() => openPaymentDialog(invoice)}>
+                                        <DollarSign className="w-4 h-4 mr-2 text-blue-600" />
+                                        {t('payments.addPayment')}
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'paid')}>
+                                        <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
+                                        {t('status.paid')}
+                                      </DropdownMenuItem>
+                                    </>
                                   )}
                                   <DropdownMenuItem onClick={() => handleStatusChange(invoice.id, 'overdue')}>
                                     <XCircle className="w-4 h-4 mr-2 text-red-600" />
@@ -939,6 +1013,84 @@ const Dashboard = () => {
           <span>Crear nueva factura</span>
         </div>
       </Link>
+
+      {/* Modal de Abono */}
+      <Dialog open={paymentDialogOpen} onOpenChange={setPaymentDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <DollarSign className="w-5 h-5 text-blue-600" />
+              {t('payments.addPayment')}
+            </DialogTitle>
+            <DialogDescription asChild>
+              <div>
+                {selectedInvoiceForPayment && (
+                  <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                    <p className="font-medium">{selectedInvoiceForPayment.clientName}</p>
+                    <p className="text-sm text-gray-500">
+                      {selectedInvoiceForPayment.number} - Total: ${selectedInvoiceForPayment.total?.toLocaleString()}
+                    </p>
+                    {selectedInvoiceForPayment.totalPaid > 0 && (
+                      <p className="text-sm text-blue-600 mt-1">
+                        {t('payments.totalPaid')}: ${selectedInvoiceForPayment.totalPaid?.toLocaleString()} | 
+                        {t('payments.balance')}: ${selectedInvoiceForPayment.balance?.toLocaleString() || (selectedInvoiceForPayment.total - selectedInvoiceForPayment.totalPaid)?.toLocaleString()}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="paymentAmount">{t('payments.amount')} *</Label>
+              <Input
+                id="paymentAmount"
+                type="number"
+                value={paymentAmount}
+                onChange={(e) => setPaymentAmount(e.target.value)}
+                placeholder={t('payments.enterAmount')}
+                className="mt-1"
+                min="0"
+                step="1000"
+              />
+            </div>
+            <div>
+              <Label htmlFor="paymentNote">{t('payments.note')} ({t('payments.optional')})</Label>
+              <Textarea
+                id="paymentNote"
+                value={paymentNote}
+                onChange={(e) => setPaymentNote(e.target.value)}
+                placeholder="Ej: Transferencia Bancolombia, Efectivo..."
+                className="mt-1"
+                rows={2}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPaymentDialogOpen(false)}>
+              Cancelar
+            </Button>
+            <Button 
+              onClick={handleAddPayment} 
+              disabled={addingPayment || !paymentAmount}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {addingPayment ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Guardando...
+                </>
+              ) : (
+                <>
+                  <DollarSign className="w-4 h-4 mr-2" />
+                  Registrar Abono
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
