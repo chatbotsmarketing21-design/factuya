@@ -1,5 +1,5 @@
 // Version number - increment this when deploying updates
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const CACHE_NAME = `factuya-${CACHE_VERSION}`;
 const STATIC_ASSETS = [
   '/',
@@ -37,7 +37,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event - network first strategy (always try network first)
+// Fetch event - stale-while-revalidate strategy for faster initial load
 self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') return;
@@ -49,23 +49,29 @@ self.addEventListener('fetch', (event) => {
   if (!event.request.url.startsWith('http')) return;
   
   event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // Don't cache non-successful responses
-        if (!response || response.status !== 200) {
+    caches.match(event.request).then((cachedResponse) => {
+      // Start network fetch in background
+      const networkFetch = fetch(event.request)
+        .then((response) => {
+          // Don't cache non-successful responses
+          if (!response || response.status !== 200) {
+            return response;
+          }
+          // Clone and cache the fresh response
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
           return response;
-        }
-        // Clone the response before caching
-        const responseClone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseClone);
+        })
+        .catch(() => {
+          // If network fails, return cached or null
+          return cachedResponse;
         });
-        return response;
-      })
-      .catch(() => {
-        // If network fails, try cache
-        return caches.match(event.request);
-      })
+      
+      // Return cached response immediately if available, otherwise wait for network
+      return cachedResponse || networkFetch;
+    })
   );
 });
 
