@@ -1165,9 +1165,11 @@ const InvoiceCreator = () => {
                   <Textarea
                     id="toName"
                     value={invoice.to.name}
-                    onChange={(e) => updateTo('name', e.target.value.toUpperCase())}
+                    onChange={(e) => updateTo('name', e.target.value)}
+                    onBlur={(e) => updateTo('name', e.target.value.toUpperCase())}
                     placeholder="Nombre del cliente, NIT, dirección, teléfono..."
                     className="dark:bg-secondary dark:border-border dark:text-white uppercase min-h-[100px]"
+                    style={{ textTransform: 'uppercase' }}
                     rows={4}
                   />
                 </div>
