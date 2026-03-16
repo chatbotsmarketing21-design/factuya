@@ -363,9 +363,8 @@ const SubscriptionPanel = () => {
               </div>
               
               <div className="flex flex-col justify-center items-center bg-white dark:bg-gray-800 rounded-lg p-6">
-                <p className="text-4xl font-bold text-gray-900 dark:text-white">$20.000</p>
-                <p className="text-gray-500 dark:text-gray-400 mb-1">COP/{t('subscription.month')}</p>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mb-4">(~$5 USD)</p>
+                <p className="text-4xl font-bold text-gray-900 dark:text-white">$5</p>
+                <p className="text-gray-500 dark:text-gray-400 mb-4">/{t('subscription.month')}</p>
                 <Button 
                   onClick={handleUpgrade}
                   className="w-full bg-lime-500 hover:bg-lime-600 text-white"
@@ -375,7 +374,7 @@ const SubscriptionPanel = () => {
                   {t('subscription.subscribeNow')}
                 </Button>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-                  Paga con tarjeta, PSE o Nequi
+                  {t('subscription.cancelAnytime')}
                 </p>
               </div>
             </div>
