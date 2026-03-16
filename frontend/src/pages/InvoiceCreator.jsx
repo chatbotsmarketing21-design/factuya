@@ -60,8 +60,16 @@ const InvoiceCreator = () => {
   
   // Estados para secciones colapsables - cargar desde localStorage
   const [sectionsOpen, setSectionsOpen] = useState(() => {
-    // Por defecto: todas cerradas excepto items
-    return { details: false, from: false, to: false, items: true, notes: false };
+    // Detectar si es móvil o escritorio
+    const isMobile = window.innerWidth < 768;
+    
+    if (isMobile) {
+      // Móvil: todas cerradas excepto items
+      return { details: false, from: false, to: false, items: true, notes: false };
+    } else {
+      // Escritorio: solo cerrados "detalles" y "notas"
+      return { details: false, from: true, to: true, items: true, notes: false };
+    }
   });
   
   const toggleSection = (section) => {
