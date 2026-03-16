@@ -13,12 +13,13 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ### Changes Made This Session:
 
-1. **Feature: Abono (Partial Payment) System** ✅ (TESTED)
+1. **Feature: Abono (Partial Payment) System** ✅ (TESTED & DEPLOYED)
    - Added ability to record partial payments against invoices
    - New status "Abono" (blue badge) for invoices with partial payments
-   - Modal shows: Client name, invoice number, total, amount paid, and balance
+   - Modal shows: Client name (only first line), invoice number, total, amount paid, and balance
    - Auto-status transitions: pending → partial → paid
    - Quotations cannot have payments (validation added)
+   - **Deployed to production VPS**
 
 2. **Backend Endpoints Added:**
    - `POST /api/invoices/{id}/payments` - Register a new payment
@@ -26,15 +27,16 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
    - `DELETE /api/invoices/{id}/payments/{paymentId}` - Delete a payment
    
 3. **Frontend Updates:**
-   - Dashboard dropdown now includes "Agregar Abono" option
-   - Payment modal with amount and optional note fields
-   - Invoice list shows totalPaid and balance for each invoice
-   - Stats update automatically after payment registration
+   - Dashboard dropdown now includes "Agregar Abono" option (desktop)
+   - **Mobile Invoice Detail page**: New "Agregar Abono" button (blue) between "Copiar Factura" and "Marcar como Pagada"
+   - Payment modal with amount formatting (dots for thousands: 50.000)
+   - Payment modal positioned higher on mobile to avoid keyboard overlap
+   - Invoice list shows only client name (first line) in desktop table
+   - Modal shows only client name, not full address/phone
 
-4. **Backend Model Updates:**
-   - `InvoiceListItem` now includes: totalPaid, balance, documentType
-   - `PaymentRecord` model for storing individual payments
-   - `AddPaymentRequest` model for payment API validation
+4. **UX Improvements:**
+   - Fixed cursor jumping issue in client textarea (using CSS text-transform instead of JS toUpperCase)
+   - Subscription page: Payment method icons (Visa, Mastercard, PSE, Nequi)
 
 5. **Test Suite Created:**
    - `/app/backend/tests/test_abono_payments.py` - 12 comprehensive tests
@@ -44,6 +46,10 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 - Backend: 100% (12/12 tests)
 - Frontend: 100% 
 - Status transitions verified: pending → partial → paid
+
+### Pending for Future Sessions:
+- Dynamic USD to COP exchange rate for subscription pricing
+- Configure Wompi payment methods (disable Bancolombia, Nequi buttons due to minimum amounts)
 
 ---
 
