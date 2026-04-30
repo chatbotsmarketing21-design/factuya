@@ -39,7 +39,8 @@ const Profile = () => {
       zip: '',
       country: '',
       bank: '',
-      bankAccount: ''
+      bankAccount: '',
+      accountType: 'savings'
     }
   });
 
@@ -67,6 +68,7 @@ const Profile = () => {
           country: '',
           bank: '',
           bankAccount: '',
+          accountType: 'savings',
           ...response.data.companyInfo
         }
       });
@@ -322,7 +324,7 @@ const Profile = () => {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                 {t('profile.bankInfo') || 'Información Bancaria'}
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label htmlFor="company.bank">{t('profile.bank') || 'Banco'}</Label>
                   <Input
@@ -330,9 +332,22 @@ const Profile = () => {
                     name="company.bank"
                     value={profile.companyInfo.bank}
                     onChange={handleChange}
-                    placeholder="Ej: Nombre del banco"
+                    placeholder="Ej: Bancolombia"
                     className="mt-1"
                   />
+                </div>
+                <div>
+                  <Label htmlFor="company.accountType">{t('profile.accountType') || 'Tipo de Cuenta'}</Label>
+                  <select
+                    id="company.accountType"
+                    name="company.accountType"
+                    value={profile.companyInfo.accountType || 'savings'}
+                    onChange={handleChange}
+                    className="mt-1 w-full h-10 px-3 rounded-md border border-input bg-background text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 dark:bg-secondary dark:border-border dark:text-white"
+                  >
+                    <option value="savings">Cuenta de Ahorros</option>
+                    <option value="checking">Cuenta Corriente</option>
+                  </select>
                 </div>
                 <div>
                   <Label htmlFor="company.bankAccount">{t('profile.bankAccount') || 'Número de Cuenta'}</Label>
