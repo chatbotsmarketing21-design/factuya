@@ -16,6 +16,7 @@ class CompanyInfo(BaseModel):
     logo: Optional[str] = None  # Base64 encoded logo
     bank: Optional[str] = None  # Bank name
     bankAccount: Optional[str] = None  # Bank account number
+    accountType: Optional[str] = None  # 'savings' or 'checking'
     defaultNotes: Optional[str] = None  # Default notes for invoices
     defaultTerms: Optional[str] = None  # Default terms for invoices
     defaultTemplate: Optional[int] = None  # Default template ID for invoices
