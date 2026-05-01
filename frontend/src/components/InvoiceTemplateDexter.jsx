@@ -8,7 +8,7 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
   const from = invoice?.from || invoice?.fromAddress || {};
   const to = invoice?.to || invoice?.toAddress || {};
   const items = invoice?.items || [];
-  const isPaid = invoice?.status === 'paid';
+  const isPaid = invoice?.status === 'paid' && !['quotation', 'proforma'].includes(invoice?.documentType);
 
   // Color dinámico: prioridad al color personalizado
   const primaryColor = templateColor || template?.color || '#1565C0';

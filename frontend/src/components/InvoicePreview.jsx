@@ -36,7 +36,7 @@ const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
   const from = invoice?.from || invoice?.fromAddress || {};
   const to = invoice?.to || invoice?.toAddress || {};
   const items = invoice?.items || [];
-  const isPaid = invoice?.status === 'paid';
+  const isPaid = invoice?.status === 'paid' && !['quotation', 'proforma'].includes(invoice?.documentType);
 
   // Función para formatear números con punto de miles y coma decimal
   const formatCurrency = (value) => {

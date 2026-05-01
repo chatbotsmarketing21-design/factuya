@@ -8,7 +8,7 @@ const InvoiceTemplateModerno = ({ invoice, template, templateColor }) => {
   const from = invoice?.from || invoice?.fromAddress || {};
   const to = invoice?.to || invoice?.toAddress || {};
   const items = invoice?.items || [];
-  const isPaid = invoice?.status === 'paid';
+  const isPaid = invoice?.status === 'paid' && !['quotation', 'proforma'].includes(invoice?.documentType);
 
   // Color dinámico: prioridad al color personalizado, luego el de la plantilla
   const primaryColor = templateColor || template?.color || '#DC2626';

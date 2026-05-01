@@ -437,7 +437,21 @@ const InvoiceCreator = () => {
 
   const handleDocumentTypeChange = async (newType) => {
     updateInvoice('documentType', newType);
-    
+
+    // Quotations and proformas are commercial proposals — they shouldn't carry
+    // a "paid" status nor any payment records. If we're switching to one of those
+    // from a paid/partial invoice, reset payment state so the user doesn't end up
+    // with a "Cotización" stamped as PAID.
+    const nonPayableTypes = ['quotation', 'proforma'];
+    if (nonPayableTypes.includes(newType)) {
+      setInvoice(prev => ({
+        ...prev,
+        status: 'pending',
+        payments: [],
+        totalPaid: 0,
+      }));
+    }
+
     // Si es Cuenta de Cobro (bill), aplicar automáticamente la plantilla especial
     if (newType === 'bill') {
       const cuentaCobroTemplate = mockTemplates.find(t => t.type === 'cuenta_cobro');
@@ -453,7 +467,7 @@ const InvoiceCreator = () => {
         setTemplate(restoreTemplate);
       }
     }
-    
+
     // Siempre generar nuevo número cuando cambia el tipo de documento
     await generateInvoiceNumber(newType);
   };
