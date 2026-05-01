@@ -66,6 +66,9 @@ const SubscriptionPanel = () => {
   const [paymentResult, setPaymentResult] = useState(null);
   const [wompiPrice, setWompiPrice] = useState(null);
   const [geo, setGeo] = useState(null);
+  const [autoRenewOptIn, setAutoRenewOptIn] = useState(false);
+  const [autoRenewInfo, setAutoRenewInfo] = useState(null);
+  const [cancelingAutoRenew, setCancelingAutoRenew] = useState(false);
 
   useEffect(() => {
     // Detect user's country to pick the right payment gateway
@@ -76,6 +79,10 @@ const SubscriptionPanel = () => {
     subscriptionAPI.getWompiConfig()
       .then(res => setWompiPrice(res.data))
       .catch(() => setWompiPrice(null));
+    // Load current auto-renewal status
+    subscriptionAPI.getAutoRenewalInfo()
+      .then(res => setAutoRenewInfo(res.data))
+      .catch(() => setAutoRenewInfo(null));
   }, []);
 
   useEffect(() => {
@@ -194,18 +201,50 @@ const SubscriptionPanel = () => {
 
   const handleUpgrade = async () => {
     try {
-      // Use Wompi instead of Stripe
-      const response = await subscriptionAPI.createWompiCheckout();
-      if (response.data.checkoutUrl) {
-        window.location.href = response.data.checkoutUrl;
+      // Route to the right gateway based on the user's detected country.
+      // Colombia -> Wompi (PSE, Nequi, local cards). Everywhere else -> Stripe.
+      // If user is in Colombia AND checked the auto-renew box, pass the opt-in flag.
+      const useWompi = geo?.gateway === 'wompi';
+      if (useWompi) {
+        const response = await subscriptionAPI.createWompiCheckout(autoRenewOptIn);
+        if (response.data.checkoutUrl) {
+          window.location.href = response.data.checkoutUrl;
+        }
+      } else {
+        const response = await subscriptionAPI.createCheckoutSession();
+        if (response.data.url) {
+          window.location.href = response.data.url;
+        }
       }
     } catch (error) {
-      console.error('Error creating Wompi checkout:', error);
+      console.error('Error creating checkout:', error);
       toast({
         title: t('messages.error'),
         description: t('subscription.errorCheckout'),
         variant: "destructive"
       });
+    }
+  };
+
+  const handleCancelAutoRenewal = async () => {
+    try {
+      setCancelingAutoRenew(true);
+      await subscriptionAPI.cancelAutoRenewal();
+      toast({
+        title: "Cobro automático cancelado",
+        description: "Tu suscripción seguirá activa hasta el fin del período actual.",
+      });
+      const res = await subscriptionAPI.getAutoRenewalInfo();
+      setAutoRenewInfo(res.data);
+    } catch (error) {
+      console.error('Error canceling auto-renewal:', error);
+      toast({
+        title: t('messages.error'),
+        description: "No se pudo cancelar el cobro automático",
+        variant: "destructive",
+      });
+    } finally {
+      setCancelingAutoRenew(false);
     }
   };
 
@@ -417,6 +456,26 @@ const SubscriptionPanel = () => {
                   <CreditCard className="w-4 h-4 mr-2" />
                   {t('subscription.subscribeNow')}
                 </Button>
+
+                {/* Auto-renew opt-in (Wompi / Colombia only) */}
+                {geo?.gateway === 'wompi' && (
+                  <label
+                    className="mt-3 flex items-start gap-2 text-left cursor-pointer select-none"
+                    data-testid="auto-renew-optin-label"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={autoRenewOptIn}
+                      onChange={(e) => setAutoRenewOptIn(e.target.checked)}
+                      className="mt-1 h-4 w-4 rounded border-gray-300 text-lime-600 focus:ring-lime-500"
+                      data-testid="auto-renew-optin-checkbox"
+                    />
+                    <span className="text-xs text-gray-600 dark:text-gray-400 leading-snug">
+                      Autorizo a FactuYa! a realizar cobros automáticos mensuales en la tarjeta
+                      que use hoy. Puedo cancelar en cualquier momento.
+                    </span>
+                  </label>
+                )}
                 {/* Métodos de pago según el gateway */}
                 <div className="flex items-center justify-center gap-3 mt-3" data-testid="payment-methods">
                   {geo?.gateway === 'wompi' ? (
@@ -494,6 +553,42 @@ const SubscriptionPanel = () => {
                 <span className="font-semibold dark:text-white">{invoicesUsed} ({t('subscription.unlimited')})</span>
               </div>
             </div>
+
+            {/* Auto-renewal section (only visible if user enrolled) */}
+            {autoRenewInfo?.autoRenewEnabled && (
+              <div
+                className="mt-6 pt-6 border-t dark:border-gray-700"
+                data-testid="auto-renewal-section"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                      <span className="font-semibold text-gray-900 dark:text-white">Cobro automático activo</span>
+                    </div>
+                    <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                      {autoRenewInfo.cardLast4
+                        ? <>Tarjeta terminada en <strong>****{autoRenewInfo.cardLast4}</strong></>
+                        : 'Tarjeta guardada para renovaciones automáticas'}
+                    </p>
+                    {autoRenewInfo.failedAttempts > 0 && (
+                      <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
+                        ⚠️ Último cobro falló ({autoRenewInfo.failedAttempts}/3 intentos)
+                      </p>
+                    )}
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleCancelAutoRenewal}
+                    disabled={cancelingAutoRenew}
+                    data-testid="cancel-auto-renewal-button"
+                  >
+                    {cancelingAutoRenew ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Cancelar cobro automático'}
+                  </Button>
+                </div>
+              </div>
+            )}
 
             {/* Cancel Subscription */}
             <div className="mt-6 pt-6 border-t dark:border-gray-700">

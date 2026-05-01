@@ -25,14 +25,26 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Wompi configuration
-WOMPI_PUBLIC_KEY = os.environ.get('WOMPI_PUBLIC_KEY', '')
-WOMPI_PRIVATE_KEY = os.environ.get('WOMPI_PRIVATE_KEY', '')
-WOMPI_INTEGRITY_KEY = os.environ.get('WOMPI_INTEGRITY_KEY', '')
+# Wompi configuration.
+# WOMPI_MODE = "sandbox" | "production" chooses which set of keys to use.
+WOMPI_MODE = os.environ.get('WOMPI_MODE', 'production').lower()
+IS_SANDBOX = WOMPI_MODE == 'sandbox'
 
-# Determine if using sandbox or production
-IS_SANDBOX = 'test' in WOMPI_PUBLIC_KEY
-WOMPI_API_URL = "https://sandbox.wompi.co/v1" if IS_SANDBOX else "https://production.wompi.co/v1"
+if IS_SANDBOX:
+    WOMPI_PUBLIC_KEY = os.environ.get('WOMPI_SANDBOX_PUBLIC_KEY', '')
+    WOMPI_PRIVATE_KEY = os.environ.get('WOMPI_SANDBOX_PRIVATE_KEY', '')
+    WOMPI_INTEGRITY_KEY = os.environ.get('WOMPI_SANDBOX_INTEGRITY_KEY', '')
+    WOMPI_EVENTS_KEY = os.environ.get('WOMPI_SANDBOX_EVENTS_KEY', '')
+    WOMPI_API_URL = "https://sandbox.wompi.co/v1"
+else:
+    WOMPI_PUBLIC_KEY = os.environ.get('WOMPI_PUBLIC_KEY', '')
+    WOMPI_PRIVATE_KEY = os.environ.get('WOMPI_PRIVATE_KEY', '')
+    WOMPI_INTEGRITY_KEY = os.environ.get('WOMPI_INTEGRITY_KEY', '')
+    WOMPI_EVENTS_KEY = os.environ.get('WOMPI_EVENTS_KEY', '')
+    WOMPI_API_URL = "https://production.wompi.co/v1"
+
+# Cron token for protected auto-charge endpoint
+RENEWAL_CRON_TOKEN = os.environ.get('RENEWAL_CRON_TOKEN', '')
 
 # Subscription pricing configuration
 # Source of truth: $5 USD per month, converted to COP at the live exchange rate
@@ -153,6 +165,7 @@ async def calculate_subscription_price() -> dict:
 # Pydantic models
 class CreateWompiCheckoutRequest(BaseModel):
     originUrl: str
+    autoRenewOptIn: bool = False  # User consented to monthly auto-charge
 
 class WompiWebhookPayload(BaseModel):
     event: str
@@ -226,6 +239,7 @@ async def create_wompi_checkout(
             "currency": "COP",
             "status": "pending",
             "paymentGateway": "wompi",
+            "autoRenewOptIn": bool(checkout_data.autoRenewOptIn),
             "metadata": {
                 "user_email": user.get("email", ""),
                 "plan": "premium_monthly"
@@ -340,7 +354,12 @@ async def verify_wompi_payment(
         raise HTTPException(status_code=400, detail=str(e))
 
 async def activate_subscription(user_id: str, reference: str, wompi_transaction: dict):
-    """Activate user subscription after successful payment"""
+    """Activate user subscription after successful payment.
+
+    If the original checkout was opted-in for auto-renewal, also save the Wompi
+    payment_source_id (permanent token) so we can charge the card automatically
+    every month from the cron job.
+    """
     # Check if already activated
     existing = await db.subscriptions.find_one({
         "userId": user_id,
@@ -351,28 +370,50 @@ async def activate_subscription(user_id: str, reference: str, wompi_transaction:
         return  # Already activated
     
     # Compute the next billing date as a CALENDAR month, not 30 days.
-    # Examples:
-    #   - Pay Jan 15 -> renew Feb 15
-    #   - Pay Jan 31 -> renew Feb 28 (or Feb 29 in leap year)
-    #   - Pay Mar 31 -> renew Apr 30
     period_start = datetime.now(timezone.utc)
     period_end = period_start + relativedelta(months=1)
 
-    # Update or create subscription
+    # Check the original checkout record for auto-renew opt-in
+    original_tx = await db.wompi_transactions.find_one({"reference": reference})
+    auto_renew_opt_in = bool(original_tx and original_tx.get("autoRenewOptIn"))
+
+    # Extract the permanent Wompi token (payment_source_id) from the transaction
+    # This only exists when the card was tokenized (and the opt-in flag was on).
+    payment_source_id = wompi_transaction.get("payment_source_id")
+
+    # Extract the last 4 digits of the card for user-visible confirmation.
+    card_last4 = None
+    payment_method = wompi_transaction.get("payment_method") or {}
+    if isinstance(payment_method, dict):
+        extra = payment_method.get("extra") or {}
+        card_last4 = extra.get("last_four")
+
+    sub_update = {
+        "status": "active",
+        "planId": "premium_monthly",
+        "wompiReference": reference,
+        "wompiTransactionId": wompi_transaction.get("id"),
+        "paymentMethod": wompi_transaction.get("payment_method_type"),
+        "currentPeriodStart": period_start,
+        "currentPeriodEnd": period_end,
+        "updatedAt": datetime.now(timezone.utc),
+    }
+
+    # Only enable auto-renew when BOTH conditions are true:
+    #   1. The user opted in during checkout
+    #   2. Wompi actually returned a reusable payment_source_id
+    if auto_renew_opt_in and payment_source_id:
+        sub_update["autoRenewEnabled"] = True
+        sub_update["paymentSourceId"] = payment_source_id
+        sub_update["cardLast4"] = card_last4
+        sub_update["autoRenewFailedAttempts"] = 0
+    else:
+        # Explicitly disable in case of a previous subscription with auto-renew enabled
+        sub_update["autoRenewEnabled"] = False
+
     await db.subscriptions.update_one(
         {"userId": user_id},
-        {
-            "$set": {
-                "status": "active",
-                "planId": "premium_monthly",
-                "wompiReference": reference,
-                "wompiTransactionId": wompi_transaction.get("id"),
-                "paymentMethod": wompi_transaction.get("payment_method_type"),
-                "currentPeriodStart": period_start,
-                "currentPeriodEnd": period_end,
-                "updatedAt": datetime.now(timezone.utc)
-            }
-        },
+        {"$set": sub_update},
         upsert=True
     )
 

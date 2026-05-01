@@ -10,11 +10,16 @@ export const subscriptionAPI = {
   
   // Wompi integration
   getWompiConfig: () => api.get('/wompi/config'),
-  createWompiCheckout: () => api.post('/wompi/create-checkout', {
-    originUrl: window.location.origin
+  createWompiCheckout: (autoRenewOptIn = false) => api.post('/wompi/create-checkout', {
+    originUrl: window.location.origin,
+    autoRenewOptIn,
   }),
   verifyWompiPayment: (reference) => api.get(`/wompi/verify/${reference}`),
   getWompiTransactions: () => api.get('/wompi/transactions'),
+
+  // Wompi auto-renewal
+  getAutoRenewalInfo: () => api.get('/wompi/auto-renewal-info'),
+  cancelAutoRenewal: () => api.delete('/wompi/cancel-auto-renewal'),
 
   // Geolocation: detect user's country to choose payment gateway
   detectCountry: () => api.get('/geo/detect'),
