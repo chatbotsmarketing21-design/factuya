@@ -79,17 +79,26 @@ const InvoiceCreator = () => {
     });
   };
 
+  // Devuelve la fecha de hoy en formato YYYY-MM-DD en la zona horaria LOCAL del usuario.
+  // No usar toISOString() porque siempre retorna UTC y desfasa la fecha en horas nocturnas.
+  const getLocalDateString = (date = new Date()) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+
   // Calcular fecha de vencimiento (un mes exacto después)
   const getOneMonthLater = () => {
     const today = new Date();
     const nextMonth = new Date(today);
     nextMonth.setMonth(nextMonth.getMonth() + 1);
-    return nextMonth.toISOString().split('T')[0];
+    return getLocalDateString(nextMonth);
   };
 
   const [invoice, setInvoice] = useState({
     number: '',
-    date: new Date().toISOString().split('T')[0],
+    date: getLocalDateString(),
     dueDate: getOneMonthLater(),
     status: 'pending',
     documentType: 'invoice', // invoice, proforma, quotation, bill, receipt
