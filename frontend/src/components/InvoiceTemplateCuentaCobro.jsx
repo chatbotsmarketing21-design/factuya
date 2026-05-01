@@ -220,7 +220,7 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
             </div>
             <div>
               <p><span className="font-medium">Banco:</span> {companyInfo?.bank || invoice.from?.bank || '---'}</p>
-              <p><span className="font-medium">Cuenta:</span> {companyInfo?.accountType === 'checking' ? 'Corriente' : 'Ahorros'} - {companyInfo?.bankAccount || invoice.from?.bankAccount || '---'}</p>
+              <p><span className="font-medium">Cuenta:</span> {(companyInfo?.accountType || invoice.from?.accountType) === 'checking' ? 'Corriente' : 'Ahorros'} - {companyInfo?.bankAccount || invoice.from?.bankAccount || '---'}</p>
             </div>
           </div>
         </div>

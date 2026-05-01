@@ -307,7 +307,8 @@ const InvoiceCreator = () => {
           zip: companyInfo.zip || '',
           country: companyInfo.country || '',
           bank: companyInfo.bank || '',
-          bankAccount: companyInfo.bankAccount || ''
+          bankAccount: companyInfo.bankAccount || '',
+          accountType: companyInfo.accountType || 'savings'
         }
       }));
     } catch (error) {
