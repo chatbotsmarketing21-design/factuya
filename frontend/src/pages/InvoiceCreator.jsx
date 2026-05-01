@@ -393,10 +393,8 @@ const InvoiceCreator = () => {
       }
     }
     
-    // Generar nuevo número para el tipo de documento seleccionado
-    if (!isEditMode) {
-      await generateInvoiceNumber(newType);
-    }
+    // Siempre generar nuevo número cuando cambia el tipo de documento
+    await generateInvoiceNumber(newType);
   };
 
   const updateInvoice = (field, value) => {
