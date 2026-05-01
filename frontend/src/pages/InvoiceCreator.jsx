@@ -188,6 +188,7 @@ const InvoiceCreator = () => {
       loadCompanyInfo();
       generateInvoiceNumber(invoice.documentType);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [invoiceId, copyData]);
 
   const loadInvoice = async (id) => {

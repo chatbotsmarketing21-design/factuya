@@ -61,6 +61,7 @@ const InvoiceDetailPage = () => {
 
   useEffect(() => {
     loadInvoice();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const loadInvoice = async () => {

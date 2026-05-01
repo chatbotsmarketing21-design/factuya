@@ -124,6 +124,7 @@ const SubscriptionPanel = () => {
     if (payment === 'wompi' && reference) {
       verifyWompiPayment(reference);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   const verifyWompiPayment = async (reference) => {
