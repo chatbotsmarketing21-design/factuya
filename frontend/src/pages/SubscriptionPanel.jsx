@@ -40,7 +40,8 @@ import {
   Sparkles,
   Send,
   CheckCircle,
-  XCircle
+  XCircle,
+  Trophy
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 
@@ -371,7 +372,15 @@ const SubscriptionPanel = () => {
                 </div>
               </div>
               
-              <div className="flex flex-col justify-center items-center bg-white dark:bg-gray-800 rounded-lg p-6">
+              <div className="relative flex flex-col justify-center items-center bg-white dark:bg-gray-800 rounded-lg p-6 pt-8">
+                {/* Insignia "Mejor precio del mercado" */}
+                <div
+                  className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 text-white text-[11px] font-bold uppercase tracking-wide shadow-lg whitespace-nowrap"
+                  data-testid="best-price-badge"
+                >
+                  <Trophy className="w-3 h-3" />
+                  Mejor precio del mercado
+                </div>
                 <p className="text-4xl font-bold text-gray-900 dark:text-white">$3.99 <span className="text-lg font-medium text-gray-500">USD</span></p>
                 <p className="text-gray-500 dark:text-gray-400">/{t('subscription.month')}</p>
                 {wompiPrice?.amountCOP && (
