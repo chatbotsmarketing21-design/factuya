@@ -72,6 +72,21 @@ async def get_subscription_status(user_id: str = Depends(get_current_user_id)):
     current_period_start = subscription.get("currentPeriodStart")
     current_period_end = subscription.get("currentPeriodEnd")
     created_at = subscription.get("createdAt")
+
+    # AUTO-EXPIRE: if subscription is "active" but its period has already ended,
+    # mark it as "expired" both in this response and persistently in the DB.
+    # This is the source of truth that the frontend SubscriptionGate relies on.
+    if status == "active" and isinstance(current_period_end, datetime):
+        end_aware = (
+            current_period_end.replace(tzinfo=timezone.utc)
+            if current_period_end.tzinfo is None else current_period_end
+        )
+        if end_aware < datetime.now(timezone.utc):
+            status = "expired"
+            await db.subscriptions.update_one(
+                {"userId": user_id},
+                {"$set": {"status": "expired", "updatedAt": datetime.now(timezone.utc)}},
+            )
     
     # Calculate days remaining
     days_remaining = None
@@ -88,7 +103,7 @@ async def get_subscription_status(user_id: str = Depends(get_current_user_id)):
     period_start_str = None
     period_end_str = None
     
-    if status == "active":
+    if status == "active" or status == "expired":
         if current_period_start and isinstance(current_period_start, datetime):
             period_start_str = current_period_start.strftime("%Y-%m-%d")
         if current_period_end and isinstance(current_period_end, datetime):

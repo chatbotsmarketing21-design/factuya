@@ -23,6 +23,7 @@ import { Toaster } from "./components/ui/toaster";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GeoLanguageDetector from "./components/GeoLanguageDetector";
+import SubscriptionGate from "./components/SubscriptionGate";
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 
@@ -36,7 +37,9 @@ function AppRouter() {
   }
 
   return (
-    <Routes>
+    <>
+      <SubscriptionGate />
+      <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/signin" element={<SignIn />} />
       <Route path="/signup" element={<SignUp />} />
@@ -119,6 +122,7 @@ function AppRouter() {
         }
       />
     </Routes>
+    </>
   );
 }
 
