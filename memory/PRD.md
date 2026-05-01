@@ -9,6 +9,77 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 
+## Session: May 1, 2026
+
+### Big Wins This Session:
+1. **Wompi/Stripe Smart Routing by IP geolocation** — Colombian users see Wompi (PSE/Nequi/local cards), the rest of the world sees Stripe (auto multi-currency).
+2. **Subscription Lifecycle Overhaul** — calendar-month renewals (not 30 days), real-time expiry detection, full-screen blocking modal when expired.
+3. **Renewal Email Notifications** — automated reminders 3 days before expiry and at expiry.
+4. **Multiple Bug Fixes** — timezone, draft preservation, paid stamp on quotations, stats counting quotations.
+
+### Changes Made This Session:
+
+1. **Auto-Detect Country (`backend/routes/geo.py`)** ✅ NEW MODULE
+   - `GET /api/geo/detect` — extracts client IP (X-Forwarded-For), queries ipapi.co → ip-api.com → fallback.
+   - Returns `country_code`, `country_name`, `gateway` (`wompi` for CO, `stripe` else), `suggested_language` (es/en).
+
+2. **Dynamic USD → COP Exchange Rate (`backend/routes/wompi.py`)** ✅
+   - `get_usd_to_cop_rate()` with cascade: TRM oficial datos.gov.co → open.er-api.com → 4200 fallback. 1h cache.
+   - `/wompi/config` and new `/wompi/exchange-rate` return live price.
+   - Each Wompi transaction stores the historical TRM used.
+
+3. **Subscription Price = $3.99 USD/month** ✅
+   - Changed from $5 in 5 frontend places + `wompi.py` + `subscription.py` (Stripe).
+
+4. **"Mejor precio del mercado" Badge** ✅
+   - Animated gradient badge (amber→orange→pink) above the price card on `SubscriptionPanel`.
+
+5. **Geo-Based Language Detection (`components/GeoLanguageDetector.jsx`)** ✅
+   - On first load: applies the suggested language. Manual choice via `LanguageSwitcher` is respected forever (`i18nextLngManual` flag).
+
+6. **Subscription Cycle = Calendar Month** ✅
+   - `wompi.py` and `subscription.py` use `relativedelta(months=1)` instead of `timedelta(days=30)`.
+   - Edge cases verified: 31 Jan → 28/29 Feb, 31 Mar → 30 Apr, 31 Dec → 31 Jan next year.
+
+7. **Renewal Notifications (`backend/routes/renewal.py`)** ✅ NEW MODULE
+   - `GET /api/renewal/check` — inspect targets (no send).
+   - `POST /api/renewal/send-notifications` — send emails (protected by `X-Renewal-Token` header).
+   - Sends "Vence pronto" 3 days before, "Ha vencido" within 24h after (auto-marks status='expired').
+   - Idempotent via `renewalReminderSentFor` / `expiredNoticeSentFor`.
+   - Uses Resend (sandbox: only sends to chatbotsmarketing21@gmail.com until domain is verified).
+
+8. **Subscription Gate Modal (`components/SubscriptionGate.jsx`)** ✅ NEW COMPONENT
+   - Full-screen, non-dismissible modal when `status === 'expired'`.
+   - Two escape paths: "Renovar Premium" or "Cerrar sesión".
+   - Re-checks every 60s (auto-closes if user pays in another tab).
+   - Backend `/api/subscription/status` auto-marks expired subs both in response and persistently in DB.
+
+9. **Bug Fixes** ✅
+   - **Timezone bug**: `new Date().toISOString().split('T')[0]` replaced with local-date helper `getLocalDateString()`. Audited 28 timezones × 4 critical moments = 112 tests passed.
+   - **Draft preservation on Change Template**: sessionStorage `factuya:invoice-draft` saves form state when navigating to /templates and restores on return.
+   - **Invoice numbering on type change in edit mode**: removed `!isEditMode` guard on `handleDocumentTypeChange`.
+   - **PAGADO stamp on quotations**: when changing type to quotation/proforma, status/payments/totalPaid are reset. All 4 templates also defensively check `documentType` not in [quotation, proforma].
+   - **Quotations counted in stats**: `/api/invoices/stats` filters `documentType in {quotation, proforma}` before computing all metrics.
+   - **ESLint warnings**: cleaned all 9 `react-hooks/exhaustive-deps` warnings; build now passes with `CI=true`.
+
+### Environment Variables Added:
+- `RENEWAL_CRON_TOKEN` (auto-generated, in `/app/memory/test_credentials.md`)
+- `APP_PUBLIC_URL=https://factuya.app`
+
+### Key Learnings This Session:
+- Wompi only operates in Colombia/Centroamérica → must use Stripe for international users.
+- TRM oficial via datos.gov.co is reliable (~3637 COP/USD as of May 2026).
+- Resend in sandbox mode only sends to the registered email — domain verification needed for production emails.
+- python-dateutil's `relativedelta` is the correct way to handle calendar month arithmetic.
+
+### Pending Verification by User:
+- All session changes need to be deployed to VPS (`git pull && yarn build && systemctl restart factuya`).
+- New env vars `RENEWAL_CRON_TOKEN` and `APP_PUBLIC_URL` must be added to VPS `.env`.
+- Cron job for renewal notifications needs to be configured (one-line crontab entry).
+- ⚠️ User's own subscription is expired — apenas despliegue, will see the SubscriptionGate modal (intentional, opcion A confirmed).
+
+---
+
 ## Session: March 16, 2026
 
 ### Changes Made This Session:
