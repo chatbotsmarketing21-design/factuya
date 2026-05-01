@@ -17,6 +17,7 @@ from routes.admin import router as admin_router
 from routes.contact import router as contact_router
 from routes.wompi import router as wompi_router
 from routes.geo import router as geo_router
+from routes.renewal import router as renewal_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -48,6 +49,7 @@ api_router.include_router(admin_router)
 api_router.include_router(contact_router)
 api_router.include_router(wompi_router)
 api_router.include_router(geo_router)
+api_router.include_router(renewal_router)
 
 # Include the router in the main app
 app.include_router(api_router)
