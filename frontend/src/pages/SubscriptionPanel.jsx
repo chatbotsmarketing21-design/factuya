@@ -63,6 +63,14 @@ const SubscriptionPanel = () => {
   const [sendingMessage, setSendingMessage] = useState(false);
   const [verifyingPayment, setVerifyingPayment] = useState(false);
   const [paymentResult, setPaymentResult] = useState(null);
+  const [wompiPrice, setWompiPrice] = useState(null);
+
+  useEffect(() => {
+    // Fetch live Wompi price (USD->COP) so the user sees the actual COP amount
+    subscriptionAPI.getWompiConfig()
+      .then(res => setWompiPrice(res.data))
+      .catch(() => setWompiPrice(null));
+  }, []);
 
   useEffect(() => {
     // Pre-fill email if user is logged in
@@ -364,8 +372,18 @@ const SubscriptionPanel = () => {
               </div>
               
               <div className="flex flex-col justify-center items-center bg-white dark:bg-gray-800 rounded-lg p-6">
-                <p className="text-4xl font-bold text-gray-900 dark:text-white">$5</p>
-                <p className="text-gray-500 dark:text-gray-400 mb-4">/{t('subscription.month')}</p>
+                <p className="text-4xl font-bold text-gray-900 dark:text-white">$5 <span className="text-lg font-medium text-gray-500">USD</span></p>
+                <p className="text-gray-500 dark:text-gray-400">/{t('subscription.month')}</p>
+                {wompiPrice?.amountCOP && (
+                  <div className="mt-2 mb-2 text-center" data-testid="wompi-cop-price">
+                    <p className="text-sm font-semibold text-lime-600 dark:text-lime-400">
+                      ≈ ${wompiPrice.amountCOP.toLocaleString('es-CO')} COP
+                    </p>
+                    <p className="text-[10px] text-gray-400 dark:text-gray-500">
+                      TRM: ${Number(wompiPrice.exchangeRate).toLocaleString('es-CO', { maximumFractionDigits: 2 })} · {wompiPrice.rateSource}
+                    </p>
+                  </div>
+                )}
                 <Button 
                   onClick={handleUpgrade}
                   className="w-full bg-lime-500 hover:bg-lime-600 text-white"

@@ -33,9 +33,121 @@ WOMPI_INTEGRITY_KEY = os.environ.get('WOMPI_INTEGRITY_KEY', '')
 IS_SANDBOX = 'test' in WOMPI_PUBLIC_KEY
 WOMPI_API_URL = "https://sandbox.wompi.co/v1" if IS_SANDBOX else "https://production.wompi.co/v1"
 
-# Subscription price in Colombian Pesos (approximately $5 USD)
-# 20,000 COP = 2,000,000 centavos
-SUBSCRIPTION_PRICE_COP = 2000000  # 20,000 COP in centavos (Wompi uses centavos)
+# Subscription pricing configuration
+# Source of truth: $5 USD per month, converted to COP at the live exchange rate
+SUBSCRIPTION_PRICE_USD = 5
+FALLBACK_USD_TO_COP_RATE = 4200  # Used only if all exchange rate APIs fail
+
+# In-memory cache for the USD->COP exchange rate (1 hour TTL)
+_exchange_rate_cache = {
+    "rate": None,
+    "fetched_at": None,
+    "source": None,
+}
+_RATE_CACHE_TTL_SECONDS = 3600  # 1 hour
+
+async def get_usd_to_cop_rate() -> dict:
+    """Fetch current USD->COP exchange rate.
+
+    Order of preference:
+    1. Colombia's official TRM (Tasa Representativa del Mercado) from datos.gov.co
+    2. open.er-api.com (community-maintained, no key required)
+    3. Hardcoded fallback rate
+    Results are cached in-memory for 1 hour.
+    """
+    now = datetime.now(timezone.utc)
+    cached = _exchange_rate_cache
+
+    # Serve from cache if still fresh
+    if cached["rate"] and cached["fetched_at"]:
+        age = (now - cached["fetched_at"]).total_seconds()
+        if age < _RATE_CACHE_TTL_SECONDS:
+            return {
+                "rate": cached["rate"],
+                "source": cached["source"],
+                "fetched_at": cached["fetched_at"].isoformat(),
+                "cached": True,
+            }
+
+    # 1. Try Colombia's official TRM
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as http_client:
+            resp = await http_client.get(
+                "https://www.datos.gov.co/resource/32sa-8pi3.json",
+                params={"$limit": 1, "$order": "vigenciadesde DESC"},
+            )
+            if resp.status_code == 200:
+                data = resp.json()
+                if data and data[0].get("valor"):
+                    rate = float(data[0]["valor"])
+                    if rate > 1000:  # sanity check
+                        _exchange_rate_cache.update({
+                            "rate": rate,
+                            "fetched_at": now,
+                            "source": "datos.gov.co (TRM oficial)",
+                        })
+                        return {
+                            "rate": rate,
+                            "source": "datos.gov.co (TRM oficial)",
+                            "fetched_at": now.isoformat(),
+                            "cached": False,
+                        }
+    except Exception as e:
+        print(f"[Wompi] TRM API error: {e}")
+
+    # 2. Fallback: open.er-api.com
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as http_client:
+            resp = await http_client.get("https://open.er-api.com/v6/latest/USD")
+            if resp.status_code == 200:
+                data = resp.json()
+                cop_rate = data.get("rates", {}).get("COP")
+                if cop_rate and float(cop_rate) > 1000:
+                    rate = float(cop_rate)
+                    _exchange_rate_cache.update({
+                        "rate": rate,
+                        "fetched_at": now,
+                        "source": "open.er-api.com",
+                    })
+                    return {
+                        "rate": rate,
+                        "source": "open.er-api.com",
+                        "fetched_at": now.isoformat(),
+                        "cached": False,
+                    }
+    except Exception as e:
+        print(f"[Wompi] open.er-api.com error: {e}")
+
+    # 3. Last resort: hardcoded fallback rate
+    return {
+        "rate": float(FALLBACK_USD_TO_COP_RATE),
+        "source": "fallback (hardcoded)",
+        "fetched_at": now.isoformat(),
+        "cached": False,
+    }
+
+async def calculate_subscription_price() -> dict:
+    """Compute current subscription price in COP based on live USD->COP rate.
+
+    Returns the amount in centavos (Wompi format) and additional metadata for transparency.
+    """
+    rate_info = await get_usd_to_cop_rate()
+    rate = rate_info["rate"]
+
+    # $5 USD * rate -> COP, rounded to the nearest 100 COP for a clean amount
+    cop_raw = SUBSCRIPTION_PRICE_USD * rate
+    cop_rounded = int(round(cop_raw / 100.0) * 100)
+    centavos = cop_rounded * 100  # Wompi expects centavos
+
+    return {
+        "amount_centavos": centavos,
+        "amount_cop": cop_rounded,
+        "amount_usd": SUBSCRIPTION_PRICE_USD,
+        "exchange_rate": rate,
+        "rate_source": rate_info["source"],
+        "rate_fetched_at": rate_info["fetched_at"],
+        "rate_cached": rate_info.get("cached", False),
+    }
 
 # Pydantic models
 class CreateWompiCheckoutRequest(BaseModel):
@@ -55,12 +167,23 @@ def generate_integrity_signature(reference: str, amount_cents: int, currency: st
 
 @router.get("/config")
 async def get_wompi_config():
-    """Get Wompi public configuration for frontend"""
+    """Get Wompi public configuration for frontend, with live USD->COP price."""
+    price = await calculate_subscription_price()
     return {
         "publicKey": WOMPI_PUBLIC_KEY,
         "currency": "COP",
-        "amountInCents": SUBSCRIPTION_PRICE_COP
+        "amountInCents": price["amount_centavos"],
+        "amountCOP": price["amount_cop"],
+        "amountUSD": price["amount_usd"],
+        "exchangeRate": price["exchange_rate"],
+        "rateSource": price["rate_source"],
+        "rateFetchedAt": price["rate_fetched_at"],
     }
+
+@router.get("/exchange-rate")
+async def get_exchange_rate():
+    """Public endpoint to inspect the current USD->COP rate used for billing."""
+    return await calculate_subscription_price()
 
 @router.post("/create-checkout")
 async def create_wompi_checkout(
@@ -74,7 +197,11 @@ async def create_wompi_checkout(
         user = await db.users.find_one({"id": user_id})
         if not user:
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
-        
+
+        # Compute the live COP price for $5 USD at the current exchange rate
+        price = await calculate_subscription_price()
+        amount_centavos = price["amount_centavos"]
+
         # Generate unique reference (alphanumeric, no special chars except - and _)
         reference = f"factuya{uuid.uuid4().hex[:12]}"
         
@@ -84,13 +211,17 @@ async def create_wompi_checkout(
         
         # Generate integrity signature for widget
         # Format: reference + amount + currency + integrity_key
-        integrity_signature = generate_integrity_signature(reference, SUBSCRIPTION_PRICE_COP)
+        integrity_signature = generate_integrity_signature(reference, amount_centavos)
         
         # Create payment transaction record
         transaction = {
             "userId": user_id,
             "reference": reference,
-            "amount": SUBSCRIPTION_PRICE_COP,
+            "amount": amount_centavos,
+            "amountCOP": price["amount_cop"],
+            "amountUSD": price["amount_usd"],
+            "exchangeRate": price["exchange_rate"],
+            "rateSource": price["rate_source"],
             "currency": "COP",
             "status": "pending",
             "paymentGateway": "wompi",
@@ -110,7 +241,7 @@ async def create_wompi_checkout(
         params = [
             f"public-key={WOMPI_PUBLIC_KEY}",
             f"currency=COP",
-            f"amount-in-cents={SUBSCRIPTION_PRICE_COP}",
+            f"amount-in-cents={amount_centavos}",
             f"reference={reference}",
             f"signature:integrity={integrity_signature}",
             f"redirect-url={quote(redirect_url, safe='')}"
@@ -122,7 +253,11 @@ async def create_wompi_checkout(
             "checkoutUrl": checkout_url,
             "reference": reference,
             "publicKey": WOMPI_PUBLIC_KEY,
-            "amountInCents": SUBSCRIPTION_PRICE_COP,
+            "amountInCents": amount_centavos,
+            "amountCOP": price["amount_cop"],
+            "amountUSD": price["amount_usd"],
+            "exchangeRate": price["exchange_rate"],
+            "rateSource": price["rate_source"],
             "currency": "COP",
             "integritySignature": integrity_signature,
             "redirectUrl": redirect_url
