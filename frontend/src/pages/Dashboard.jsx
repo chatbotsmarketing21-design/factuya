@@ -557,8 +557,12 @@ const Dashboard = () => {
     
     setAddingPayment(true);
     try {
+      // Build today's date in the user's LOCAL timezone (avoid UTC off-by-one at night)
+      const today = new Date();
+      const localDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
       await invoiceAPI.addPayment(selectedInvoiceForPayment.id, {
         amount: amount,
+        date: localDate,
         note: paymentNote || null
       });
       
