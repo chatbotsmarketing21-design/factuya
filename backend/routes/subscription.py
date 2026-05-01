@@ -4,6 +4,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
+from dateutil.relativedelta import relativedelta
 from pydantic import BaseModel
 from typing import Optional
 from utils.auth import get_current_user_id
@@ -234,7 +235,9 @@ async def get_checkout_status(
             })
             
             if not existing_subscription:
-                # Activate subscription
+                # Activate subscription with calendar-month renewal
+                period_start = datetime.now(timezone.utc)
+                period_end = period_start + relativedelta(months=1)
                 await db.subscriptions.update_one(
                     {"userId": user_id},
                     {
@@ -242,8 +245,8 @@ async def get_checkout_status(
                             "status": "active",
                             "planId": "premium_monthly",
                             "stripeSessionId": session_id,
-                            "currentPeriodStart": datetime.now(timezone.utc),
-                            "currentPeriodEnd": datetime.now(timezone.utc) + timedelta(days=30),
+                            "currentPeriodStart": period_start,
+                            "currentPeriodEnd": period_end,
                             "updatedAt": datetime.now(timezone.utc)
                         }
                     },
@@ -280,7 +283,9 @@ async def stripe_webhook(request: Request):
             session_id = webhook_response.session_id
             
             if user_id and webhook_response.payment_status == "paid":
-                # Update subscription
+                # Update subscription with calendar-month renewal
+                period_start = datetime.now(timezone.utc)
+                period_end = period_start + relativedelta(months=1)
                 await db.subscriptions.update_one(
                     {"userId": user_id},
                     {
@@ -288,8 +293,8 @@ async def stripe_webhook(request: Request):
                             "status": "active",
                             "planId": "premium_monthly",
                             "stripeSessionId": session_id,
-                            "currentPeriodStart": datetime.now(timezone.utc),
-                            "currentPeriodEnd": datetime.now(timezone.utc) + timedelta(days=30),
+                            "currentPeriodStart": period_start,
+                            "currentPeriodEnd": period_end,
                             "updatedAt": datetime.now(timezone.utc)
                         }
                     },

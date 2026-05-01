@@ -8,6 +8,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
+from dateutil.relativedelta import relativedelta
 from pydantic import BaseModel
 from typing import Optional, Dict, Any
 from utils.auth import get_current_user_id
@@ -349,6 +350,14 @@ async def activate_subscription(user_id: str, reference: str, wompi_transaction:
     if existing:
         return  # Already activated
     
+    # Compute the next billing date as a CALENDAR month, not 30 days.
+    # Examples:
+    #   - Pay Jan 15 -> renew Feb 15
+    #   - Pay Jan 31 -> renew Feb 28 (or Feb 29 in leap year)
+    #   - Pay Mar 31 -> renew Apr 30
+    period_start = datetime.now(timezone.utc)
+    period_end = period_start + relativedelta(months=1)
+
     # Update or create subscription
     await db.subscriptions.update_one(
         {"userId": user_id},
@@ -359,8 +368,8 @@ async def activate_subscription(user_id: str, reference: str, wompi_transaction:
                 "wompiReference": reference,
                 "wompiTransactionId": wompi_transaction.get("id"),
                 "paymentMethod": wompi_transaction.get("payment_method_type"),
-                "currentPeriodStart": datetime.now(timezone.utc),
-                "currentPeriodEnd": datetime.now(timezone.utc) + timedelta(days=30),
+                "currentPeriodStart": period_start,
+                "currentPeriodEnd": period_end,
                 "updatedAt": datetime.now(timezone.utc)
             }
         },
