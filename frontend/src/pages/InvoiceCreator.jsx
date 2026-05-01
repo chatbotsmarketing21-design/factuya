@@ -88,6 +88,38 @@ const InvoiceCreator = () => {
     return `${y}-${m}-${d}`;
   };
 
+  // Draft persistence: keep invoice form state alive across navigation to /templates
+  // and back. Stored in sessionStorage so it is scoped to this tab/session.
+  const DRAFT_KEY = 'factuya:invoice-draft';
+  const saveDraft = (draft) => {
+    try {
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch (e) {
+      // ignore quota / privacy-mode errors
+    }
+  };
+  const loadDraft = () => {
+    try {
+      const raw = sessionStorage.getItem(DRAFT_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  };
+  const clearDraft = () => {
+    try {
+      sessionStorage.removeItem(DRAFT_KEY);
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  // Navigate to /templates while preserving the in-progress invoice as a draft.
+  const goToTemplates = () => {
+    saveDraft({ invoice, templateColor, savedAt: Date.now() });
+    navigate('/templates');
+  };
+
   // Calcular fecha de vencimiento (un mes exacto después)
   const getOneMonthLater = () => {
     const today = new Date();
@@ -194,8 +226,27 @@ const InvoiceCreator = () => {
       }, 500);
     } else {
       // Modo creación - cargar info de empresa y generar número
-      loadCompanyInfo();
-      generateInvoiceNumber(invoice.documentType);
+      // PERO si hay un draft guardado (porque el usuario fue a /templates y volvió),
+      // restaurarlo en lugar de empezar en blanco. El template/color del query param
+      // (que vienen de la página de plantillas) tienen prioridad sobre el draft.
+      const draft = loadDraft();
+      if (draft && draft.invoice) {
+        setInvoice(prev => ({
+          ...draft.invoice,
+          // El template viene del URL (recién seleccionado en /templates)
+          template: templateId,
+        }));
+        // El color también: si vino del URL, usar ese; si no, el del draft
+        if (colorFromUrl) {
+          setTemplateColor(colorFromUrl);
+        } else if (draft.templateColor) {
+          setTemplateColor(draft.templateColor);
+        }
+        // No regeneramos el número: respetamos el que ya tenía el draft
+      } else {
+        loadCompanyInfo();
+        generateInvoiceNumber(invoice.documentType);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [invoiceId, copyData]);
@@ -669,6 +720,8 @@ const InvoiceCreator = () => {
       }
       
       // On mobile, navigate to invoice detail page; on desktop, go to dashboard
+      // Clear the draft regardless: the invoice is now persisted in DB.
+      clearDraft();
       const isMobile = window.innerWidth < 640;
       if (isMobile && savedInvoiceId) {
         navigate(`/invoice/${savedInvoiceId}`);
@@ -908,7 +961,7 @@ const InvoiceCreator = () => {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Link to="/templates">
+                <Link to="/templates" onClick={(e) => { e.preventDefault(); goToTemplates(); }}>
                   <Button variant="outline" size="sm">
                     {t('invoice.changeTemplate')}
                   </Button>
@@ -960,7 +1013,11 @@ const InvoiceCreator = () => {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link to="/templates" className="w-full">
+                    <Link
+                      to="/templates"
+                      className="w-full"
+                      onClick={(e) => { e.preventDefault(); setShowMobileMenu(false); goToTemplates(); }}
+                    >
                       {t('invoice.changeTemplate')}
                     </Link>
                   </DropdownMenuItem>

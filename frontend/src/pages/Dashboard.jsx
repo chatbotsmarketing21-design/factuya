@@ -169,6 +169,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     loadData();
+    // Clear any in-progress invoice draft: arriving at the Dashboard means the user
+    // has abandoned the creation flow (only /templates round-trips preserve the draft).
+    try {
+      sessionStorage.removeItem('factuya:invoice-draft');
+    } catch (e) {
+      // ignore
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
