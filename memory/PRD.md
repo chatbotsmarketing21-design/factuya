@@ -250,6 +250,20 @@ All changes deployed to factuya.site VPS
 - [ ] **DUNS Number for Google Play Store** - User needs guidance for registration
 - [ ] **Submit to Google Play Store** - As Trusted Web Activity (TWA) after DUNS
 
+## Pre-Play Store Launch Tasks (do LAST, right before TWA submission)
+- [ ] **Add Multi-Language Support** - Currently only ES/EN. Before launching to Play Store globally, add:
+  - [ ] Portuguese (pt-BR) — Brazil market (~210M speakers)
+  - [ ] French (fr) — France, Canada, Africa
+  - [ ] German (de) — Germany, Austria, Switzerland
+  - [ ] (Optional) Italian, Japanese, etc.
+  - **Implementation steps per language**:
+    1. Create `/app/frontend/src/locales/{lng}.json` translating all keys from `es.json`
+    2. Register in `/app/frontend/src/i18n.js` (resources + supportedLngs)
+    3. Add `DropdownMenuItem` in `/app/frontend/src/components/LanguageSwitcher.jsx`
+    4. Map countries to language in `/app/backend/routes/geo.py` (`_suggested_language` function)
+  - **Why last?**: Locks down all UI strings before translation cost; Stripe already supports
+    multi-currency globally so no additional payment infra needed.
+
 ## Future Tasks (P2)
 - [ ] Add more custom invoice templates
 - [ ] Client and Product management sections
