@@ -15,6 +15,9 @@ export const subscriptionAPI = {
   }),
   verifyWompiPayment: (reference) => api.get(`/wompi/verify/${reference}`),
   getWompiTransactions: () => api.get('/wompi/transactions'),
+
+  // Geolocation: detect user's country to choose payment gateway
+  detectCountry: () => api.get('/geo/detect'),
 };
 
 export default subscriptionAPI;

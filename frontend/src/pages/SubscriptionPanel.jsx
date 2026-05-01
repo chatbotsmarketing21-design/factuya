@@ -65,8 +65,13 @@ const SubscriptionPanel = () => {
   const [verifyingPayment, setVerifyingPayment] = useState(false);
   const [paymentResult, setPaymentResult] = useState(null);
   const [wompiPrice, setWompiPrice] = useState(null);
+  const [geo, setGeo] = useState(null);
 
   useEffect(() => {
+    // Detect user's country to pick the right payment gateway
+    subscriptionAPI.detectCountry()
+      .then(res => setGeo(res.data))
+      .catch(() => setGeo({ country_code: 'XX', gateway: 'stripe' }));
     // Fetch live Wompi price (USD->COP) so the user sees the actual COP amount
     subscriptionAPI.getWompiConfig()
       .then(res => setWompiPrice(res.data))
@@ -383,13 +388,24 @@ const SubscriptionPanel = () => {
                 </div>
                 <p className="text-4xl font-bold text-gray-900 dark:text-white">$3.99 <span className="text-lg font-medium text-gray-500">USD</span></p>
                 <p className="text-gray-500 dark:text-gray-400">/{t('subscription.month')}</p>
-                {wompiPrice?.amountCOP && (
+                {/* Show COP equivalent only for Colombian users (Wompi gateway) */}
+                {geo?.gateway === 'wompi' && wompiPrice?.amountCOP && (
                   <div className="mt-2 mb-2 text-center" data-testid="wompi-cop-price">
                     <p className="text-sm font-semibold text-lime-600 dark:text-lime-400">
                       ≈ ${wompiPrice.amountCOP.toLocaleString('es-CO')} COP
                     </p>
                     <p className="text-[10px] text-gray-400 dark:text-gray-500">
                       TRM: ${Number(wompiPrice.exchangeRate).toLocaleString('es-CO', { maximumFractionDigits: 2 })} · {wompiPrice.rateSource}
+                    </p>
+                  </div>
+                )}
+                {/* International users (Stripe) - mention auto-conversion */}
+                {geo && geo.gateway === 'stripe' && (
+                  <div className="mt-2 mb-2 text-center" data-testid="stripe-info">
+                    <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                      {geo.country_name && geo.country_name !== 'Unknown'
+                        ? `Detectamos que estás en ${geo.country_name}. Tu banco convertirá $3.99 USD a tu moneda local automáticamente.`
+                        : 'Tu banco convertirá $3.99 USD a tu moneda local automáticamente.'}
                     </p>
                   </div>
                 )}
@@ -401,12 +417,23 @@ const SubscriptionPanel = () => {
                   <CreditCard className="w-4 h-4 mr-2" />
                   {t('subscription.subscribeNow')}
                 </Button>
-                {/* Métodos de pago Wompi */}
-                <div className="flex items-center justify-center gap-3 mt-3">
-                  <img src="https://cdn-icons-png.flaticon.com/24/349/349221.png" alt="Visa" className="h-5 opacity-70" />
-                  <img src="https://cdn-icons-png.flaticon.com/24/349/349228.png" alt="Mastercard" className="h-5 opacity-70" />
-                  <span className="text-xs font-bold text-blue-600 opacity-70">PSE</span>
-                  <span className="text-xs font-bold text-pink-500 opacity-70">Nequi</span>
+                {/* Métodos de pago según el gateway */}
+                <div className="flex items-center justify-center gap-3 mt-3" data-testid="payment-methods">
+                  {geo?.gateway === 'wompi' ? (
+                    <>
+                      <img src="https://cdn-icons-png.flaticon.com/24/349/349221.png" alt="Visa" className="h-5 opacity-70" />
+                      <img src="https://cdn-icons-png.flaticon.com/24/349/349228.png" alt="Mastercard" className="h-5 opacity-70" />
+                      <span className="text-xs font-bold text-blue-600 opacity-70">PSE</span>
+                      <span className="text-xs font-bold text-pink-500 opacity-70">Nequi</span>
+                    </>
+                  ) : (
+                    <>
+                      <img src="https://cdn-icons-png.flaticon.com/24/349/349221.png" alt="Visa" className="h-5 opacity-70" />
+                      <img src="https://cdn-icons-png.flaticon.com/24/349/349228.png" alt="Mastercard" className="h-5 opacity-70" />
+                      <span className="text-xs font-bold text-gray-700 opacity-70">AMEX</span>
+                      <span className="text-xs font-bold text-indigo-600 opacity-70">Stripe</span>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
