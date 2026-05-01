@@ -130,17 +130,29 @@ async def get_invoices(
 
 @router.get("/stats", response_model=InvoiceStats)
 async def get_invoice_stats(user_id: str = Depends(get_current_user_id)):
-    """Get invoice statistics for current user"""
+    """Get invoice statistics for current user.
+
+    Quotations and proformas are commercial proposals — they are NOT counted in
+    financial stats (revenue, paid, pending, overdue) because they don't represent
+    money owed or received. Only invoices, bills (cuentas de cobro), and receipts
+    are counted.
+    """
     invoices = await db.invoices.find({"userId": user_id}).to_list(1000)
-    
-    # Solo sumar ingresos de facturas pagadas
-    total_revenue = sum(inv["total"] for inv in invoices if inv["status"] == "paid")
-    total_invoices = len(invoices)
-    paid_invoices = len([inv for inv in invoices if inv["status"] == "paid"])
-    pending_invoices = len([inv for inv in invoices if inv["status"] == "pending"])
-    draft_invoices = len([inv for inv in invoices if inv["status"] == "draft"])
-    overdue_invoices = len([inv for inv in invoices if inv["status"] == "overdue"])
-    
+
+    # Excluir cotizaciones y proformas de todas las estadísticas financieras
+    NON_FINANCIAL_TYPES = {"quotation", "proforma"}
+    financial = [
+        inv for inv in invoices
+        if inv.get("documentType", "invoice") not in NON_FINANCIAL_TYPES
+    ]
+
+    total_revenue = sum(inv["total"] for inv in financial if inv["status"] == "paid")
+    total_invoices = len(financial)
+    paid_invoices = len([inv for inv in financial if inv["status"] == "paid"])
+    pending_invoices = len([inv for inv in financial if inv["status"] == "pending"])
+    draft_invoices = len([inv for inv in financial if inv["status"] == "draft"])
+    overdue_invoices = len([inv for inv in financial if inv["status"] == "overdue"])
+
     return InvoiceStats(
         totalRevenue=total_revenue,
         totalInvoices=total_invoices,
