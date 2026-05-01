@@ -14,6 +14,12 @@ const LanguageSwitcher = () => {
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
+    // Mark this as a manual choice so the geo-based auto-detector won't override it.
+    try {
+      localStorage.setItem('i18nextLngManual', 'true');
+    } catch (e) {
+      // ignore storage errors
+    }
   };
 
   const currentLanguage = i18n.language === 'es' ? 'Español' : 'English';

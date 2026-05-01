@@ -3,11 +3,28 @@
 Used to choose the optimal payment gateway:
 - Colombia (CO) -> Wompi (PSE, Nequi, local cards, lower fees)
 - Everywhere else -> Stripe (handles automatic currency conversion)
+Also returns a suggested UI language based on the country.
 """
 from fastapi import APIRouter, Request
 import httpx
 
 router = APIRouter(prefix="/geo", tags=["Geolocation"])
+
+# Spanish-speaking countries (UI default es)
+SPANISH_COUNTRIES = {
+    "AR", "BO", "CL", "CO", "CR", "CU", "DO", "EC", "ES",
+    "GT", "HN", "MX", "NI", "PA", "PE", "PR", "PY", "SV",
+    "UY", "VE", "GQ",
+}
+
+
+def _suggested_language(country_code: str) -> str:
+    """Pick the best supported UI language for a country.
+
+    Currently supported in the app: es, en.
+    Spanish-speaking countries default to 'es', everyone else to 'en'.
+    """
+    return "es" if country_code.upper() in SPANISH_COUNTRIES else "en"
 
 
 def _client_ip(request: Request) -> str:
@@ -40,6 +57,7 @@ async def detect_country(request: Request):
             "country_code": "CO",
             "country_name": "Colombia",
             "gateway": "wompi",
+            "suggested_language": _suggested_language("CO"),
             "ip": ip or "local",
             "source": "local-fallback",
         }
@@ -56,6 +74,7 @@ async def detect_country(request: Request):
                         "country_code": country_code,
                         "country_name": data.get("country_name") or country_code,
                         "gateway": "wompi" if country_code == "CO" else "stripe",
+                        "suggested_language": _suggested_language(country_code),
                         "ip": ip,
                         "source": "ipapi.co",
                     }
@@ -75,6 +94,7 @@ async def detect_country(request: Request):
                             "country_code": country_code,
                             "country_name": data.get("country") or country_code,
                             "gateway": "wompi" if country_code == "CO" else "stripe",
+                            "suggested_language": _suggested_language(country_code),
                             "ip": ip,
                             "source": "ip-api.com",
                         }
@@ -86,6 +106,7 @@ async def detect_country(request: Request):
         "country_code": "XX",
         "country_name": "Unknown",
         "gateway": "stripe",
+        "suggested_language": "en",
         "ip": ip,
         "source": "fallback",
     }

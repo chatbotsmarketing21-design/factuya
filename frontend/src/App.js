@@ -22,6 +22,7 @@ import AdminBalance from "./pages/AdminBalance";
 import { Toaster } from "./components/ui/toaster";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import GeoLanguageDetector from "./components/GeoLanguageDetector";
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 
@@ -135,6 +136,7 @@ function App() {
   return (
     <div className="App">
       <AuthProvider>
+        <GeoLanguageDetector />
         <BrowserRouter>
           <AppRouter />
         </BrowserRouter>
