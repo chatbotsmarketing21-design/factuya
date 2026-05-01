@@ -89,7 +89,7 @@ const SubscriptionDialog = ({ open, onOpenChange, onSuccess }) => {
 
                 <div className="bg-lime-50 border-2 border-lime-500 rounded-lg p-6">
                   <div className="text-center mb-4">
-                    <span className="text-3xl font-bold text-gray-900">$5<span className="text-lg font-normal text-gray-600">/mes</span></span>
+                    <span className="text-3xl font-bold text-gray-900">$3.99<span className="text-lg font-normal text-gray-600">/mes</span></span>
                     <span className="text-sm text-gray-600 mt-1 block">Plan Premium</span>
                   </div>
 
@@ -144,7 +144,7 @@ const SubscriptionDialog = ({ open, onOpenChange, onSuccess }) => {
             ) : (
               <>
                 <CreditCard className="w-5 h-5 mr-2" />
-                Suscribirse Ahora - $5/mes
+                Suscribirse Ahora - $3.99/mes
               </>
             )}
           </Button>

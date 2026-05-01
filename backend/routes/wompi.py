@@ -35,7 +35,7 @@ WOMPI_API_URL = "https://sandbox.wompi.co/v1" if IS_SANDBOX else "https://produc
 
 # Subscription pricing configuration
 # Source of truth: $5 USD per month, converted to COP at the live exchange rate
-SUBSCRIPTION_PRICE_USD = 5
+SUBSCRIPTION_PRICE_USD = 3.99
 FALLBACK_USD_TO_COP_RATE = 4200  # Used only if all exchange rate APIs fail
 
 # In-memory cache for the USD->COP exchange rate (1 hour TTL)

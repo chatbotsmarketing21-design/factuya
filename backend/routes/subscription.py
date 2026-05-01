@@ -25,7 +25,7 @@ db = client[os.environ['DB_NAME']]
 
 # Stripe configuration
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', 'sk_test_emergent')
-SUBSCRIPTION_PRICE = 5.00  # $5/mes - Precio fijo definido en backend
+SUBSCRIPTION_PRICE = 3.99  # $3.99/mes - Precio fijo definido en backend
 
 # Pydantic models
 class SubscriptionStatus(BaseModel):

@@ -319,7 +319,7 @@ const SubscriptionPanel = () => {
             </div>
             {isPremium && (
               <div className="text-right">
-                <p className="text-3xl font-bold text-gray-900 dark:text-white">$5</p>
+                <p className="text-3xl font-bold text-gray-900 dark:text-white">$3.99</p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">/{t('subscription.month')}</p>
               </div>
             )}
@@ -372,7 +372,7 @@ const SubscriptionPanel = () => {
               </div>
               
               <div className="flex flex-col justify-center items-center bg-white dark:bg-gray-800 rounded-lg p-6">
-                <p className="text-4xl font-bold text-gray-900 dark:text-white">$5 <span className="text-lg font-medium text-gray-500">USD</span></p>
+                <p className="text-4xl font-bold text-gray-900 dark:text-white">$3.99 <span className="text-lg font-medium text-gray-500">USD</span></p>
                 <p className="text-gray-500 dark:text-gray-400">/{t('subscription.month')}</p>
                 {wompiPrice?.amountCOP && (
                   <div className="mt-2 mb-2 text-center" data-testid="wompi-cop-price">
@@ -423,7 +423,7 @@ const SubscriptionPanel = () => {
                   <CreditCard className="w-5 h-5 text-gray-400" />
                   <span className="text-gray-600 dark:text-gray-400">{t('subscription.plan')}</span>
                 </div>
-                <span className="font-semibold dark:text-white">{t('subscription.premiumMonthly')} - $5/{t('subscription.month')}</span>
+                <span className="font-semibold dark:text-white">{t('subscription.premiumMonthly')} - $3.99/{t('subscription.month')}</span>
               </div>
 
               {/* Fecha de vencimiento */}
