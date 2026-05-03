@@ -546,7 +546,7 @@ const InvoiceDetailPage = () => {
             data-testid="copy-button"
           >
             <Copy className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            <span className="ml-4 text-gray-900 dark:text-white font-medium">Copiar Factura</span>
+            <span className="ml-4 text-gray-900 dark:text-white font-medium">Copiar</span>
           </button>
 
           {/* 5. Agregar Abono - Solo para facturas (no cotizaciones) */}
