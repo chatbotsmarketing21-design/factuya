@@ -139,7 +139,9 @@ async def get_invoice_stats(user_id: str = Depends(get_current_user_id)):
     """
     invoices = await db.invoices.find({"userId": user_id}).to_list(1000)
 
-    # Excluir cotizaciones y proformas de todas las estadísticas financieras
+    # Excluir cotizaciones y proformas de las métricas FINANCIERAS (revenue y status),
+    # pero NO del conteo total: las cotizaciones son documentos válidos que el usuario
+    # creó y debe poder ver contabilizados en "Total de Documentos".
     NON_FINANCIAL_TYPES = {"quotation", "proforma"}
     financial = [
         inv for inv in invoices
@@ -147,7 +149,7 @@ async def get_invoice_stats(user_id: str = Depends(get_current_user_id)):
     ]
 
     total_revenue = sum(inv["total"] for inv in financial if inv["status"] == "paid")
-    total_invoices = len(financial)
+    total_invoices = len(invoices)  # TODOS los documentos (incluye cotizaciones)
     paid_invoices = len([inv for inv in financial if inv["status"] == "paid"])
     pending_invoices = len([inv for inv in financial if inv["status"] == "pending"])
     draft_invoices = len([inv for inv in financial if inv["status"] == "draft"])

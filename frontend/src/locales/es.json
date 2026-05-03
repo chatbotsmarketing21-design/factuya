@@ -89,7 +89,7 @@
   "dashboard": {
     "title": "Dashboard",
     "totalRevenue": "Total de Ingresos",
-    "totalInvoices": "Total de Facturas",
+    "totalInvoices": "Total de Documentos",
     "paid": "Pagadas",
     "pending": "Pendientes",
     "allInvoices": "Todas las Facturas",
