@@ -417,20 +417,69 @@ async def activate_subscription(user_id: str, reference: str, wompi_transaction:
         upsert=True
     )
 
+def _verify_wompi_event_signature(payload: dict) -> bool:
+    """Verify that a webhook event was really emitted by Wompi.
+
+    Wompi signs events with an HMAC-style checksum:
+        checksum = sha256(
+            concatenated_property_values + timestamp + WOMPI_EVENTS_KEY
+        )
+    The "signature.properties" array tells which fields to concatenate
+    (dot-notation access into the event payload, e.g., "transaction.id").
+    See: https://docs.wompi.co/docs/colombia/eventos/
+    """
+    if not WOMPI_EVENTS_KEY:
+        # No key configured: refuse every event to avoid silent bypass in prod.
+        return False
+
+    signature = payload.get("signature") or {}
+    properties = signature.get("properties") or []
+    provided_checksum = (signature.get("checksum") or "").lower()
+    timestamp = payload.get("timestamp")
+
+    if not properties or not provided_checksum or timestamp is None:
+        return False
+
+    data = payload.get("data") or {}
+
+    def _resolve(path: str):
+        """Navigate through nested dicts using dot-notation (e.g., 'transaction.id')."""
+        node = data
+        for segment in path.split("."):
+            if not isinstance(node, dict):
+                return ""
+            node = node.get(segment)
+            if node is None:
+                return ""
+        return node
+
+    concatenated = "".join(str(_resolve(p)) for p in properties)
+    raw = f"{concatenated}{timestamp}{WOMPI_EVENTS_KEY}"
+    expected = hashlib.sha256(raw.encode("utf-8")).hexdigest().lower()
+    return expected == provided_checksum
+
+
 @router.post("/webhook")
 async def wompi_webhook(request: Request):
-    """Handle Wompi webhook notifications"""
+    """Handle Wompi webhook notifications.
+
+    Security: every incoming event is verified against WOMPI_EVENTS_KEY
+    before we act on it. Anything that doesn't match is rejected with 401.
+    """
     try:
         payload = await request.json()
-        
-        event = payload.get("event")
+
+        # Reject unsigned / forged events.
+        if not _verify_wompi_event_signature(payload):
+            raise HTTPException(status_code=401, detail="Invalid Wompi signature")
+
         data = payload.get("data", {})
         transaction = data.get("transaction", {})
-        
+
         reference = transaction.get("reference", "")
         status = transaction.get("status")
         transaction_id = transaction.get("id")
-        
+
         # Find our transaction
         our_transaction = await db.wompi_transactions.find_one({"reference": reference})
         
@@ -457,7 +506,10 @@ async def wompi_webhook(request: Request):
         
         # Always return 200 to acknowledge receipt
         return {"status": "received"}
-        
+
+    except HTTPException:
+        # Re-raise so FastAPI returns 401 for invalid signatures
+        raise
     except Exception as e:
         print(f"Wompi webhook error: {e}")
         return {"status": "error", "message": str(e)}

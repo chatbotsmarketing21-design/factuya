@@ -472,8 +472,14 @@ const SubscriptionPanel = () => {
                   {t('subscription.subscribeNow')}
                 </Button>
 
-                {/* Auto-renew opt-in (Wompi / Colombia only) */}
-                {geo?.gateway === 'wompi' && (
+                {/* Auto-renew opt-in (Wompi / Colombia only)
+                    DISABLED 2026-05-03: Wompi Web Checkout (URL redirect) does
+                    NOT return a reusable payment_source_id, so tokenization
+                    cannot happen with this flow. The checkbox is hidden to
+                    avoid misleading users. Re-enable once we migrate to the
+                    Wompi Widget JS or the direct /tokens/cards API (Option B
+                    in the roadmap). */}
+                {false && geo?.gateway === 'wompi' && (
                   <label
                     className="mt-3 flex items-start gap-2 text-left cursor-pointer select-none"
                     data-testid="auto-renew-optin-label"
@@ -490,6 +496,17 @@ const SubscriptionPanel = () => {
                       que use hoy. Puedo cancelar en cualquier momento.
                     </span>
                   </label>
+                )}
+
+                {/* Renewal reminder info (replaces auto-renew checkbox) */}
+                {geo?.gateway === 'wompi' && (
+                  <div
+                    className="mt-3 text-xs text-gray-600 dark:text-gray-400 leading-snug text-center"
+                    data-testid="renewal-reminder-note"
+                  >
+                    Te enviaremos un recordatorio por email 3 días antes de cada vencimiento
+                    para que renueves con un clic.
+                  </div>
                 )}
                 {/* Métodos de pago según el gateway */}
                 <div className="flex items-center justify-center gap-3 mt-3" data-testid="payment-methods">

@@ -9,6 +9,56 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 
+## Session: May 3, 2026 — Security hardening + Production launch path
+
+### Critical findings from sandbox validation
+- User ran a sandbox checkout with `autoRenewOptIn: true`. The Wompi transaction was
+  `APPROVED` but `payment_source_id` was **never** returned to us.
+- Root cause: Wompi Web Checkout (URL redirect `https://checkout.wompi.co/p/?...`) does
+  NOT tokenize cards. Tokenization requires either the Wompi Widget JS or the direct
+  `/tokens/cards` + `/payment_sources` API.
+- Consequence: auto-renewal cron was fully built but would never fire. DB confirms
+  `subscriptions.paymentSourceId` is `null` in all records.
+
+### Decision: Hybrid approach (chosen by user)
+- **Option A (ship today)**: Keep Web Checkout for initial payment + send renewal emails
+  3/1/0 days before expiry. User taps the email link, pays again with Web Checkout in
+  ~30 seconds. No fake auto-renewal promises.
+- **Option B (next iteration, P1 backlog)**: Migrate checkout to the Wompi Widget JS or
+  direct API to enable real tokenization + fully automated monthly charges.
+
+### Changes Made This Session (2026-05-03):
+1. **Webhook signature verification** (`backend/routes/wompi.py`) ✅ CRITICAL SECURITY FIX
+   - Added `_verify_wompi_event_signature()` using `WOMPI_EVENTS_KEY`.
+   - Rejects any webhook POST without a valid `signature.checksum` with HTTP 401.
+   - Prior behavior: anyone could hit `/api/wompi/webhook` with a forged payload and
+     activate a Premium subscription without paying.
+
+2. **Hidden "auto-charge" checkbox** (`frontend/src/pages/SubscriptionPanel.jsx`)
+   - The opt-in checkbox is now gated behind `false &&` so it never renders.
+   - Replaced with a lightweight info note: "Te enviaremos un recordatorio por email 3
+     días antes de cada vencimiento para que renueves con un clic."
+   - Cancel-auto-renewal section still works for any legacy subscription that had it set.
+
+### Production launch checklist (for VPS, today):
+- [x] Validate Wompi event signature (code fix)
+- [x] Hide misleading auto-charge checkbox (code fix)
+- [ ] `APP_PUBLIC_URL=https://factuya.site` (was `factuya.app` — wrong domain)
+- [ ] `WOMPI_MODE=production` (was `sandbox`)
+- [ ] Verify Wompi webhook URL `https://factuya.site/api/wompi/webhook` is registered in
+      Wompi's merchant panel with the production events key
+- [ ] Add cron for `/api/renewal/send-notifications` only (skip auto-charge cron since
+      there are no tokenized cards yet)
+
+### P1 Backlog — Option B (Widget tokenization)
+- Replace the Web Checkout redirect with the Wompi Widget JS (`<script data-render="button">`).
+- Implement tokenize → create payment_source → first transaction flow.
+- Re-enable the opt-in checkbox and auto-charge cron.
+- Estimated effort: 4–6h including regression testing.
+
+---
+
+
 ## Session: May 1, 2026
 
 ### Big Wins This Session:
