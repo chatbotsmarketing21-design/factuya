@@ -66,7 +66,22 @@ const SubscriptionPanel = () => {
   const [paymentResult, setPaymentResult] = useState(null);
   const [wompiPrice, setWompiPrice] = useState(null);
   const [geo, setGeo] = useState(null);
-  const [autoRenewOptIn, setAutoRenewOptIn] = useState(false);
+  const [autoRenewOptIn, setAutoRenewOptInState] = useState(() => {
+    // Restore the user's preference across navigation (persisted in localStorage)
+    try {
+      return localStorage.getItem('factuya:autoRenewOptIn') === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
+  const setAutoRenewOptIn = (value) => {
+    setAutoRenewOptInState(value);
+    try {
+      localStorage.setItem('factuya:autoRenewOptIn', value ? 'true' : 'false');
+    } catch (e) {
+      // ignore storage errors (private mode etc.)
+    }
+  };
   const [autoRenewInfo, setAutoRenewInfo] = useState(null);
   const [cancelingAutoRenew, setCancelingAutoRenew] = useState(false);
 

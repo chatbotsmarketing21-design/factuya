@@ -24,7 +24,22 @@ const SubscriptionGate = () => {
   const [geo, setGeo] = useState(null);
   const [wompiPrice, setWompiPrice] = useState(null);
   const [redirecting, setRedirecting] = useState(false);
-  const [autoRenewOptIn, setAutoRenewOptIn] = useState(false);
+  const [autoRenewOptIn, setAutoRenewOptInState] = useState(() => {
+    // Persist the user's choice across navigation / reloads
+    try {
+      return localStorage.getItem('factuya:autoRenewOptIn') === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
+  const setAutoRenewOptIn = (value) => {
+    setAutoRenewOptInState(value);
+    try {
+      localStorage.setItem('factuya:autoRenewOptIn', value ? 'true' : 'false');
+    } catch (e) {
+      // ignore storage errors
+    }
+  };
 
   // Re-check status whenever the user logs in / route changes
   useEffect(() => {
