@@ -24,6 +24,7 @@ const SubscriptionGate = () => {
   const [geo, setGeo] = useState(null);
   const [wompiPrice, setWompiPrice] = useState(null);
   const [redirecting, setRedirecting] = useState(false);
+  const [autoRenewOptIn, setAutoRenewOptIn] = useState(false);
 
   // Re-check status whenever the user logs in / route changes
   useEffect(() => {
@@ -85,7 +86,7 @@ const SubscriptionGate = () => {
       setRedirecting(true);
       const useWompi = geo?.gateway === 'wompi';
       const res = useWompi
-        ? await subscriptionAPI.createWompiCheckout()
+        ? await subscriptionAPI.createWompiCheckout(autoRenewOptIn)
         : await subscriptionAPI.createCheckoutSession();
       const url = res.data?.checkoutUrl || res.data?.url;
       if (url) {
@@ -170,6 +171,26 @@ const SubscriptionGate = () => {
             </>
           )}
         </Button>
+
+        {/* Auto-renew opt-in (Wompi / Colombia only) */}
+        {geo?.gateway === 'wompi' && (
+          <label
+            className="mt-3 flex items-start gap-2 text-left cursor-pointer select-none"
+            data-testid="gate-auto-renew-optin-label"
+          >
+            <input
+              type="checkbox"
+              checked={autoRenewOptIn}
+              onChange={(e) => setAutoRenewOptIn(e.target.checked)}
+              className="mt-1 h-4 w-4 rounded border-gray-300 text-lime-600 focus:ring-lime-500 flex-shrink-0"
+              data-testid="gate-auto-renew-optin-checkbox"
+            />
+            <span className="text-xs text-gray-600 dark:text-gray-400 leading-snug">
+              Autorizo a FactuYa! a realizar cobros automáticos mensuales en mi tarjeta.
+              Puedo cancelar en cualquier momento.
+            </span>
+          </label>
+        )}
 
         {/* Logout link */}
         <button
