@@ -754,7 +754,7 @@ const InvoiceDetailPage = () => {
         <Button 
           data-testid="exit-button"
           onClick={() => navigate('/dashboard')}
-          className="bg-lime-500 hover:bg-lime-600 text-white h-12 px-6 rounded-full shadow-lg"
+          className="bg-lime-500 hover:bg-lime-600 text-white h-12 px-10 rounded-full shadow-lg"
           style={{ boxShadow: '0 4px 14px rgba(132, 204, 22, 0.4)' }}
         >
           <ArrowLeft className="w-5 h-5 mr-2" />
