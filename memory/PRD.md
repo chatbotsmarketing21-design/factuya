@@ -40,17 +40,23 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
      días antes de cada vencimiento para que renueves con un clic."
    - Cancel-auto-renewal section still works for any legacy subscription that had it set.
 
-### Production launch checklist (for VPS, today):
+### Production launch checklist (completed 2026-05-03):
 - [x] Validate Wompi event signature (code fix)
 - [x] Hide misleading auto-charge checkbox (code fix)
-- [ ] `APP_PUBLIC_URL=https://factuya.site` (was `factuya.app` — wrong domain)
-- [ ] `WOMPI_MODE=production` (was `sandbox`)
-- [ ] Verify Wompi webhook URL `https://factuya.site/api/wompi/webhook` is registered in
-      Wompi's merchant panel with the production events key
-- [ ] Add cron for `/api/renewal/send-notifications` only (skip auto-charge cron since
-      there are no tokenized cards yet)
+- [x] `APP_PUBLIC_URL=https://factuya.site` (was `factuya.app` — wrong domain)
+- [x] `WOMPI_MODE=production` (was `sandbox`)
+- [x] `RENEWAL_CRON_TOKEN`, `SENDER_EMAIL`, `APP_PUBLIC_URL` added to VPS `.env`
+      (they were missing entirely — cron endpoints would have returned 403)
+- [x] Wompi webhook URL `https://factuya.site/api/wompi/webhook` registered in
+      Wompi's merchant panel (Desarrollo > Programadores > URL de Eventos).
+      Prior state: "Sin URL" — every historic webhook event was discarded.
+- [x] Cron job added for daily renewal reminders
+      (`0 14 * * *` UTC = 9:00 AM Colombia → `/api/renewal/send-notifications`)
+- [ ] Verify `factuya.site` domain in Resend and switch
+      `SENDER_EMAIL` to `no-reply@factuya.site` (P0, blocks real client emails)
+- [ ] First real paid transaction (end-to-end production validation)
 
-### P1 Backlog — Option B (Widget tokenization)
+### P1 Backlog — Option B (Widget tokenization for true auto-charge)
 - Replace the Web Checkout redirect with the Wompi Widget JS (`<script data-render="button">`).
 - Implement tokenize → create payment_source → first transaction flow.
 - Re-enable the opt-in checkbox and auto-charge cron.
