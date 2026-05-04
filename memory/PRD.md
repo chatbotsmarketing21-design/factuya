@@ -52,9 +52,12 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
       Prior state: "Sin URL" — every historic webhook event was discarded.
 - [x] Cron job added for daily renewal reminders
       (`0 14 * * *` UTC = 9:00 AM Colombia → `/api/renewal/send-notifications`)
-- [ ] Verify `factuya.site` domain in Resend and switch
-      `SENDER_EMAIL` to `no-reply@factuya.site` (P0, blocks real client emails)
-- [ ] First real paid transaction (end-to-end production validation)
+- [x] **Resend domain `factuya.site` verified** (was already verified 2 months ago).
+      `SENDER_EMAIL` switched from `onboarding@resend.dev` (sandbox) to
+      `FactuYa! <no-reply@factuya.site>`. Verified end-to-end by sending a live
+      email via Resend API — delivery confirmed.
+- [ ] First real paid transaction (end-to-end production validation) — user opted
+      to wait for an organic first customer instead of paying themselves.
 
 ### P1 Backlog — Option B (Widget tokenization for true auto-charge)
 - Replace the Web Checkout redirect with the Wompi Widget JS (`<script data-render="button">`).
