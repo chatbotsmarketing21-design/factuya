@@ -62,6 +62,12 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 - Re-enable the opt-in checkbox and auto-charge cron.
 - Estimated effort: 4–6h including regression testing.
 
+### P2 Backlog — Future enhancements (user-approved, deferred)
+- **Onboarding email after first payment** (user approved 2026-05-03, deferred): Once
+  10-20 paying clients exist, add a transactional email right after the first successful
+  payment with a short "Create your first invoice in 2 minutes" walkthrough. Industry
+  benchmarks suggest ~30-40% lift in month-2 retention for SaaS.
+
 ---
 
 
