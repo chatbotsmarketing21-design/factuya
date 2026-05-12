@@ -9,6 +9,91 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 
+## Session: May 12, 2026 — Google Play Store launch (in progress)
+
+### 🎯 Goal
+Publish FactuYa! to Google Play Store as a Trusted Web Activity (TWA) using
+Bubblewrap. User has Play Console account active and wants to ship FAST.
+
+### ✅ Completed today
+1. **Legal pages rewritten for Play Store compliance** (`/privacy`, `/terms`)
+   - Privacy: 14 sections — Habeas Data Colombia (Ley 1581) + GDPR + Google Play
+     requirements (app permissions, account deletion, third-party list with policy
+     links, international transfers, retention, children's privacy).
+   - Terms: 16 sections — minimum age, refund policy, acceptable use, liability cap
+     (12 months paid), governing law Colombia.
+   - Contact email switched from `chatbotsmarketing21@gmail.com` to
+     `soportefactuya@gmail.com` (more professional).
+   - Deployed to VPS, both routes return HTTP 200 in production.
+
+2. **Play Store visual assets generated with Gemini Nano Banana**
+   - Files saved in `/app/play_assets/` and `/app/frontend/public/play_assets/`:
+     - `factuya_icon_original.png` (1024×1024) — user-uploaded custom F icon
+     - `factuya_icon_playstore_512.png` ⭐ (512×512) — Play Store ready,
+       white corners flood-filled with lime green to avoid halo when Android
+       applies adaptive icon mask
+     - `factuya_icon_playstore_1024.png` (1024×1024) — high-res backup
+     - `feature_graphic_banner_1024x500.png` ⭐ (1024×500) — Play Store banner
+       with "FactuYa!" logo + tagline "Crea facturas profesionales desde tu
+       celular" + iPhone mockup + floating invoice illustrations
+     - `icon_option_a_document_512.png` (alternative — document with check)
+     - `icon_option_b_lightning_512.png` (alternative — document with lightning)
+   - Helper script: `/app/scripts/generate_play_assets.py` (uses EMERGENT_LLM_KEY
+     via emergentintegrations, model `gemini-3.1-flash-image-preview`).
+   - `EMERGENT_LLM_KEY` added to `/app/backend/.env`.
+
+3. **Brand decisions confirmed by user**:
+   - Identity: keep current lime green #84cc16 + black/white
+   - Tagline: "Crea facturas profesionales desde tu celular"
+   - Icon style: custom F logo (user-provided, not the AI alternatives)
+   - Landing page: keep current Home.jsx for both web and installed app
+     (already redirects logged-in users to `/dashboard` via useEffect on line 16-20)
+
+### 🚧 Remaining checklist for Play Store launch
+- [ ] **#5 — Screenshots (4–6 mobile captures)** — NEXT STEP TOMORROW
+   - User to pick approach: (a) take from real phone, (b) auto-generate via
+     headless browser after seeding 2–3 demo invoices, (c) mix.
+   - Required scenes:
+     1. Dashboard with realistic invoices
+     2. Create-invoice screen with client + products filled in
+     3. Final invoice PDF preview
+     4. Templates gallery
+     5. Subscription panel
+     6. Share screen (WhatsApp / PDF buttons)
+   - Format: 1080×1920 or 1080×2340 PNG, vertical, light mode, Spanish, no
+     personal notifications visible.
+- [ ] **#6 — PWA config audit** (`public/manifest.json`, service worker, icon
+      links in `index.html`, theme color, splash screen). Replace placeholder
+      icons with the new `factuya_icon_playstore_512.png`. Also generate
+      192×192, 144×144, 96×96, 72×72, 48×48 variants.
+- [ ] **#7 — Digital Asset Links** — upload
+      `/.well-known/assetlinks.json` to `https://factuya.site` so Android
+      knows the app and the domain are the same publisher. Need SHA-256
+      fingerprint from the signing key once Bubblewrap generates it.
+- [ ] **#8 — Generate Android Bundle (AAB)** with Bubblewrap
+      (`npx @bubblewrap/cli init --manifest=https://factuya.site/manifest.json`),
+      sign it, and confirm size (~3–5 MB expected).
+- [ ] **#9 — Play Console store listing**: app name, short description (80 chars),
+      full description (4000 chars), category, content rating questionnaire,
+      target audience, data safety form (declare we collect email, name, payment
+      info via Wompi/Stripe, no sharing, encryption in transit).
+
+### 📦 Current bundle weight
+- `/app/frontend/build/`: 8.9 MB total (1.6 MB gzipped on first visit)
+- Expected Android AAB after Bubblewrap: ~3–5 MB download, ~10–15 MB installed
+
+### 🌐 P0 from previous session still pending
+- First real paid transaction (end-to-end validation) — user wants to wait for an
+  organic first customer instead of paying themselves.
+
+### 🔮 Backlog unchanged
+- **P1**: Option B (Wompi Widget tokenization for true auto-charge, 4–6h)
+- **P2**: Dedicated Clients/Products module, more invoice templates, Reports with
+  charts, post-payment onboarding email, multi-language (pt/fr/de).
+
+---
+
+
 ## Session: May 3, 2026 — Security hardening + Production launch path
 
 ### Critical findings from sandbox validation
