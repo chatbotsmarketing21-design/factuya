@@ -9,7 +9,74 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 
-## Session: May 12, 2026 — Google Play Store launch (in progress)
+## Session: May 22, 2026 — Android bundle (.AAB) successfully built! 🎉
+
+### ✅ Completed today
+1. **PWA configuration audit & fix**
+   - Regenerated 17 icon files from user's official F design (sizes: 16, 32, 48, 72, 96, 144, 152, 167, 180, 192, 256, 384, 512 + 2 maskable + favicon.ico).
+   - Fixed `manifest.json`: separated `"any"` and `"maskable"` icons (Android Adaptive Icons requirement).
+   - Updated `index.html` with multiple `apple-touch-icon` sizes for iOS.
+   - All published and verified at `https://factuya.site/icon-*.png` (HTTP 200).
+
+2. **Digital Asset Links file created and published**
+   - `https://factuya.site/.well-known/assetlinks.json`
+   - Filled with **REAL SHA-256** from the production keystore:
+     `EA:4D:4F:4E:DA:D3:52:B0:FF:75:53:F0:25:DA:21:E1:01:1F:5F:40:62:CD:0B:44:A1:23:17:2A:E4:B5:C8:60`
+   - `package_name: site.factuya.twa`
+
+3. **Bubblewrap fully installed and configured on VPS**
+   - Java JDK 17 installed (`/usr/lib/jvm/java-17-openjdk-amd64`)
+   - Android SDK auto-downloaded by Bubblewrap (`/root/.bubblewrap/android_sdk`)
+   - Bubblewrap CLI 1.24.1 in `/root/factuya-twa/` (isolated from Mentor Cash)
+
+4. **Android Bundle (.AAB) generated and SIGNED**
+   - File: `/root/factuya-twa/app-release-bundle.aab` (2.3 MB)
+   - APK: `/root/factuya-twa/app-release-signed.apk` (2.1 MB)
+   - Keystore: `/root/factuya-twa/android.keystore` (2.6 KB)
+   - Keystore password noted by user (NOT in PRD for security)
+   - Cert info: `Cesar Guzman / IT / FactuYa / CO`
+   - App ID: `site.factuya.twa`
+   - Display: `standalone`, portrait-primary
+   - Theme: `#84CC16`, splash white
+   - Includes 2 shortcuts (Crear Factura, Dashboard)
+
+### ⚠️ SECURITY NOTE
+During the build, the user typed the keystore password `Cesar.2026` and the
+terminal echoed it visibly in the chat output (instead of hiding it). User opted
+to NOT change it now and proceed. **STRONG RECOMMENDATION: rotate this password
+BEFORE uploading to Play Store** using:
+```
+keytool -storepasswd -keystore /root/factuya-twa/android.keystore
+keytool -keypasswd -keystore /root/factuya-twa/android.keystore -alias android
+```
+The SHA-256 fingerprint does NOT change when rotating the password (it's tied to
+the cert, not the password), so `assetlinks.json` does not need an update.
+
+### 🚧 Pending before Play Store launch (in order)
+- [ ] **CRITICAL: Backup keystore externally** (Google Drive + local PC + USB).
+      File at `/root/factuya-twa/android.keystore` (2.6 KB).
+      Without it, app can NEVER be updated again.
+- [ ] **CRITICAL: Rotate keystore password** (currently `Cesar.2026`, exposed in chat).
+- [ ] **Take 6 mobile screenshots** of the running app (Dashboard, Create invoice,
+      PDF preview, Templates, Subscription, Share). User will take them from
+      personal phone and upload them DIRECTLY to Play Console (not to repo, not to
+      this chat). 1080×1920+ vertical, light mode, Spanish, realistic data.
+- [ ] **Download `.AAB` to PC** (`/root/factuya-twa/app-release-bundle.aab`, 2.3 MB).
+      User can use scp, FileZilla/WinSCP, or Hostinger File Manager.
+- [ ] **Fill Play Console store listing**: app name, short description (80 chars),
+      full description (4000 chars), category (Business/Finance), content rating
+      questionnaire, target audience, data safety form (declare email, name,
+      payment via Wompi/Stripe; no advertising; encryption in transit).
+- [ ] **Upload .AAB** to Play Console (Production track or Internal Testing first).
+
+### 🔄 How updates work after Play Store launch (explained to user)
+TWA = web wrapper. 95%+ of changes do NOT require uploading a new .AAB:
+- Frontend / backend code changes → just `git pull` + `npm run build` on VPS, all
+  Android users see the change next time they open the app.
+- Only re-build .AAB for: icon change, name change, color change, domain change,
+  new permissions, new shortcuts. Estimated: 1-2 times per year.
+
+
 
 ### 🎯 Goal
 Publish FactuYa! to Google Play Store as a Trusted Web Activity (TWA) using
