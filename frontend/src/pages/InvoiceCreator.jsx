@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
-import { ArrowLeft, Plus, Trash2, Download, Send, Save, FileText, FileCheck, Calculator, Receipt, DollarSign, Percent, ChevronDown, ChevronUp, Eye, X, Menu, Upload, RotateCw } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Download, Send, Save, FileText, FileCheck, Calculator, Receipt, DollarSign, Percent, ChevronDown, ChevronUp, Eye, X, Menu, Upload, RotateCw, Palette, Sparkles } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 import InvoicePreview from '../components/InvoicePreview';
@@ -183,9 +183,14 @@ const InvoiceCreator = () => {
       // Modo edición - cargar factura existente
       loadInvoice(invoiceId);
     } else if (copyData) {
-      // Modo copia - cargar datos del cliente desde otra factura
+      // Modo copia - cargar TODOS los datos copiados (documento idéntico, solo cambia número/fechas)
       loadCompanyInfo();
-      generateInvoiceNumber(invoice.documentType);
+      // Si la copia incluye un documentType, usarlo para generar el número correcto
+      const targetDocType = copyData.documentType || invoice.documentType;
+      if (copyData.documentType) {
+        setInvoice(prev => ({ ...prev, documentType: targetDocType }));
+      }
+      generateInvoiceNumber(targetDocType);
       
       // Calcular totales de los items copiados
       const copiedItems = copyData.items || [];
@@ -193,12 +198,16 @@ const InvoiceCreator = () => {
       const taxRate = copyData.taxRate || 0;
       const hasTax = copyData.hasTax || false;
       const tax = hasTax ? (subtotal * taxRate) / 100 : 0;
-      const total = subtotal + tax;
+      const discount = copyData.discount || 0;
+      const total = subtotal + tax - discount;
       
-      // Aplicar los datos copiados
+      // Aplicar los datos copiados (documento idéntico)
       setTimeout(() => {
         setInvoice(prev => ({
           ...prev,
+          documentType: targetDocType,
+          // Emisor: si viene en copia, usarla; si no, mantener lo que cargó loadCompanyInfo()
+          from: copyData.from ? { ...prev.from, ...copyData.from } : prev.from,
           to: {
             name: copyData.to?.name || '',
             nit: copyData.to?.nit || '',
@@ -212,16 +221,31 @@ const InvoiceCreator = () => {
           items: copiedItems,
           notes: copyData.notes || prev.notes,
           terms: copyData.terms || prev.terms,
-          hasTax: hasTax,
-          taxRate: taxRate,
-          subtotal: subtotal,
-          tax: tax,
-          total: total
+          // Logo y firma de la factura original
+          logo: copyData.logo || prev.logo,
+          signature: copyData.signature || prev.signature,
+          signatureRotation: copyData.signatureRotation ?? prev.signatureRotation,
+          // Configuración fiscal y monetaria
+          hasTax,
+          taxRate,
+          currency: copyData.currency || prev.currency,
+          discount,
+          subtotal,
+          tax,
+          total,
+          // El status financiero, pagos, fechas y número se generan nuevos
+          status: 'pending',
+          payments: [],
+          totalPaid: 0,
+          balance: total,
         }));
         
-        // Si hay plantilla en los datos copiados, aplicarla
+        // Aplicar plantilla y color copiados
         if (copyData.template) {
           setTemplate(getTemplateById(copyData.template));
+        }
+        if (copyData.templateColor) {
+          setTemplateColor(copyData.templateColor);
         }
       }, 500);
     } else {
@@ -976,8 +1000,14 @@ const InvoiceCreator = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Link to="/templates" onClick={(e) => { e.preventDefault(); goToTemplates(); }}>
-                  <Button variant="outline" size="sm">
+                  <Button
+                    size="sm"
+                    className="bg-gradient-to-r from-lime-500 to-emerald-500 hover:from-lime-600 hover:to-emerald-600 text-white shadow-md hover:shadow-lg transition-all font-semibold gap-2 border-0"
+                    data-testid="change-template-btn-desktop"
+                  >
+                    <Palette className="w-4 h-4" />
                     {t('invoice.changeTemplate')}
+                    <Sparkles className="w-3.5 h-3.5 opacity-80" />
                   </Button>
                 </Link>
               </div>
@@ -1029,10 +1059,13 @@ const InvoiceCreator = () => {
                   <DropdownMenuItem asChild>
                     <Link
                       to="/templates"
-                      className="w-full"
+                      className="w-full flex items-center gap-2 font-semibold text-lime-700 focus:text-lime-700"
                       onClick={(e) => { e.preventDefault(); setShowMobileMenu(false); goToTemplates(); }}
+                      data-testid="change-template-btn-mobile"
                     >
+                      <Palette className="w-4 h-4 text-lime-600" />
                       {t('invoice.changeTemplate')}
+                      <Sparkles className="w-3.5 h-3.5 ml-auto text-lime-500" />
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>

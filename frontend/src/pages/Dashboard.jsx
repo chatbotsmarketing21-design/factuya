@@ -251,28 +251,44 @@ const Dashboard = () => {
       const response = await invoiceAPI.getById(invoiceId);
       const originalInvoice = response.data;
 
-      // Navegar al creador con los datos del cliente prerellenados
+      // Navegar al creador con TODOS los datos copiados (excepto: id, número,
+      // status financiero, pagos, fechas y total pagado — esos se regeneran/resetean)
       navigate('/create', {
         state: {
           copyFrom: {
+            // Cliente y emisor
             to: originalInvoice.to || originalInvoice.toAddress,
+            from: originalInvoice.from || originalInvoice.fromAddress,
+            // Contenido del documento
             items: originalInvoice.items,
             notes: originalInvoice.notes,
             terms: originalInvoice.terms,
-            template: originalInvoice.template
+            // Estilo/Marca
+            template: originalInvoice.template,
+            templateColor: originalInvoice.templateColor,
+            logo: originalInvoice.logo,
+            signature: originalInvoice.signature,
+            signatureRotation: originalInvoice.signatureRotation,
+            // Configuración fiscal
+            hasTax: originalInvoice.hasTax,
+            taxRate: originalInvoice.taxRate,
+            currency: originalInvoice.currency,
+            discount: originalInvoice.discount,
+            // Tipo de documento (factura/cotización/etc.) — debe mantenerse
+            documentType: originalInvoice.documentType,
           }
         }
       });
 
       toast({
-        title: "Factura copiada",
-        description: "Se han copiado los datos del cliente. Puedes modificar lo que necesites.",
+        title: "Documento copiado",
+        description: "Se copió el documento completo. Solo se generó un nuevo número.",
       });
     } catch (error) {
       console.error('Error copying invoice:', error);
       toast({
         title: "Error",
-        description: "No se pudo copiar la factura",
+        description: "No se pudo copiar el documento",
         variant: "destructive"
       });
     }
