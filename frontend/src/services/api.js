@@ -1,4 +1,16 @@
 import axios from 'axios';
+import {
+  cacheCompany,
+  cacheInvoice,
+  cacheInvoiceList,
+  cacheStats,
+  isNetworkError,
+  isOnline,
+  readCachedCompany,
+  readCachedInvoice,
+  readCachedInvoiceList,
+  readCachedStats,
+} from './offlineDb';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API_BASE = `${BACKEND_URL}/api`;
@@ -23,7 +35,8 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Handle auth errors
+// Handle auth errors (but ONLY when actually online — offline reads must not
+// trigger an automatic logout, otherwise the user loses access to cached data).
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -36,38 +49,97 @@ api.interceptors.response.use(
   }
 );
 
+// ---------------------------------------------------------------------------
+// Offline-aware helpers
+// ---------------------------------------------------------------------------
+
+const OFFLINE_WRITE_ERROR = new Error(
+  'Sin conexión a internet. Esta acción requiere estar en línea.'
+);
+OFFLINE_WRITE_ERROR.code = 'OFFLINE';
+
+/** Run a network read, falling back to the cache on connectivity failure. */
+async function readWithFallback(networkFn, fallbackFn, onSuccess) {
+  try {
+    const response = await networkFn();
+    if (onSuccess) {
+      try { await onSuccess(response.data); } catch (_) { /* cache best-effort */ }
+    }
+    return response;
+  } catch (error) {
+    if (!isNetworkError(error)) throw error;
+    const cached = await fallbackFn();
+    if (cached === null || cached === undefined) throw error;
+    return { data: cached, status: 200, statusText: 'OK (offline cache)', cached: true };
+  }
+}
+
+/** Reject network writes when the device is offline. */
+function requireOnlineWrite(networkFn) {
+  if (!isOnline()) return Promise.reject(OFFLINE_WRITE_ERROR);
+  return networkFn().catch((error) => {
+    if (isNetworkError(error)) return Promise.reject(OFFLINE_WRITE_ERROR);
+    return Promise.reject(error);
+  });
+}
+
 // Auth APIs
 export const authAPI = {
-  register: (data) => api.post('/auth/register', data),
-  login: (data) => api.post('/auth/login', data),
+  register: (data) => requireOnlineWrite(() => api.post('/auth/register', data)),
+  login: (data) => requireOnlineWrite(() => api.post('/auth/login', data)),
   getMe: () => api.get('/auth/me'),
 };
 
 // Invoice APIs
 export const invoiceAPI = {
-  getAll: (params) => api.get('/invoices', { params }),
-  getById: (id) => api.get(`/invoices/${id}`),
-  create: (data) => api.post('/invoices', data),
-  update: (id, data) => api.put(`/invoices/${id}`, data),
-  delete: (id) => api.delete(`/invoices/${id}`),
-  getStats: () => api.get('/invoices/stats'),
-  getNextNumber: (documentType) => api.get(`/invoices/next-number/${documentType}`),
-  uploadPdf: (data) => api.post('/invoices/upload-pdf', data),
+  getAll: (params) =>
+    readWithFallback(
+      () => api.get('/invoices', { params }),
+      () => readCachedInvoiceList(`list:${JSON.stringify(params || {})}`),
+      (data) => cacheInvoiceList(`list:${JSON.stringify(params || {})}`, data)
+    ),
+  getById: (id) =>
+    readWithFallback(
+      () => api.get(`/invoices/${id}`),
+      () => readCachedInvoice(id),
+      (data) => cacheInvoice(data)
+    ),
+  create: (data) => requireOnlineWrite(() => api.post('/invoices', data)),
+  update: (id, data) => requireOnlineWrite(() => api.put(`/invoices/${id}`, data)),
+  delete: (id) => requireOnlineWrite(() => api.delete(`/invoices/${id}`)),
+  getStats: () =>
+    readWithFallback(
+      () => api.get('/invoices/stats'),
+      () => readCachedStats(),
+      (data) => cacheStats(data)
+    ),
+  getNextNumber: (documentType) =>
+    requireOnlineWrite(() => api.get(`/invoices/next-number/${documentType}`)),
+  uploadPdf: (data) => requireOnlineWrite(() => api.post('/invoices/upload-pdf', data)),
   // Payment/Abono APIs
-  addPayment: (invoiceId, data) => api.post(`/invoices/${invoiceId}/payments`, data),
+  addPayment: (invoiceId, data) =>
+    requireOnlineWrite(() => api.post(`/invoices/${invoiceId}/payments`, data)),
   getPayments: (invoiceId) => api.get(`/invoices/${invoiceId}/payments`),
-  deletePayment: (invoiceId, paymentId) => api.delete(`/invoices/${invoiceId}/payments/${paymentId}`),
+  deletePayment: (invoiceId, paymentId) =>
+    requireOnlineWrite(() => api.delete(`/invoices/${invoiceId}/payments/${paymentId}`)),
 };
 
 // Profile APIs
 export const profileAPI = {
-  getCompany: () => api.get('/profile/company'),
-  updateCompany: (data) => api.put('/profile/company', data),
-  updateLogo: (logo) => api.put('/profile/logo', { logo }),
-  deleteLogo: () => api.delete('/profile/logo'),
-  updateSignature: (signature, signatureRotation) => api.put('/profile/signature', { signature, signatureRotation }),
-  deleteSignature: () => api.delete('/profile/signature'),
-  updateInvoiceDefaults: (data) => api.put('/profile/invoice-defaults', data),
+  getCompany: () =>
+    readWithFallback(
+      () => api.get('/profile/company'),
+      () => readCachedCompany(),
+      (data) => cacheCompany(data)
+    ),
+  updateCompany: (data) => requireOnlineWrite(() => api.put('/profile/company', data)),
+  updateLogo: (logo) => requireOnlineWrite(() => api.put('/profile/logo', { logo })),
+  deleteLogo: () => requireOnlineWrite(() => api.delete('/profile/logo')),
+  updateSignature: (signature, signatureRotation) =>
+    requireOnlineWrite(() => api.put('/profile/signature', { signature, signatureRotation })),
+  deleteSignature: () => requireOnlineWrite(() => api.delete('/profile/signature')),
+  updateInvoiceDefaults: (data) =>
+    requireOnlineWrite(() => api.put('/profile/invoice-defaults', data)),
 };
 
 export default api;

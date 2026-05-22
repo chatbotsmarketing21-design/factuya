@@ -1,81 +1,111 @@
-// Version number - increment this when deploying updates
-const CACHE_VERSION = 'v3';
+// FactuYa! Service Worker
+// Strategy:
+//  - Static assets (JS/CSS/icons): stale-while-revalidate so the app loads
+//    instantly online AND offline.
+//  - HTML navigations: network-first with cache fallback so users still see
+//    the app shell when their phone has no signal.
+//  - API requests: always go to the network. Offline reads of business data
+//    are handled by IndexedDB inside the React layer (services/offlineDb.js),
+//    not here.
+
+const CACHE_VERSION = 'v4-offline';
 const CACHE_NAME = `factuya-${CACHE_VERSION}`;
+
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/icon-48.png',
+  '/icon-72.png',
+  '/icon-96.png',
+  '/icon-144.png',
+  '/icon-152.png',
+  '/icon-167.png',
+  '/icon-180.png',
   '/icon-192.png',
+  '/icon-256.png',
+  '/icon-384.png',
   '/icon-512.png',
-  '/favicon.ico'
+  '/icon-maskable-192.png',
+  '/icon-maskable-512.png',
+  '/apple-touch-icon.png',
+  '/favicon.ico',
+  '/favicon-16x16.png',
+  '/favicon-32x32.png',
 ];
 
-// Install event - cache static assets and skip waiting
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
   );
-  // Force the new service worker to activate immediately
   self.skipWaiting();
 });
 
-// Activate event - clean up old caches and claim clients
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name.startsWith('factuya-') && name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
-      );
-    }).then(() => {
-      // Take control of all clients immediately
-      return self.clients.claim();
-    })
+    caches
+      .keys()
+      .then((cacheNames) =>
+        Promise.all(
+          cacheNames
+            .filter((name) => name.startsWith('factuya-') && name !== CACHE_NAME)
+            .map((name) => caches.delete(name))
+        )
+      )
+      .then(() => self.clients.claim())
   );
 });
 
-// Fetch event - stale-while-revalidate strategy for faster initial load
 self.addEventListener('fetch', (event) => {
-  // Skip non-GET requests
-  if (event.request.method !== 'GET') return;
-  
-  // Skip API requests - always go to network
-  if (event.request.url.includes('/api/')) return;
-  
-  // Skip chrome-extension and other non-http requests
-  if (!event.request.url.startsWith('http')) return;
-  
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      // Start network fetch in background
-      const networkFetch = fetch(event.request)
+  const { request } = event;
+  if (request.method !== 'GET') return;
+  if (!request.url.startsWith('http')) return;
+
+  const url = new URL(request.url);
+
+  // API requests: never cache; let the React layer handle offline via IndexedDB.
+  if (url.pathname.startsWith('/api/')) return;
+
+  // Navigations (HTML): network-first, fall back to cached index.html so the
+  // app shell still loads when offline.
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
         .then((response) => {
-          // Don't cache non-successful responses
-          if (!response || response.status !== 200) {
-            return response;
-          }
-          // Clone and cache the fresh response
-          const responseClone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           return response;
         })
-        .catch(() => {
-          // If network fails, return cached or null
-          return cachedResponse;
-        });
-      
-      // Return cached response immediately if available, otherwise wait for network
-      return cachedResponse || networkFetch;
+        .catch(async () => {
+          const cached = await caches.match(request);
+          if (cached) return cached;
+          const shell = await caches.match('/index.html');
+          return (
+            shell ||
+            new Response('Offline', { status: 503, statusText: 'Offline' })
+          );
+        })
+    );
+    return;
+  }
+
+  // Everything else (JS/CSS/images/fonts): stale-while-revalidate.
+  event.respondWith(
+    caches.match(request).then((cached) => {
+      const networkFetch = fetch(request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => cached);
+      return cached || networkFetch;
     })
   );
 });
 
-// Listen for messages from the client
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
