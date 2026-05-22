@@ -201,7 +201,7 @@ const Home = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white">
+      <section id="features" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {features.map((feature, index) => (
@@ -218,7 +218,7 @@ const Home = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-gray-50">
+      <section id="benefits" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4" data-testid="landing-benefits-title">{t('landing.benefitsTitle')}</h2>
@@ -263,25 +263,25 @@ const Home = () => {
             <div>
               <h4 className="text-white font-semibold mb-4">{t('landing.footerProduct')}</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerTemplates')}</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerFeatures')}</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerPricing')}</a></li>
+                <li><Link to="/templates" className="hover:text-white transition-colors" data-testid="footer-link-templates">{t('landing.footerTemplates')}</Link></li>
+                <li><a href="#features" className="hover:text-white transition-colors" data-testid="footer-link-features">{t('landing.footerFeatures')}</a></li>
+                <li><Link to="/subscription" className="hover:text-white transition-colors" data-testid="footer-link-pricing">{t('landing.footerPricing')}</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="text-white font-semibold mb-4">{t('landing.footerSupport')}</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerHelpCenter')}</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerContact')}</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerFAQ')}</a></li>
+                <li><a href="mailto:soportefactuya@gmail.com" className="hover:text-white transition-colors" data-testid="footer-link-helpcenter">{t('landing.footerHelpCenter')}</a></li>
+                <li><a href="mailto:soportefactuya@gmail.com" className="hover:text-white transition-colors" data-testid="footer-link-contact">{t('landing.footerContact')}</a></li>
+                <li><a href="#benefits" className="hover:text-white transition-colors" data-testid="footer-link-faq">{t('landing.footerFAQ')}</a></li>
               </ul>
             </div>
             <div>
               <h4 className="text-white font-semibold mb-4">{t('landing.footerCompany')}</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">{t('landing.footerAbout')}</a></li>
-                <li><Link to="/privacy" className="hover:text-white transition-colors">{t('landing.footerPrivacy')}</Link></li>
-                <li><Link to="/terms" className="hover:text-white transition-colors">{t('landing.footerTerms')}</Link></li>
+                <li><a href="#benefits" className="hover:text-white transition-colors" data-testid="footer-link-about">{t('landing.footerAbout')}</a></li>
+                <li><Link to="/privacy" className="hover:text-white transition-colors" data-testid="footer-link-privacy">{t('landing.footerPrivacy')}</Link></li>
+                <li><Link to="/terms" className="hover:text-white transition-colors" data-testid="footer-link-terms">{t('landing.footerTerms')}</Link></li>
               </ul>
             </div>
           </div>
