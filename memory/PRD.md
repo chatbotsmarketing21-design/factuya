@@ -3,9 +3,41 @@
 ## Original Problem Statement
 Clone of "Invoice Home" application - a full-stack invoicing application named "FactuYa!" with apple green color scheme, deployed on user's Hostinger VPS.
 
-## Current Status: PRODUCTION DEPLOYED ✅
-- **Live URL**: User's custom domain on Hostinger VPS
+## Current Status: PRODUCTION DEPLOYED ✅ + OFFLINE MODE LIVE 🎉
+- **Live URL**: https://factuya.site (Hostinger VPS)
 - **Stack**: React frontend + FastAPI backend + MongoDB
+- **PWA Offline Mode**: ACTIVE (Service Worker `#387 activated and running`, IndexedDB caching)
+
+---
+
+## 🎯 ACTIVE SESSION GOAL (May 22, 2026 — late afternoon)
+**User explicitly paused the Play Store launch checklist** to first polish the app.
+User has identified **~33 UI/UX/functional adjustments** they want to make BEFORE
+submitting to Google Play Store. The user will provide the full list when they
+return from lunch.
+
+### Why this matters
+First Play Store reviews are critical for Google's ranking algorithm. Shipping a
+polished app prevents bad reviews and supports organic growth.
+
+### Pending when user returns
+- [ ] User will dictate ~33 adjustments (design + functionality)
+- [ ] Group them by area (Home, Dashboard, Invoice Creator, PDF, Settings,
+      Subscription, Mobile, etc.) and tackle in batches
+- [ ] Test after each batch (curl + screenshot)
+- [ ] Deploy to VPS via `git pull && npm install --legacy-peer-deps && npm run build`
+
+### ⏸️ Roadmap PAUSED until polish is done (then resume in this order)
+1. 🔐 Change keystore password (`keytool -storepasswd`)
+2. 📸 Capture 6 mobile screenshots
+3. 📝 Fill Play Console store listing
+4. 🚀 Upload .aab and publish to Play Store
+5. 💳 Wompi Widget tokenization (Option B, real auto-renewal)
+6. 👥 Clients module + 📦 Products module
+7. 📊 Reports with charts
+8. 🌍 Multi-language: pt-BR, fr, de
+9. 🍎 Apple App Store via Capacitor (Jul/Aug 2026)
+10. 💡 BONUS idea: Referral program ("1 free month for each referral")
 
 ---
 
