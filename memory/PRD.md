@@ -156,6 +156,26 @@ Bubblewrap. User has Play Console account active and wants to ship FAST.
   payment with a short "Create your first invoice in 2 minutes" walkthrough. Industry
   benchmarks suggest ~30-40% lift in month-2 retention for SaaS.
 
+### P2 Backlog — Apple App Store launch (deferred ~July/August 2026)
+**Why deferred**: Apple does NOT accept TWAs (Trusted Web Activities). Their App
+Store Review Guideline 4.2 (Minimum Functionality) explicitly rejects "repackaged
+web sites". So the Bubblewrap-generated `.aab` (which we are shipping for Google
+Play now) cannot be reused for Apple.
+
+**Plan when user is ready (after 2-3 months of Play Store validation)**:
+1. **Wrap the existing React app with Capacitor** (https://capacitorjs.com/) — keeps
+   100% of the codebase, only adds a native iOS shell.
+2. **Add some native iOS features** to pass Apple review (camera for invoice photos,
+   push notifications, share sheet) — needed to clear the "minimum functionality"
+   bar.
+3. **Mac requirement**: Apple's toolchain (Xcode) only runs on macOS. Either:
+   - Buy / borrow a Mac mini (~$600 USD)
+   - Rent a cloud Mac (e.g., MacStadium, ~$30-60 USD/month while building)
+4. **Apple Developer Program**: $99 USD per year (recurring, mandatory).
+5. **Estimated effort**: 8-12 hours dev work + 7-14 days Apple review.
+6. **Trigger to start**: when FactuYa! has steady installs on Play Store and
+   genuine demand from iPhone users (track in dashboard).
+
 ---
 
 
