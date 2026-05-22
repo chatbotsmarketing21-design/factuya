@@ -718,7 +718,7 @@ const InvoiceDetailPage = () => {
                 id="paymentNote"
                 value={paymentNote}
                 onChange={(e) => setPaymentNote(e.target.value)}
-                placeholder="Ej: Transferencia Bancolombia, Efectivo..."
+                placeholder="Ej: Transferencia bancaria, Efectivo, Nequi..."
                 className="mt-1"
                 rows={2}
               />

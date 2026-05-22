@@ -149,9 +149,15 @@ async def get_invoice_stats(user_id: str = Depends(get_current_user_id)):
     ]
 
     total_revenue = sum(inv["total"] for inv in financial if inv["status"] == "paid")
+    # Bug fix #26: Los abonos parciales también deben contar como ingreso real recibido.
+    total_revenue += sum(
+        inv.get("totalPaid", 0) for inv in financial if inv["status"] == "partial"
+    )
     total_invoices = len(invoices)  # TODOS los documentos (incluye cotizaciones)
     paid_invoices = len([inv for inv in financial if inv["status"] == "paid"])
-    pending_invoices = len([inv for inv in financial if inv["status"] == "pending"])
+    # Bug fix #25: Las facturas con abono parcial siguen siendo "pendientes" porque
+    # tienen saldo por cobrar. Se cuentan tanto en pending como en partial.
+    pending_invoices = len([inv for inv in financial if inv["status"] in ("pending", "partial")])
     draft_invoices = len([inv for inv in financial if inv["status"] == "draft"])
     overdue_invoices = len([inv for inv in financial if inv["status"] == "overdue"])
 

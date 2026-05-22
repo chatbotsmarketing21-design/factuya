@@ -608,7 +608,14 @@ const Dashboard = () => {
       invoice.number.toLowerCase().includes(searchTerm.toLowerCase());
     
     // Then apply status filter
-    const matchesStatus = statusFilter ? invoice.status === statusFilter : true;
+    // Bug fix #25: Las facturas con abono parcial (status='partial') deben aparecer
+    // en el filtro "Pendientes" porque aún tienen saldo por cobrar.
+    let matchesStatus = true;
+    if (statusFilter === 'pending') {
+      matchesStatus = invoice.status === 'pending' || invoice.status === 'partial';
+    } else if (statusFilter) {
+      matchesStatus = invoice.status === statusFilter;
+    }
     
     return matchesSearch && matchesStatus;
   });
@@ -1092,7 +1099,7 @@ const Dashboard = () => {
                 id="paymentNote"
                 value={paymentNote}
                 onChange={(e) => setPaymentNote(e.target.value)}
-                placeholder="Ej: Transferencia Bancolombia, Efectivo..."
+                placeholder="Ej: Transferencia bancaria, Efectivo, Nequi..."
                 className="mt-1"
                 rows={2}
               />
