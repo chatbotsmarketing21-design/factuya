@@ -98,11 +98,10 @@ const SwipeableInvoiceCard = ({
   };
 
   const getStatusColor = (status) => {
-    // Las cotizaciones/proformas son documentos comerciales informativos, no financieros.
-    // Siempre muestran un color neutral (slate) sin importar el status, para evitar
-    // que se vean "verdes/pagadas" automáticamente.
-    if (isQuotation || invoice.documentType === 'proforma' || invoice.number?.startsWith('COT') || invoice.number?.startsWith('PRO')) {
-      return 'bg-slate-400';
+    // Las cotizaciones (COT-) NUNCA cambian de status, así que SIEMPRE se muestran
+    // en amarillo (pendiente). Su status real en la base de datos es ignorado visualmente.
+    if (isQuotation) {
+      return 'bg-yellow-500';
     }
     switch (status) {
       case 'paid':
