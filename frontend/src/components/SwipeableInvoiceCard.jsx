@@ -14,8 +14,11 @@ const SwipeableInvoiceCard = ({
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isRevealed, setIsRevealed] = useState(false);
 
-  // Las cotizaciones no pueden marcarse como pagadas
-  const isQuotation = invoice.documentType === 'quotation';
+  // Las cotizaciones (quotation / COT-) NUNCA cambian de status automáticamente.
+  // Detección robusta: por documentType O por prefijo del número.
+  const isQuotation =
+    invoice.documentType === 'quotation' ||
+    invoice.number?.startsWith('COT');
 
   const SWIPE_THRESHOLD = 80;
   const MAX_SWIPE = 90;
