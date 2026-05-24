@@ -877,8 +877,8 @@ const InvoiceCreator = () => {
             sourceWidth, drawHeight        // Destination width, height
           );
           
-          const pageImgData = pageCanvas.toDataURL('image/png');
-          pdf.addImage(pageImgData, 'PNG', 0, 0, pageWidth, pageHeight);
+          const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.85);
+          pdf.addImage(pageImgData, 'JPEG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
         }
       }
       

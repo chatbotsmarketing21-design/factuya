@@ -388,7 +388,7 @@ const Dashboard = () => {
         console.log('generatePdfFromInvoice: Rendered, capturing canvas');
 
         const canvas = await html2canvas(tempContainer, {
-          scale: 2,
+          scale: 1.5,
           useCORS: true,
           logging: false,
           backgroundColor: '#ffffff',
@@ -401,15 +401,15 @@ const Dashboard = () => {
         root.unmount();
         document.body.removeChild(tempContainer);
 
-        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4', compress: true });
         const pageWidth = 210;
         const pageHeight = 297;
         const imgWidth = pageWidth;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
         
         if (imgHeight <= pageHeight) {
-          const imgData = canvas.toDataURL('image/png');
-          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+          const imgData = canvas.toDataURL('image/jpeg', 0.85);
+          pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
         } else {
           const totalPages = Math.ceil(imgHeight / pageHeight);
           const sourceWidth = canvas.width;
@@ -430,8 +430,8 @@ const Dashboard = () => {
             ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
             ctx.drawImage(canvas, 0, sourceY, sourceWidth, drawHeight, 0, 0, sourceWidth, drawHeight);
             
-            const pageImgData = pageCanvas.toDataURL('image/png');
-            pdf.addImage(pageImgData, 'PNG', 0, 0, pageWidth, pageHeight);
+            const pageImgData = pageCanvas.toDataURL('image/jpeg', 0.85);
+            pdf.addImage(pageImgData, 'JPEG', 0, 0, pageWidth, pageHeight, undefined, 'FAST');
           }
         }
         
