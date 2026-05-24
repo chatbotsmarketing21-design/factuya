@@ -466,8 +466,15 @@ const Dashboard = () => {
 
       const pdf = await generatePdfFromInvoice(fullInvoice);
       const invoiceNumber = fullInvoice.invoiceNumber || fullInvoice.number || 'documento';
-      const clientName = fullInvoice.clientName || fullInvoice.to?.name || fullInvoice.toAddress?.name || 'cliente';
-      pdf.save(`${invoiceNumber}_${clientName}.pdf`);
+      const rawClientName = fullInvoice.clientName || fullInvoice.to?.name || fullInvoice.toAddress?.name || 'cliente';
+      // Solo el primer nombre, limpio y sin caracteres especiales (#2)
+      const firstName = rawClientName
+        .split(/[\s\n]/)[0]
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quitar tildes
+        .replace(/[^a-zA-Z0-9]/g, '') // solo letras y números
+        .toUpperCase()
+        .slice(0, 20) || 'CLIENTE';
+      pdf.save(`${invoiceNumber}_${firstName}.pdf`);
 
       toast({
         title: "¡Descarga Completa!",

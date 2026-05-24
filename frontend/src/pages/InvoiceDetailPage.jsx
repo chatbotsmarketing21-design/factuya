@@ -338,13 +338,20 @@ const InvoiceDetailPage = () => {
       
       const invoiceNumber = invoice.invoiceNumber || invoice.number || 'factura';
       const clientName = invoice.clientName || invoice.to?.name || invoice.toAddress?.name || 'Cliente';
+      // Solo el primer nombre limpio para el nombre del archivo (#2)
+      const firstNameForFile = clientName
+        .split(/[\s\n]/)[0]
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-zA-Z0-9]/g, '')
+        .toUpperCase()
+        .slice(0, 20) || 'CLIENTE';
       const total = invoice.total?.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) || '0';
       const phone = invoice.to?.phone || invoice.toAddress?.phone || '';
       const cleanPhone = phone.replace(/\D/g, '');
       
       // Mobile: Use Web Share API
       const pdfBlob = pdf.output('blob');
-      const pdfFile = new File([pdfBlob], `${invoiceNumber}_${clientName}.pdf`, { type: 'application/pdf' });
+      const pdfFile = new File([pdfBlob], `${invoiceNumber}_${firstNameForFile}.pdf`, { type: 'application/pdf' });
       
       const shareData = {
         title: `Factura ${invoiceNumber}`,
