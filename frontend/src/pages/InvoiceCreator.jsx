@@ -1670,18 +1670,16 @@ const InvoiceCreator = () => {
       </div>
 
       {/* Mobile Save Button - Floating at bottom RIGHT (igual al "+ Nueva Factura" del Dashboard) */}
-      <div className="lg:hidden fixed bottom-4 right-4 z-[100]">
-        <Button 
+      <Link to="#" className="lg:hidden" onClick={(e) => { e.preventDefault(); if (!loading) handleSave(); }}>
+        <div 
           data-testid="mobile-save-btn"
-          onClick={handleSave}
-          disabled={loading}
-          className="flex items-center gap-2 bg-lime-500 hover:bg-lime-600 text-white font-semibold px-4 py-3 rounded-full shadow-lg transition-all h-auto"
-          style={{ boxShadow: '0 4px 14px rgba(132, 204, 22, 0.4)' }}
+          className="fixed bottom-4 right-4 z-[100] flex items-center gap-2 bg-lime-500 hover:bg-lime-600 text-white font-semibold px-4 py-3 rounded-full shadow-lg transition-all text-base cursor-pointer"
+          style={{ boxShadow: '0 4px 14px rgba(132, 204, 22, 0.4)', opacity: loading ? 0.7 : 1 }}
         >
           <Save className="w-5 h-5" />
           <span>{loading ? 'Guardando...' : (isEditMode ? 'Actualizar documento' : 'Guardar documento')}</span>
-        </Button>
-      </div>
+        </div>
+      </Link>
 
       {/* Subscription Dialog */}
       <SubscriptionDialog 
