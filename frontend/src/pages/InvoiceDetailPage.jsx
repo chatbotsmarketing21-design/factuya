@@ -779,7 +779,7 @@ const InvoiceDetailPage = () => {
         style={{ boxShadow: '0 4px 14px rgba(132, 204, 22, 0.4)' }}
       >
         <ArrowLeft className="w-5 h-5" />
-        <span>Salir</span>
+        <span>Volver al inicio</span>
       </div>
     </div>
   );
