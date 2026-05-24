@@ -12,20 +12,85 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ## 🎯 ACTIVE SESSION GOAL (May 22, 2026 — late afternoon)
 **User explicitly paused the Play Store launch checklist** to first polish the app.
-User has identified **~33 UI/UX/functional adjustments** they want to make BEFORE
-submitting to Google Play Store. The user will provide the full list when they
-return from lunch.
+User identified **33 UI/UX/functional adjustments** to make BEFORE submitting to
+Google Play Store. Working through them ONE BY ONE (user's explicit preference,
+no batching).
 
-### Why this matters
-First Play Store reviews are critical for Google's ranking algorithm. Shipping a
-polished app prevents bad reviews and supports organic growth.
+### ✅ Progress: 9 / 33 adjustments completed (May 22, 2026 PM)
 
-### Pending when user returns
-- [ ] User will dictate ~33 adjustments (design + functionality)
-- [ ] Group them by area (Home, Dashboard, Invoice Creator, PDF, Settings,
-      Subscription, Mobile, etc.) and tackle in batches
-- [ ] Test after each batch (curl + screenshot)
-- [ ] Deploy to VPS via `git pull && npm install --legacy-peer-deps && npm run build`
+**Batch #1 — Critical Bugs (Dashboard + Abonos):**
+- [x] #20 — Cotizaciones (COT-/PRO-) ya no se vuelven verdes solas. Siempre
+      muestran color slate (gris-azulado) en `SwipeableInvoiceCard.jsx`.
+- [x] #25 — Facturas con abono parcial (status='partial') aparecen en filtro
+      "Pendientes" del dashboard. Frontend + backend (`/api/invoices/stats`).
+- [x] #26 — Los abonos parciales se suman al `totalRevenue` (verificado: una
+      factura con abono de $50.000 aporta esos $50.000 al total).
+- [x] #27 — Quitamos "Bancolombia" del placeholder del modal de abono. Ahora
+      dice "Ej: Transferencia bancaria, Efectivo, Nequi..." (más internacional).
+
+**Batch #2 — Home + Textos:**
+- [x] #7 — Splash screen HTML/CSS personalizado en `public/index.html` muestra
+      el logo + "Factu Ya!" + "Facturación Fácil" CONSISTENTEMENTE en TODOS los
+      celulares (antes el manifest era inconsistente entre dispositivos).
+- [x] #9 — "Items / Servicios" → "Items / Productos" en `es.json` y `en.json`.
+- [x] #33 — Botones del footer del Home ahora SÍ tienen función:
+      Plantillas → /templates, Precios → /subscription, Features/FAQ/About →
+      scroll a sección, Centro de Ayuda/Contacto → mailto.
+
+**Batch #3 — Creador de Facturas (parcial):**
+- [x] #5 — Al copiar documento, ahora copia TODO: from, to, items, notas,
+      términos, plantilla, color, logo, firma, IVA, descuento, moneda y
+      documentType. Solo regenera: id, número, fechas, status, pagos.
+- [x] #10 — Botón "Cambiar Plantilla" ahora con gradiente verde lima→esmeralda,
+      icono Palette + Sparkles, sombra hover. Mucho más llamativo. Aplica
+      desktop y mobile.
+
+### 🚧 Remaining 24 adjustments (queued, user picks order):
+**Creador de Facturas (Batch #3 restante):**
+- [ ] #11 — Agregar más tipos de documentos en la lista
+- [ ] #18 — Cuadro de notas más grande (al quitar firma del pie)
+- [ ] #22 — Botón "Catálogo" (productos guardados)
+- [ ] #23 — Botón "Cambiar Documento" más notorio
+- [ ] #32 — Botón "+ Agregar Item" siempre arriba
+
+**Dashboard (UI):**
+- [ ] #3 — Buscador no se esconda
+- [ ] #4 — Botones a la derecha, tamaño uniforme
+
+**Plantillas + PDF:**
+- [ ] #1 — Factura carga lento al compartir por WhatsApp (optimizar)
+- [ ] #2 — Nombre del PDF más corto
+- [ ] #8 — Número del item en el PDF
+- [ ] #12 — Plantillas se vean idénticas al PDF (sin datos personales/Colombia)
+- [ ] #13 — Agregar al menos 20 plantillas profesionales únicas
+- [ ] #14 — Conservar selección de plantilla al entrar/salir
+- [ ] #15 — Más colores y tonos en plantillas
+
+**Perfil:**
+- [ ] #6 — Poder añadir varios logos
+- [ ] #16 — Bloque "Información para Cuenta de Cobro" + espacio firma
+- [ ] #17 — Cuenta de Cobro como bloque separado en perfil
+- [ ] #31 — Pie de página por tipo de documento
+
+**Páginas pulidas:**
+- [ ] #19 — Página de confirmación con más información
+- [ ] #21 — Página "Tipo de Documento" más profesional
+- [ ] #24 — Página "Editar Factura" y "Compartir" más profesional
+
+**Internacionalización:**
+- [ ] #28 — Más idiomas (pt-BR, fr, de, etc.)
+- [ ] #29 — ❓ Pregunta: ¿Cómo cobrar en otros países? (Stripe configurado, pero
+      decisión pendiente sobre qué cuenta usar internacionalmente)
+- [ ] #30 — Funciones según país
+
+### 🔧 Workflow agreed with user (2026-05-22 PM)
+1. User reviews app live at preview URL on his phone:
+   **https://factuya-invoices.preview.emergentagent.com**
+2. User dictates ONE adjustment at a time (no batching)
+3. Agent implements + confirms
+4. User refreshes preview, validates
+5. Production deployment (single `git pull && npm run build` on VPS) happens
+   ONLY AFTER ALL 33 adjustments are done.
 
 ### ⏸️ Roadmap PAUSED until polish is done (then resume in this order)
 1. 🔐 Change keystore password (`keytool -storepasswd`)
