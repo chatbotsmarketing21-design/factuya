@@ -1679,7 +1679,7 @@ const InvoiceCreator = () => {
           style={{ boxShadow: '0 4px 14px rgba(132, 204, 22, 0.4)' }}
         >
           <Save className="w-5 h-5" />
-          <span>{loading ? 'Guardando...' : (isEditMode ? t('invoice.update') : t('invoice.saveInvoice'))}</span>
+          <span>{loading ? 'Guardando...' : (isEditMode ? 'Actualizar documento' : 'Guardar documento')}</span>
         </Button>
       </div>
 
