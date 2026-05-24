@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-import { ArrowLeft, User, Building, Mail, Phone, MapPin, Save, Loader2 } from 'lucide-react';
+import { ArrowLeft, User, Building, Mail, Phone, MapPin, Save, Loader2, Landmark } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -319,48 +319,52 @@ const Profile = () => {
                 />
               </div>
             </div>
+          </Card>
 
-            {/* Bank Information */}
-            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                {t('profile.bankInfo') || 'Información Bancaria'}
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <Label htmlFor="company.bank">{t('profile.bank') || 'Banco'}</Label>
-                  <Input
-                    id="company.bank"
-                    name="company.bank"
-                    value={profile.companyInfo.bank}
-                    onChange={handleChange}
-                    placeholder="Ej: Bancolombia"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="company.accountType">{t('profile.accountType') || 'Tipo de Cuenta'}</Label>
-                  <select
-                    id="company.accountType"
-                    name="company.accountType"
-                    value={profile.companyInfo.accountType || 'savings'}
-                    onChange={handleChange}
-                    className="mt-1 w-full h-10 px-3 rounded-md border border-input bg-background text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 dark:bg-secondary dark:border-border dark:text-white"
-                  >
-                    <option value="savings">Cuenta de Ahorros</option>
-                    <option value="checking">Cuenta Corriente</option>
-                  </select>
-                </div>
-                <div>
-                  <Label htmlFor="company.bankAccount">{t('profile.bankAccount') || 'Número de Cuenta'}</Label>
-                  <Input
-                    id="company.bankAccount"
-                    name="company.bankAccount"
-                    value={profile.companyInfo.bankAccount}
-                    onChange={handleChange}
-                    placeholder="Ej: 000-000000-00"
-                    className="mt-1"
-                  />
-                </div>
+          {/* Información para Cuenta de Cobro (bloque separado) */}
+          <Card className="p-6 mb-6">
+            <div className="flex items-center gap-2 mb-6">
+              <Landmark className="w-5 h-5 text-lime-600" />
+              <h2 className="text-lg font-bold text-gray-900 dark:text-white">
+                Información para Cuenta de Cobro
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="company.bank">{t('profile.bank') || 'Banco'}</Label>
+                <Input
+                  id="company.bank"
+                  name="company.bank"
+                  value={profile.companyInfo.bank}
+                  onChange={handleChange}
+                  placeholder="Ej: Bancolombia"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="company.accountType">{t('profile.accountType') || 'Tipo de Cuenta'}</Label>
+                <select
+                  id="company.accountType"
+                  name="company.accountType"
+                  value={profile.companyInfo.accountType || 'savings'}
+                  onChange={handleChange}
+                  className="mt-1 w-full h-10 px-3 rounded-md border border-input bg-background text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 dark:bg-secondary dark:border-border dark:text-white"
+                >
+                  <option value="savings">Cuenta de Ahorros</option>
+                  <option value="checking">Cuenta Corriente</option>
+                </select>
+              </div>
+              <div>
+                <Label htmlFor="company.bankAccount">{t('profile.bankAccount') || 'Número de Cuenta'}</Label>
+                <Input
+                  id="company.bankAccount"
+                  name="company.bankAccount"
+                  value={profile.companyInfo.bankAccount}
+                  onChange={handleChange}
+                  placeholder="Ej: 000-000000-00"
+                  className="mt-1"
+                />
               </div>
             </div>
           </Card>
