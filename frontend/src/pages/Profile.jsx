@@ -24,6 +24,8 @@ const Profile = () => {
   const { user, updateUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [signature, setSignature] = useState('');
+  const [signatureRotation, setSignatureRotation] = useState(0);
   const [profile, setProfile] = useState({
     name: '',
     email: '',
@@ -73,6 +75,9 @@ const Profile = () => {
           ...response.data.companyInfo
         }
       });
+      // Cargar firma guardada
+      setSignature(response.data.companyInfo?.signature || '');
+      setSignatureRotation(response.data.companyInfo?.signatureRotation || 0);
     } catch (error) {
       console.error('Error loading profile:', error);
       toast({
@@ -125,6 +130,72 @@ const Profile = () => {
       });
     } finally {
       setSaving(false);
+    }
+  };
+
+  // Manejo de la firma del propietario (se guarda en companyInfo del perfil)
+  const handleSignatureUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    toast({ title: 'Procesando imagen...', description: 'Por favor espera' });
+
+    try {
+      // Comprimir la imagen antes de subir
+      const compressed = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let { width, height } = img;
+            const maxWidth = 800;
+            if (width > maxWidth) {
+              height = (height * maxWidth) / width;
+              width = maxWidth;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.7));
+          };
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      await profileAPI.updateSignature(compressed, 0);
+      setSignature(compressed);
+      setSignatureRotation(0);
+      toast({ title: 'Firma guardada', description: 'Se aplicará automáticamente a tus documentos.' });
+    } catch (error) {
+      console.error('Error saving signature:', error);
+      toast({ title: 'Error', description: 'No se pudo guardar la firma', variant: 'destructive' });
+    }
+  };
+
+  const handleSignatureRotate = async () => {
+    const newRotation = ((signatureRotation || 0) + 90) % 360;
+    setSignatureRotation(newRotation);
+    try {
+      await profileAPI.updateSignature(signature, newRotation);
+    } catch (error) {
+      console.error('Error rotating signature:', error);
+    }
+  };
+
+  const handleSignatureDelete = async () => {
+    try {
+      await profileAPI.deleteSignature();
+      setSignature('');
+      setSignatureRotation(0);
+      toast({ title: 'Firma eliminada' });
+    } catch (error) {
+      console.error('Error deleting signature:', error);
+      toast({ title: 'Error', description: 'No se pudo eliminar la firma', variant: 'destructive' });
     }
   };
 
@@ -365,6 +436,70 @@ const Profile = () => {
                   placeholder="Ej: 000-000000-00"
                   className="mt-1"
                 />
+              </div>
+            </div>
+
+            {/* Firma */}
+            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex items-center gap-2 mb-3">
+                <PenTool className="w-4 h-4 text-lime-600" />
+                <Label className="dark:text-gray-300 text-sm font-medium">Firma</Label>
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                Esta firma se mostrará automáticamente al final de tus facturas, cotizaciones y cuentas de cobro.
+              </p>
+              <div className="flex items-center gap-4 flex-wrap">
+                {signature ? (
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <div className="relative">
+                      <img
+                        src={signature}
+                        alt="Firma"
+                        className="h-20 max-w-[240px] object-contain border border-gray-200 dark:border-gray-600 rounded p-2 bg-white"
+                        style={{ transform: `rotate(${signatureRotation || 0}deg)` }}
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full"
+                        onClick={handleSignatureDelete}
+                        data-testid="profile-delete-signature-btn"
+                      >
+                        ×
+                      </Button>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="h-10 px-3"
+                      onClick={handleSignatureRotate}
+                      data-testid="profile-rotate-signature-btn"
+                    >
+                      <RotateCw className="w-4 h-4 mr-1" />
+                      Rotar
+                    </Button>
+                  </div>
+                ) : (
+                  <div>
+                    <input
+                      type="file"
+                      id="profile-signature-upload"
+                      accept="image/png,image/jpeg,image/jpg,image/webp,image/heic"
+                      className="hidden"
+                      onChange={handleSignatureUpload}
+                      data-testid="profile-signature-input"
+                    />
+                    <label
+                      htmlFor="profile-signature-upload"
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-md cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
+                    >
+                      <Upload className="w-4 h-4" />
+                      Subir Firma
+                    </label>
+                  </div>
+                )}
               </div>
             </div>
           </Card>
