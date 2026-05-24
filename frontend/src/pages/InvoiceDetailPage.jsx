@@ -121,24 +121,39 @@ const InvoiceDetailPage = () => {
       navigate('/create', {
         state: {
           copyFrom: {
+            // Cliente y emisor
             to: invoice.to || invoice.toAddress,
+            from: invoice.from || invoice.fromAddress,
+            // Contenido del documento
             items: invoice.items,
             notes: invoice.notes,
             terms: invoice.terms,
-            template: invoice.template
+            // Estilo/Marca
+            template: invoice.template,
+            templateColor: invoice.templateColor,
+            logo: invoice.logo,
+            signature: invoice.signature,
+            signatureRotation: invoice.signatureRotation,
+            // Configuración fiscal
+            hasTax: invoice.hasTax,
+            taxRate: invoice.taxRate,
+            currency: invoice.currency,
+            discount: invoice.discount,
+            // Tipo de documento (factura/cotización/etc.) — debe mantenerse
+            documentType: invoice.documentType,
           }
         }
       });
 
       toast({
-        title: "Factura copiada",
-        description: "Se han copiado los datos del cliente. Puedes modificar lo que necesites.",
+        title: "Documento copiado",
+        description: "Se copió el documento completo. Solo se generó un nuevo número.",
       });
     } catch (error) {
       console.error('Error copying invoice:', error);
       toast({
         title: "Error",
-        description: "No se pudo copiar la factura",
+        description: "No se pudo copiar el documento",
         variant: "destructive"
       });
     }
