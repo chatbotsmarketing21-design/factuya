@@ -1669,17 +1669,17 @@ const InvoiceCreator = () => {
         </div>
       </div>
 
-      {/* Mobile Save Button - Floating at bottom left */}
-      <div className="lg:hidden fixed bottom-4 left-4 z-[100]">
+      {/* Mobile Save Button - Floating at bottom RIGHT (igual al "+ Nueva Factura" del Dashboard) */}
+      <div className="lg:hidden fixed bottom-4 right-4 z-[100]">
         <Button 
           data-testid="mobile-save-btn"
           onClick={handleSave}
           disabled={loading}
-          className="bg-lime-500 hover:bg-lime-600 text-white h-12 px-6 rounded-full shadow-lg"
+          className="flex items-center gap-2 bg-lime-500 hover:bg-lime-600 text-white font-semibold px-4 py-3 rounded-full shadow-lg transition-all h-auto"
           style={{ boxShadow: '0 4px 14px rgba(132, 204, 22, 0.4)' }}
         >
-          <Save className="w-5 h-5 mr-2" />
-          {loading ? 'Guardando...' : (isEditMode ? t('invoice.update') : t('invoice.saveInvoice'))}
+          <Save className="w-5 h-5" />
+          <span>{loading ? 'Guardando...' : (isEditMode ? t('invoice.update') : t('invoice.saveInvoice'))}</span>
         </Button>
       </div>
 
