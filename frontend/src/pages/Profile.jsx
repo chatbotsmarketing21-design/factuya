@@ -12,10 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-import { ArrowLeft, User, Building, Mail, Phone, MapPin, Save, Loader2, Landmark } from 'lucide-react';
+import { ArrowLeft, User, Building, Mail, Phone, MapPin, Save, Loader2, Landmark, Upload, RotateCw, Edit } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
-import api from '../services/api';
+import api, { profileAPI } from '../services/api';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -442,7 +442,7 @@ const Profile = () => {
             {/* Firma */}
             <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
               <div className="flex items-center gap-2 mb-3">
-                <PenTool className="w-4 h-4 text-lime-600" />
+                <Edit className="w-4 h-4 text-lime-600" />
                 <Label className="dark:text-gray-300 text-sm font-medium">Firma</Label>
               </div>
               <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
