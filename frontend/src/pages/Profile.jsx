@@ -409,7 +409,7 @@ const Profile = () => {
                   name="company.bank"
                   value={profile.companyInfo.bank}
                   onChange={handleChange}
-                  placeholder="Ej: Bancolombia"
+                  placeholder="Ej: Tu Banco"
                   className="mt-1"
                 />
               </div>
