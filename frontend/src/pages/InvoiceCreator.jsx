@@ -1056,16 +1056,19 @@ const InvoiceCreator = () => {
                     RECIBO
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
+                  <DropdownMenuItem
+                    asChild
+                    className="bg-lime-500 focus:bg-lime-600 hover:bg-lime-600 text-white focus:text-white data-[highlighted]:bg-lime-600 data-[highlighted]:text-white mt-1 rounded-md"
+                  >
                     <Link
                       to="/templates"
-                      className="w-full flex items-center gap-2 font-semibold text-lime-700 focus:text-lime-700"
+                      className="w-full flex items-center gap-2 font-semibold text-white focus:text-white py-2"
                       onClick={(e) => { e.preventDefault(); setShowMobileMenu(false); goToTemplates(); }}
                       data-testid="change-template-btn-mobile"
                     >
-                      <Palette className="w-4 h-4 text-lime-600" />
+                      <Palette className="w-4 h-4 text-white" />
                       {t('invoice.changeTemplate')}
-                      <Sparkles className="w-3.5 h-3.5 ml-auto text-lime-500" />
+                      <Sparkles className="w-3.5 h-3.5 ml-auto text-white" />
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
