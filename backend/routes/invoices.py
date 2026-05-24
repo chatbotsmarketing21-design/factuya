@@ -139,10 +139,10 @@ async def get_invoice_stats(user_id: str = Depends(get_current_user_id)):
     """
     invoices = await db.invoices.find({"userId": user_id}).to_list(1000)
 
-    # Excluir cotizaciones y proformas de las métricas FINANCIERAS (revenue y status),
-    # pero NO del conteo total: las cotizaciones son documentos válidos que el usuario
-    # creó y debe poder ver contabilizados en "Total de Documentos".
-    NON_FINANCIAL_TYPES = {"quotation", "proforma"}
+    # Excluir SOLO cotizaciones de las métricas FINANCIERAS (revenue y status).
+    # Las PROFORMAS sí se incluyen porque son prefacturas reales que pueden
+    # cobrarse (admiten abonos y status financiero como una factura normal).
+    NON_FINANCIAL_TYPES = {"quotation"}
     financial = [
         inv for inv in invoices
         if inv.get("documentType", "invoice") not in NON_FINANCIAL_TYPES
