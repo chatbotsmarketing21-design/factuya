@@ -852,27 +852,32 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Search and Filter */}
-        <Card className={`p-4 sm:p-6 mb-4 sm:mb-6 dark:bg-card ${searchFocused ? 'sm:relative' : ''}`}>
-          <div className="flex items-center gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <Input
-                ref={searchInputRef}
-                type="text"
-                placeholder={t('dashboard.searchPlaceholder')}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                onFocus={() => setSearchFocused(true)}
-                onBlur={() => {
-                  // Small delay to allow click events to fire first
-                  setTimeout(() => setSearchFocused(false), 150);
-                }}
-                className="pl-10"
-              />
+        {/* Search and Filter — sticky justo debajo del header al hacer scroll */}
+        <div className="sticky top-[57px] sm:top-[73px] z-40 -mx-4 sm:mx-0 mb-4 sm:mb-6">
+          <Card
+            className={`p-4 sm:p-6 dark:bg-card rounded-none sm:rounded-lg border-x-0 sm:border-x shadow-sm bg-white/95 dark:bg-card/95 backdrop-blur ${searchFocused ? 'sm:relative' : ''}`}
+          >
+            <div className="flex items-center gap-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Input
+                  ref={searchInputRef}
+                  type="text"
+                  placeholder={t('dashboard.searchPlaceholder')}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onFocus={() => setSearchFocused(true)}
+                  onBlur={() => {
+                    // Small delay to allow click events to fire first
+                    setTimeout(() => setSearchFocused(false), 150);
+                  }}
+                  className="pl-10"
+                  data-testid="dashboard-search-input"
+                />
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
 
         {/* Invoices - Cards for Mobile, Table for Desktop */}
         <Card className="dark:bg-card">
