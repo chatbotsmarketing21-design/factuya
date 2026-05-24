@@ -1463,7 +1463,7 @@ const InvoiceCreator = () => {
                         value={invoice.terms}
                         onChange={(e) => handleTermsChange(e.target.value)}
                         placeholder=""
-                        rows={2}
+                        rows={6}
                         className="dark:bg-secondary dark:border-border dark:text-white text-sm"
                       />
                     </div>
