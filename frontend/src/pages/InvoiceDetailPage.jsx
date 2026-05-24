@@ -771,17 +771,15 @@ const InvoiceDetailPage = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Floating Exit Button - Same style as Save button in InvoiceCreator */}
-      <div className="fixed bottom-4 right-4 z-[100]">
-        <Button 
-          data-testid="exit-button"
-          onClick={() => navigate('/dashboard')}
-          className="bg-lime-500 hover:bg-lime-600 text-white h-12 px-10 rounded-full shadow-lg"
-          style={{ boxShadow: '0 4px 14px rgba(132, 204, 22, 0.4)' }}
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Salir
-        </Button>
+      {/* Floating Exit Button - Mismo estilo que "+ Crear nueva factura" y "Guardar documento" */}
+      <div
+        data-testid="exit-button"
+        onClick={() => navigate('/dashboard')}
+        className="fixed bottom-4 right-4 z-[100] flex items-center gap-2 bg-lime-500 hover:bg-lime-600 text-white font-semibold px-4 py-3 rounded-full shadow-lg transition-all text-base cursor-pointer"
+        style={{ boxShadow: '0 4px 14px rgba(132, 204, 22, 0.4)' }}
+      >
+        <ArrowLeft className="w-5 h-5" />
+        <span>Salir</span>
       </div>
     </div>
   );
