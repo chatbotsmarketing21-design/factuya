@@ -134,6 +134,11 @@ const SwipeableInvoiceCard = ({
       <div 
         {...handlers}
         onClick={(e) => {
+          // Bloqueo total para cotizaciones/proformas: NUNCA cambian de status por tap
+          if (isQuotation) {
+            navigate(`/invoice/${invoice.id}`);
+            return;
+          }
           // If swipe is revealed and user clicks, execute the paid action
           if (isRevealed) {
             handleActionClick('paid', e);

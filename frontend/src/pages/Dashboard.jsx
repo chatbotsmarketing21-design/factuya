@@ -300,6 +300,17 @@ const Dashboard = () => {
       const invoiceResponse = await invoiceAPI.getById(invoiceId);
       const invoiceData = invoiceResponse.data;
       
+      // Bloqueo de seguridad: las cotizaciones y proformas NUNCA cambian de status
+      // automáticamente. Solo se identifican como documentos comerciales informativos.
+      const isQuotation =
+        invoiceData.documentType === 'quotation' ||
+        invoiceData.documentType === 'proforma' ||
+        invoiceData.number?.startsWith('COT') ||
+        invoiceData.number?.startsWith('PRO');
+      if (isQuotation) {
+        return;
+      }
+      
       // Actualizar solo el estado
       await invoiceAPI.update(invoiceId, {
         ...invoiceData,
