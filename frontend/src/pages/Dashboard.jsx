@@ -1126,7 +1126,7 @@ const Dashboard = () => {
                 id="paymentNote"
                 value={paymentNote}
                 onChange={(e) => setPaymentNote(e.target.value)}
-                placeholder="Ej: Transferencia bancaria, Efectivo, Nequi..."
+                placeholder="Ej: Transferencia, Efectivo o Tarjeta de Crédito"
                 className="mt-1"
                 rows={2}
               />
