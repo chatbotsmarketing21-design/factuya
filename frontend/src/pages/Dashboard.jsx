@@ -632,14 +632,28 @@ const Dashboard = () => {
       invoice.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.number.toLowerCase().includes(searchTerm.toLowerCase());
     
+    // Las cotizaciones (COT-) NUNCA aparecen en filtros financieros (paid/pending/overdue)
+    // porque no son documentos cobrables. Solo aparecen en el listado general.
+    const isQuotation =
+      invoice.documentType === 'quotation' ||
+      invoice.number?.startsWith('COT');
+    
     // Then apply status filter
     // Bug fix #25: Las facturas con abono parcial (status='partial') deben aparecer
     // en el filtro "Pendientes" porque aún tienen saldo por cobrar.
     let matchesStatus = true;
     if (statusFilter === 'pending') {
-      matchesStatus = invoice.status === 'pending' || invoice.status === 'partial';
+      if (isQuotation) {
+        matchesStatus = false;
+      } else {
+        matchesStatus = invoice.status === 'pending' || invoice.status === 'partial';
+      }
     } else if (statusFilter) {
-      matchesStatus = invoice.status === statusFilter;
+      if (isQuotation) {
+        matchesStatus = false;
+      } else {
+        matchesStatus = invoice.status === statusFilter;
+      }
     }
     
     return matchesSearch && matchesStatus;
