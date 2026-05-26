@@ -1244,35 +1244,35 @@ const InvoiceCreator = () => {
                 <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-3 sm:p-4">
                   <Label className="text-sm sm:text-base font-semibold mb-2 sm:mb-3 block dark:text-white">{t('invoice.logo')}</Label>
                   {invoice.logo ? (
-                    <div className="flex items-center gap-3 sm:gap-4">
-                      <img 
-                        src={invoice.logo} 
-                        alt="Logo" 
-                        className="h-16 w-16 sm:h-20 sm:w-20 object-contain border border-gray-200 dark:border-gray-600 rounded"
-                      />
-                      <div className="flex-1">
-                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2">Logo cargado</p>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            onClick={removeLogo}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 text-xs sm:text-sm"
-                          >
-                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                            Eliminar
-                          </Button>
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={() => navigate('/logos')}
-                            className="bg-lime-500 hover:bg-lime-600 text-white text-xs sm:text-sm gap-1"
-                            data-testid="select-logo-btn-active"
-                          >
-                            <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
-                            Seleccionar logo
-                          </Button>
-                        </div>
+                    <div>
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <img 
+                          src={invoice.logo} 
+                          alt="Logo" 
+                          className="h-16 w-16 sm:h-20 sm:w-20 object-contain border border-gray-200 dark:border-gray-600 rounded flex-shrink-0"
+                        />
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 flex-1">Logo cargado</p>
+                      </div>
+                      <div className="flex items-center gap-2 mt-3 flex-nowrap">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={removeLogo}
+                          className="flex-1 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 text-xs sm:text-sm"
+                        >
+                          <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                          Eliminar
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={() => navigate('/logos')}
+                          className="flex-1 bg-lime-500 hover:bg-lime-600 text-white text-xs sm:text-sm gap-1"
+                          data-testid="select-logo-btn-active"
+                        >
+                          <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
+                          Seleccionar logo
+                        </Button>
                       </div>
                     </div>
                   ) : (
@@ -1280,31 +1280,29 @@ const InvoiceCreator = () => {
                       <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">
                         Sube el logo de tu empresa (JPG, PNG - máx 2MB)
                       </p>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleLogoUpload}
-                          className="block flex-1 min-w-[180px] text-xs sm:text-sm text-gray-500 dark:text-gray-400
-                            file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4
-                            file:rounded-lg file:border-0
-                            file:text-xs sm:file:text-sm file:font-semibold
-                            file:bg-lime-50 file:text-lime-700
-                            dark:file:bg-lime-900/30 dark:file:text-lime-400
-                            hover:file:bg-lime-100 dark:hover:file:bg-lime-900/50
-                            cursor-pointer"
-                        />
-                        <Button
-                          type="button"
-                          size="sm"
-                          onClick={() => navigate('/logos')}
-                          className="bg-lime-500 hover:bg-lime-600 text-white text-xs sm:text-sm gap-1"
-                          data-testid="select-logo-btn-empty"
-                        >
-                          <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
-                          Seleccionar logo
-                        </Button>
-                      </div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoUpload}
+                        className="block w-full text-xs sm:text-sm text-gray-500 dark:text-gray-400
+                          file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4
+                          file:rounded-lg file:border-0
+                          file:text-xs sm:file:text-sm file:font-semibold
+                          file:bg-lime-50 file:text-lime-700
+                          dark:file:bg-lime-900/30 dark:file:text-lime-400
+                          hover:file:bg-lime-100 dark:hover:file:bg-lime-900/50
+                          cursor-pointer mb-3"
+                      />
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={() => navigate('/logos')}
+                        className="w-full bg-lime-500 hover:bg-lime-600 text-white text-xs sm:text-sm gap-1"
+                        data-testid="select-logo-btn-empty"
+                      >
+                        <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
+                        Seleccionar logo de la galería
+                      </Button>
                     </div>
                   )}
                 </div>
