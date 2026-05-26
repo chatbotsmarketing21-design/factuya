@@ -16,7 +16,9 @@ User identified **33 UI/UX/functional adjustments** to make BEFORE submitting to
 Google Play Store. Working through them ONE BY ONE (user's explicit preference,
 no batching).
 
-### ✅ Progress: 14 / 33 adjustments completed (May 22-24, 2026)
+### ✅ Progress: 16 / 33 adjustments completed + DEPLOYED to production
+**Production**: https://factuya.site (deployed May 26, 2026 — commit ba84bf7)
+**Preview**: https://factuya-invoices.preview.emergentagent.com
 
 **Batch #1 — Critical Bugs (Dashboard + Abonos):**
 - [x] #20 — Cotizaciones (COT-) blindadas: NUNCA cambian de status automáticamente
