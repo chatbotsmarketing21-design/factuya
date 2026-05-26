@@ -167,17 +167,17 @@ const LogoGallery = () => {
             </p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4">
             {logos.map((logo, index) => (
               <div
                 key={index}
-                className="flex items-center gap-3"
+                className="relative"
                 data-testid={`logo-gallery-row-${index}`}
               >
                 <button
                   type="button"
                   onClick={() => handleSelect(logo)}
-                  className="flex-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:border-lime-500 hover:shadow-md transition flex items-center justify-center min-h-[140px]"
+                  className="w-full bg-white dark:bg-gray-800 border border-transparent hover:border-lime-500 rounded-xl p-6 hover:shadow-md transition flex items-center justify-center min-h-[160px]"
                   data-testid={`logo-gallery-select-${index}`}
                 >
                   <img
@@ -189,11 +189,11 @@ const LogoGallery = () => {
                 <button
                   type="button"
                   onClick={(e) => handleDelete(index, e)}
-                  className="text-red-500 hover:text-red-700 p-3 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition"
+                  className="absolute top-2 right-2 text-red-500 hover:text-red-700 p-2 rounded-full bg-white/90 dark:bg-gray-800/90 hover:bg-red-50 dark:hover:bg-red-900/20 shadow-sm transition"
                   data-testid={`logo-gallery-delete-${index}`}
                   aria-label={`Eliminar logo ${index + 1}`}
                 >
-                  <Trash2 className="w-7 h-7" />
+                  <Trash2 className="w-5 h-5" />
                 </button>
               </div>
             ))}
