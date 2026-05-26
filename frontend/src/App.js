@@ -10,6 +10,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import SubscriptionPanel from "./pages/SubscriptionPanel";
 import Profile from "./pages/Profile";
+import LogoGallery from "./pages/LogoGallery";
 import ChangePassword from "./pages/ChangePassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -49,6 +50,14 @@ function AppRouter() {
       <Route path="/terms" element={<Terms />} />
       <Route path="/auth/google/callback" element={<GoogleCallback />} />
       <Route path="/templates" element={<Templates />} />
+      <Route
+        path="/logos"
+        element={
+          <ProtectedRoute>
+            <LogoGallery />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/create"
         element={

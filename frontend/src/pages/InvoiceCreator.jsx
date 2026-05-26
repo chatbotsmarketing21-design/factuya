@@ -1149,15 +1149,27 @@ const InvoiceCreator = () => {
                       />
                       <div className="flex-1">
                         <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2">Logo cargado</p>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={removeLogo}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 text-xs sm:text-sm"
-                        >
-                          <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                          Eliminar
-                        </Button>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            onClick={removeLogo}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 text-xs sm:text-sm"
+                          >
+                            <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                            Eliminar
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => navigate('/logos')}
+                            className="bg-lime-500 hover:bg-lime-600 text-white text-xs sm:text-sm gap-1"
+                            data-testid="select-logo-btn-active"
+                          >
+                            <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
+                            Seleccionar logo
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ) : (
@@ -1165,19 +1177,31 @@ const InvoiceCreator = () => {
                       <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mb-2 sm:mb-3">
                         Sube el logo de tu empresa (JPG, PNG - máx 2MB)
                       </p>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleLogoUpload}
-                        className="block w-full text-xs sm:text-sm text-gray-500 dark:text-gray-400
-                          file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4
-                          file:rounded-lg file:border-0
-                          file:text-xs sm:file:text-sm file:font-semibold
-                          file:bg-lime-50 file:text-lime-700
-                          dark:file:bg-lime-900/30 dark:file:text-lime-400
-                          hover:file:bg-lime-100 dark:hover:file:bg-lime-900/50
-                          cursor-pointer"
-                      />
+                      <div className="flex flex-wrap items-center gap-2">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleLogoUpload}
+                          className="block flex-1 min-w-[180px] text-xs sm:text-sm text-gray-500 dark:text-gray-400
+                            file:mr-2 sm:file:mr-4 file:py-1.5 sm:file:py-2 file:px-3 sm:file:px-4
+                            file:rounded-lg file:border-0
+                            file:text-xs sm:file:text-sm file:font-semibold
+                            file:bg-lime-50 file:text-lime-700
+                            dark:file:bg-lime-900/30 dark:file:text-lime-400
+                            hover:file:bg-lime-100 dark:hover:file:bg-lime-900/50
+                            cursor-pointer"
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={() => navigate('/logos')}
+                          className="bg-lime-500 hover:bg-lime-600 text-white text-xs sm:text-sm gap-1"
+                          data-testid="select-logo-btn-empty"
+                        >
+                          <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
+                          Seleccionar logo
+                        </Button>
+                      </div>
                     </div>
                   )}
                 </div>

@@ -13,7 +13,8 @@ class CompanyInfo(BaseModel):
     state: Optional[str] = None
     zip: Optional[str] = None
     country: Optional[str] = None
-    logo: Optional[str] = None  # Base64 encoded logo
+    logo: Optional[str] = None  # Base64 encoded logo (logo activo en uso)
+    logos: Optional[list] = None  # Galería: hasta 10 logos guardados (base64)
     bank: Optional[str] = None  # Bank name
     bankAccount: Optional[str] = None  # Bank account number
     accountType: Optional[str] = None  # 'savings' or 'checking'

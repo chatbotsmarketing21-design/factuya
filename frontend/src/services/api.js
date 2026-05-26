@@ -146,6 +146,11 @@ export const profileAPI = {
       try { await patchCachedCompany({ logo: null }); } catch (_) { /* cache best-effort */ }
       return res;
     }),
+  // Galería de logos (hasta 10)
+  getLogos: () => api.get('/profile/logos'),
+  addLogo: (logo) => requireOnlineWrite(() => api.post('/profile/logos', { logo })),
+  deleteLogoFromGallery: (index) =>
+    requireOnlineWrite(() => api.delete(`/profile/logos/${index}`)),
   updateSignature: (signature, signatureRotation) =>
     requireOnlineWrite(async () => {
       const res = await api.put('/profile/signature', { signature, signatureRotation });

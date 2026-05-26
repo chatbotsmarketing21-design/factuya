@@ -64,18 +64,27 @@ async def update_company_logo(
     logo_data: LogoUpdate,
     user_id: str = Depends(get_current_user_id)
 ):
-    """Update user's company logo"""
+    """Update user's company logo (logo activo) y lo añade a la galería."""
     user = await db.users.find_one({"id": user_id})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # Update logo in company info
+    company_info = user.get("companyInfo") or {}
+    logos = list(company_info.get("logos") or [])
+    
+    # Auto-añadir a la galería si no está ya guardado (respetando el límite)
+    if logo_data.logo and logo_data.logo not in logos and len(logos) < 10:
+        logos.append(logo_data.logo)
+    
     await db.users.update_one(
         {"id": user_id},
-        {"$set": {"companyInfo.logo": logo_data.logo}}
+        {"$set": {
+            "companyInfo.logo": logo_data.logo,
+            "companyInfo.logos": logos,
+        }}
     )
     
-    return {"message": "Logo guardado correctamente"}
+    return {"message": "Logo guardado correctamente", "logos": logos}
 
 @router.delete("/logo")
 async def delete_company_logo(user_id: str = Depends(get_current_user_id)):
@@ -91,6 +100,78 @@ async def delete_company_logo(user_id: str = Depends(get_current_user_id)):
     )
     
     return {"message": "Logo eliminado correctamente"}
+
+
+# ===== Galería de logos (hasta 10) =====
+
+MAX_LOGOS = 10
+
+class LogoGalleryItem(BaseModel):
+    logo: str  # Base64 encoded logo
+
+@router.get("/logos")
+async def get_company_logos(user_id: str = Depends(get_current_user_id)):
+    """Devuelve la lista de logos guardados por el usuario."""
+    user = await db.users.find_one({"id": user_id}, {"_id": 0, "companyInfo.logos": 1})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    logos = (user.get("companyInfo") or {}).get("logos") or []
+    return {"logos": logos, "max": MAX_LOGOS}
+
+@router.post("/logos")
+async def add_logo_to_gallery(
+    item: LogoGalleryItem,
+    user_id: str = Depends(get_current_user_id),
+):
+    """Agrega un nuevo logo a la galería (límite 10)."""
+    user = await db.users.find_one({"id": user_id}, {"_id": 0, "companyInfo": 1})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    company_info = user.get("companyInfo") or {}
+    logos = list(company_info.get("logos") or [])
+
+    if len(logos) >= MAX_LOGOS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Has alcanzado el límite de {MAX_LOGOS} logos. Elimina uno antes de agregar otro.",
+        )
+
+    # Evitar duplicados exactos
+    if item.logo not in logos:
+        logos.append(item.logo)
+
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"companyInfo.logos": logos}},
+    )
+    return {"logos": logos, "max": MAX_LOGOS}
+
+@router.delete("/logos/{index}")
+async def delete_logo_from_gallery(
+    index: int,
+    user_id: str = Depends(get_current_user_id),
+):
+    """Elimina un logo de la galería por su índice."""
+    user = await db.users.find_one({"id": user_id}, {"_id": 0, "companyInfo": 1})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    company_info = user.get("companyInfo") or {}
+    logos = list(company_info.get("logos") or [])
+
+    if index < 0 or index >= len(logos):
+        raise HTTPException(status_code=404, detail="Logo no encontrado")
+
+    removed = logos.pop(index)
+
+    update = {"companyInfo.logos": logos}
+    # Si el logo borrado era el activo, también lo limpiamos
+    if company_info.get("logo") == removed:
+        update["companyInfo.logo"] = None
+
+    await db.users.update_one({"id": user_id}, {"$set": update})
+    return {"logos": logos, "max": MAX_LOGOS}
 
 @router.put("/signature")
 async def update_company_signature(
