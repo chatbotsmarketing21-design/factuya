@@ -135,7 +135,7 @@ const LogoGallery = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Header */}
       <header className="bg-lime-500 dark:bg-lime-600 sticky top-0 z-30 shadow-md">
         <div className="max-w-2xl mx-auto px-4 py-4 flex items-center gap-4">
