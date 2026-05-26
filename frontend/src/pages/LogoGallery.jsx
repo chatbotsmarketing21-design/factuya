@@ -163,7 +163,7 @@ const LogoGallery = () => {
               Aún no tienes logos guardados.
             </p>
             <p className="text-sm text-gray-400 dark:text-gray-500">
-              Toca <strong>+ Añadir su logo</strong> para empezar.
+              Toca <strong>+ Añadir otro logo</strong> para empezar.
             </p>
           </div>
         ) : (
@@ -228,7 +228,7 @@ const LogoGallery = () => {
         ) : (
           <>
             <Plus className="w-5 h-5" />
-            <span>Añadir su logo</span>
+            <span>Añadir otro logo</span>
           </>
         )}
       </label>
