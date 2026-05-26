@@ -16,60 +16,94 @@ User identified **33 UI/UX/functional adjustments** to make BEFORE submitting to
 Google Play Store. Working through them ONE BY ONE (user's explicit preference,
 no batching).
 
-### ✅ Progress: 9 / 33 adjustments completed (May 22, 2026 PM)
+### ✅ Progress: 14 / 33 adjustments completed (May 22-24, 2026)
 
 **Batch #1 — Critical Bugs (Dashboard + Abonos):**
-- [x] #20 — Cotizaciones (COT-/PRO-) ya no se vuelven verdes solas. Siempre
-      muestran color slate (gris-azulado) en `SwipeableInvoiceCard.jsx`.
+- [x] #20 — Cotizaciones (COT-) blindadas: NUNCA cambian de status automáticamente
+      (tap, swipe y backend bloqueados). Siempre muestran amarillo en `SwipeableInvoiceCard.jsx`.
+      Tampoco aparecen en filtros financieros (paid/pending/overdue) del Dashboard.
+      NOTA: Las proformas (PRO-) sí siguen siendo financieras y cambian normal.
 - [x] #25 — Facturas con abono parcial (status='partial') aparecen en filtro
       "Pendientes" del dashboard. Frontend + backend (`/api/invoices/stats`).
-- [x] #26 — Los abonos parciales se suman al `totalRevenue` (verificado: una
-      factura con abono de $50.000 aporta esos $50.000 al total).
-- [x] #27 — Quitamos "Bancolombia" del placeholder del modal de abono. Ahora
-      dice "Ej: Transferencia bancaria, Efectivo, Nequi..." (más internacional).
+- [x] #26 — Los abonos parciales se suman al `totalRevenue`. Además, las
+      PROFORMAS se incluyen en revenue (solo se excluyen cotizaciones).
+- [x] #27 — Modal de abono: placeholder ahora dice
+      "Ej: Transferencia, Efectivo o Tarjeta de Crédito" (sin nombres de bancos).
 
 **Batch #2 — Home + Textos:**
-- [x] #7 — Splash screen HTML/CSS personalizado en `public/index.html` muestra
-      el logo + "Factu Ya!" + "Facturación Fácil" CONSISTENTEMENTE en TODOS los
-      celulares (antes el manifest era inconsistente entre dispositivos).
+- [x] #7 — REVERTIDO. El splash personalizado fue eliminado. Vuelve al comportamiento
+      original del manifest de Android.
 - [x] #9 — "Items / Servicios" → "Items / Productos" en `es.json` y `en.json`.
-- [x] #33 — Botones del footer del Home ahora SÍ tienen función:
-      Plantillas → /templates, Precios → /subscription, Features/FAQ/About →
-      scroll a sección, Centro de Ayuda/Contacto → mailto.
+- [ ] #33 — DEJADO PARA EL FINAL por petición explícita del usuario.
 
 **Batch #3 — Creador de Facturas (parcial):**
-- [x] #5 — Al copiar documento, ahora copia TODO: from, to, items, notas,
-      términos, plantilla, color, logo, firma, IVA, descuento, moneda y
-      documentType. Solo regenera: id, número, fechas, status, pagos.
-- [x] #10 — Botón "Cambiar Plantilla" ahora con gradiente verde lima→esmeralda,
-      icono Palette + Sparkles, sombra hover. Mucho más llamativo. Aplica
-      desktop y mobile.
+- [x] #5 — Copiar documento idéntico: copia from, to, items, notas, términos,
+      plantilla, color, logo, firma, IVA, descuento, moneda y documentType.
+      Aplicado en Dashboard.jsx (handleCopyInvoice) Y en
+      InvoiceDetailPage.jsx (handleCopy mobile).
+- [x] #10 — Botón "Cambiar Plantilla": desktop con gradiente lime→emerald, mobile
+      (dentro del menu Tipo de Documento) con fondo lime-500 sólido + texto e
+      iconos blancos (igual al botón "Guardar").
+- [x] #18 — Cuadro de "Términos y Condiciones" en notas/pie de página ahora tiene
+      6 líneas visibles (antes 2).
 
-### 🚧 Remaining 24 adjustments (queued, user picks order):
+**Batch #4 — Dashboard UI:**
+- [x] #3 — Buscador sticky: queda pegado debajo del header al hacer scroll.
+      Mantiene el comportamiento de ocultar tarjetas al hacer tap (que era lo
+      que ya gustaba). `sticky top-[57px] sm:top-[73px] z-40` + backdrop blur.
+
+**Batch #5 — Plantillas + PDF:**
+- [x] #1 — Optimización de PDF (carga rápida en WhatsApp). Aplicado en
+      Dashboard.jsx, InvoiceCreator.jsx, InvoiceDetailPage.jsx:
+      - scale: 2 → 1.5
+      - PNG → JPEG 0.85
+      - compress: true en jsPDF
+      - render mode 'FAST'
+      Resultado: ~2MB → ~300-500KB. Tiempo upload WhatsApp 15s → 3-5s.
+- [x] #2 — Nombre del PDF corto. Formato: `{NUMERO}_{PRIMERNOMBRE}.pdf`
+      (ej: FAC-010_JOSE.pdf). Quita tildes, caracteres especiales, max 20 chars,
+      mayúsculas. Aplicado en Dashboard.jsx y InvoiceDetailPage.jsx (mobile share).
+
+**Batch #6 — Perfil (parcial):**
+- [x] #16 — Bloque "Información para Cuenta de Cobro" creado como Card separado
+      en Profile.jsx. Contiene Banco/Tipo Cuenta/Número (sacados del bloque de
+      empresa) + sección de Firma debajo. Icon: Landmark. Placeholder banco:
+      "Ej: Tu Banco" (no Bancolombia).
+- [x] FIRMA MOVIDA: La sección de subir/rotar/eliminar firma fue SACADA del
+      InvoiceCreator.jsx (sección notas/pie de página) y MOVIDA al Card de
+      "Información para Cuenta de Cobro" en Profile.jsx. La firma sigue
+      guardándose en companyInfo via profileAPI.updateSignature/deleteSignature.
+
+**Otros ajustes UI mobile:**
+- [x] BOTÓN GUARDAR mobile: ahora a la derecha (era left) en InvoiceCreator.jsx.
+      Mismo estilo exacto que "+ Crear nueva factura" (Link+div, text-base,
+      font-semibold, px-4 py-3, rounded-full, lime-500). Texto: "Guardar documento"
+      / "Actualizar documento" para igualar ancho.
+- [x] BOTÓN SALIR de InvoiceDetailPage.jsx: cambiado a "Volver al inicio",
+      mismo estilo Link+div idéntico a los otros botones flotantes verdes.
+
+### 🚧 Remaining 19 adjustments (queued, user picks order):
 **Creador de Facturas (Batch #3 restante):**
 - [ ] #11 — Agregar más tipos de documentos en la lista
-- [ ] #18 — Cuadro de notas más grande (al quitar firma del pie)
 - [ ] #22 — Botón "Catálogo" (productos guardados)
 - [ ] #23 — Botón "Cambiar Documento" más notorio
 - [ ] #32 — Botón "+ Agregar Item" siempre arriba
 
 **Dashboard (UI):**
-- [ ] #3 — Buscador no se esconda
-- [ ] #4 — Botones a la derecha, tamaño uniforme
+- [ ] #4 — Botones a la derecha, tamaño uniforme (parcialmente hecho con Guardar
+      y Salir mobile, falta revisar otros botones que el usuario identifique)
 
 **Plantillas + PDF:**
-- [ ] #1 — Factura carga lento al compartir por WhatsApp (optimizar)
-- [ ] #2 — Nombre del PDF más corto
 - [ ] #8 — Número del item en el PDF
 - [ ] #12 — Plantillas se vean idénticas al PDF (sin datos personales/Colombia)
 - [ ] #13 — Agregar al menos 20 plantillas profesionales únicas
 - [ ] #14 — Conservar selección de plantilla al entrar/salir
 - [ ] #15 — Más colores y tonos en plantillas
 
-**Perfil:**
+**Perfil (restante):**
 - [ ] #6 — Poder añadir varios logos
-- [ ] #16 — Bloque "Información para Cuenta de Cobro" + espacio firma
 - [ ] #17 — Cuenta de Cobro como bloque separado en perfil
+      (NOTA: ya hecho con #16, verificar si user lo confirma como duplicado)
 - [ ] #31 — Pie de página por tipo de documento
 
 **Páginas pulidas:**
@@ -82,6 +116,10 @@ no batching).
 - [ ] #29 — ❓ Pregunta: ¿Cómo cobrar en otros países? (Stripe configurado, pero
       decisión pendiente sobre qué cuenta usar internacionalmente)
 - [ ] #30 — Funciones según país
+
+**Pendiente al final:**
+- [ ] #33 — Botones del footer del Home (ya implementado en código pero el
+      usuario quiere validarlo de último)
 
 ### 🔧 Workflow agreed with user (2026-05-22 PM)
 1. User reviews app live at preview URL on his phone:

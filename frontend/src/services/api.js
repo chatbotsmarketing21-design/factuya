@@ -6,6 +6,7 @@ import {
   cacheStats,
   isNetworkError,
   isOnline,
+  patchCachedCompany,
   readCachedCompany,
   readCachedInvoice,
   readCachedInvoiceList,
@@ -133,11 +134,31 @@ export const profileAPI = {
       (data) => cacheCompany(data)
     ),
   updateCompany: (data) => requireOnlineWrite(() => api.put('/profile/company', data)),
-  updateLogo: (logo) => requireOnlineWrite(() => api.put('/profile/logo', { logo })),
-  deleteLogo: () => requireOnlineWrite(() => api.delete('/profile/logo')),
+  updateLogo: (logo) =>
+    requireOnlineWrite(async () => {
+      const res = await api.put('/profile/logo', { logo });
+      try { await patchCachedCompany({ logo }); } catch (_) { /* cache best-effort */ }
+      return res;
+    }),
+  deleteLogo: () =>
+    requireOnlineWrite(async () => {
+      const res = await api.delete('/profile/logo');
+      try { await patchCachedCompany({ logo: null }); } catch (_) { /* cache best-effort */ }
+      return res;
+    }),
   updateSignature: (signature, signatureRotation) =>
-    requireOnlineWrite(() => api.put('/profile/signature', { signature, signatureRotation })),
-  deleteSignature: () => requireOnlineWrite(() => api.delete('/profile/signature')),
+    requireOnlineWrite(async () => {
+      const res = await api.put('/profile/signature', { signature, signatureRotation });
+      // Sync IndexedDB cache so InvoiceCreator picks up the new signature immediately.
+      try { await patchCachedCompany({ signature, signatureRotation }); } catch (_) { /* cache best-effort */ }
+      return res;
+    }),
+  deleteSignature: () =>
+    requireOnlineWrite(async () => {
+      const res = await api.delete('/profile/signature');
+      try { await patchCachedCompany({ signature: null, signatureRotation: 0 }); } catch (_) { /* cache best-effort */ }
+      return res;
+    }),
   updateInvoiceDefaults: (data) =>
     requireOnlineWrite(() => api.put('/profile/invoice-defaults', data)),
 };

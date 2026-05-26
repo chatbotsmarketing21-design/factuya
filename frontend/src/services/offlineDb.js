@@ -136,6 +136,19 @@ export async function cacheCompany(company) {
   await db.put(STORES.PROFILE, { id: 'company', data: company, _cachedAt: Date.now() });
 }
 
+/**
+ * Mezcla parcialmente datos en el cache de company sin reemplazarlo completo.
+ * Útil cuando actualizas un solo campo (firma, logo, etc.) y quieres mantener
+ * el resto del cache sincronizado.
+ */
+export async function patchCachedCompany(patch) {
+  if (!patch) return;
+  const db = await dbPromise;
+  const entry = await db.get(STORES.PROFILE, 'company');
+  const merged = { ...(entry?.data || {}), ...patch };
+  await db.put(STORES.PROFILE, { id: 'company', data: merged, _cachedAt: Date.now() });
+}
+
 export async function readCachedCompany() {
   const db = await dbPromise;
   const entry = await db.get(STORES.PROFILE, 'company');
