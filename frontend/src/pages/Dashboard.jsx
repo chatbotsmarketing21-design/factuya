@@ -300,11 +300,17 @@ const Dashboard = () => {
       const invoiceResponse = await invoiceAPI.getById(invoiceId);
       const invoiceData = invoiceResponse.data;
       
-      // Bloqueo de seguridad: las cotizaciones NUNCA cambian de status automáticamente.
-      // (Las proformas sí pueden, son documentos comerciales que pueden facturarse.)
+      // Bloqueo de seguridad: cotizaciones, ofertas, pedidos y notas de entrega
+      // NUNCA cambian de status automáticamente (son documentos no cobrables).
       const isQuotation =
         invoiceData.documentType === 'quotation' ||
-        invoiceData.number?.startsWith('COT');
+        invoiceData.documentType === 'offer' ||
+        invoiceData.documentType === 'order' ||
+        invoiceData.documentType === 'delivery_note' ||
+        invoiceData.number?.startsWith('COT') ||
+        invoiceData.number?.startsWith('OFE') ||
+        invoiceData.number?.startsWith('PED') ||
+        invoiceData.number?.startsWith('NEN');
       if (isQuotation) {
         return;
       }
@@ -639,11 +645,17 @@ const Dashboard = () => {
       invoice.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       invoice.number.toLowerCase().includes(searchTerm.toLowerCase());
     
-    // Las cotizaciones (COT-) NUNCA aparecen en filtros financieros (paid/pending/overdue)
-    // porque no son documentos cobrables. Solo aparecen en el listado general.
+    // Las cotizaciones, ofertas, pedidos y notas de entrega son documentos
+    // comerciales no cobrables. No deben aparecer en filtros financieros.
     const isQuotation =
       invoice.documentType === 'quotation' ||
-      invoice.number?.startsWith('COT');
+      invoice.documentType === 'offer' ||
+      invoice.documentType === 'order' ||
+      invoice.documentType === 'delivery_note' ||
+      invoice.number?.startsWith('COT') ||
+      invoice.number?.startsWith('OFE') ||
+      invoice.number?.startsWith('PED') ||
+      invoice.number?.startsWith('NEN');
     
     // Then apply status filter
     // Bug fix #25: Las facturas con abono parcial (status='partial') deben aparecer

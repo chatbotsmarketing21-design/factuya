@@ -14,11 +14,18 @@ const SwipeableInvoiceCard = ({
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isRevealed, setIsRevealed] = useState(false);
 
-  // Las cotizaciones (quotation / COT-) NUNCA cambian de status automáticamente.
-  // Detección robusta: por documentType O por prefijo del número.
+  // Las cotizaciones, ofertas, pedidos y notas de entrega son documentos comerciales
+  // no cobrables: NUNCA cambian de status automáticamente y siempre se muestran
+  // en amarillo (pendiente) por consistencia visual.
   const isQuotation =
     invoice.documentType === 'quotation' ||
-    invoice.number?.startsWith('COT');
+    invoice.documentType === 'offer' ||
+    invoice.documentType === 'order' ||
+    invoice.documentType === 'delivery_note' ||
+    invoice.number?.startsWith('COT') ||
+    invoice.number?.startsWith('OFE') ||
+    invoice.number?.startsWith('PED') ||
+    invoice.number?.startsWith('NEN');
 
   const SWIPE_THRESHOLD = 80;
   const MAX_SWIPE = 90;

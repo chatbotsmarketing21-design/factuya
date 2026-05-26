@@ -33,7 +33,15 @@ DOCUMENT_PREFIXES = {
     "proforma": "PRO", 
     "quotation": "COT",
     "receipt": "REC",
-    "bill": "COB"
+    "bill": "COB",
+    # Nuevos tipos (#11)
+    "tax_invoice": "FIM",        # Factura de impuestos
+    "sales_receipt": "RVE",      # Recibo de la venta
+    "cash_receipt": "REF",       # Recibo de efectivo
+    "offer": "OFE",              # Oferta
+    "credit_note": "NAB",        # Nota de Abono
+    "order": "PED",              # Pedido
+    "delivery_note": "NEN",      # Nota de entrega
 }
 
 @router.get("/next-number/{document_type}")
@@ -139,10 +147,11 @@ async def get_invoice_stats(user_id: str = Depends(get_current_user_id)):
     """
     invoices = await db.invoices.find({"userId": user_id}).to_list(1000)
 
-    # Excluir SOLO cotizaciones de las métricas FINANCIERAS (revenue y status).
+    # Excluir SOLO cotizaciones y otros documentos comerciales NO financieros
+    # (oferta, pedido, nota de entrega) de las métricas FINANCIERAS (revenue y status).
     # Las PROFORMAS sí se incluyen porque son prefacturas reales que pueden
     # cobrarse (admiten abonos y status financiero como una factura normal).
-    NON_FINANCIAL_TYPES = {"quotation"}
+    NON_FINANCIAL_TYPES = {"quotation", "offer", "order", "delivery_note"}
     financial = [
         inv for inv in invoices
         if inv.get("documentType", "invoice") not in NON_FINANCIAL_TYPES

@@ -452,7 +452,14 @@ const InvoiceCreator = () => {
         proforma: 'PRO',
         quotation: 'COT',
         receipt: 'REC',
-        bill: 'COB'
+        bill: 'COB',
+        tax_invoice: 'FIM',
+        sales_receipt: 'RVE',
+        cash_receipt: 'REF',
+        offer: 'OFE',
+        credit_note: 'NAB',
+        order: 'PED',
+        delivery_note: 'NEN'
       };
       const prefix = prefixes[docType] || 'FAC';
       setInvoice(prev => ({ ...prev, number: `${prefix}-001` }));
@@ -462,11 +469,9 @@ const InvoiceCreator = () => {
   const handleDocumentTypeChange = async (newType) => {
     updateInvoice('documentType', newType);
 
-    // Quotations and proformas are commercial proposals — they shouldn't carry
-    // a "paid" status nor any payment records. If we're switching to one of those
-    // from a paid/partial invoice, reset payment state so the user doesn't end up
-    // with a "Cotización" stamped as PAID.
-    const nonPayableTypes = ['quotation', 'proforma'];
+    // Documentos NO cobrables: propuestas, ofertas, pedidos y entregas.
+    // No deben quedar marcados como "pagado" ni acumular pagos.
+    const nonPayableTypes = ['quotation', 'proforma', 'offer', 'order', 'delivery_note'];
     if (nonPayableTypes.includes(newType)) {
       setInvoice(prev => ({
         ...prev,
@@ -682,6 +687,12 @@ const InvoiceCreator = () => {
         icon: <FileText className="w-4 h-4" />,
         color: '#2563eb'
       },
+      tax_invoice: {
+        name: 'FACTURA DE IMPUESTOS',
+        shortName: 'Factura Impuestos',
+        icon: <FileText className="w-4 h-4" />,
+        color: '#1d4ed8'
+      },
       proforma: {
         name: 'FACTURA PROFORMA',
         shortName: 'Proforma',
@@ -705,6 +716,42 @@ const InvoiceCreator = () => {
         shortName: 'Recibo',
         icon: <Receipt className="w-4 h-4" />,
         color: '#0891b2'
+      },
+      sales_receipt: {
+        name: 'RECIBO DE LA VENTA',
+        shortName: 'Recibo Venta',
+        icon: <Receipt className="w-4 h-4" />,
+        color: '#0e7490'
+      },
+      cash_receipt: {
+        name: 'RECIBO DE EFECTIVO',
+        shortName: 'Recibo Efectivo',
+        icon: <DollarSign className="w-4 h-4" />,
+        color: '#16a34a'
+      },
+      offer: {
+        name: 'OFERTA',
+        shortName: 'Oferta',
+        icon: <Sparkles className="w-4 h-4" />,
+        color: '#db2777'
+      },
+      credit_note: {
+        name: 'NOTA DE ABONO',
+        shortName: 'Nota Abono',
+        icon: <FileText className="w-4 h-4" />,
+        color: '#9333ea'
+      },
+      order: {
+        name: 'PEDIDO',
+        shortName: 'Pedido',
+        icon: <FileText className="w-4 h-4" />,
+        color: '#ca8a04'
+      },
+      delivery_note: {
+        name: 'NOTA DE ENTREGA',
+        shortName: 'Nota Entrega',
+        icon: <FileText className="w-4 h-4" />,
+        color: '#475569'
       }
     };
     return documentTypes[type] || documentTypes.invoice;
@@ -981,6 +1028,10 @@ const InvoiceCreator = () => {
                       <FileText className="w-4 h-4 mr-2 text-blue-600" />
                       FACTURA
                     </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => changeDocumentType('tax_invoice')}>
+                      <FileText className="w-4 h-4 mr-2 text-blue-700" />
+                      FACTURA DE IMPUESTOS
+                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => changeDocumentType('proforma')}>
                       <FileCheck className="w-4 h-4 mr-2 text-purple-600" />
                       FACTURA PROFORMA
@@ -996,6 +1047,30 @@ const InvoiceCreator = () => {
                     <DropdownMenuItem onClick={() => changeDocumentType('receipt')}>
                       <Receipt className="w-4 h-4 mr-2 text-cyan-600" />
                       RECIBO
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => changeDocumentType('sales_receipt')}>
+                      <Receipt className="w-4 h-4 mr-2 text-cyan-700" />
+                      RECIBO DE LA VENTA
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => changeDocumentType('cash_receipt')}>
+                      <DollarSign className="w-4 h-4 mr-2 text-green-700" />
+                      RECIBO DE EFECTIVO
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => changeDocumentType('offer')}>
+                      <Sparkles className="w-4 h-4 mr-2 text-pink-600" />
+                      OFERTA
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => changeDocumentType('credit_note')}>
+                      <FileText className="w-4 h-4 mr-2 text-purple-700" />
+                      NOTA DE ABONO
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => changeDocumentType('order')}>
+                      <FileText className="w-4 h-4 mr-2 text-yellow-600" />
+                      PEDIDO
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => changeDocumentType('delivery_note')}>
+                      <FileText className="w-4 h-4 mr-2 text-slate-600" />
+                      NOTA DE ENTREGA
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -1034,10 +1109,14 @@ const InvoiceCreator = () => {
                     Tipo de Documento
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent align="end" className="w-56 max-h-[70vh] overflow-y-auto">
                   <DropdownMenuItem onClick={() => { changeDocumentType('invoice'); setShowMobileMenu(false); }}>
                     <FileText className="w-4 h-4 mr-2 text-blue-600" />
                     FACTURA
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { changeDocumentType('tax_invoice'); setShowMobileMenu(false); }}>
+                    <FileText className="w-4 h-4 mr-2 text-blue-700" />
+                    FACTURA DE IMPUESTOS
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => { changeDocumentType('proforma'); setShowMobileMenu(false); }}>
                     <FileCheck className="w-4 h-4 mr-2 text-purple-600" />
@@ -1054,6 +1133,30 @@ const InvoiceCreator = () => {
                   <DropdownMenuItem onClick={() => { changeDocumentType('receipt'); setShowMobileMenu(false); }}>
                     <Receipt className="w-4 h-4 mr-2 text-cyan-600" />
                     RECIBO
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { changeDocumentType('sales_receipt'); setShowMobileMenu(false); }}>
+                    <Receipt className="w-4 h-4 mr-2 text-cyan-700" />
+                    RECIBO DE LA VENTA
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { changeDocumentType('cash_receipt'); setShowMobileMenu(false); }}>
+                    <DollarSign className="w-4 h-4 mr-2 text-green-700" />
+                    RECIBO DE EFECTIVO
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { changeDocumentType('offer'); setShowMobileMenu(false); }}>
+                    <Sparkles className="w-4 h-4 mr-2 text-pink-600" />
+                    OFERTA
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { changeDocumentType('credit_note'); setShowMobileMenu(false); }}>
+                    <FileText className="w-4 h-4 mr-2 text-purple-700" />
+                    NOTA DE ABONO
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { changeDocumentType('order'); setShowMobileMenu(false); }}>
+                    <FileText className="w-4 h-4 mr-2 text-yellow-600" />
+                    PEDIDO
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => { changeDocumentType('delivery_note'); setShowMobileMenu(false); }}>
+                    <FileText className="w-4 h-4 mr-2 text-slate-600" />
+                    NOTA DE ENTREGA
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
