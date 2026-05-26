@@ -184,7 +184,12 @@ async def update_profile(
         update_data["gender"] = profile.gender
     
     if profile.companyInfo:
-        update_data["companyInfo"] = profile.companyInfo.dict()
+        # Merge with existing companyInfo so we don't accidentally erase fields
+        # (signature, logo, defaultNotes, etc.) that aren't sent by the client.
+        existing = user.get("companyInfo") or {}
+        incoming = profile.companyInfo.dict(exclude_unset=True)
+        merged = {**existing, **incoming}
+        update_data["companyInfo"] = merged
     
     # Update user
     await db.users.update_one(

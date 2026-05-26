@@ -113,7 +113,17 @@ const Profile = () => {
     e.preventDefault();
     try {
       setSaving(true);
-      await api.put('/profile', profile);
+      // Incluir signature/signatureRotation actuales en companyInfo para evitar
+      // que el backend los sobreescriba con null al hacer $set.
+      const payload = {
+        ...profile,
+        companyInfo: {
+          ...profile.companyInfo,
+          signature: signature || null,
+          signatureRotation: signatureRotation || 0,
+        },
+      };
+      await api.put('/profile', payload);
       toast({
         title: t('profile.updated'),
         description: t('profile.updatedDesc'),
