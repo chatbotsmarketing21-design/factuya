@@ -160,10 +160,17 @@
   },
   "documentTypes": {
     "invoice": "INVOICE",
+    "tax_invoice": "TAX INVOICE",
     "proforma": "PROFORMA INVOICE",
     "quotation": "QUOTATION",
     "bill": "BILL OF COLLECTION",
-    "receipt": "RECEIPT"
+    "receipt": "RECEIPT",
+    "sales_receipt": "SALES RECEIPT",
+    "cash_receipt": "CASH RECEIPT",
+    "offer": "OFFER",
+    "credit_note": "CREDIT NOTE",
+    "order": "ORDER",
+    "delivery_note": "DELIVERY NOTE"
   },
   "preview": {
     "preview": "View Preview",

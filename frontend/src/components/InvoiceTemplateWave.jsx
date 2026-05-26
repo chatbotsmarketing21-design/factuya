@@ -19,10 +19,17 @@ const InvoiceTemplateWave = ({ invoice, template, templateColor }) => {
   const getDocumentTitle = (type) => {
     const titles = {
       invoice: 'Factura',
+      tax_invoice: 'Factura de Impuestos',
       proforma: 'Factura Proforma',
       quotation: 'Cotización',
       bill: 'Cuenta de Cobro',
-      receipt: 'Recibo'
+      receipt: 'Recibo',
+      sales_receipt: 'Recibo de la Venta',
+      cash_receipt: 'Recibo de Efectivo',
+      offer: 'Oferta',
+      credit_note: 'Nota de Abono',
+      order: 'Pedido',
+      delivery_note: 'Nota de Entrega'
     };
     return titles[type] || 'Factura';
   };

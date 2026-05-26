@@ -22,10 +22,17 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
   const getDocumentTitle = (type) => {
     const titles = {
       invoice: 'FACTURA',
+      tax_invoice: 'FACTURA DE IMPUESTOS',
       proforma: 'FACTURA PROFORMA',
       quotation: 'COTIZACIÓN',
       bill: 'CUENTA DE COBRO',
-      receipt: 'RECIBO'
+      receipt: 'RECIBO',
+      sales_receipt: 'RECIBO DE LA VENTA',
+      cash_receipt: 'RECIBO DE EFECTIVO',
+      offer: 'OFERTA',
+      credit_note: 'NOTA DE ABONO',
+      order: 'PEDIDO',
+      delivery_note: 'NOTA DE ENTREGA'
     };
     return titles[type] || 'FACTURA';
   };
