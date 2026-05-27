@@ -559,21 +559,35 @@ const InvoiceCreator = () => {
     recalculateTotal(newItems, invoice.taxRate);
   };
 
-  const addItem = () => {
+  const addItem = (insertAfterIndex = null) => {
     const newItem = {
       description: '',
       quantity: 0,
       rate: 0,
       amount: 0
     };
-    setInvoice(prev => ({ ...prev, items: [...prev.items, newItem] }));
+    
+    // Si nos pasaron un índice, insertamos el nuevo item justo después del que tocaron.
+    // Si no, lo añadimos al final (comportamiento clásico del botón "Agregar item").
+    let newIndex;
+    if (insertAfterIndex !== null && insertAfterIndex >= 0) {
+      newIndex = insertAfterIndex + 1;
+      setInvoice(prev => {
+        const newItems = [...prev.items];
+        newItems.splice(newIndex, 0, newItem);
+        return { ...prev, items: newItems };
+      });
+    } else {
+      newIndex = invoice.items.length;
+      setInvoice(prev => ({ ...prev, items: [...prev.items, newItem] }));
+    }
     
     // Enfocar el campo de descripción del nuevo ítem después de renderizar
     setTimeout(() => {
-      const newIndex = invoice.items.length; // El índice del nuevo ítem
       const newDescriptionField = document.getElementById(`item-description-${newIndex}`);
       if (newDescriptionField) {
         newDescriptionField.focus();
+        newDescriptionField.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }, 100);
   };
