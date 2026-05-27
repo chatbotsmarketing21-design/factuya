@@ -177,6 +177,21 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
               <span className="font-bold text-gray-900">TOTAL</span>
               <span className="font-bold text-lg" style={{ color: primaryColor }}>{formatCurrency(invoice?.total)} $</span>
             </div>
+            {/* #Abonos */}
+            {Number(invoice?.totalPaid) > 0 && !isPaid && (
+              <>
+                <div className="flex justify-between py-2 text-sm text-gray-600 border-t border-gray-200">
+                  <span>{t('preview.amountPaid')}</span>
+                  <span>{formatCurrency(invoice.totalPaid)}</span>
+                </div>
+                <div className="flex justify-between py-2">
+                  <span className="font-bold text-gray-900 uppercase">{t('preview.balanceDue')}</span>
+                  <span className="font-bold text-lg" style={{ color: primaryColor }}>
+                    {formatCurrency((Number(invoice?.total) || 0) - (Number(invoice.totalPaid) || 0))} $
+                  </span>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

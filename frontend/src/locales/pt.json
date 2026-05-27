@@ -185,6 +185,8 @@
     "amount": "Valor",
     "subtotal": "Subtotal",
     "total": "Total",
+    "amountPaid": "Quantia paga",
+    "balanceDue": "Saldo devedor",
     "notes": "Notas",
     "terms": "Termos e Condições"
   },

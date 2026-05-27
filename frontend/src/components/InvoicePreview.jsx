@@ -176,6 +176,21 @@ const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
               <span>{t('preview.total')}:</span>
               <span style={{ color: displayColor }}>${formatCurrency(invoice?.total)}</span>
             </div>
+            {/* #Abonos — Cantidad pagada y Saldo debido (solo si hay abonos) */}
+            {Number(invoice?.totalPaid) > 0 && !isPaid && (
+              <>
+                <div className="flex justify-between text-sm pt-2 text-gray-600">
+                  <span>{t('preview.amountPaid')}:</span>
+                  <span>${formatCurrency(invoice.totalPaid)}</span>
+                </div>
+                <div className="flex justify-between text-lg font-bold pt-1">
+                  <span>{t('preview.balanceDue')}:</span>
+                  <span style={{ color: displayColor }}>
+                    ${formatCurrency((Number(invoice?.total) || 0) - (Number(invoice.totalPaid) || 0))}
+                  </span>
+                </div>
+              </>
+            )}
           </div>
         </div>
 

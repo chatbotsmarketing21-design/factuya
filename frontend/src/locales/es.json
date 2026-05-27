@@ -185,6 +185,8 @@
     "amount": "Monto",
     "subtotal": "Subtotal",
     "total": "Total",
+    "amountPaid": "Cantidad pagada",
+    "balanceDue": "Saldo debido",
     "notes": "Notas",
     "terms": "Términos y Condiciones"
   },

@@ -185,6 +185,8 @@
     "amount": "Amount",
     "subtotal": "Subtotal",
     "total": "Total",
+    "amountPaid": "Amount paid",
+    "balanceDue": "Balance due",
     "notes": "Notes",
     "terms": "Terms & Conditions"
   },
