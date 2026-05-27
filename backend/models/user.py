@@ -26,6 +26,7 @@ class CompanyInfo(BaseModel):
     defaultColor: Optional[str] = None  # Default color hex for templates
     signature: Optional[str] = None  # Base64 encoded signature
     signatureRotation: Optional[int] = 0  # Signature rotation in degrees
+    defaultCurrency: Optional[str] = None  # User's preferred default currency (ISO 4217, e.g. "COP", "USD", "BRL")
 
 class UserCreate(BaseModel):
     email: EmailStr

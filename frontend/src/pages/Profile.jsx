@@ -16,6 +16,7 @@ import { ArrowLeft, User, Building, Mail, Phone, MapPin, Save, Loader2, Landmark
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 import api, { profileAPI } from '../services/api';
+import { COUNTRY_LIST, CURRENCY_LIST, getCountryConfig } from '../constants/countryConfig';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -42,7 +43,8 @@ const Profile = () => {
       country: '',
       bank: '',
       bankAccount: '',
-      accountType: 'savings'
+      accountType: 'savings',
+      defaultCurrency: ''
     }
   });
 
@@ -72,6 +74,7 @@ const Profile = () => {
           bank: '',
           bankAccount: '',
           accountType: 'savings',
+          defaultCurrency: '',
           ...response.data.companyInfo
         }
       });
@@ -311,14 +314,15 @@ const Profile = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="company.nit">NIT</Label>
+                <Label htmlFor="company.nit">{getCountryConfig(profile.companyInfo.country).taxIdLabel}</Label>
                 <Input
                   id="company.nit"
                   name="company.nit"
                   value={profile.companyInfo.nit || ''}
                   onChange={handleChange}
-                  placeholder="000.000.000-0"
+                  placeholder={getCountryConfig(profile.companyInfo.country).taxIdPlaceholder}
                   className="mt-1"
+                  data-testid="profile-nit-input"
                 />
               </div>
               <div>
@@ -390,14 +394,59 @@ const Profile = () => {
               </div>
               <div>
                 <Label htmlFor="company.country">{t('profile.country')}</Label>
-                <Input
-                  id="company.country"
-                  name="company.country"
-                  value={profile.companyInfo.country}
-                  onChange={handleChange}
-                  placeholder={t('profile.countryPlaceholder')}
-                  className="mt-1"
-                />
+                <Select
+                  value={profile.companyInfo.country || ''}
+                  onValueChange={(val) => {
+                    const cfg = getCountryConfig(val);
+                    setProfile((prev) => ({
+                      ...prev,
+                      companyInfo: {
+                        ...prev.companyInfo,
+                        country: val,
+                        // Si el usuario aún no eligió moneda manualmente,
+                        // sugerimos la del país.
+                        defaultCurrency: prev.companyInfo.defaultCurrency || cfg.currency,
+                      },
+                    }));
+                  }}
+                >
+                  <SelectTrigger className="mt-1" data-testid="profile-country-select">
+                    <SelectValue placeholder={t('profile.countryPlaceholder')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {COUNTRY_LIST.map((c) => (
+                      <SelectItem key={c.code} value={c.name} data-testid={`profile-country-opt-${c.code}`}>
+                        {c.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            {/* #30.d — Moneda predeterminada */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+              <div>
+                <Label htmlFor="company.defaultCurrency">Moneda predeterminada</Label>
+                <Select
+                  value={profile.companyInfo.defaultCurrency || ''}
+                  onValueChange={(val) =>
+                    setProfile((prev) => ({
+                      ...prev,
+                      companyInfo: { ...prev.companyInfo, defaultCurrency: val },
+                    }))
+                  }
+                >
+                  <SelectTrigger className="mt-1" data-testid="profile-currency-select">
+                    <SelectValue placeholder="Selecciona la moneda" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CURRENCY_LIST.map((c) => (
+                      <SelectItem key={c.code} value={c.code} data-testid={`profile-currency-opt-${c.code}`}>
+                        {c.code} ({c.symbol})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </Card>

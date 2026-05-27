@@ -33,6 +33,7 @@ import { Checkbox } from '../components/ui/checkbox';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { getDefaultFooter } from '../constants/defaultFooters';
+import { getCountryConfig } from '../constants/countryConfig';
 
 const InvoiceCreator = () => {
   const { t, i18n } = useTranslation();
@@ -664,6 +665,18 @@ const InvoiceCreator = () => {
   };
 
   const handleAddTax = () => {
+    // #30.b — Pre-llenar con el impuesto sugerido del país del usuario,
+    // solo si el usuario no tiene ya un impuesto personalizado en la factura.
+    try {
+      const country = invoice.from?.country;
+      if (country && !invoice.hasTax) {
+        const cfg = getCountryConfig(country);
+        if (cfg && cfg.taxRate > 0) {
+          setTempTaxName(cfg.taxName);
+          setTempTaxRate(cfg.taxRate);
+        }
+      }
+    } catch (_) { /* noop */ }
     setShowTaxDialog(true);
   };
 
@@ -1409,12 +1422,12 @@ const InvoiceCreator = () => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="fromNit" className="dark:text-gray-300 text-sm">{t('invoice.nit')}</Label>
+                    <Label htmlFor="fromNit" className="dark:text-gray-300 text-sm">{getCountryConfig(invoice.from.country).taxIdLabel}</Label>
                     <Input
                       id="fromNit"
                       value={invoice.from.nit}
                       onChange={(e) => updateFrom('nit', e.target.value)}
-                      placeholder="900.123.456-7"
+                      placeholder={getCountryConfig(invoice.from.country).taxIdPlaceholder}
                       className="dark:bg-secondary dark:border-border dark:text-white"
                     />
                   </div>
