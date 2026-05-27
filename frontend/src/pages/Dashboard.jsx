@@ -61,6 +61,7 @@ const Dashboard = () => {
   const [invoices, setInvoices] = useState([]);
   const [stats, setStats] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false); // Hide stats on mobile when focused
   const [statusFilter, setStatusFilter] = useState(null); // null = all, 'paid' = pagadas, 'pending' = pendientes
   const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -832,9 +833,9 @@ const Dashboard = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        {/* Stats - Always visible on mobile (hiding them broke sticky behavior) */}
+        {/* Stats - Hidden on mobile when search is focused (more space for results) */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
+          <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8 ${searchFocused ? 'hidden sm:grid' : ''}`}>
             <Card className="p-4 sm:p-6 dark:bg-card">
               <div className="flex items-center justify-between">
                 <div>
@@ -905,6 +906,16 @@ const Dashboard = () => {
                   placeholder={t('dashboard.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  onFocus={() => {
+                    setSearchFocused(true);
+                    // Scroll to top so the search bar starts from a stable
+                    // position. Prevents the sticky bar from "disappearing"
+                    // when Stats collapse on mobile.
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  onBlur={() => {
+                    setTimeout(() => setSearchFocused(false), 150);
+                  }}
                   className="pl-10"
                   data-testid="dashboard-search-input"
                 />
