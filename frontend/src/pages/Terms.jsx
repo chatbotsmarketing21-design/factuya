@@ -10,8 +10,8 @@ const CONTACT_EMAIL = 'soportefactuya@gmail.com';
 const SUBSCRIPTION_PRICE_USD = '3.99 USD';
 
 const Terms = () => {
-  const { i18n } = useTranslation();
-  const isSpanish = i18n.language === 'es';
+  const { t, i18n } = useTranslation();
+  const isSpanish = i18n.language?.startsWith('es');
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-background">
@@ -27,7 +27,7 @@ const Terms = () => {
             <Link to="/" data-testid="terms-back-link">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                {isSpanish ? 'Volver al Inicio' : 'Back to Home'}
+                {t('common.backToHome')}
               </Button>
             </Link>
           </div>

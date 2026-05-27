@@ -99,8 +99,8 @@ const FAQS_EN = [
 ];
 
 const FAQ = () => {
-  const { i18n } = useTranslation();
-  const isSpanish = i18n.language === 'es';
+  const { t, i18n } = useTranslation();
+  const isSpanish = i18n.language?.startsWith('es');
   const faqs = isSpanish ? FAQS_ES : FAQS_EN;
 
   return (
@@ -117,7 +117,7 @@ const FAQ = () => {
             <Link to="/" data-testid="faq-back-link">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                {isSpanish ? 'Volver al Inicio' : 'Back to Home'}
+                {t('common.backToHome')}
               </Button>
             </Link>
           </div>

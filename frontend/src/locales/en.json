@@ -1,4 +1,7 @@
 {
+  "common": {
+    "backToHome": "Back to Home"
+  },
   "landing": {
     "signIn": "Sign In",
     "createInvoice": "Create Invoice",

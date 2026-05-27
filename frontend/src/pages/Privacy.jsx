@@ -9,8 +9,8 @@ const LAST_UPDATED_EN = 'May 2026';
 const CONTACT_EMAIL = 'soportefactuya@gmail.com';
 
 const Privacy = () => {
-  const { i18n } = useTranslation();
-  const isSpanish = i18n.language === 'es';
+  const { t, i18n } = useTranslation();
+  const isSpanish = i18n.language?.startsWith('es');
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-background">
@@ -26,7 +26,7 @@ const Privacy = () => {
             <Link to="/" data-testid="privacy-back-link">
               <Button variant="ghost" size="sm">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                {isSpanish ? 'Volver al Inicio' : 'Back to Home'}
+                {t('common.backToHome')}
               </Button>
             </Link>
           </div>

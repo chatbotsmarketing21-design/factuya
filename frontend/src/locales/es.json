@@ -1,4 +1,7 @@
 {
+  "common": {
+    "backToHome": "Volver al Inicio"
+  },
   "landing": {
     "signIn": "Iniciar Sesión",
     "createInvoice": "Crear Factura",
