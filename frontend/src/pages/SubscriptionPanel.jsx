@@ -584,6 +584,12 @@ const SubscriptionPanel = () => {
                       <img src="https://cdn-icons-png.flaticon.com/24/349/349228.png" alt="Mastercard" className="h-5 opacity-70" />
                       <span className="text-xs font-bold text-blue-600 opacity-70">PSE</span>
                       <span className="text-xs font-bold text-pink-500 opacity-70">Nequi</span>
+                      <img
+                        src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png"
+                        alt="PayPal"
+                        className="h-5 opacity-90"
+                        data-testid="paypal-logo-colombia"
+                      />
                     </>
                   ) : (
                     <>
