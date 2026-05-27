@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -9,6 +10,7 @@ import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 
 const SignUp = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { register } = useAuth();
@@ -91,9 +93,9 @@ const SignUp = () => {
               </div>
             </Link>
             <Link to="/">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" data-testid="signup-back-link">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Volver al Inicio
+                {t('common.backToHome')}
               </Button>
             </Link>
           </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -9,6 +10,7 @@ import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 
 const SignIn = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
@@ -82,9 +84,9 @@ const SignIn = () => {
               </div>
             </Link>
             <Link to="/">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" data-testid="signin-back-link">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Home
+                {t('common.backToHome')}
               </Button>
             </Link>
           </div>
