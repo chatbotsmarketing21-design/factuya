@@ -8,11 +8,15 @@ export const templateColors = [
   { id: 'red', name: 'Rojo', hex: '#DC2626' },
   { id: 'pink', name: 'Rosado', hex: '#ec4899' },
   { id: 'purple', name: 'Morado', hex: '#7c3aed' },
+  { id: 'purple-light', name: 'Morado Claro', hex: '#a855f7' },
   { id: 'orange', name: 'Naranja', hex: '#ea580c' },
   { id: 'yellow', name: 'Amarillo', hex: '#ca8a04' },
   { id: 'blue', name: 'Azul', hex: '#2563EB' },
+  { id: 'sky', name: 'Azul Cielo', hex: '#0ea5e9' },
   { id: 'cyan', name: 'Cyan', hex: '#0891b2' },
+  { id: 'teal', name: 'Turquesa', hex: '#14b8a6' },
   { id: 'green', name: 'Verde', hex: '#059669' },
+  { id: 'emerald', name: 'Verde Esmeralda', hex: '#10b981' },
   { id: 'lime', name: 'Lima', hex: '#84cc16' },
 ];
 
