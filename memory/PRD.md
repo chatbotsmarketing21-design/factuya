@@ -10,6 +10,93 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 
+## 🚀 SESSION 2026-05-27 — PAYPAL LIVE DEPLOYED TO VPS ✅
+
+### What got DONE today
+1. **PayPal Subscriptions integration** (backend + frontend) — `routes/paypal.py`, OAuth, create subscription, verify, cancel, webhook handler
+2. **Bootstrap script** (`scripts/paypal_bootstrap.py`) — creates Product + Plan in PayPal
+3. **Email confirmation helper** (`utils/email_notifications.py`) — Resend-based welcome emails fired on PayPal/Wompi/Stripe activation
+4. **In-process Scheduler** (`utils/scheduler.py`) — APScheduler runs daily 09:00 UTC, replaces VPS cron, idempotent renewal emails
+5. **Dual gateway UI in Colombia**:
+   - Wompi remains primary button
+   - PayPal secondary button below ("Pagar con PayPal $3.99 USD") so users without local cards can subscribe too
+6. **`geo.py` updated**: gateway "stripe"→"paypal", `?force_gateway=paypal` testing override
+7. **PayPal accounts created**:
+   - Business: Innova App Solutions (Colombia, S.A.S.)
+   - Sandbox app: client_id + secret + plan `P-13K23015GD503302VNILR2LA` + webhook `2FA59597AY934154L`
+   - Live app: client_id + secret + plan `P-3HW358851R3605749NILR7GI` + webhook `4JU6617415333023F` (URL: `https://factuya.site/api/paypal/webhook` ✅)
+8. **DEPLOYED to VPS** (`/var/www/factuya`):
+   - `git pull origin main` brought all PayPal code
+   - `.env` updated with 9 PayPal vars (PAYPAL_MODE=live)
+   - `pip install APScheduler==3.11.2 --break-system-packages`
+   - `yarn build` (43s, success)
+   - `systemctl restart factuya` → active (running) ✅
+   - `https://factuya.site/api/paypal/config` returns `{"configured":true,"mode":"live","priceUSD":3.99}` ✅
+9. **Domain confirmed**: `factuya.site` (NOT `factuya.app`)
+
+### .aab status (from May 22)
+- `/root/factuya-twa/app-release-bundle.aab` (2.3 MB) exists
+- `twa-manifest.json` points to `factuya.site` ✅
+- Keystore at `/root/factuya-twa/android.keystore` with password `Cesar.2026` (user decided NOT to rotate it — only he uses his PC)
+- **Ready to upload to Play Console as-is** — TWA shell loads `factuya.site` so all new code (PayPal, languages, etc.) is delivered automatically without rebuild
+
+### WAITING ON USER
+User is watching Play Console tutorials. When he returns, continue from here:
+
+1. **Download `.aab` from VPS to PC** (scp or WinSCP)
+   - `scp root@187.77.19.47:/root/factuya-twa/app-release-bundle.aab ~/Downloads/`
+2. **Create Play Console account** ($25 USD one-time fee) if he doesn't have one
+3. **Create app**: Name "FactuYa! - Facturación Fácil", Spanish (Colombia), Free, App
+4. **Upload `.aab`** to Internal Testing track first (safer than direct production)
+5. **Fill out Store Listing**:
+   - Short description (80 chars) — drafted, user can use it
+   - Long description (4000 chars) — DRAFT PENDING (offer to help)
+   - Icon 512x512 → `/root/factuya-twa/store_icon.png`
+   - Feature graphic 1024x500 — needs creation
+   - Screenshots (min 2, max 8 phone screenshots) — user has 6 captures pending
+6. **Privacy Policy URL**: `https://factuya.site/privacy`
+7. **Content Rating** questionnaire (financial data → 18+)
+8. **Target audience**: 18+
+9. **Category**: Business
+10. **Ads**: No ads
+
+### Open testing/verifications NOT yet done
+- 🟡 Real $3.99 PayPal Live payment test (recommended before public launch)
+- 🟡 Test app from mobile device at `https://factuya.site` (PWA install + offline mode)
+- 🟡 Verify Resend domain (`factuya.site`) so welcome emails reach real customers (currently restricted to owner email)
+
+### Remaining UI/UX backlog (P0 — can be shipped AFTER Play Store, instant updates via TWA)
+- #12 Plantillas se vean igual que el PDF
+- #13 20 plantillas profesionales nuevas (recordar preguntar si llevan columna "Item")
+- #14 Preservar selección de plantilla al salir de la página
+- #19 Más info en página de confirmación
+- #21 Página "Tipo de Documento" más profesional
+- #22 Botón "Catálogo" para productos guardados
+- #24 Páginas Editar/Compartir más profesionales
+
+### P1 backlog
+- Wompi JS Widget for true auto-renewal tokenization (currently disabled checkbox)
+- Sentry integration for crash reporting in production
+
+### P2 backlog
+- Dedicated Clients section
+- Dedicated Products catalog
+- Reports section with charts
+- iOS launch via Capacitor
+- Stripe activation (only when user has LLC USA — descartado por ahora)
+- WhatsApp reminders
+
+### Critical for next agent
+- **LANGUAGE**: Español únicamente
+- **VPS deploys**: `cd /var/www/factuya && git pull && cd frontend && yarn build && systemctl restart factuya`
+- **NEVER** touch `mentorcash.service` (other app)
+- **TEST CREDENTIALS** (preview env): `test@test.com` / `Test123!`
+- **PAYPAL TEST USER** (preview): `paypal-test@test.com` / `Test123!`
+- **Test report fork email** (Resend owner): `chatbotsmarketing21@gmail.com`
+
+---
+
+
 ## 💳 PayPal Subscriptions Integration (Feb 2026) — IN PROGRESS
 
 ### Decision tree finalized with user
