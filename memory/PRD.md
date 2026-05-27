@@ -71,6 +71,19 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 - ⚠️ Resend en modo no verificado: solo manda al owner. Para producción,
   verificar el dominio `factuya.app` en resend.com/domains.
 
+### In-process Scheduler (Feb 2026 — DONE)
+- `/app/backend/utils/scheduler.py` — APScheduler corriendo dentro del proceso
+  FastAPI. Reemplaza la dependencia del VPS cron.
+- Job programado: `renewal_notifications` → diario 09:00 UTC (≈ 04:00 Bogotá).
+- Llama a `routes.renewal.run_renewal_notifications()` (refactor extraído del endpoint).
+- Idempotente: marca `renewalReminderSentFor` / `expiredNoticeSentFor` por sub.
+- Pruebas:
+  - Ajusté manualmente un periodEnd a +2 días → `sent_reminder_count: 1` ✅
+  - 2da corrida con misma fecha → `sent_reminder_count: 0` (no duplica) ✅
+- Endpoint público de testing: `POST /api/renewal/send-notifications`
+  con header `X-Renewal-Token: <RENEWAL_CRON_TOKEN>` sigue disponible.
+- `requirements.txt` actualizado con `APScheduler==3.11.2`.
+
 ---
 
 

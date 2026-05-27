@@ -78,8 +78,12 @@ logger = logging.getLogger(__name__)
 async def startup_event():
     logger.info("Invoice Home API started successfully")
     logger.info(f"Connected to MongoDB: {os.environ['DB_NAME']}")
+    from utils.scheduler import start_scheduler
+    start_scheduler()
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
+    from utils.scheduler import stop_scheduler
+    stop_scheduler()
     client.close()
     logger.info("MongoDB connection closed")

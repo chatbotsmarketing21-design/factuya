@@ -241,7 +241,13 @@ async def send_renewal_notifications(x_renewal_token: str = Header(default="")):
     """
     if not RENEWAL_CRON_TOKEN or x_renewal_token != RENEWAL_CRON_TOKEN:
         raise HTTPException(status_code=403, detail="Invalid renewal token")
+    return await run_renewal_notifications()
 
+
+async def run_renewal_notifications() -> dict:
+    """Core renewal notification logic. Called by both the HTTP endpoint
+    and the internal scheduler. Safe to invoke multiple times per day.
+    """
     targets = await _find_renewal_targets()
     now = datetime.now(timezone.utc)
 
