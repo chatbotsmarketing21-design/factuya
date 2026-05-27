@@ -185,7 +185,7 @@ const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
                 </div>
                 <div className="flex justify-between text-lg font-bold pt-1">
                   <span>{t('preview.balanceDue')}:</span>
-                  <span style={{ color: displayColor }}>
+                  <span className="text-gray-900">
                     ${formatCurrency((Number(invoice?.total) || 0) - (Number(invoice.totalPaid) || 0))}
                   </span>
                 </div>

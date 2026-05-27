@@ -199,7 +199,7 @@ const InvoiceTemplateModerno = ({ invoice, template, templateColor }) => {
                 </div>
                 <div className="flex justify-between py-2">
                   <span className="font-bold text-gray-900">{t('preview.balanceDue')}</span>
-                  <span className="font-bold text-lg" style={{ color: primaryColor }}>
+                  <span className="font-bold text-lg text-gray-900">
                     {formatCurrency((Number(invoice?.total) || 0) - (Number(invoice.totalPaid) || 0))} $
                   </span>
                 </div>
