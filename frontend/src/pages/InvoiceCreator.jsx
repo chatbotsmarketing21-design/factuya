@@ -1067,7 +1067,7 @@ const InvoiceCreator = () => {
               <Link to="/dashboard" className="hidden sm:block">
                 <Button variant="ghost" size="sm">
                   <ArrowLeft className="w-4 h-4 mr-2" />
-                  Volver al Dashboard
+                  {t('invoice.backToDashboard')}
                 </Button>
               </Link>
               {/* Mobile: Back arrow */}

@@ -17,14 +17,36 @@ SPANISH_COUNTRIES = {
     "UY", "VE", "GQ",
 }
 
+# Portuguese-speaking countries (UI default pt)
+PORTUGUESE_COUNTRIES = {
+    "BR", "PT", "AO", "MZ", "CV", "GW", "ST", "TL",
+}
+
+# French-speaking countries (UI default fr)
+FRENCH_COUNTRIES = {
+    "FR", "BE", "LU", "MC", "CH",  # Europe (CH/BE/LU also have other langs)
+    "CA",  # Bilingual (EN/FR) — default to fr if explicit French region
+    "CI", "SN", "ML", "BF", "NE", "TG", "BJ", "GA", "CG", "CD",
+    "CM", "TD", "MG", "DJ", "GN", "KM", "RW", "BI", "CF",
+    "MA", "DZ", "TN",  # Maghreb (also Arabic-speaking)
+    "HT", "GF", "GP", "MQ", "RE", "YT", "PF", "NC", "WF",
+}
+
 
 def _suggested_language(country_code: str) -> str:
     """Pick the best supported UI language for a country.
 
-    Currently supported in the app: es, en.
-    Spanish-speaking countries default to 'es', everyone else to 'en'.
+    Supported in the app: es, en, pt, fr.
+    Priority: Portuguese > Spanish > French > English (fallback).
     """
-    return "es" if country_code.upper() in SPANISH_COUNTRIES else "en"
+    code = country_code.upper()
+    if code in PORTUGUESE_COUNTRIES:
+        return "pt"
+    if code in SPANISH_COUNTRIES:
+        return "es"
+    if code in FRENCH_COUNTRIES:
+        return "fr"
+    return "en"
 
 
 def _client_ip(request: Request) -> str:

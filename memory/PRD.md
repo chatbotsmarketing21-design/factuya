@@ -24,15 +24,40 @@ no batching).
 - **Comunicación**: SIEMPRE en español.
 - **Despliegue a producción**: Solo cuando el usuario lo indique. Esperar siempre.
 
-### ✅ Progress: 20 / 33 adjustments completed
+### ✅ Progress: 21 / 33 adjustments completed
+
+**Batch #X — Multi-idioma (May 27, 2026):**
+- [x] #28/#29/#30 (parcial) — Soporte de 4 idiomas: **ES + EN + PT + FR**.
+      Archivos `pt.json` y `fr.json` creados con traducciones completas.
+      `i18n.js` registra los 4 idiomas. `LanguageSwitcher` muestra los 4.
+      Backend `/api/geo/detect` sugiere idioma según país (Brasil/Portugal → pt,
+      Francia/Canadá/África francófona → fr, hispanohablantes → es, resto → en).
+      Defaults de pies de página (#31) tienen versión en los 4 idiomas.
 
 **Batch #X — UX del Creador de Facturas (May 27, 2026):**
-- [x] #32 — Botón `+` (verde) agregado a la izquierda del 🗑️ (rojo) en cada
-      fila de ítem en `InvoiceCreator.jsx`. Al presionarlo, inserta un nuevo
-      ítem JUSTO DEBAJO de la fila tocada (no al final). Si solo hay un ítem,
-      el botón de papelera se oculta pero el `+` siempre permanece visible.
-      Función `addItem(insertAfterIndex)` con `splice` + focus auto al nuevo
-      campo de descripción. Probado en preview: pasa de 2 → 3 ítems correctamente.
+- [x] #32 — Botón `+` (blanco en cuadrito negro) agregado en cada fila de ítem
+      en `InvoiceCreator.jsx`. Inserta nuevo ítem justo debajo de la fila tocada.
+      Botón global "Add Item" removido del header (solo se usan los `+` inline).
+- [x] #31 — Notas y términos por tipo de documento (12 tipos):
+      Backend guarda en `companyInfo.defaultNotesByDocType.{tipo}` y
+      `defaultTermsByDocType.{tipo}`. Frontend carga el texto del tipo activo
+      al abrir creador o cambiar de tipo. Fallback: texto guardado → default
+      por idioma (`/app/frontend/src/constants/defaultFooters.js`) → legacy global.
+      11 defaults profesionales (Cuenta de Cobro mantiene su lógica especial).
+
+**Batch #X — Home + Auth Polish (May 27, 2026):**
+- [x] Links en `SignUp`: "términos de servicio" y "política de privacidad"
+      ahora son links clickables (color primary).
+- [x] Sección de **Precios** pública en Home (anchor `#pricing`) con dos cards:
+      Gratis ($0 — 10 facturas de prueba) y Premium ($3.99 USD/mes con badge
+      "Mejor precio del mercado"). Link del footer ahora apunta a `#pricing`.
+- [x] Quitada palabra "pequeñas" en footerDesc (ES y EN).
+- [x] Nueva página `/faq` con 10 preguntas frecuentes con acordeón shadcn.
+      Métodos de pago en #8 incluyen Wompi + Stripe + PayPal.
+- [x] Botón "Back to Home" → ahora usa `t('common.backToHome')` en Privacy,
+      Terms, FAQ, SignIn y SignUp. Aplica el idioma del usuario.
+- [x] `ScrollToTop` global: al cambiar de ruta, la página abre desde arriba
+      (excepto cuando hay un anchor `#xxx`).
 
 **Batch #1 — Critical Bugs (Dashboard + Abonos):**
 - [x] #20 — Cotizaciones (COT-) blindadas: NUNCA cambian de status automáticamente
