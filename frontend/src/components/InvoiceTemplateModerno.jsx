@@ -143,18 +143,18 @@ const InvoiceTemplateModerno = ({ invoice, template, templateColor }) => {
             <thead>
               <tr style={{ backgroundColor: primaryColor }}>
                 <th className="text-center py-3 px-2 text-white font-semibold" style={{ width: '8%' }}>Item</th>
-                <th className="text-left py-3 px-3 text-white font-semibold" style={{ width: '10%' }}>Cant.</th>
-                <th className="text-left py-3 px-3 text-white font-semibold" style={{ width: '42%' }}>Descripción</th>
-                <th className="text-right py-3 px-3 text-white font-semibold" style={{ width: '20%' }}>Precio unitario</th>
-                <th className="text-right py-3 px-3 text-white font-semibold" style={{ width: '20%' }}>Importe</th>
+                <th className="text-left py-3 px-3 text-white font-semibold" style={{ width: '44%' }}>Descripción</th>
+                <th className="text-center py-3 px-3 text-white font-semibold" style={{ width: '10%' }}>Cant.</th>
+                <th className="text-right py-3 px-3 text-white font-semibold" style={{ width: '19%' }}>Precio unitario</th>
+                <th className="text-right py-3 px-3 text-white font-semibold" style={{ width: '19%' }}>Importe</th>
               </tr>
             </thead>
             <tbody>
               {items.map((item, index) => (
                 <tr key={index} className="border-b border-gray-200">
                   <td className="py-3 px-2 text-center text-gray-500">{index + 1}</td>
-                  <td className="py-3 px-3 text-gray-700 text-center">{item?.quantity || 0}</td>
                   <td className="py-3 px-3 text-gray-900">{item?.description || ''}</td>
+                  <td className="py-3 px-3 text-gray-700 text-center">{item?.quantity || 0}</td>
                   <td className="py-3 px-3 text-right text-gray-700">{formatCurrency(item?.rate)}</td>
                   <td className="py-3 px-3 text-right text-gray-900">{formatCurrency(item?.amount)}</td>
                 </tr>
