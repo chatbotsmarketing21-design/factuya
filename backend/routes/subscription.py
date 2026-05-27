@@ -267,6 +267,21 @@ async def get_checkout_status(
                     },
                     upsert=True
                 )
+
+                # Fire-and-forget welcome email
+                user = await db.users.find_one({"id": user_id})
+                if user and user.get("email"):
+                    try:
+                        from utils.email_notifications import send_subscription_confirmation
+                        await send_subscription_confirmation(
+                            user_email=user["email"],
+                            user_name=user.get("name", ""),
+                            gateway="stripe",
+                            period_end=period_end,
+                            amount_label="$3.99 USD",
+                        )
+                    except Exception as e:
+                        print(f"Stripe confirmation email failed: {e}")
         
         return {
             "status": status_response.status,

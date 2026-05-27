@@ -337,6 +337,10 @@ async def _activate_local_subscription(user_id: str, subscription_id: str, data:
         except Exception:
             pass
 
+    # Idempotency: only send the welcome email the first time we activate
+    existing = await db.subscriptions.find_one({"userId": user_id})
+    was_already_active = existing and existing.get("status") == "active"
+
     await db.subscriptions.update_one(
         {"userId": user_id},
         {"$set": {
@@ -356,3 +360,19 @@ async def _activate_local_subscription(user_id: str, subscription_id: str, data:
         {"$set": {"status": "ACTIVE", "updatedAt": now}},
         upsert=True,
     )
+
+    # Fire-and-forget confirmation email (first activation only)
+    if not was_already_active:
+        user = await db.users.find_one({"id": user_id})
+        if user and user.get("email"):
+            try:
+                from utils.email_notifications import send_subscription_confirmation
+                await send_subscription_confirmation(
+                    user_email=user["email"],
+                    user_name=user.get("name", ""),
+                    gateway="paypal",
+                    period_end=period_end,
+                    amount_label="$3.99 USD",
+                )
+            except Exception as e:
+                logger.error("PayPal confirmation email failed: %s", e)

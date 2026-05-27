@@ -57,6 +57,20 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
    then store PAYPAL_WEBHOOK_ID in `.env`.
 6. Test in Sandbox → switch PAYPAL_MODE=live → deploy to VPS.
 
+### Confirmation Emails (Feb 2026 — DONE)
+- `/app/backend/utils/email_notifications.py` — Resend-based helper
+  `send_subscription_confirmation(email, name, gateway, period_end, amount_label)`.
+- Fired on:
+  - PayPal activation (`paypal._activate_local_subscription`)
+  - Wompi activation (`wompi.activate_subscription`)
+  - Stripe activation (`subscription.get_checkout_status`, first-time only)
+- HTML template: bienvenida + tabla (Plan / Monto / Método / Próxima renovación)
+  con CTA verde al panel y nota de auto-renovación.
+- Idempotente: solo se envía la primera vez que `status != "active"`.
+- Pruebas: `python -c "..."` → email enviado OK a chatbotsmarketing21@gmail.com.
+- ⚠️ Resend en modo no verificado: solo manda al owner. Para producción,
+  verificar el dominio `factuya.app` en resend.com/domains.
+
 ---
 
 

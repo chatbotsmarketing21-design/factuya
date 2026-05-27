@@ -417,6 +417,28 @@ async def activate_subscription(user_id: str, reference: str, wompi_transaction:
         upsert=True
     )
 
+    # Fire-and-forget welcome email (first activation only)
+    user = await db.users.find_one({"id": user_id})
+    if user and user.get("email"):
+        try:
+            from utils.email_notifications import send_subscription_confirmation
+            # Amount label: prefer COP from the transaction, fallback to USD
+            amount_cents = wompi_transaction.get("amount_in_cents")
+            currency = wompi_transaction.get("currency", "COP")
+            if amount_cents and currency == "COP":
+                amount_label = f"${amount_cents // 100:,.0f} COP".replace(",", ".")
+            else:
+                amount_label = "$3.99 USD"
+            await send_subscription_confirmation(
+                user_email=user["email"],
+                user_name=user.get("name", ""),
+                gateway="wompi",
+                period_end=period_end,
+                amount_label=amount_label,
+            )
+        except Exception as e:
+            print(f"Wompi confirmation email failed: {e}")
+
 def _verify_wompi_event_signature(payload: dict) -> bool:
     """Verify that a webhook event was really emitted by Wompi.
 
