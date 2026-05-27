@@ -22,7 +22,9 @@ export const subscriptionAPI = {
   cancelAutoRenewal: () => api.delete('/wompi/cancel-auto-renewal'),
 
   // Geolocation: detect user's country to choose payment gateway
-  detectCountry: () => api.get('/geo/detect'),
+  detectCountry: (forceGateway) => api.get('/geo/detect', {
+    params: forceGateway ? { force_gateway: forceGateway } : {},
+  }),
 
   // PayPal Subscriptions (international gateway)
   getPaypalConfig: () => api.get('/paypal/config'),

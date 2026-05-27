@@ -2,8 +2,11 @@
 
 Used to choose the optimal payment gateway:
 - Colombia (CO) -> Wompi (PSE, Nequi, local cards, lower fees)
-- Everywhere else -> Stripe (handles automatic currency conversion)
+- Everywhere else -> PayPal Subscriptions (auto-renewal, global cards)
 Also returns a suggested UI language based on the country.
+
+Testing override: append ?force_gateway=paypal or ?force_gateway=wompi to
+force a specific gateway regardless of IP. Useful for QA from Colombia.
 """
 from fastapi import APIRouter, Request
 import httpx
@@ -68,9 +71,21 @@ async def detect_country(request: Request):
     Returns:
         country_code: ISO 3166-1 alpha-2 (e.g., "CO", "US", "MX")
         country_name: Full English country name
-        gateway: "wompi" if user is in Colombia, otherwise "stripe"
+        gateway: "wompi" if user is in Colombia, otherwise "paypal"
         ip: The detected IP (for transparency)
     """
+    # Testing override (e.g., ?force_gateway=paypal to QA the PayPal flow from Colombia)
+    forced = (request.query_params.get("force_gateway") or "").lower()
+    if forced in ("paypal", "wompi"):
+        return {
+            "country_code": "CO" if forced == "wompi" else "XX",
+            "country_name": "Forced (testing)",
+            "gateway": forced,
+            "suggested_language": "es",
+            "ip": "forced",
+            "source": "force-override",
+        }
+
     ip = _client_ip(request)
 
     # Local/private IPs (development) -> assume Colombia for testing convenience
@@ -95,7 +110,7 @@ async def detect_country(request: Request):
                     return {
                         "country_code": country_code,
                         "country_name": data.get("country_name") or country_code,
-                        "gateway": "wompi" if country_code == "CO" else "stripe",
+                        "gateway": "wompi" if country_code == "CO" else "paypal",
                         "suggested_language": _suggested_language(country_code),
                         "ip": ip,
                         "source": "ipapi.co",
@@ -115,7 +130,7 @@ async def detect_country(request: Request):
                         return {
                             "country_code": country_code,
                             "country_name": data.get("country") or country_code,
-                            "gateway": "wompi" if country_code == "CO" else "stripe",
+                            "gateway": "wompi" if country_code == "CO" else "paypal",
                             "suggested_language": _suggested_language(country_code),
                             "ip": ip,
                             "source": "ip-api.com",
@@ -123,11 +138,11 @@ async def detect_country(request: Request):
     except Exception as e:
         print(f"[Geo] ip-api.com error: {e}")
 
-    # Last resort: default to Stripe (international) so users can still pay
+    # Last resort: default to PayPal (international) so users can still pay
     return {
         "country_code": "XX",
         "country_name": "Unknown",
-        "gateway": "stripe",
+        "gateway": "paypal",
         "suggested_language": "en",
         "ip": ip,
         "source": "fallback",

@@ -87,10 +87,12 @@ const SubscriptionPanel = () => {
   const [paypalConfig, setPaypalConfig] = useState(null);
 
   useEffect(() => {
+    // Allow QA to force a specific gateway via ?force_gateway=paypal in the URL
+    const forceGateway = searchParams.get('force_gateway');
     // Detect user's country to pick the right payment gateway
-    subscriptionAPI.detectCountry()
+    subscriptionAPI.detectCountry(forceGateway)
       .then(res => setGeo(res.data))
-      .catch(() => setGeo({ country_code: 'XX', gateway: 'stripe' }));
+      .catch(() => setGeo({ country_code: 'XX', gateway: 'paypal' }));
     // Fetch live Wompi price (USD->COP) so the user sees the actual COP amount
     subscriptionAPI.getWompiConfig()
       .then(res => setWompiPrice(res.data))
