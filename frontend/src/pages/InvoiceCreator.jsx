@@ -1040,8 +1040,12 @@ const InvoiceCreator = () => {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="gap-2"
-                      style={{ borderColor: getDocumentInfo(invoice.documentType).color, color: getDocumentInfo(invoice.documentType).color }}
+                      className="gap-2 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
+                      style={{ 
+                        borderColor: getDocumentInfo(invoice.documentType).color, 
+                        color: getDocumentInfo(invoice.documentType).color,
+                        boxShadow: `0 4px 12px ${getDocumentInfo(invoice.documentType).color}33`
+                      }}
                     >
                       {getDocumentInfo(invoice.documentType).icon}
                       {getDocumentInfo(invoice.documentType).name}
@@ -1130,7 +1134,12 @@ const InvoiceCreator = () => {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    className="text-sm px-3 font-semibold"
+                    className="text-base px-3 font-semibold shadow-md hover:shadow-lg transition-shadow"
+                    style={{
+                      borderColor: getDocumentInfo(invoice.documentType).color,
+                      color: getDocumentInfo(invoice.documentType).color,
+                      boxShadow: `0 4px 12px ${getDocumentInfo(invoice.documentType).color}33`
+                    }}
                   >
                     Tipo de Documento
                   </Button>
