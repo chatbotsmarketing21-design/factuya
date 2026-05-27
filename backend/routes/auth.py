@@ -171,6 +171,35 @@ async def delete_account(
         raise HTTPException(status_code=400, detail="Contraseña incorrecta")
 
     user_email = user.get("email")
+    user_name = user.get("name")
+
+    # Win-back: If user had Premium, issue a 50% off reactivation coupon and email it
+    # BEFORE deleting their data. (User choice 5b: only premium users receive coupon.)
+    farewell_coupon = None
+    try:
+        from utils.reactivation import (
+            user_had_premium,
+            create_reactivation_coupon,
+            send_farewell_email,
+        )
+        if await user_had_premium(db, user_id):
+            farewell_coupon = await create_reactivation_coupon(
+                db, user_id=user_id, user_email=user_email, user_name=user_name
+            )
+            # Fire-and-forget email; we don't block deletion if email fails
+            try:
+                await send_farewell_email(
+                    user_email=user_email,
+                    user_name=user_name,
+                    coupon_code=farewell_coupon["code"],
+                    expires_at=farewell_coupon["expires_at"],
+                )
+            except Exception:
+                pass
+    except Exception as e:
+        # Never block deletion because of win-back failure
+        import logging
+        logging.getLogger(__name__).warning("Win-back coupon flow failed: %s", e)
 
     # Best-effort: cancel active PayPal subscriptions before wiping data
     try:
@@ -222,7 +251,14 @@ async def delete_account(
     # Finally, delete the user record itself
     await db.users.delete_one({"id": user_id})
 
-    return {
+    response = {
         "message": "Tu cuenta y todos tus datos han sido eliminados permanentemente.",
-        "deleted_user_id": user_id
+        "deleted_user_id": user_id,
     }
+    if farewell_coupon:
+        response["winback"] = {
+            "sent": True,
+            "coupon_code": farewell_coupon["code"],
+            "discount_percent": farewell_coupon["discount_percent"],
+        }
+    return response

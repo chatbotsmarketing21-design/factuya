@@ -985,3 +985,71 @@ All changes deployed to factuya.site VPS
 - [ ] Promote internal testing release → Production
 - [ ] (Security) rotate exposed keystore password `Cesar.2026` before public production launch
 
+
+---
+
+## Win-back System — 2026-05-27 (Retention via Reactivation Coupons)
+
+### Goal
+Recover 15-20% of users that delete their account by offering a one-time 50% off
+reactivation coupon valid for 15 days. Sent only to users that previously had a
+Premium subscription.
+
+### Implementation
+- **New module** `/app/backend/utils/reactivation.py`:
+  - `_generate_coupon_code()` — random unambiguous codes like `VUELVE50-A8X9K2`
+  - `user_had_premium(db, user_id)` — checks `subscriptions`, `paypal_subscriptions`, `wompi_subscriptions`
+  - `create_reactivation_coupon(...)` — persists coupon in `reactivation_coupons` (survives user deletion)
+  - `send_farewell_email(...)` — Resend email with gradient hero, coupon box, signup CTA
+  - `validate_coupon(...)` / `redeem_coupon(...)` — public + authenticated helpers
+
+- **New endpoints** in `/app/backend/routes/coupons.py`:
+  - `POST /api/coupons/validate` (public) — used on signup to show preview discount
+  - `POST /api/coupons/redeem` (auth) — marks coupon as redeemed after successful payment
+
+- **Integrated into account deletion** (`/app/backend/routes/auth.py`):
+  - Coupon is issued BEFORE wiping user data
+  - Email is fire-and-forget (deletion never blocks on Resend errors)
+  - Non-premium users get clean deletion with no coupon (per user choice 5b)
+
+### Coupon configuration (user choices)
+- Discount: 50% off first renewal (choice 1a)
+- Validity: 15 days (choice 2b)
+- Applies to: Wompi + PayPal + Stripe (choice 3b)
+- Email tone: friendly + surprising 🎁 (choice 4c)
+- Target: only ex-Premium users (choice 5b)
+
+### Backend tests (curl)
+| Scenario | Result |
+|----------|--------|
+| Premium user deletion | ✅ Coupon issued, email sent, response includes `winback.coupon_code` |
+| Non-premium user deletion | ✅ Clean deletion, no `winback` field |
+| Validate valid coupon | ✅ Returns discount %, applies_to, expires_at |
+| Validate fake coupon | ✅ 400 "El cupón no existe." |
+| Redeem coupon (auth) | ✅ Marked as redeemed |
+| Re-validate redeemed coupon | ✅ 400 "Este cupón ya fue usado." |
+
+### New collection: `reactivation_coupons`
+```json
+{
+  "code": "VUELVE50-A8X9K2",
+  "discount_percent": 50,
+  "applies_to": ["wompi", "paypal", "stripe"],
+  "original_user_id": "...",
+  "original_email": "user@example.com",
+  "original_name": "Juan",
+  "issued_at": "2026-05-27T22:00:00Z",
+  "expires_at": "2026-06-11T22:00:00Z",
+  "used_at": null,
+  "used_by_user_id": null,
+  "status": "active",
+  "reason": "account_deletion_winback"
+}
+```
+
+### Frontend integration pending (next steps)
+- [ ] Read `?coupon=...` query param on signup page and pre-fill in a banner
+- [ ] Show "🎁 50% off applied" badge in subscription checkout (Wompi/PayPal pages)
+- [ ] Call `POST /api/coupons/redeem` from frontend after successful payment
+- [ ] Optional: pass coupon code into Wompi/PayPal as metadata so a webhook can redeem server-side
+
