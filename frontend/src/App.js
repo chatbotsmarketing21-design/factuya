@@ -26,6 +26,7 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import GeoLanguageDetector from "./components/GeoLanguageDetector";
 import SubscriptionGate from "./components/SubscriptionGate";
+import ScrollToTop from "./components/ScrollToTop";
 
 // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
 
@@ -40,6 +41,7 @@ function AppRouter() {
 
   return (
     <>
+      <ScrollToTop />
       <SubscriptionGate />
       <Routes>
       <Route path="/" element={<Home />} />
