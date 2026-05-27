@@ -16,9 +16,15 @@ User identified **33 UI/UX/functional adjustments** to make BEFORE submitting to
 Google Play Store. Working through them ONE BY ONE (user's explicit preference,
 no batching).
 
-### ✅ Progress: 16 / 33 adjustments completed + DEPLOYED to production
-**Production**: https://factuya.site (deployed May 26, 2026 — commit ba84bf7)
-**Preview**: https://factuya-invoices.preview.emergentagent.com
+### 📌 Reglas explícitas del usuario (NO OLVIDAR)
+- **Plantillas nuevas**: Antes de crear cualquier plantilla nueva (#13, etc.),
+  PREGUNTAR al usuario si lleva columna "Item" o no. La columna Item se aplicó
+  a Clásica/Wave/Moderno/Dexter, pero el usuario explícitamente pidió REVERTIRLA
+  en la plantilla Cuenta de Cobro porque le gustaba como estaba.
+- **Comunicación**: SIEMPRE en español.
+- **Despliegue a producción**: Solo cuando el usuario lo indique. Esperar siempre.
+
+### ✅ Progress: 19 / 33 adjustments completed
 
 **Batch #1 — Critical Bugs (Dashboard + Abonos):**
 - [x] #20 — Cotizaciones (COT-) blindadas: NUNCA cambian de status automáticamente
