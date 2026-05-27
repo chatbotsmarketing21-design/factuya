@@ -1467,10 +1467,6 @@ const InvoiceCreator = () => {
             <Card className="p-4 sm:p-6 dark:bg-card">
               <div className="flex items-center justify-between mb-4 sm:mb-6">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('invoice.items')}</h2>
-                <Button onClick={addItem} size="sm" className="text-xs sm:text-sm">
-                  <Plus className="w-4 h-4 sm:mr-2" />
-                  <span className="hidden sm:inline">{t('invoice.addItem')}</span>
-                </Button>
               </div>
               <div className="space-y-4">
                 {invoice.items.map((item, index) => (
