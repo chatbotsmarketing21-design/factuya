@@ -142,9 +142,9 @@ const InvoiceTemplateModerno = ({ invoice, template, templateColor }) => {
           <table className="w-full text-sm">
             <thead>
               <tr style={{ backgroundColor: primaryColor }}>
-                <th className="text-center py-3 px-2 text-white font-semibold" style={{ width: '6%' }}>#</th>
+                <th className="text-center py-3 px-2 text-white font-semibold" style={{ width: '8%' }}>Item</th>
                 <th className="text-left py-3 px-3 text-white font-semibold" style={{ width: '10%' }}>Cant.</th>
-                <th className="text-left py-3 px-3 text-white font-semibold" style={{ width: '44%' }}>Descripción</th>
+                <th className="text-left py-3 px-3 text-white font-semibold" style={{ width: '42%' }}>Descripción</th>
                 <th className="text-right py-3 px-3 text-white font-semibold" style={{ width: '20%' }}>Precio unitario</th>
                 <th className="text-right py-3 px-3 text-white font-semibold" style={{ width: '20%' }}>Importe</th>
               </tr>

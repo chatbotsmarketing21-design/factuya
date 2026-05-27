@@ -129,9 +129,9 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
           <table className="w-full text-sm">
             <thead>
               <tr style={{ backgroundColor: '#E3F2FD' }} className="border-t-2 border-b-2" style={{ borderColor: '#4FC3F7', backgroundColor: '#E3F2FD' }}>
-                <th className="text-center py-3 px-2 font-bold text-gray-700" style={{ width: '6%' }}>#</th>
+                <th className="text-center py-3 px-2 font-bold text-gray-700" style={{ width: '8%' }}>ITEM</th>
                 <th className="text-left py-3 px-3 font-bold text-gray-700" style={{ width: '10%' }}>CANT.</th>
-                <th className="text-left py-3 px-3 font-bold text-gray-700" style={{ width: '44%' }}>DESCRIPCIÓN</th>
+                <th className="text-left py-3 px-3 font-bold text-gray-700" style={{ width: '42%' }}>DESCRIPCIÓN</th>
                 <th className="text-right py-3 px-3 font-bold text-gray-700" style={{ width: '20%' }}>PRECIO UNITARIO</th>
                 <th className="text-right py-3 px-3 font-bold text-gray-700" style={{ width: '20%' }}>IMPORTE</th>
               </tr>

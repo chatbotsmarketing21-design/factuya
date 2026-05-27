@@ -139,7 +139,7 @@ const InvoiceTemplateWave = ({ invoice, template, templateColor }) => {
           <table className="w-full text-sm">
             <thead>
               <tr style={{ backgroundColor: waveColor }}>
-                <th className="text-center py-3 px-2 text-white font-semibold w-10">#</th>
+                <th className="text-center py-3 px-2 text-white font-semibold w-14">Item</th>
                 <th className="text-left py-3 px-4 text-white font-semibold">Cant.</th>
                 <th className="text-left py-3 px-4 text-white font-semibold">Descripción</th>
                 <th className="text-right py-3 px-4 text-white font-semibold">Precio unitario</th>

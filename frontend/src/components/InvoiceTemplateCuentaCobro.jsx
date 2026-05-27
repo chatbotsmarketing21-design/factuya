@@ -148,7 +148,7 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-100">
-                <th className="border border-gray-300 px-2 py-2 text-center text-sm font-semibold text-gray-700 w-10">#</th>
+                <th className="border border-gray-300 px-2 py-2 text-center text-sm font-semibold text-gray-700 w-14">ITEM</th>
                 <th className="border border-gray-300 px-3 py-2 text-left text-sm font-semibold text-gray-700 w-16">CANT.</th>
                 <th className="border border-gray-300 px-3 py-2 text-left text-sm font-semibold text-gray-700">DESCRIPCIÓN</th>
                 <th className="border border-gray-300 px-3 py-2 text-right text-sm font-semibold text-gray-700 w-28">IMPORTE</th>
