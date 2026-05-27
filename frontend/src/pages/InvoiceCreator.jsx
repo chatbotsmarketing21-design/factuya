@@ -1040,10 +1040,8 @@ const InvoiceCreator = () => {
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="gap-2 text-base font-semibold shadow-md hover:shadow-lg transition-shadow"
+                      className="gap-2 text-base font-semibold shadow-md hover:shadow-lg transition-shadow text-gray-900 border-gray-300"
                       style={{ 
-                        borderColor: getDocumentInfo(invoice.documentType).color, 
-                        color: getDocumentInfo(invoice.documentType).color,
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.18)'
                       }}
                     >
@@ -1134,10 +1132,8 @@ const InvoiceCreator = () => {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    className="text-base px-3 font-semibold shadow-md hover:shadow-lg transition-shadow"
+                    className="text-base px-3 font-semibold shadow-md hover:shadow-lg transition-shadow text-gray-900 border-gray-300"
                     style={{
-                      borderColor: getDocumentInfo(invoice.documentType).color,
-                      color: getDocumentInfo(invoice.documentType).color,
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.18)'
                     }}
                   >
