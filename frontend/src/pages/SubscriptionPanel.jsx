@@ -271,14 +271,15 @@ const SubscriptionPanel = () => {
     }
   };
 
-  const handleUpgrade = async () => {
+  const handleUpgrade = async (forceGateway = null) => {
     try {
-      // Route to the right gateway based on the user's detected country.
+      // Route to the right gateway. By default uses geo detection:
       //   Colombia -> Wompi (PSE, Nequi, local cards)
       //   Everywhere else -> PayPal Subscriptions (auto-renewal)
-      //   Stripe is kept in the code but hidden until LLC USA is registered.
-      const useWompi = geo?.gateway === 'wompi';
-      if (useWompi) {
+      // A user in Colombia can still pick PayPal manually by passing 'paypal'.
+      const gateway = forceGateway || (geo?.gateway === 'wompi' ? 'wompi' : 'paypal');
+
+      if (gateway === 'wompi') {
         const response = await subscriptionAPI.createWompiCheckout(autoRenewOptIn);
         if (response.data.checkoutUrl) {
           window.location.href = response.data.checkoutUrl;
@@ -286,7 +287,7 @@ const SubscriptionPanel = () => {
         return;
       }
 
-      // International -> PayPal
+      // PayPal flow
       if (!paypalConfig?.configured) {
         toast({
           title: 'PayPal no disponible',
@@ -532,13 +533,40 @@ const SubscriptionPanel = () => {
                   </div>
                 )}
                 <Button 
-                  onClick={handleUpgrade}
+                  onClick={() => handleUpgrade()}
                   className="w-full bg-lime-500 hover:bg-lime-600 text-white"
                   data-testid="upgrade-button"
                 >
                   <CreditCard className="w-4 h-4 mr-2" />
                   {t('subscription.subscribeNow')}
                 </Button>
+
+                {/* Colombia users get a secondary PayPal button so people
+                    without a local card can still subscribe via PayPal Balance. */}
+                {geo?.gateway === 'wompi' && paypalConfig?.configured && (
+                  <div className="mt-3 space-y-2" data-testid="paypal-secondary-block">
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">o</span>
+                      <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
+                    </div>
+                    <Button
+                      onClick={() => handleUpgrade('paypal')}
+                      className="w-full bg-[#ffc439] hover:bg-[#f0b71f] text-[#003087] font-bold border border-[#003087]/20"
+                      data-testid="upgrade-paypal-button"
+                    >
+                      <img
+                        src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png"
+                        alt="PayPal"
+                        className="h-5 mr-2"
+                      />
+                      Pagar con PayPal ($3.99 USD)
+                    </Button>
+                    <p className="text-[11px] text-gray-500 dark:text-gray-400 text-center">
+                      ¿No tienes tarjeta local? Paga con tu saldo o cuenta PayPal.
+                    </p>
+                  </div>
+                )}
 
                 {/* Auto-renew opt-in (Wompi / Colombia only)
                     DISABLED 2026-05-03: Wompi Web Checkout (URL redirect) does
