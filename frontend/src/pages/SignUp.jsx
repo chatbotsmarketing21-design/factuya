@@ -224,7 +224,22 @@ const SignUp = () => {
 
           <div className="mt-6 text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Al registrarte, aceptas nuestros términos de servicio y política de privacidad
+              Al registrarte, aceptas nuestros{' '}
+              <Link
+                to="/terms"
+                data-testid="signup-terms-link"
+                className="text-primary hover:underline font-medium"
+              >
+                términos de servicio
+              </Link>
+              {' '}y{' '}
+              <Link
+                to="/privacy"
+                data-testid="signup-privacy-link"
+                className="text-primary hover:underline font-medium"
+              >
+                política de privacidad
+              </Link>
             </p>
           </div>
         </Card>
