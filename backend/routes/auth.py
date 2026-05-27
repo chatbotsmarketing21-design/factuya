@@ -129,3 +129,100 @@ async def change_password(request: ChangePasswordRequest, user_id: str = Depends
     )
     
     return {"message": "Contraseña actualizada correctamente"}
+
+
+class DeleteAccountRequest(BaseModel):
+    password: str
+    confirmation: str  # User must type "ELIMINAR" or "DELETE" to confirm
+
+
+@router.delete("/account")
+async def delete_account(
+    request: DeleteAccountRequest,
+    user_id: str = Depends(get_current_user_id)
+):
+    """
+    Permanently delete the user account and ALL associated data.
+
+    Required by Google Play Store policy (since 2023) for any app with user accounts.
+    Reference: https://support.google.com/googleplay/android-developer/answer/13327111
+
+    This endpoint:
+    - Verifies the user's password (extra security)
+    - Requires a confirmation string ("ELIMINAR" or "DELETE")
+    - Deletes the user record + all related documents (invoices, subscriptions, etc.)
+    - Cancels any active PayPal subscriptions (best-effort)
+    """
+    # Validate confirmation phrase
+    if request.confirmation.strip().upper() not in {"ELIMINAR", "DELETE"}:
+        raise HTTPException(
+            status_code=400,
+            detail='Debes escribir "ELIMINAR" (o "DELETE") para confirmar.'
+        )
+
+    # Find user
+    user = await db.users.find_one({"id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+    # Verify password (skip for Google OAuth users with no password)
+    has_password = bool(user.get("password"))
+    if has_password and not verify_password(request.password, user["password"]):
+        raise HTTPException(status_code=400, detail="Contraseña incorrecta")
+
+    user_email = user.get("email")
+
+    # Best-effort: cancel active PayPal subscriptions before wiping data
+    try:
+        from routes.paypal import paypal_request  # type: ignore
+        active_subs = db.paypal_subscriptions.find({
+            "user_id": user_id,
+            "status": {"$in": ["ACTIVE", "APPROVAL_PENDING", "APPROVED"]}
+        })
+        async for sub in active_subs:
+            sub_id = sub.get("subscription_id") or sub.get("id")
+            if sub_id:
+                try:
+                    await paypal_request(
+                        "POST",
+                        f"/v1/billing/subscriptions/{sub_id}/cancel",
+                        {"reason": "Account deleted by user"}
+                    )
+                except Exception:
+                    pass  # Non-blocking
+    except Exception:
+        pass  # PayPal cancel is best-effort; do not block deletion
+
+    # Delete all user-owned documents across the database.
+    # Collections that reference the user via user_id or email.
+    collections_by_user_id = [
+        "invoices",
+        "paypal_subscriptions",
+        "wompi_subscriptions",
+        "wompi_payments",
+        "subscriptions",
+        "password_resets",
+        "renewal_notifications",
+        "company_logos",
+    ]
+    for coll in collections_by_user_id:
+        try:
+            await db[coll].delete_many({"user_id": user_id})
+        except Exception:
+            pass  # Collection may not exist yet
+
+    # Also clean up by email where applicable (password resets, contact logs)
+    if user_email:
+        for coll in ["password_resets", "contact_messages"]:
+            try:
+                await db[coll].delete_many({"email": user_email})
+            except Exception:
+                pass
+
+    # Finally, delete the user record itself
+    await db.users.delete_one({"id": user_id})
+
+    return {
+        "message": "Tu cuenta y todos tus datos han sido eliminados permanentemente.",
+        "deleted_user_id": user_id
+    }

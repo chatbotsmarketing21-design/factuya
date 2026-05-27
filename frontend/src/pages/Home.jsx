@@ -410,6 +410,7 @@ const Home = () => {
                 <li><a href="#benefits" className="hover:text-white transition-colors" data-testid="footer-link-about">{t('landing.footerAbout')}</a></li>
                 <li><Link to="/privacy" className="hover:text-white transition-colors" data-testid="footer-link-privacy">{t('landing.footerPrivacy')}</Link></li>
                 <li><Link to="/terms" className="hover:text-white transition-colors" data-testid="footer-link-terms">{t('landing.footerTerms')}</Link></li>
+                <li><Link to="/delete-account" className="hover:text-white transition-colors" data-testid="footer-link-delete-account">Eliminar mi cuenta</Link></li>
               </ul>
             </div>
           </div>

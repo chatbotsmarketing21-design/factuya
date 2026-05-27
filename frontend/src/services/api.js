@@ -89,6 +89,7 @@ export const authAPI = {
   register: (data) => requireOnlineWrite(() => api.post('/auth/register', data)),
   login: (data) => requireOnlineWrite(() => api.post('/auth/login', data)),
   getMe: () => api.get('/auth/me'),
+  deleteAccount: (data) => requireOnlineWrite(() => api.delete('/auth/account', { data })),
 };
 
 // Invoice APIs

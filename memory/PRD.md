@@ -949,3 +949,39 @@ All changes deployed to factuya.site VPS
 ### Test Credentials
 - **Test User**: test@test.com / Test123!
 - **Google OAuth Client ID**: 441119292026-ngpbt64126c5pnlv08rgugqhtg0fedlj.apps.googleusercontent.com
+
+---
+
+## Recent Changes — 2026-05-27 (Account Deletion for Play Store Compliance)
+
+### What was added (P0 — required by Google Play since 2023)
+- **Backend** (`/app/backend/routes/auth.py`):
+  - `DELETE /api/auth/account` endpoint
+  - Requires authenticated user, password verification, and `"ELIMINAR"` / `"DELETE"` confirmation phrase
+  - Best-effort cancellation of active PayPal subscriptions
+  - Wipes user record + all related collections: `invoices`, `paypal_subscriptions`, `wompi_subscriptions`, `wompi_payments`, `subscriptions`, `password_resets`, `renewal_notifications`, `company_logos`, `contact_messages`
+
+- **Frontend**:
+  - New public page `/delete-account` (`/app/frontend/src/pages/DeleteAccount.jsx`) — no login required, satisfies Google Play public URL requirement
+  - "Zona de Peligro" section added at bottom of `/app/frontend/src/pages/Profile.jsx` with password + confirmation inputs
+  - Footer link in `Home.jsx` → "Eliminar mi cuenta"
+  - Reference updated in Privacy Policy section 10
+  - API helper `authAPI.deleteAccount({ password, confirmation })` in `/app/frontend/src/services/api.js`
+
+### Backend test results (curl)
+| Scenario | Result |
+|----------|--------|
+| Wrong confirmation phrase | `400 — Debes escribir "ELIMINAR"` ✅ |
+| Wrong password | `400 — Contraseña incorrecta` ✅ |
+| Valid deletion | `200 — Cuenta eliminada permanentemente` ✅ |
+| Login after deletion | `401 — Invalid email or password` ✅ |
+
+### Play Store URL to use
+`https://factuya.site/delete-account`
+
+### Outstanding for Play Store launch
+- [ ] User to upload 8 screenshots + feature graphic + icon to Play Console
+- [ ] Fill IARC content rating, Data Safety, Ads declaration, Target Audience forms
+- [ ] Promote internal testing release → Production
+- [ ] (Security) rotate exposed keystore password `Cesar.2026` before public production launch
+

@@ -177,7 +177,8 @@ const SpanishPolicy = () => (
         Puedes eliminar tu cuenta y todos tus datos personales asociados en cualquier momento:
       </p>
       <List items={[
-        <>Desde la app: <em>Perfil → Eliminar cuenta</em> (próximamente).</>,
+        <>Desde la app: <em>Perfil → Zona de Peligro → Eliminar mi cuenta</em>.</>,
+        <>Página pública con instrucciones detalladas: <a href="/delete-account" className="text-lime-600 hover:underline">factuya.site/delete-account</a></>,
         <>Por correo: envía un mensaje a <a href={`mailto:${CONTACT_EMAIL}?subject=Eliminar%20mi%20cuenta`} className="text-lime-600 hover:underline">{CONTACT_EMAIL}</a> desde el correo registrado en FactuYa! solicitando la eliminación.</>,
       ]} />
       <p className="mt-2">

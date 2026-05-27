@@ -17,6 +17,7 @@ import ResetPassword from "./pages/ResetPassword";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import FAQ from "./pages/FAQ";
+import DeleteAccount from "./pages/DeleteAccount";
 import GoogleCallback from "./pages/GoogleCallback";
 import AuthCallback from "./components/AuthCallback";
 import AdminPanel from "./pages/AdminPanel";
@@ -52,6 +53,7 @@ function AppRouter() {
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/faq" element={<FAQ />} />
+      <Route path="/delete-account" element={<DeleteAccount />} />
       <Route path="/auth/google/callback" element={<GoogleCallback />} />
       <Route path="/templates" element={<Templates />} />
       <Route
