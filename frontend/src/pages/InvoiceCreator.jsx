@@ -1477,16 +1477,32 @@ const InvoiceCreator = () => {
                   <div key={index} className="border border-gray-200 dark:border-border rounded-lg p-3 sm:p-4">
                     <div className="flex justify-between items-start mb-2 sm:mb-3">
                       <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Item {index + 1}</span>
-                      {invoice.items.length > 1 && (
+                      <div className="flex items-center gap-1">
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => removeItem(index)}
-                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 h-7 w-7 p-0"
+                          onClick={() => addItem(index)}
+                          data-testid={`add-item-inline-btn-${index}`}
+                          aria-label="Agregar ítem debajo"
+                          title="Agregar ítem debajo"
+                          className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 h-7 w-7 p-0"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Plus className="w-4 h-4" />
                         </Button>
-                      )}
+                        {invoice.items.length > 1 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeItem(index)}
+                            data-testid={`remove-item-btn-${index}`}
+                            aria-label="Eliminar ítem"
+                            title="Eliminar ítem"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 h-7 w-7 p-0"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                     <div className="space-y-3">
                       <div>

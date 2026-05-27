@@ -24,7 +24,15 @@ no batching).
 - **Comunicación**: SIEMPRE en español.
 - **Despliegue a producción**: Solo cuando el usuario lo indique. Esperar siempre.
 
-### ✅ Progress: 19 / 33 adjustments completed
+### ✅ Progress: 20 / 33 adjustments completed
+
+**Batch #X — UX del Creador de Facturas (May 27, 2026):**
+- [x] #32 — Botón `+` (verde) agregado a la izquierda del 🗑️ (rojo) en cada
+      fila de ítem en `InvoiceCreator.jsx`. Al presionarlo, inserta un nuevo
+      ítem JUSTO DEBAJO de la fila tocada (no al final). Si solo hay un ítem,
+      el botón de papelera se oculta pero el `+` siempre permanece visible.
+      Función `addItem(insertAfterIndex)` con `splice` + focus auto al nuevo
+      campo de descripción. Probado en preview: pasa de 2 → 3 ítems correctamente.
 
 **Batch #1 — Critical Bugs (Dashboard + Abonos):**
 - [x] #20 — Cotizaciones (COT-) blindadas: NUNCA cambian de status automáticamente
