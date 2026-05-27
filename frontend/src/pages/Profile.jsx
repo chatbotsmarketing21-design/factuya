@@ -398,14 +398,15 @@ const Profile = () => {
                   value={profile.companyInfo.country || ''}
                   onValueChange={(val) => {
                     const cfg = getCountryConfig(val);
+                    // #30.d — Al cambiar el país, la moneda se actualiza
+                    // automáticamente a la del país. Si el usuario quiere otra,
+                    // puede cambiarla manualmente desde el selector de moneda.
                     setProfile((prev) => ({
                       ...prev,
                       companyInfo: {
                         ...prev.companyInfo,
                         country: val,
-                        // Si el usuario aún no eligió moneda manualmente,
-                        // sugerimos la del país.
-                        defaultCurrency: prev.companyInfo.defaultCurrency || cfg.currency,
+                        defaultCurrency: cfg.currency,
                       },
                     }));
                   }}
