@@ -1479,13 +1479,12 @@ const InvoiceCreator = () => {
                       <span className="text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">Item {index + 1}</span>
                       <div className="flex items-center gap-1">
                         <Button
-                          variant="ghost"
                           size="sm"
                           onClick={() => addItem(index)}
                           data-testid={`add-item-inline-btn-${index}`}
                           aria-label="Agregar ítem debajo"
                           title="Agregar ítem debajo"
-                          className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 h-7 w-7 p-0"
+                          className="bg-black hover:bg-gray-800 text-white h-7 w-7 p-0 rounded-md shadow-sm"
                         >
                           <Plus className="w-4 h-4" />
                         </Button>
