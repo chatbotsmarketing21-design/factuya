@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatCurrency as formatCurrencyFn, formatDate as formatDateFn } from '../utils/formatters';
 
 const InvoiceTemplateModerno = ({ invoice, template, templateColor }) => {
   const { t } = useTranslation();
@@ -9,15 +10,14 @@ const InvoiceTemplateModerno = ({ invoice, template, templateColor }) => {
   const to = invoice?.to || invoice?.toAddress || {};
   const items = invoice?.items || [];
   const isPaid = invoice?.status === 'paid' && !['quotation', 'proforma'].includes(invoice?.documentType);
+  const userCountry = from?.country;
 
   // Color dinámico: prioridad al color personalizado, luego el de la plantilla
   const primaryColor = templateColor || template?.color || '#DC2626';
 
-  // Función para formatear números
-  const formatCurrency = (value) => {
-    const num = parseFloat(value) || 0;
-    return num.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
+  // #30.c — Formato regional según país del emisor
+  const formatCurrency = (value) => formatCurrencyFn(value, { country: userCountry });
+  const formatDate = (value) => formatDateFn(value, { country: userCountry });
 
   const getDocumentTitle = (type) => {
     const titles = {
@@ -128,7 +128,7 @@ const InvoiceTemplateModerno = ({ invoice, template, templateColor }) => {
           <div className="text-right">
             <div className="mb-2">
               <span className="font-semibold" style={{ color: primaryColor }}>Fecha de la {getDocumentTitle(invoice?.documentType).toLowerCase()}</span>
-              <p className="text-gray-800">{invoice?.date || ''}</p>
+              <p className="text-gray-800">{invoice?.date ? formatDate(invoice.date) : ''}</p>
             </div>
             <div>
               <span className="font-semibold" style={{ color: primaryColor }}>N° de pedido</span>

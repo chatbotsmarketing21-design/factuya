@@ -52,6 +52,7 @@ import InvoicePreview from '../components/InvoicePreview';
 import { getTemplateById } from '../mock/invoiceData';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { formatCurrency as formatCurrencyFn } from '../utils/formatters';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -76,6 +77,9 @@ const Dashboard = () => {
   });
   const { toast } = useToast();
   const { logout, user } = useAuth();
+  // #30.c — País del usuario (para formato regional de números)
+  const userCountry = user?.companyInfo?.country;
+  const fmt = (v, opts = {}) => formatCurrencyFn(v, { country: userCountry, ...opts });
   
   // Estado para modal de abono
   const [paymentDialogOpen, setPaymentDialogOpen] = useState(false);
@@ -522,7 +526,7 @@ const Dashboard = () => {
     const clientName = invoice.to?.name || 'Cliente';
     const clientEmail = invoice.to?.email || '';
     const invoiceNumber = invoice.invoiceNumber || invoice.number || 'S/N';
-    const total = invoice.total?.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0,00';
+    const total = invoice.total != null ? fmt(invoice.total) : '0,00';
     
     const subject = encodeURIComponent(`Factura N° ${invoiceNumber} - FactuYa!`);
     const body = encodeURIComponent(`Hola ${clientName},\n\nLe comparto su factura N° ${invoiceNumber} por un total de $${total}.\n\n¡Gracias por su preferencia!\n\nAtentamente,\nFactuYa!`);
@@ -613,7 +617,7 @@ const Dashboard = () => {
       
       toast({
         title: t('payments.paymentAdded'),
-        description: `Abono de $${amount.toLocaleString('es-CO')} registrado`,
+        description: `Abono de $${fmt(amount, { minimumFractionDigits: 0, maximumFractionDigits: 2 })} registrado`,
       });
       
       setPaymentDialogOpen(false);
@@ -819,7 +823,7 @@ const Dashboard = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm sm:text-sm text-gray-600 dark:text-gray-400">{t('dashboard.totalRevenue')}</p>
-                  <p className="text-lg sm:text-3xl font-bold text-gray-900 dark:text-white mt-1 sm:mt-2">{stats.totalRevenue.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+                  <p className="text-lg sm:text-3xl font-bold text-gray-900 dark:text-white mt-1 sm:mt-2">{fmt(stats.totalRevenue, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
                 </div>
                 <div className="bg-blue-100 dark:bg-blue-900/30 p-2 sm:p-3 rounded-full flex items-center justify-center">
                   <span className="w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center text-sm sm:text-lg font-bold text-blue-600 dark:text-blue-400">$</span>
@@ -955,7 +959,7 @@ const Dashboard = () => {
                           <TableCell className="dark:text-gray-300">{invoice.clientName?.split('\n')[0]}</TableCell>
                           <TableCell className="dark:text-gray-300">{invoice.date}</TableCell>
                           <TableCell className="dark:text-gray-300">{invoice.dueDate}</TableCell>
-                          <TableCell className="font-semibold dark:text-white">${invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                          <TableCell className="font-semibold dark:text-white">${fmt(invoice.total)}</TableCell>
                           <TableCell onClick={(e) => e.stopPropagation()}>
                             {/* Solo mostrar estado para facturas, no para cotizaciones */}
                             {!invoice.number?.startsWith('COT') && (

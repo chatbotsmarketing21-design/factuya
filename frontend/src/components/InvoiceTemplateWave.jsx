@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatCurrency as formatCurrencyFn, formatDate as formatDateFn } from '../utils/formatters';
 
 const InvoiceTemplateWave = ({ invoice, template, templateColor }) => {
   const { t } = useTranslation();
@@ -9,12 +10,11 @@ const InvoiceTemplateWave = ({ invoice, template, templateColor }) => {
   const to = invoice?.to || invoice?.toAddress || {};
   const items = invoice?.items || [];
   const isPaid = invoice?.status === 'paid' && !['quotation', 'proforma'].includes(invoice?.documentType);
+  const userCountry = from?.country;
 
-  // Función para formatear números con punto de miles y coma decimal
-  const formatCurrency = (value) => {
-    const num = parseFloat(value) || 0;
-    return num.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
+  // #30.c — Formato regional según país del emisor
+  const formatCurrency = (value) => formatCurrencyFn(value, { country: userCountry });
+  const formatDate = (value) => formatDateFn(value, { country: userCountry });
 
   const getDocumentTitle = (type) => {
     const titles = {
@@ -125,7 +125,7 @@ const InvoiceTemplateWave = ({ invoice, template, templateColor }) => {
             </div>
             <div className="mb-2">
               <span className="font-semibold" style={{ color: waveColor }}>Fecha</span>
-              <span className="ml-2 text-gray-800">{invoice?.date || ''}</span>
+              <span className="ml-2 text-gray-800">{invoice?.date ? formatDate(invoice.date) : ''}</span>
             </div>
             <div>
               <span className="font-semibold" style={{ color: waveColor }}>Vencimiento</span>

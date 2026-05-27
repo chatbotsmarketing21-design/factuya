@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatCurrency as formatCurrencyFn, formatDate as formatDateFn } from '../utils/formatters';
 
 const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
   const { t } = useTranslation();
@@ -9,15 +10,14 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
   const to = invoice?.to || invoice?.toAddress || {};
   const items = invoice?.items || [];
   const isPaid = invoice?.status === 'paid' && !['quotation', 'proforma'].includes(invoice?.documentType);
+  const userCountry = from?.country;
 
   // Color dinámico: prioridad al color personalizado
   const primaryColor = templateColor || template?.color || '#1565C0';
 
-  // Función para formatear números con punto de miles y coma decimal
-  const formatCurrency = (value) => {
-    const num = parseFloat(value) || 0;
-    return num.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
+  // #30.c — Formato regional según país del emisor
+  const formatCurrency = (value) => formatCurrencyFn(value, { country: userCountry });
+  const formatDate = (value) => formatDateFn(value, { country: userCountry });
 
   const getDocumentTitle = (type) => {
     const titles = {
@@ -115,7 +115,7 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
             </div>
             <div className="mb-1">
               <span className="font-bold text-gray-700" style={{ color: primaryColor }}>FECHA DE LA {getDocumentTitle(invoice?.documentType).split(' ')[0]}</span>
-              <span className="ml-2 text-gray-800">{invoice?.date || ''}</span>
+              <span className="ml-2 text-gray-800">{invoice?.date ? formatDate(invoice.date) : ''}</span>
             </div>
             <div>
               <span className="font-bold text-gray-700" style={{ color: primaryColor }}>N° DE PEDIDO</span>

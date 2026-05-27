@@ -5,6 +5,7 @@ import InvoiceTemplateWave from './InvoiceTemplateWave';
 import InvoiceTemplateDexter from './InvoiceTemplateDexter';
 import InvoiceTemplateModerno from './InvoiceTemplateModerno';
 import InvoiceTemplateCuentaCobro from './InvoiceTemplateCuentaCobro';
+import { formatCurrency as formatCurrencyFn, formatDate as formatDateFn } from '../utils/formatters';
 
 const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
   const { t } = useTranslation();
@@ -38,11 +39,10 @@ const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
   const items = invoice?.items || [];
   const isPaid = invoice?.status === 'paid' && !['quotation', 'proforma'].includes(invoice?.documentType);
 
-  // Función para formatear números con punto de miles y coma decimal
-  const formatCurrency = (value) => {
-    const num = parseFloat(value) || 0;
-    return num.toLocaleString('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
+  // Función para formatear números según el país del emisor (#30.c)
+  const userCountry = from?.country;
+  const formatCurrency = (value) =>
+    formatCurrencyFn(value, { country: userCountry });
 
   const getDocumentTitle = (type) => {
     return t(`documentTypes.${type}`, type?.toUpperCase() || 'FACTURA');
@@ -125,11 +125,11 @@ const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
         <div className="grid grid-cols-2 gap-8 text-sm">
           <div>
             <p className="text-gray-500">{t('preview.invoiceDate')}</p>
-            <p className="font-semibold text-gray-900">{invoice?.date || ''}</p>
+            <p className="font-semibold text-gray-900">{invoice?.date ? formatDateFn(invoice.date, { country: userCountry }) : ''}</p>
           </div>
           <div>
             <p className="text-gray-500">{t('preview.dueDate')}</p>
-            <p className="font-semibold text-gray-900">{invoice?.dueDate || ''}</p>
+            <p className="font-semibold text-gray-900">{invoice?.dueDate ? formatDateFn(invoice.dueDate, { country: userCountry }) : ''}</p>
           </div>
         </div>
 

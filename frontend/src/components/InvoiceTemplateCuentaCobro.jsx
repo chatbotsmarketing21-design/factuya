@@ -1,8 +1,10 @@
 import React from 'react';
+import { formatCurrency as formatCurrencyFn, formatDate as formatDateFn } from '../utils/formatters';
 
 const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateColor }) => {
   // Color dinámico: prioridad al color personalizado
   const primaryColor = templateColor || template?.color || '#84cc16';
+  const userCountry = invoice?.from?.country || companyInfo?.country;
   
   // Función para convertir número a letras en español
   const numeroALetras = (num) => {
@@ -63,31 +65,16 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
     return resultado.trim() + ' PESOS COLOMBIANOS';
   };
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-CO', {
-      style: 'decimal',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(amount);
-  };
+  const formatCurrency = (amount) => formatCurrencyFn(amount, {
+    country: userCountry,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
 
-  const formatDate = (dateString) => {
-    if (!dateString) return '';
-    // Parse the date string directly to avoid timezone issues
-    const parts = dateString.split('-');
-    if (parts.length === 3) {
-      const year = parseInt(parts[0]);
-      const month = parseInt(parts[1]) - 1; // months are 0-indexed
-      const day = parseInt(parts[2]);
-      const date = new Date(year, month, day);
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      return date.toLocaleDateString('es-CO', options);
-    }
-    // Fallback for other formats
-    const date = new Date(dateString);
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('es-CO', options);
-  };
+  const formatDate = (dateString) => formatDateFn(dateString, {
+    country: userCountry,
+    options: { year: 'numeric', month: 'long', day: 'numeric' },
+  });
 
   return (
     <div className="bg-white w-full max-w-[800px] mx-auto shadow-lg" style={{ fontFamily: 'Arial, sans-serif' }}>

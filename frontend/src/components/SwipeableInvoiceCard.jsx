@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSwipeable } from 'react-swipeable';
 import { CheckCircle, ChevronRight } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { formatCurrency as formatCurrencyFn } from '../utils/formatters';
 
 const SwipeableInvoiceCard = ({ 
   invoice, 
@@ -11,6 +13,9 @@ const SwipeableInvoiceCard = ({
   statusColors 
 }) => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const userCountry = user?.companyInfo?.country;
+  const userCurrency = user?.companyInfo?.defaultCurrency || 'COP';
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isRevealed, setIsRevealed] = useState(false);
 
@@ -181,7 +186,7 @@ const SwipeableInvoiceCard = ({
         {/* Amount and date - right side */}
         <div className="text-right ml-3 flex-shrink-0">
           <p className="font-bold text-gray-900 dark:text-white">
-            {invoice.total.toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })} COP
+            {formatCurrencyFn(invoice.total, { country: userCountry, minimumFractionDigits: 0, maximumFractionDigits: 0 })} {userCurrency}
           </p>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {invoice.date}
