@@ -1,7 +1,4 @@
 {
-  "common": {
-    "backToHome": "Back to Home"
-  },
   "landing": {
     "signIn": "Sign In",
     "createInvoice": "Create Invoice",
@@ -54,7 +51,8 @@
     "welcomeMale": "Welcome",
     "welcomeFemale": "Welcome",
     "back": "Back",
-    "close": "Close"
+    "close": "Close",
+    "backToHome": "Back to Home"
   },
   "nav": {
     "home": "Home",

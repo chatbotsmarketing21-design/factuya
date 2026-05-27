@@ -1,7 +1,4 @@
 {
-  "common": {
-    "backToHome": "Volver al Inicio"
-  },
   "landing": {
     "signIn": "Iniciar Sesión",
     "createInvoice": "Crear Factura",
@@ -54,7 +51,8 @@
     "welcomeMale": "Bienvenido",
     "welcomeFemale": "Bienvenida",
     "back": "Volver",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "backToHome": "Volver al Inicio"
   },
   "nav": {
     "home": "Inicio",
