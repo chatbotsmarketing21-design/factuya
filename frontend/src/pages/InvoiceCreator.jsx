@@ -1044,7 +1044,7 @@ const InvoiceCreator = () => {
                       style={{ 
                         borderColor: getDocumentInfo(invoice.documentType).color, 
                         color: getDocumentInfo(invoice.documentType).color,
-                        boxShadow: `0 4px 12px ${getDocumentInfo(invoice.documentType).color}33`
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.18)'
                       }}
                     >
                       {getDocumentInfo(invoice.documentType).icon}
@@ -1138,7 +1138,7 @@ const InvoiceCreator = () => {
                     style={{
                       borderColor: getDocumentInfo(invoice.documentType).color,
                       color: getDocumentInfo(invoice.documentType).color,
-                      boxShadow: `0 4px 12px ${getDocumentInfo(invoice.documentType).color}33`
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.18)'
                     }}
                   >
                     Tipo de Documento
