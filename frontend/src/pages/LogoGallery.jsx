@@ -105,6 +105,9 @@ const LogoGallery = () => {
   const handleSelect = async (logo) => {
     try {
       await profileAPI.updateLogo(logo);
+      // Guardamos el logo seleccionado para que el creador lo recoja al volver.
+      // sessionStorage es lo más confiable porque navigate(-1) no soporta state.
+      sessionStorage.setItem('factuya:newSelectedLogo', logo);
       toast({ title: 'Logo seleccionado' });
       navigate(-1);
     } catch (error) {

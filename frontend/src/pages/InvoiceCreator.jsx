@@ -403,6 +403,32 @@ const InvoiceCreator = () => {
 
   // Auto-save notes, terms and template with debounce
   const saveTimeoutRef = useRef(null);
+
+  // Cuando el usuario regresa de la galería de logos (/logos) con un logo seleccionado,
+  // sessionStorage tiene la key "factuya:newSelectedLogo". Lo aplicamos al estado local
+  // del documento en curso para que el cambio sea inmediato sin recargar la página.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      try {
+        const newLogo = sessionStorage.getItem('factuya:newSelectedLogo');
+        if (newLogo) {
+          sessionStorage.removeItem('factuya:newSelectedLogo');
+          setInvoice((prev) => ({ ...prev, logo: newLogo }));
+        }
+      } catch (_) { /* ignore */ }
+    }, 300);
+
+    // También chequear inmediatamente al montar (caso típico tras navigate(-1))
+    try {
+      const newLogo = sessionStorage.getItem('factuya:newSelectedLogo');
+      if (newLogo) {
+        sessionStorage.removeItem('factuya:newSelectedLogo');
+        setInvoice((prev) => ({ ...prev, logo: newLogo }));
+      }
+    } catch (_) { /* ignore */ }
+
+    return () => clearInterval(interval);
+  }, []);
   
   const autoSaveDefaults = useCallback(async (notes, terms, template) => {
     try {

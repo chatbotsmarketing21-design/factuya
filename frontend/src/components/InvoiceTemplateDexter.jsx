@@ -129,8 +129,9 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
           <table className="w-full text-sm">
             <thead>
               <tr style={{ backgroundColor: '#E3F2FD' }} className="border-t-2 border-b-2" style={{ borderColor: '#4FC3F7', backgroundColor: '#E3F2FD' }}>
+                <th className="text-center py-3 px-2 font-bold text-gray-700" style={{ width: '6%' }}>#</th>
                 <th className="text-left py-3 px-3 font-bold text-gray-700" style={{ width: '10%' }}>CANT.</th>
-                <th className="text-left py-3 px-3 font-bold text-gray-700" style={{ width: '50%' }}>DESCRIPCIÓN</th>
+                <th className="text-left py-3 px-3 font-bold text-gray-700" style={{ width: '44%' }}>DESCRIPCIÓN</th>
                 <th className="text-right py-3 px-3 font-bold text-gray-700" style={{ width: '20%' }}>PRECIO UNITARIO</th>
                 <th className="text-right py-3 px-3 font-bold text-gray-700" style={{ width: '20%' }}>IMPORTE</th>
               </tr>
@@ -138,6 +139,7 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
             <tbody>
               {items.map((item, index) => (
                 <tr key={index} className="border-b border-gray-200">
+                  <td className="py-3 px-2 text-center text-gray-500">{index + 1}</td>
                   <td className="py-3 px-3 text-gray-700 text-center">{item?.quantity || 0}</td>
                   <td className="py-3 px-3 text-gray-900">{item?.description || ''}</td>
                   <td className="py-3 px-3 text-right text-gray-700">{formatCurrency(item?.rate)}</td>
@@ -147,6 +149,7 @@ const InvoiceTemplateDexter = ({ invoice, template, templateColor }) => {
               {/* Empty rows to fill space */}
               {items.length < 5 && [...Array(5 - items.length)].map((_, index) => (
                 <tr key={`empty-${index}`} className="border-b border-gray-200">
+                  <td className="py-3 px-2">&nbsp;</td>
                   <td className="py-3 px-3">&nbsp;</td>
                   <td className="py-3 px-3"></td>
                   <td className="py-3 px-3"></td>

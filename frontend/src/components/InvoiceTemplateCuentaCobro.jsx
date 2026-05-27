@@ -148,6 +148,7 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-gray-100">
+                <th className="border border-gray-300 px-2 py-2 text-center text-sm font-semibold text-gray-700 w-10">#</th>
                 <th className="border border-gray-300 px-3 py-2 text-left text-sm font-semibold text-gray-700 w-16">CANT.</th>
                 <th className="border border-gray-300 px-3 py-2 text-left text-sm font-semibold text-gray-700">DESCRIPCIÓN</th>
                 <th className="border border-gray-300 px-3 py-2 text-right text-sm font-semibold text-gray-700 w-28">IMPORTE</th>
@@ -157,6 +158,9 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
             <tbody>
               {invoice.items && invoice.items.map((item, index) => (
                 <tr key={index} className="bg-white">
+                  <td className="border border-gray-300 px-2 py-2 text-center text-sm text-gray-500">
+                    {index + 1}
+                  </td>
                   <td className="border border-gray-300 px-3 py-2 text-center text-sm text-gray-800">
                     {String(item.quantity || 0)}
                   </td>
@@ -173,7 +177,7 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
               ))}
               {(!invoice.items || invoice.items.length === 0) && (
                 <tr className="bg-white">
-                  <td colSpan="4" className="border border-gray-300 px-3 py-2 text-center text-sm text-gray-400">
+                  <td colSpan="5" className="border border-gray-300 px-3 py-2 text-center text-sm text-gray-400">
                     Sin items
                   </td>
                 </tr>
