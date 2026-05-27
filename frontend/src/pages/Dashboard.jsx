@@ -61,7 +61,6 @@ const Dashboard = () => {
   const [invoices, setInvoices] = useState([]);
   const [stats, setStats] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchFocused, setSearchFocused] = useState(false); // Track if search is focused
   const [statusFilter, setStatusFilter] = useState(null); // null = all, 'paid' = pagadas, 'pending' = pendientes
   const [loading, setLoading] = useState(true);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -833,9 +832,9 @@ const Dashboard = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        {/* Stats - Hidden on mobile when search is focused */}
+        {/* Stats - Always visible on mobile (hiding them broke sticky behavior) */}
         {stats && (
-          <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8 ${searchFocused ? 'hidden sm:grid' : ''}`}>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
             <Card className="p-4 sm:p-6 dark:bg-card">
               <div className="flex items-center justify-between">
                 <div>
@@ -895,7 +894,7 @@ const Dashboard = () => {
         {/* Search and Filter — sticky justo debajo del header al hacer scroll */}
         <div className="sticky top-[57px] sm:top-[73px] z-40 -mx-4 sm:mx-0 mb-4 sm:mb-6">
           <Card
-            className={`p-4 sm:p-6 dark:bg-card rounded-none sm:rounded-lg border-x-0 sm:border-x shadow-sm bg-white/95 dark:bg-card/95 backdrop-blur ${searchFocused ? 'sm:relative' : ''}`}
+            className="p-4 sm:p-6 dark:bg-card rounded-none sm:rounded-lg border-x-0 sm:border-x shadow-sm bg-white/95 dark:bg-card/95 backdrop-blur"
           >
             <div className="flex items-center gap-4">
               <div className="relative flex-1">
@@ -906,11 +905,6 @@ const Dashboard = () => {
                   placeholder={t('dashboard.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => {
-                    // Small delay to allow click events to fire first
-                    setTimeout(() => setSearchFocused(false), 150);
-                  }}
                   className="pl-10"
                   data-testid="dashboard-search-input"
                 />
