@@ -788,18 +788,35 @@ const Dashboard = () => {
                       </>
                     )}
                   </DropdownMenuItem>
-                  {/* Language switcher - below dark mode */}
-                  <DropdownMenuItem 
-                    className="sm:hidden text-base py-3"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      const newLang = i18n.language === 'es' ? 'en' : 'es';
-                      i18n.changeLanguage(newLang);
-                    }}
-                  >
-                    <Globe className="w-5 h-5 mr-3" />
-                    {i18n.language === 'es' ? 'Español' : 'English'}
-                  </DropdownMenuItem>
+                  {/* Language switcher - shows all 4 languages on mobile */}
+                  <DropdownMenuSeparator className="sm:hidden" />
+                  {[
+                    { code: 'es', label: 'Español' },
+                    { code: 'en', label: 'English' },
+                    { code: 'pt', label: 'Português' },
+                    { code: 'fr', label: 'Français' },
+                  ].map((lng) => {
+                    const currentCode = (i18n.language || 'es').toLowerCase().split('-')[0];
+                    const isActive = currentCode === lng.code;
+                    return (
+                      <DropdownMenuItem
+                        key={lng.code}
+                        className={`sm:hidden text-base py-3 ${isActive ? 'bg-lime-50 dark:bg-lime-900/20 font-semibold' : ''}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          i18n.changeLanguage(lng.code);
+                          try {
+                            localStorage.setItem('i18nextLngManual', 'true');
+                          } catch (_) {}
+                        }}
+                        data-testid={`lang-mobile-${lng.code}`}
+                      >
+                        <Globe className="w-5 h-5 mr-3" />
+                        {lng.label}
+                        {isActive && <span className="ml-auto text-lime-600">✓</span>}
+                      </DropdownMenuItem>
+                    );
+                  })}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600 text-base py-3">
                     <LogOut className="w-5 h-5 mr-3" />
