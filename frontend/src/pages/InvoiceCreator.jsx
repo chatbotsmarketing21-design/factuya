@@ -779,89 +779,34 @@ const InvoiceCreator = () => {
   };
 
   const getDocumentInfo = (type) => {
-    const documentTypes = {
-      invoice: {
-        name: 'FACTURA',
-        shortName: 'Factura',
-        icon: <FileText className="w-4 h-4" />,
-        color: '#2563eb'
-      },
-      tax_invoice: {
-        name: 'FACTURA DE IMPUESTOS',
-        shortName: 'Factura Impuestos',
-        icon: <FileText className="w-4 h-4" />,
-        color: '#1d4ed8'
-      },
-      proforma: {
-        name: 'FACTURA PROFORMA',
-        shortName: 'Proforma',
-        icon: <FileCheck className="w-4 h-4" />,
-        color: '#7c3aed'
-      },
-      quotation: {
-        name: 'COTIZACIÓN',
-        shortName: 'Cotización',
-        icon: <Calculator className="w-4 h-4" />,
-        color: '#059669'
-      },
-      bill: {
-        name: 'CUENTA DE COBRO',
-        shortName: 'Cuenta',
-        icon: <DollarSign className="w-4 h-4" />,
-        color: '#ea580c'
-      },
-      receipt: {
-        name: 'RECIBO',
-        shortName: 'Recibo',
-        icon: <Receipt className="w-4 h-4" />,
-        color: '#0891b2'
-      },
-      sales_receipt: {
-        name: 'RECIBO DE LA VENTA',
-        shortName: 'Recibo Venta',
-        icon: <Receipt className="w-4 h-4" />,
-        color: '#0e7490'
-      },
-      cash_receipt: {
-        name: 'RECIBO DE EFECTIVO',
-        shortName: 'Recibo Efectivo',
-        icon: <DollarSign className="w-4 h-4" />,
-        color: '#16a34a'
-      },
-      offer: {
-        name: 'OFERTA',
-        shortName: 'Oferta',
-        icon: <Sparkles className="w-4 h-4" />,
-        color: '#db2777'
-      },
-      credit_note: {
-        name: 'NOTA DE ABONO',
-        shortName: 'Nota Abono',
-        icon: <FileText className="w-4 h-4" />,
-        color: '#9333ea'
-      },
-      order: {
-        name: 'PEDIDO',
-        shortName: 'Pedido',
-        icon: <FileText className="w-4 h-4" />,
-        color: '#ca8a04'
-      },
-      delivery_note: {
-        name: 'NOTA DE ENTREGA',
-        shortName: 'Nota Entrega',
-        icon: <FileText className="w-4 h-4" />,
-        color: '#475569'
-      }
+    // Iconos y colores se mantienen, pero el nombre viene de las traducciones
+    const meta = {
+      invoice:        { icon: <FileText className="w-4 h-4" />,   color: '#2563eb' },
+      tax_invoice:    { icon: <FileText className="w-4 h-4" />,   color: '#1d4ed8' },
+      proforma:       { icon: <FileCheck className="w-4 h-4" />,  color: '#7c3aed' },
+      quotation:      { icon: <Calculator className="w-4 h-4" />, color: '#059669' },
+      bill:           { icon: <DollarSign className="w-4 h-4" />, color: '#ea580c' },
+      receipt:        { icon: <Receipt className="w-4 h-4" />,    color: '#0891b2' },
+      sales_receipt:  { icon: <Receipt className="w-4 h-4" />,    color: '#0e7490' },
+      cash_receipt:   { icon: <DollarSign className="w-4 h-4" />, color: '#16a34a' },
+      offer:          { icon: <Sparkles className="w-4 h-4" />,   color: '#db2777' },
+      credit_note:    { icon: <FileText className="w-4 h-4" />,   color: '#9333ea' },
+      order:          { icon: <FileText className="w-4 h-4" />,   color: '#ca8a04' },
+      delivery_note:  { icon: <FileText className="w-4 h-4" />,   color: '#475569' },
     };
-    return documentTypes[type] || documentTypes.invoice;
+    const m = meta[type] || meta.invoice;
+    const upperName = t(`documentTypes.${type}`, (type || 'invoice').toUpperCase());
+    // shortName: capitalizado en lugar de TODO MAYUS
+    const shortName = upperName.charAt(0) + upperName.slice(1).toLowerCase();
+    return { name: upperName, shortName, icon: m.icon, color: m.color };
   };
 
   const changeDocumentType = async (type) => {
     await handleDocumentTypeChange(type);
     const docInfo = getDocumentInfo(type);
     toast({
-      title: "Tipo de Documento Cambiado",
-      description: `Ahora estás creando: ${docInfo.name}`,
+      title: t('invoice.docTypeChanged'),
+      description: `${t('invoice.docTypeChangedDesc')}: ${docInfo.name}`,
     });
   };
 
@@ -1123,56 +1068,17 @@ const InvoiceCreator = () => {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Tipo de Documento</DropdownMenuLabel>
+                    <DropdownMenuLabel>{t('invoice.documentType')}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => changeDocumentType('invoice')}>
-                      <FileText className="w-4 h-4 mr-2 text-blue-600" />
-                      FACTURA
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => changeDocumentType('tax_invoice')}>
-                      <FileText className="w-4 h-4 mr-2 text-blue-700" />
-                      FACTURA DE IMPUESTOS
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => changeDocumentType('proforma')}>
-                      <FileCheck className="w-4 h-4 mr-2 text-purple-600" />
-                      FACTURA PROFORMA
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => changeDocumentType('quotation')}>
-                      <Calculator className="w-4 h-4 mr-2 text-green-600" />
-                      COTIZACIÓN
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => changeDocumentType('bill')}>
-                      <DollarSign className="w-4 h-4 mr-2 text-orange-600" />
-                      CUENTA DE COBRO
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => changeDocumentType('receipt')}>
-                      <Receipt className="w-4 h-4 mr-2 text-cyan-600" />
-                      RECIBO
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => changeDocumentType('sales_receipt')}>
-                      <Receipt className="w-4 h-4 mr-2 text-cyan-700" />
-                      RECIBO DE LA VENTA
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => changeDocumentType('cash_receipt')}>
-                      <DollarSign className="w-4 h-4 mr-2 text-green-700" />
-                      RECIBO DE EFECTIVO
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => changeDocumentType('offer')}>
-                      <Sparkles className="w-4 h-4 mr-2 text-pink-600" />
-                      OFERTA
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => changeDocumentType('credit_note')}>
-                      <FileText className="w-4 h-4 mr-2 text-purple-700" />
-                      NOTA DE ABONO
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => changeDocumentType('order')}>
-                      <FileText className="w-4 h-4 mr-2 text-yellow-600" />
-                      PEDIDO
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => changeDocumentType('delivery_note')}>
-                      <FileText className="w-4 h-4 mr-2 text-slate-600" />
-                      NOTA DE ENTREGA
-                    </DropdownMenuItem>
+                    {['invoice','tax_invoice','proforma','quotation','bill','receipt','sales_receipt','cash_receipt','offer','credit_note','order','delivery_note'].map((dt) => {
+                      const info = getDocumentInfo(dt);
+                      return (
+                        <DropdownMenuItem key={dt} onClick={() => changeDocumentType(dt)} data-testid={`doctype-opt-${dt}`}>
+                          <span className="mr-2" style={{ color: info.color }}>{info.icon}</span>
+                          {info.name}
+                        </DropdownMenuItem>
+                      );
+                    })}
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Link to="/templates" onClick={(e) => { e.preventDefault(); goToTemplates(); }}>
@@ -1210,58 +1116,23 @@ const InvoiceCreator = () => {
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.18)'
                     }}
                   >
-                    Tipo de Documento
+                    {t('invoice.documentType')}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56 max-h-[70vh] overflow-y-auto">
-                  <DropdownMenuItem onClick={() => { changeDocumentType('invoice'); setShowMobileMenu(false); }}>
-                    <FileText className="w-4 h-4 mr-2 text-blue-600" />
-                    FACTURA
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { changeDocumentType('tax_invoice'); setShowMobileMenu(false); }}>
-                    <FileText className="w-4 h-4 mr-2 text-blue-700" />
-                    FACTURA DE IMPUESTOS
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { changeDocumentType('proforma'); setShowMobileMenu(false); }}>
-                    <FileCheck className="w-4 h-4 mr-2 text-purple-600" />
-                    FACTURA PROFORMA
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { changeDocumentType('quotation'); setShowMobileMenu(false); }}>
-                    <Calculator className="w-4 h-4 mr-2 text-green-600" />
-                    COTIZACIÓN
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { changeDocumentType('bill'); setShowMobileMenu(false); }}>
-                    <DollarSign className="w-4 h-4 mr-2 text-orange-600" />
-                    CUENTA DE COBRO
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { changeDocumentType('receipt'); setShowMobileMenu(false); }}>
-                    <Receipt className="w-4 h-4 mr-2 text-cyan-600" />
-                    RECIBO
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { changeDocumentType('sales_receipt'); setShowMobileMenu(false); }}>
-                    <Receipt className="w-4 h-4 mr-2 text-cyan-700" />
-                    RECIBO DE LA VENTA
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { changeDocumentType('cash_receipt'); setShowMobileMenu(false); }}>
-                    <DollarSign className="w-4 h-4 mr-2 text-green-700" />
-                    RECIBO DE EFECTIVO
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { changeDocumentType('offer'); setShowMobileMenu(false); }}>
-                    <Sparkles className="w-4 h-4 mr-2 text-pink-600" />
-                    OFERTA
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { changeDocumentType('credit_note'); setShowMobileMenu(false); }}>
-                    <FileText className="w-4 h-4 mr-2 text-purple-700" />
-                    NOTA DE ABONO
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { changeDocumentType('order'); setShowMobileMenu(false); }}>
-                    <FileText className="w-4 h-4 mr-2 text-yellow-600" />
-                    PEDIDO
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => { changeDocumentType('delivery_note'); setShowMobileMenu(false); }}>
-                    <FileText className="w-4 h-4 mr-2 text-slate-600" />
-                    NOTA DE ENTREGA
-                  </DropdownMenuItem>
+                  {['invoice','tax_invoice','proforma','quotation','bill','receipt','sales_receipt','cash_receipt','offer','credit_note','order','delivery_note'].map((dt) => {
+                    const info = getDocumentInfo(dt);
+                    return (
+                      <DropdownMenuItem
+                        key={dt}
+                        onClick={() => { changeDocumentType(dt); setShowMobileMenu(false); }}
+                        data-testid={`doctype-opt-mobile-${dt}`}
+                      >
+                        <span className="mr-2" style={{ color: info.color }}>{info.icon}</span>
+                        {info.name}
+                      </DropdownMenuItem>
+                    );
+                  })}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     asChild

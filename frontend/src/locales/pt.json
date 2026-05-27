@@ -159,7 +159,10 @@
     "taxRate": "Taxa (%)",
     "changesAutoSaved": "As alterações são salvas automaticamente",
     "invoiceLoaded": "Fatura Carregada",
-    "invoiceLoadedDesc": "Agora você pode editar a fatura"
+    "invoiceLoadedDesc": "Agora você pode editar a fatura",
+    "documentType": "Tipo de Documento",
+    "docTypeChanged": "Tipo de Documento Alterado",
+    "docTypeChangedDesc": "Agora você está criando"
   },
   "documentTypes": {
     "invoice": "FATURA",

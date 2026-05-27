@@ -159,7 +159,10 @@
     "taxRate": "Rate (%)",
     "changesAutoSaved": "Changes are saved automatically",
     "invoiceLoaded": "Invoice Loaded",
-    "invoiceLoadedDesc": "You can now edit the invoice"
+    "invoiceLoadedDesc": "You can now edit the invoice",
+    "documentType": "Document Type",
+    "docTypeChanged": "Document Type Changed",
+    "docTypeChangedDesc": "You are now creating"
   },
   "documentTypes": {
     "invoice": "INVOICE",
