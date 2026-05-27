@@ -14,7 +14,11 @@ const Home = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showInstallButton, setShowInstallButton] = useState(true);
   // País detectado (para personalizar el hero title)
-  const [detectedCountry, setDetectedCountry] = useState(null);
+  // Usamos caché de localStorage para evitar el parpadeo de
+  // "Latinoamérica → Colombia" en visitas recurrentes.
+  const [detectedCountry, setDetectedCountry] = useState(() => {
+    try { return localStorage.getItem('detectedCountry') || null; } catch (_) { return null; }
+  });
 
   // Detectar el país del usuario para personalizar el título
   useEffect(() => {
@@ -23,6 +27,7 @@ const Home = () => {
       .then((res) => {
         if (mounted && res.data?.country_code) {
           setDetectedCountry(res.data.country_code);
+          try { localStorage.setItem('detectedCountry', res.data.country_code); } catch (_) { /* noop */ }
         }
       })
       .catch(() => { /* fallback al nombre regional */ });
