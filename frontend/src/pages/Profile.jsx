@@ -17,6 +17,7 @@ import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 import api, { profileAPI } from '../services/api';
 import { COUNTRY_LIST, CURRENCY_LIST, getCountryConfig } from '../constants/countryConfig';
+import { formatPhoneAsYouType } from '../utils/phoneFormatter';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -342,10 +343,20 @@ const Profile = () => {
                 <Input
                   id="company.phone"
                   name="company.phone"
-                  value={profile.companyInfo.phone}
-                  onChange={handleChange}
+                  value={profile.companyInfo.phone || ''}
+                  onChange={(e) => {
+                    // #30.e — Auto-formato del teléfono según país del perfil.
+                    const formatted = formatPhoneAsYouType(e.target.value, profile.companyInfo.country);
+                    setProfile((prev) => ({
+                      ...prev,
+                      companyInfo: { ...prev.companyInfo, phone: formatted },
+                    }));
+                  }}
                   placeholder={t('profile.phonePlaceholder')}
                   className="mt-1"
+                  data-testid="profile-phone-input"
+                  inputMode="tel"
+                  autoComplete="tel"
                 />
               </div>
               <div>
