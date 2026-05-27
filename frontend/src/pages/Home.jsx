@@ -261,7 +261,7 @@ const Home = () => {
               <ul className="space-y-3 mb-8 flex-1">
                 <li className="flex items-center gap-2 text-gray-700">
                   <CheckCircle className="w-5 h-5 text-lime-500 flex-shrink-0" />
-                  <span>3 facturas de prueba</span>
+                  <span>10 facturas de prueba</span>
                 </li>
                 <li className="flex items-center gap-2 text-gray-700">
                   <CheckCircle className="w-5 h-5 text-lime-500 flex-shrink-0" />
