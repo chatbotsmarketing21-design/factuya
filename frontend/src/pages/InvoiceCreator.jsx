@@ -32,9 +32,10 @@ import {
 import { Checkbox } from '../components/ui/checkbox';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { getDefaultFooter } from '../constants/defaultFooters';
 
 const InvoiceCreator = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -392,10 +393,19 @@ const InvoiceCreator = () => {
       let currentDocType = 'invoice';
       setInvoice(prev => {
         currentDocType = prev.documentType || 'invoice';
+        // Fallback por idioma actual (#31 multi-idioma):
+        // 1) Si el usuario tiene texto guardado para este docType -> usarlo
+        // 2) Si no, usar el default profesional según idioma
+        // 3) Si no hay default (ej: cuenta de cobro), usar el legacy global
+        const fallback = getDefaultFooter(currentDocType, i18n.language) || {};
         const notesForType =
-          notesByType[currentDocType] ?? companyInfo.defaultNotes ?? prev.notes;
+          notesByType[currentDocType] !== undefined
+            ? notesByType[currentDocType]
+            : (fallback.notes || companyInfo.defaultNotes || prev.notes);
         const termsForType =
-          termsByType[currentDocType] ?? companyInfo.defaultTerms ?? prev.terms;
+          termsByType[currentDocType] !== undefined
+            ? termsByType[currentDocType]
+            : (fallback.terms || companyInfo.defaultTerms || prev.terms);
         return {
           ...prev,
           logo: companyInfo.logo || '',
@@ -513,14 +523,22 @@ const InvoiceCreator = () => {
   const handleDocumentTypeChange = async (newType) => {
     updateInvoice('documentType', newType);
 
-    // #31 — Cargar notas/términos guardados para este tipo de documento
-    // Si no existen específicos para el tipo, usar el legacy global como fallback.
+    // #31 — Cargar notas/términos guardados para este tipo de documento.
+    // Prioridad:
+    //   1) Texto guardado por el usuario para este docType
+    //   2) Default profesional según idioma actual (es/en)
+    //   3) Texto legacy global como último recurso
     const savedNotes = notesByDocTypeRef.current?.[newType];
     const savedTerms = termsByDocTypeRef.current?.[newType];
+    const fallback = getDefaultFooter(newType, i18n.language) || {};
     setInvoice(prev => ({
       ...prev,
-      notes: savedNotes !== undefined ? savedNotes : (legacyDefaultsRef.current.notes || prev.notes),
-      terms: savedTerms !== undefined ? savedTerms : (legacyDefaultsRef.current.terms || prev.terms),
+      notes: savedNotes !== undefined
+        ? savedNotes
+        : (fallback.notes || legacyDefaultsRef.current.notes || prev.notes),
+      terms: savedTerms !== undefined
+        ? savedTerms
+        : (fallback.terms || legacyDefaultsRef.current.terms || prev.terms),
     }));
 
     // Documentos NO cobrables: propuestas, ofertas, pedidos y entregas.
