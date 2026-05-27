@@ -16,6 +16,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import FAQ from "./pages/FAQ";
 import GoogleCallback from "./pages/GoogleCallback";
 import AuthCallback from "./components/AuthCallback";
 import AdminPanel from "./pages/AdminPanel";
@@ -48,6 +49,7 @@ function AppRouter() {
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
+      <Route path="/faq" element={<FAQ />} />
       <Route path="/auth/google/callback" element={<GoogleCallback />} />
       <Route path="/templates" element={<Templates />} />
       <Route

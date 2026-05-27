@@ -377,7 +377,7 @@ const Home = () => {
               <ul className="space-y-2 text-sm">
                 <li><a href="mailto:soportefactuya@gmail.com" className="hover:text-white transition-colors" data-testid="footer-link-helpcenter">{t('landing.footerHelpCenter')}</a></li>
                 <li><a href="mailto:soportefactuya@gmail.com" className="hover:text-white transition-colors" data-testid="footer-link-contact">{t('landing.footerContact')}</a></li>
-                <li><a href="#benefits" className="hover:text-white transition-colors" data-testid="footer-link-faq">{t('landing.footerFAQ')}</a></li>
+                <li><Link to="/faq" className="hover:text-white transition-colors" data-testid="footer-link-faq">{t('landing.footerFAQ')}</Link></li>
               </ul>
             </div>
             <div>
