@@ -23,6 +23,15 @@ export const subscriptionAPI = {
 
   // Geolocation: detect user's country to choose payment gateway
   detectCountry: () => api.get('/geo/detect'),
+
+  // PayPal Subscriptions (international gateway)
+  getPaypalConfig: () => api.get('/paypal/config'),
+  createPaypalSubscription: () => api.post('/paypal/create-subscription', {
+    originUrl: window.location.origin,
+  }),
+  verifyPaypalSubscription: (subscriptionId) => api.get(`/paypal/verify/${subscriptionId}`),
+  verifyLatestPaypalSubscription: () => api.get('/paypal/verify-latest'),
+  cancelPaypalSubscription: () => api.post('/paypal/cancel'),
 };
 
 export default subscriptionAPI;

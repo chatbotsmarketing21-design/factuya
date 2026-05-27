@@ -84,6 +84,7 @@ const SubscriptionPanel = () => {
   };
   const [autoRenewInfo, setAutoRenewInfo] = useState(null);
   const [cancelingAutoRenew, setCancelingAutoRenew] = useState(false);
+  const [paypalConfig, setPaypalConfig] = useState(null);
 
   useEffect(() => {
     // Detect user's country to pick the right payment gateway
@@ -98,6 +99,10 @@ const SubscriptionPanel = () => {
     subscriptionAPI.getAutoRenewalInfo()
       .then(res => setAutoRenewInfo(res.data))
       .catch(() => setAutoRenewInfo(null));
+    // Load PayPal config (international gateway)
+    subscriptionAPI.getPaypalConfig()
+      .then(res => setPaypalConfig(res.data))
+      .catch(() => setPaypalConfig({ configured: false }));
   }, []);
 
   useEffect(() => {
@@ -160,8 +165,58 @@ const SubscriptionPanel = () => {
     if (payment === 'wompi' && reference) {
       verifyWompiPayment(reference);
     }
+
+    // Check if returning from PayPal subscription approval
+    const paypal = searchParams.get('paypal');
+    const paypalSubId = searchParams.get('subscription_id');
+    if (paypal === 'success') {
+      verifyPaypalSubscription(paypalSubId);
+    } else if (paypal === 'canceled') {
+      toast({
+        title: 'Suscripción cancelada',
+        description: 'No se completó el pago con PayPal.',
+        variant: 'destructive',
+      });
+      window.history.replaceState({}, '', '/subscription');
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
+
+  const verifyPaypalSubscription = async (subscriptionId) => {
+    setVerifyingPayment(true);
+    try {
+      const response = subscriptionId
+        ? await subscriptionAPI.verifyPaypalSubscription(subscriptionId)
+        : await subscriptionAPI.verifyLatestPaypalSubscription();
+      setPaymentResult({
+        approved: response.data.approved,
+        message: response.data.message,
+      });
+      if (response.data.approved) {
+        toast({
+          title: t('toasts.paymentSuccess'),
+          description: t('toasts.premiumActivated'),
+        });
+        loadSubscriptionStatus();
+      } else {
+        toast({
+          title: 'Pago no completado',
+          description: response.data.message || 'La suscripción no está activa.',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.error('Error verifying PayPal:', error);
+      toast({
+        title: 'Error',
+        description: 'No se pudo verificar el pago de PayPal. Contacta a soporte.',
+        variant: 'destructive',
+      });
+    } finally {
+      setVerifyingPayment(false);
+      window.history.replaceState({}, '', '/subscription');
+    }
+  };
 
   const verifyWompiPayment = async (reference) => {
     setVerifyingPayment(true);
@@ -217,19 +272,30 @@ const SubscriptionPanel = () => {
   const handleUpgrade = async () => {
     try {
       // Route to the right gateway based on the user's detected country.
-      // Colombia -> Wompi (PSE, Nequi, local cards). Everywhere else -> Stripe.
-      // If user is in Colombia AND checked the auto-renew box, pass the opt-in flag.
+      //   Colombia -> Wompi (PSE, Nequi, local cards)
+      //   Everywhere else -> PayPal Subscriptions (auto-renewal)
+      //   Stripe is kept in the code but hidden until LLC USA is registered.
       const useWompi = geo?.gateway === 'wompi';
       if (useWompi) {
         const response = await subscriptionAPI.createWompiCheckout(autoRenewOptIn);
         if (response.data.checkoutUrl) {
           window.location.href = response.data.checkoutUrl;
         }
-      } else {
-        const response = await subscriptionAPI.createCheckoutSession();
-        if (response.data.url) {
-          window.location.href = response.data.url;
-        }
+        return;
+      }
+
+      // International -> PayPal
+      if (!paypalConfig?.configured) {
+        toast({
+          title: 'PayPal no disponible',
+          description: 'Estamos terminando de configurar PayPal. Por favor intenta de nuevo en unas horas.',
+          variant: 'destructive',
+        });
+        return;
+      }
+      const response = await subscriptionAPI.createPaypalSubscription();
+      if (response.data.approvalUrl) {
+        window.location.href = response.data.approvalUrl;
       }
     } catch (error) {
       console.error('Error creating checkout:', error);
@@ -453,13 +519,13 @@ const SubscriptionPanel = () => {
                     </p>
                   </div>
                 )}
-                {/* International users (Stripe) - mention auto-conversion */}
-                {geo && geo.gateway === 'stripe' && (
-                  <div className="mt-2 mb-2 text-center" data-testid="stripe-info">
+                {/* International users (PayPal) - mention auto-renewal */}
+                {geo && geo.gateway !== 'wompi' && (
+                  <div className="mt-2 mb-2 text-center" data-testid="paypal-info">
                     <p className="text-[11px] text-gray-500 dark:text-gray-400">
                       {geo.country_name && geo.country_name !== 'Unknown'
-                        ? `Detectamos que estás en ${geo.country_name}. Tu banco convertirá $3.99 USD a tu moneda local automáticamente.`
-                        : 'Tu banco convertirá $3.99 USD a tu moneda local automáticamente.'}
+                        ? `Detectamos que estás en ${geo.country_name}. Pago seguro y renovación automática con PayPal.`
+                        : 'Pago seguro y renovación automática con PayPal.'}
                     </p>
                   </div>
                 )}
@@ -519,10 +585,14 @@ const SubscriptionPanel = () => {
                     </>
                   ) : (
                     <>
-                      <img src="https://cdn-icons-png.flaticon.com/24/349/349221.png" alt="Visa" className="h-5 opacity-70" />
-                      <img src="https://cdn-icons-png.flaticon.com/24/349/349228.png" alt="Mastercard" className="h-5 opacity-70" />
-                      <span className="text-xs font-bold text-gray-700 opacity-70">AMEX</span>
-                      <span className="text-xs font-bold text-indigo-600 opacity-70">Stripe</span>
+                      <img
+                        src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png"
+                        alt="PayPal"
+                        className="h-6 opacity-90"
+                      />
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        Visa · Mastercard · AmEx · PayPal Balance
+                      </span>
                     </>
                   )}
                 </div>

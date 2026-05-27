@@ -10,6 +10,56 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 
+## 💳 PayPal Subscriptions Integration (Feb 2026) — IN PROGRESS
+
+### Decision tree finalized with user
+- 🇨🇴 Colombia → **Wompi** (unchanged)
+- 🌍 Resto del mundo → **PayPal Subscriptions** (auto-renewal, $3.99 USD/mes)
+- ❌ Stripe descartado: Stripe NO opera en Colombia; agregar requiere LLC USA (futuro).
+- Empresa registrada como **Innova App Solutions** (Colombia, S.A.S.) → PayPal Business.
+
+### Backend (DONE — code complete, awaiting keys)
+- `/app/backend/routes/paypal.py`:
+  - OAuth2 helper `get_access_token()`
+  - `GET /api/paypal/config` (public, returns `configured` flag)
+  - `POST /api/paypal/create-subscription` → returns approvalUrl
+  - `GET /api/paypal/verify/{subscription_id}` → activates locally
+  - `GET /api/paypal/verify-latest` → fallback when return_url has no id
+  - `POST /api/paypal/cancel` → cancels upstream + marks local
+  - `POST /api/paypal/webhook` → handles BILLING.SUBSCRIPTION.ACTIVATED /
+    CANCELLED / EXPIRED, PAYMENT.SALE.COMPLETED, PAYMENT.SALE.DENIED
+- `/app/backend/scripts/paypal_bootstrap.py` → one-time script to create
+  the PayPal Product + Plan (run after PAYPAL_CLIENT_ID/SECRET are set,
+  outputs PAYPAL_PLAN_ID to add to .env)
+- `/app/backend/routes/subscription.py` `/cancel` now routes to PayPal API
+  if the active sub `gateway === 'paypal'`.
+- `.env` placeholders added: PAYPAL_MODE, PAYPAL_CLIENT_ID, PAYPAL_SECRET,
+  PAYPAL_PLAN_ID, PAYPAL_WEBHOOK_ID.
+
+### Frontend (DONE — code complete, awaiting keys)
+- `/app/frontend/src/services/subscriptionApi.js`: added PayPal endpoints.
+- `/app/frontend/src/pages/SubscriptionPanel.jsx`:
+  - `handleUpgrade` routes Colombia→Wompi, rest→PayPal.
+  - Handles `?paypal=success&subscription_id=…` and `?paypal=canceled`
+    on the return URL.
+  - Visual: replaced Stripe info & icons with PayPal info & official logo.
+  - Stripe code (`createCheckoutSession`) preserved in subscriptionApi but
+    UNUSED (kept for future LLC USA activation).
+
+### USER ACTION REMAINING
+1. Finalize PayPal Business signup as **Innova App Solutions** (S.A.S. → "Empresa" → "Sociedad").
+2. Verify bank account + identity.
+3. At developer.paypal.com → create Sandbox + Live apps → copy Client ID + Secret.
+4. Send keys to agent → agent stores in `.env` and runs
+   `python -m scripts.paypal_bootstrap` to generate PAYPAL_PLAN_ID.
+5. Configure Webhook URL `https://factuya.app/api/paypal/webhook` in developer
+   dashboard subscribing to BILLING.SUBSCRIPTION.* and PAYMENT.SALE.* events,
+   then store PAYPAL_WEBHOOK_ID in `.env`.
+6. Test in Sandbox → switch PAYPAL_MODE=live → deploy to VPS.
+
+---
+
+
 ## 🎯 ACTIVE SESSION GOAL (May 22, 2026 — late afternoon)
 **User explicitly paused the Play Store launch checklist** to first polish the app.
 User identified **33 UI/UX/functional adjustments** to make BEFORE submitting to

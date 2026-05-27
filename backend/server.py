@@ -19,6 +19,7 @@ from routes.wompi import router as wompi_router
 from routes.wompi_autorenew import router as wompi_autorenew_router
 from routes.geo import router as geo_router
 from routes.renewal import router as renewal_router
+from routes.paypal import router as paypal_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -52,6 +53,7 @@ api_router.include_router(wompi_router)
 api_router.include_router(wompi_autorenew_router)
 api_router.include_router(geo_router)
 api_router.include_router(renewal_router)
+api_router.include_router(paypal_router)
 
 # Include the router in the main app
 app.include_router(api_router)

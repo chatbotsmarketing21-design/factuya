@@ -342,6 +342,20 @@ async def cancel_subscription(user_id: str = Depends(get_current_user_id)):
     if not subscription or subscription.get("status") != "active":
         raise HTTPException(status_code=404, detail="No se encontró una suscripción activa")
     
+    # If the subscription is from PayPal, cancel it upstream too so PayPal
+    # stops issuing the next recurring charge. Wompi & Stripe stay manual.
+    if subscription.get("gateway") == "paypal" and subscription.get("paypalSubscriptionId"):
+        try:
+            from routes.paypal import paypal_request
+            await paypal_request(
+                "POST",
+                f"/v1/billing/subscriptions/{subscription['paypalSubscriptionId']}/cancel",
+                {"reason": "User requested cancellation from FactuYa!"},
+            )
+        except Exception as e:
+            # Log but don't block local cancellation
+            print(f"PayPal cancel error (continuing): {e}")
+    
     # Update in database - mark as canceled at period end
     await db.subscriptions.update_one(
         {"userId": user_id},
