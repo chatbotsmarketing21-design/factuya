@@ -4,13 +4,32 @@ import { useTranslation } from 'react-i18next';
 import { FileText, Send, CreditCard, CheckCircle, Download, Loader2, ClipboardList, Rocket } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { useAuth } from '../context/AuthContext';
+import api from '../services/api';
+import { getCountryName } from '../constants/countryConfig';
 
 const Home = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showInstallButton, setShowInstallButton] = useState(true);
+  // País detectado (para personalizar el hero title)
+  const [detectedCountry, setDetectedCountry] = useState(null);
+
+  // Detectar el país del usuario para personalizar el título
+  useEffect(() => {
+    let mounted = true;
+    api.get('/geo/detect')
+      .then((res) => {
+        if (mounted && res.data?.country_code) {
+          setDetectedCountry(res.data.country_code);
+        }
+      })
+      .catch(() => { /* fallback al nombre regional */ });
+    return () => { mounted = false; };
+  }, []);
+
+  const heroRegion = getCountryName(detectedCountry, i18n.language);
 
   // Redirect logged-in users to dashboard
   useEffect(() => {
@@ -163,7 +182,7 @@ const Home = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="text-5xl font-bold text-gray-900 mb-6" data-testid="landing-hero-title">
-              {t('landing.heroTitle')}
+              {t('landing.heroTitle', { region: heroRegion })}
             </h1>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
               <Link to={user ? "/dashboard" : "/create"}>

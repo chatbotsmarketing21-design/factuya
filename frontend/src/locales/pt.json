@@ -2,7 +2,7 @@
   "landing": {
     "signIn": "Entrar",
     "createInvoice": "Criar Fatura",
-    "heroTitle": "O App de Faturamento Mais Fácil para Negócios na América Latina",
+    "heroTitle": "O App de Faturamento Mais Fácil para Negócios em {{region}}",
     "heroButton": "Criar Fatura Agora!",
     "feature1Title": "Crie sua Fatura",
     "feature1Desc": "Em segundos e sem complicações. Assim de fácil.",

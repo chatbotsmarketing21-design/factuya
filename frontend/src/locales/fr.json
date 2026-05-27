@@ -2,7 +2,7 @@
   "landing": {
     "signIn": "Connexion",
     "createInvoice": "Créer une Facture",
-    "heroTitle": "L'App de Facturation la Plus Simple pour les Entreprises",
+    "heroTitle": "L'App de Facturation la Plus Simple pour les Entreprises en {{region}}",
     "heroButton": "Créer une Facture Maintenant !",
     "feature1Title": "Créez votre Facture",
     "feature1Desc": "En quelques secondes et sans complications. Tout simplement.",

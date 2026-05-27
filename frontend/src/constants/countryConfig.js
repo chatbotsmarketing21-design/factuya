@@ -111,4 +111,70 @@ export const CURRENCY_LIST = (() => {
   return out.sort((a, b) => a.code.localeCompare(b.code));
 })();
 
+// Traducciones del nombre del país por idioma (para usarlo en textos dinámicos).
+// Si un idioma no está, cae al nombre en español del COUNTRY_CONFIG.
+const COUNTRY_NAME_TRANSLATIONS = {
+  CO: { es: 'Colombia',    en: 'Colombia',     pt: 'Colômbia',     fr: 'Colombie' },
+  MX: { es: 'México',      en: 'Mexico',       pt: 'México',       fr: 'Mexique' },
+  AR: { es: 'Argentina',   en: 'Argentina',    pt: 'Argentina',    fr: 'Argentine' },
+  CL: { es: 'Chile',       en: 'Chile',        pt: 'Chile',        fr: 'Chili' },
+  PE: { es: 'Perú',        en: 'Peru',         pt: 'Peru',         fr: 'Pérou' },
+  VE: { es: 'Venezuela',   en: 'Venezuela',    pt: 'Venezuela',    fr: 'Venezuela' },
+  EC: { es: 'Ecuador',     en: 'Ecuador',      pt: 'Equador',      fr: 'Équateur' },
+  BO: { es: 'Bolivia',     en: 'Bolivia',      pt: 'Bolívia',      fr: 'Bolivie' },
+  PY: { es: 'Paraguay',    en: 'Paraguay',     pt: 'Paraguai',     fr: 'Paraguay' },
+  UY: { es: 'Uruguay',     en: 'Uruguay',      pt: 'Uruguai',      fr: 'Uruguay' },
+  CR: { es: 'Costa Rica',  en: 'Costa Rica',   pt: 'Costa Rica',   fr: 'Costa Rica' },
+  PA: { es: 'Panamá',      en: 'Panama',       pt: 'Panamá',       fr: 'Panama' },
+  GT: { es: 'Guatemala',   en: 'Guatemala',    pt: 'Guatemala',    fr: 'Guatemala' },
+  HN: { es: 'Honduras',    en: 'Honduras',     pt: 'Honduras',     fr: 'Honduras' },
+  SV: { es: 'El Salvador', en: 'El Salvador',  pt: 'El Salvador',  fr: 'Salvador' },
+  NI: { es: 'Nicaragua',   en: 'Nicaragua',    pt: 'Nicarágua',    fr: 'Nicaragua' },
+  DO: { es: 'República Dominicana', en: 'Dominican Republic', pt: 'República Dominicana', fr: 'République Dominicaine' },
+  PR: { es: 'Puerto Rico', en: 'Puerto Rico',  pt: 'Porto Rico',   fr: 'Porto Rico' },
+  BR: { es: 'Brasil',      en: 'Brazil',       pt: 'Brasil',       fr: 'Brésil' },
+  PT: { es: 'Portugal',    en: 'Portugal',     pt: 'Portugal',     fr: 'Portugal' },
+  ES: { es: 'España',      en: 'Spain',        pt: 'Espanha',      fr: 'Espagne' },
+  FR: { es: 'Francia',     en: 'France',       pt: 'França',       fr: 'France' },
+  BE: { es: 'Bélgica',     en: 'Belgium',      pt: 'Bélgica',      fr: 'Belgique' },
+  LU: { es: 'Luxemburgo',  en: 'Luxembourg',   pt: 'Luxemburgo',   fr: 'Luxembourg' },
+  CH: { es: 'Suiza',       en: 'Switzerland',  pt: 'Suíça',        fr: 'Suisse' },
+  IT: { es: 'Italia',      en: 'Italy',        pt: 'Itália',       fr: 'Italie' },
+  DE: { es: 'Alemania',    en: 'Germany',      pt: 'Alemanha',     fr: 'Allemagne' },
+  NL: { es: 'Países Bajos',en: 'Netherlands',  pt: 'Países Baixos',fr: 'Pays-Bas' },
+  IE: { es: 'Irlanda',     en: 'Ireland',      pt: 'Irlanda',      fr: 'Irlande' },
+  GB: { es: 'Reino Unido', en: 'United Kingdom', pt: 'Reino Unido',fr: 'Royaume-Uni' },
+  US: { es: 'Estados Unidos', en: 'the United States', pt: 'Estados Unidos', fr: 'aux États-Unis' },
+  CA: { es: 'Canadá',      en: 'Canada',       pt: 'Canadá',       fr: 'Canada' },
+  AU: { es: 'Australia',   en: 'Australia',    pt: 'Austrália',    fr: 'Australie' },
+  NZ: { es: 'Nueva Zelanda',en: 'New Zealand', pt: 'Nova Zelândia',fr: 'Nouvelle-Zélande' },
+  IN: { es: 'India',       en: 'India',        pt: 'Índia',        fr: 'Inde' },
+  JP: { es: 'Japón',       en: 'Japan',        pt: 'Japão',        fr: 'Japon' },
+};
+
+/** Fallback regional cuando no se logra detectar país. */
+const REGION_FALLBACK = {
+  es: 'Latinoamérica',
+  en: 'Latin America',
+  pt: 'América Latina',
+  fr: 'Amérique Latine',
+};
+
+/**
+ * Devuelve el nombre traducido del país para mostrar en textos.
+ *   getCountryName('CO', 'es') -> 'Colombia'
+ *   getCountryName('BR', 'fr') -> 'Brésil'
+ *   getCountryName(null, 'es') -> 'Latinoamérica'  (fallback regional)
+ */
+export const getCountryName = (countryOrCode, language = 'es') => {
+  const lang = (language || 'es').toLowerCase().split('-')[0];
+  const fallback = REGION_FALLBACK[lang] || REGION_FALLBACK.es;
+  if (!countryOrCode) return fallback;
+  const cfg = getCountryConfig(countryOrCode);
+  if (!cfg || !cfg.code) return fallback;
+  const tr = COUNTRY_NAME_TRANSLATIONS[cfg.code];
+  if (tr && tr[lang]) return tr[lang];
+  return cfg.name || fallback;
+};
+
 export default COUNTRY_CONFIG;
