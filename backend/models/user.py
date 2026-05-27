@@ -18,8 +18,10 @@ class CompanyInfo(BaseModel):
     bank: Optional[str] = None  # Bank name
     bankAccount: Optional[str] = None  # Bank account number
     accountType: Optional[str] = None  # 'savings' or 'checking'
-    defaultNotes: Optional[str] = None  # Default notes for invoices
-    defaultTerms: Optional[str] = None  # Default terms for invoices
+    defaultNotes: Optional[str] = None  # Default notes for invoices (legacy / fallback global)
+    defaultTerms: Optional[str] = None  # Default terms for invoices (legacy / fallback global)
+    defaultNotesByDocType: Optional[dict] = None  # Per-document-type notes { "invoice": "...", "quote": "...", ... }
+    defaultTermsByDocType: Optional[dict] = None  # Per-document-type terms { "invoice": "...", "quote": "...", ... }
     defaultTemplate: Optional[int] = None  # Default template ID for invoices
     defaultColor: Optional[str] = None  # Default color hex for templates
     signature: Optional[str] = None  # Base64 encoded signature

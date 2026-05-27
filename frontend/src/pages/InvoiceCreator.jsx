@@ -353,6 +353,11 @@ const InvoiceCreator = () => {
     setTemplate(getTemplateById(templateId));
   }, [templateId]);
 
+  // Cache de notes/terms por documentType para uso al cambiar de tipo (#31)
+  const notesByDocTypeRef = useRef({});
+  const termsByDocTypeRef = useRef({});
+  const legacyDefaultsRef = useRef({ notes: '', terms: '' });
+
   const loadCompanyInfo = async () => {
     try {
       const response = await profileAPI.getCompany();
@@ -373,29 +378,47 @@ const InvoiceCreator = () => {
       if (companyInfo.defaultColor && !colorFromUrl) {
         setTemplateColor(companyInfo.defaultColor);
       }
-      
-      setInvoice(prev => ({
-        ...prev,
-        logo: companyInfo.logo || '',  // Cargar logo guardado
-        notes: companyInfo.defaultNotes || prev.notes,  // Cargar notas guardadas
-        terms: companyInfo.defaultTerms || prev.terms,  // Cargar términos guardados
-        signature: companyInfo.signature || '',  // Cargar firma guardada
-        signatureRotation: companyInfo.signatureRotation || 0,  // Cargar rotación de firma
-        from: {
-          name: companyInfo.name || '',
-          nit: companyInfo.nit || '',
-          email: companyInfo.email || '',
-          phone: companyInfo.phone || '',
-          address: companyInfo.address || '',
-          city: companyInfo.city || '',
-          state: companyInfo.state || '',
-          zip: companyInfo.zip || '',
-          country: companyInfo.country || '',
-          bank: companyInfo.bank || '',
-          bankAccount: companyInfo.bankAccount || '',
-          accountType: companyInfo.accountType || 'savings'
-        }
-      }));
+
+      // #31 — Notas y términos por tipo de documento
+      const notesByType = companyInfo.defaultNotesByDocType || {};
+      const termsByType = companyInfo.defaultTermsByDocType || {};
+      notesByDocTypeRef.current = notesByType;
+      termsByDocTypeRef.current = termsByType;
+      legacyDefaultsRef.current = {
+        notes: companyInfo.defaultNotes || '',
+        terms: companyInfo.defaultTerms || '',
+      };
+      // Tipo actual del documento (puede haber venido de URL/copy)
+      let currentDocType = 'invoice';
+      setInvoice(prev => {
+        currentDocType = prev.documentType || 'invoice';
+        const notesForType =
+          notesByType[currentDocType] ?? companyInfo.defaultNotes ?? prev.notes;
+        const termsForType =
+          termsByType[currentDocType] ?? companyInfo.defaultTerms ?? prev.terms;
+        return {
+          ...prev,
+          logo: companyInfo.logo || '',
+          notes: notesForType,
+          terms: termsForType,
+          signature: companyInfo.signature || '',
+          signatureRotation: companyInfo.signatureRotation || 0,
+          from: {
+            name: companyInfo.name || '',
+            nit: companyInfo.nit || '',
+            email: companyInfo.email || '',
+            phone: companyInfo.phone || '',
+            address: companyInfo.address || '',
+            city: companyInfo.city || '',
+            state: companyInfo.state || '',
+            zip: companyInfo.zip || '',
+            country: companyInfo.country || '',
+            bank: companyInfo.bank || '',
+            bankAccount: companyInfo.bankAccount || '',
+            accountType: companyInfo.accountType || 'savings'
+          }
+        };
+      });
     } catch (error) {
       console.error('Failed to load company info:', error);
     }
@@ -430,9 +453,16 @@ const InvoiceCreator = () => {
     return () => clearInterval(interval);
   }, []);
   
-  const autoSaveDefaults = useCallback(async (notes, terms, template) => {
+  const autoSaveDefaults = useCallback(async (notes, terms, template, docType) => {
     try {
-      await profileAPI.updateInvoiceDefaults({ notes, terms, template });
+      const payload = { notes, terms, template };
+      if (docType) payload.documentType = docType;
+      await profileAPI.updateInvoiceDefaults(payload);
+      // Actualizar caché local por tipo de documento
+      if (docType) {
+        if (notes !== undefined) notesByDocTypeRef.current[docType] = notes;
+        if (terms !== undefined) termsByDocTypeRef.current[docType] = terms;
+      }
     } catch (error) {
       console.error('Error auto-saving defaults:', error);
     }
@@ -440,29 +470,17 @@ const InvoiceCreator = () => {
 
   const handleNotesChange = (value) => {
     updateInvoice('notes', value);
-    
-    // Clear existing timeout
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-    
-    // Set new timeout to save after 1 second of inactivity
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(() => {
-      autoSaveDefaults(value, invoice.terms);
+      autoSaveDefaults(value, invoice.terms, undefined, invoice.documentType);
     }, 1000);
   };
 
   const handleTermsChange = (value) => {
     updateInvoice('terms', value);
-    
-    // Clear existing timeout
-    if (saveTimeoutRef.current) {
-      clearTimeout(saveTimeoutRef.current);
-    }
-    
-    // Set new timeout to save after 1 second of inactivity
+    if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current);
     saveTimeoutRef.current = setTimeout(() => {
-      autoSaveDefaults(invoice.notes, value);
+      autoSaveDefaults(invoice.notes, value, undefined, invoice.documentType);
     }, 1000);
   };
 
@@ -494,6 +512,16 @@ const InvoiceCreator = () => {
 
   const handleDocumentTypeChange = async (newType) => {
     updateInvoice('documentType', newType);
+
+    // #31 — Cargar notas/términos guardados para este tipo de documento
+    // Si no existen específicos para el tipo, usar el legacy global como fallback.
+    const savedNotes = notesByDocTypeRef.current?.[newType];
+    const savedTerms = termsByDocTypeRef.current?.[newType];
+    setInvoice(prev => ({
+      ...prev,
+      notes: savedNotes !== undefined ? savedNotes : (legacyDefaultsRef.current.notes || prev.notes),
+      terms: savedTerms !== undefined ? savedTerms : (legacyDefaultsRef.current.terms || prev.terms),
+    }));
 
     // Documentos NO cobrables: propuestas, ofertas, pedidos y entregas.
     // No deben quedar marcados como "pagado" ni acumular pagos.

@@ -218,33 +218,46 @@ class InvoiceDefaultsUpdate(BaseModel):
     terms: Optional[str] = None
     template: Optional[int] = None
     color: Optional[str] = None  # Color hex de la plantilla
+    documentType: Optional[str] = None  # Si viene, notes/terms se guardan por tipo
 
 @router.put("/invoice-defaults")
 async def update_invoice_defaults(
     defaults: InvoiceDefaultsUpdate,
     user_id: str = Depends(get_current_user_id)
 ):
-    """Update default notes, terms, template and color for invoices"""
+    """Update default notes, terms, template and color for invoices.
+    If documentType is provided, notes/terms are stored under that key inside
+    companyInfo.defaultNotesByDocType / defaultTermsByDocType. Otherwise they
+    are stored in the legacy global fields (companyInfo.defaultNotes / defaultTerms).
+    """
     user = await db.users.find_one({"id": user_id})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    
+
+    doc_type = (defaults.documentType or "").strip() or None
+
     update_data = {}
     if defaults.notes is not None:
-        update_data["companyInfo.defaultNotes"] = defaults.notes
+        if doc_type:
+            update_data[f"companyInfo.defaultNotesByDocType.{doc_type}"] = defaults.notes
+        else:
+            update_data["companyInfo.defaultNotes"] = defaults.notes
     if defaults.terms is not None:
-        update_data["companyInfo.defaultTerms"] = defaults.terms
+        if doc_type:
+            update_data[f"companyInfo.defaultTermsByDocType.{doc_type}"] = defaults.terms
+        else:
+            update_data["companyInfo.defaultTerms"] = defaults.terms
     if defaults.template is not None:
         update_data["companyInfo.defaultTemplate"] = defaults.template
     if defaults.color is not None:
         update_data["companyInfo.defaultColor"] = defaults.color
-    
+
     if update_data:
         await db.users.update_one(
             {"id": user_id},
             {"$set": update_data}
         )
-    
+
     return {"message": "Valores por defecto guardados"}
 
 
