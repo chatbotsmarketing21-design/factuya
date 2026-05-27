@@ -334,8 +334,8 @@ const InvoiceCreator = () => {
       setIsEditMode(true);
       
       toast({
-        title: "Factura Cargada",
-        description: "Ahora puedes editar la factura",
+        title: t('invoice.invoiceLoaded'),
+        description: t('invoice.invoiceLoadedDesc'),
       });
     } catch (error) {
       console.error('Error loading invoice:', error);

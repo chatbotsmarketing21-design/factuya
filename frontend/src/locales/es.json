@@ -157,7 +157,9 @@
     "saveTax": "Guardar impuesto",
     "taxName": "Nombre del impuesto",
     "taxRate": "Tasa (%)",
-    "changesAutoSaved": "Los cambios se guardan automáticamente"
+    "changesAutoSaved": "Los cambios se guardan automáticamente",
+    "invoiceLoaded": "Factura Cargada",
+    "invoiceLoadedDesc": "Ahora puedes editar la factura"
   },
   "documentTypes": {
     "invoice": "FACTURA",

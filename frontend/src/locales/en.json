@@ -157,7 +157,9 @@
     "saveTax": "Save tax",
     "taxName": "Tax name",
     "taxRate": "Rate (%)",
-    "changesAutoSaved": "Changes are saved automatically"
+    "changesAutoSaved": "Changes are saved automatically",
+    "invoiceLoaded": "Invoice Loaded",
+    "invoiceLoadedDesc": "You can now edit the invoice"
   },
   "documentTypes": {
     "invoice": "INVOICE",

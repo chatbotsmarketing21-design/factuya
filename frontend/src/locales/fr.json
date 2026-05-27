@@ -157,7 +157,9 @@
     "saveTax": "Enregistrer la taxe",
     "taxName": "Nom de la taxe",
     "taxRate": "Taux (%)",
-    "changesAutoSaved": "Les modifications sont enregistrées automatiquement"
+    "changesAutoSaved": "Les modifications sont enregistrées automatiquement",
+    "invoiceLoaded": "Facture Chargée",
+    "invoiceLoadedDesc": "Vous pouvez maintenant modifier la facture"
   },
   "documentTypes": {
     "invoice": "FACTURE",
