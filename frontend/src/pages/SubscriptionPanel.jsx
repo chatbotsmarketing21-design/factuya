@@ -171,8 +171,8 @@ const SubscriptionPanel = () => {
       
       if (response.data.approved) {
         toast({
-          title: "¡Pago exitoso!",
-          description: "Tu suscripción Premium ha sido activada.",
+          title: t('toasts.paymentSuccess'),
+          description: t('toasts.premiumActivated'),
         });
         // Reload subscription status
         loadSubscriptionStatus();
@@ -246,8 +246,8 @@ const SubscriptionPanel = () => {
       setCancelingAutoRenew(true);
       await subscriptionAPI.cancelAutoRenewal();
       toast({
-        title: "Cobro automático cancelado",
-        description: "Tu suscripción seguirá activa hasta el fin del período actual.",
+        title: t('toasts.autoRenewalCancelled'),
+        description: t('toasts.autoRenewalCancelledDesc'),
       });
       const res = await subscriptionAPI.getAutoRenewalInfo();
       setAutoRenewInfo(res.data);
@@ -255,7 +255,7 @@ const SubscriptionPanel = () => {
       console.error('Error canceling auto-renewal:', error);
       toast({
         title: t('messages.error'),
-        description: "No se pudo cancelar el cobro automático",
+        description: t('toasts.autoRenewalCancelError'),
         variant: "destructive",
       });
     } finally {

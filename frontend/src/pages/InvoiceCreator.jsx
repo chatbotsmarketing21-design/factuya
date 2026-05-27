@@ -691,7 +691,7 @@ const InvoiceCreator = () => {
     recalculateTotal(invoice.items, newRate, true);
     setShowTaxDialog(false);
     toast({
-      title: "Impuesto Añadido",
+      title: t('toasts.taxAdded'),
       description: `${tempTaxName} (${newRate}%) ha sido agregado a la factura`,
     });
   };
@@ -717,8 +717,8 @@ const InvoiceCreator = () => {
       // Validar que sea una imagen
       if (!file.type.startsWith('image/')) {
         toast({
-          title: "Error",
-          description: "Por favor selecciona un archivo de imagen válido",
+          title: t('toasts.errorTitle'),
+          description: t('toasts.invalidImageFile'),
           variant: "destructive"
         });
         return;
@@ -727,7 +727,7 @@ const InvoiceCreator = () => {
       // Validar tamaño (máximo 2MB)
       if (file.size > 2 * 1024 * 1024) {
         toast({
-          title: "Error",
+          title: t('toasts.errorTitle'),
           description: "El logo no debe superar los 2MB",
           variant: "destructive"
         });
@@ -744,13 +744,13 @@ const InvoiceCreator = () => {
         try {
           await profileAPI.updateLogo(logoBase64);
           toast({
-            title: "¡Logo guardado!",
-            description: "El logo se ha guardado y aparecerá en tus próximas facturas",
+            title: t('toasts.logoSaved'),
+            description: t('toasts.logoSavedDesc'),
           });
         } catch (error) {
           console.error('Error saving logo:', error);
           toast({
-            title: "¡Logo cargado!",
+            title: t('toasts.logoLoaded'),
             description: "El logo se ha agregado a esta factura",
           });
         }
@@ -813,7 +813,7 @@ const InvoiceCreator = () => {
   const handleSave = async () => {
     if (!invoice.to.name || invoice.items.length === 0 || !invoice.items[0].description) {
       toast({
-        title: "Error de Validación",
+        title: t('toasts.validationError'),
         description: "Por favor completa el nombre del cliente y al menos un item.",
         variant: "destructive"
       });
@@ -835,7 +835,7 @@ const InvoiceCreator = () => {
         // Actualizar factura existente
         await invoiceAPI.update(invoiceId, invoiceDataToSave);
         toast({
-          title: "¡Factura Actualizada!",
+          title: t('toasts.invoiceUpdatedBang'),
           description: "Los cambios han sido guardados exitosamente.",
         });
       } else {
@@ -843,7 +843,7 @@ const InvoiceCreator = () => {
         const response = await invoiceAPI.create(invoiceDataToSave);
         savedInvoiceId = response.data.id;
         toast({
-          title: "¡Factura Guardada!",
+          title: t('toasts.invoiceSavedBang'),
           description: "Tu factura ha sido creada exitosamente.",
         });
       }
@@ -981,13 +981,13 @@ const InvoiceCreator = () => {
       window.open(blobUrl, '_blank');
 
       toast({
-        title: "¡PDF Listo!",
+        title: t('toasts.pdfReady'),
         description: "El PDF se ha abierto para visualizar",
       });
     } catch (error) {
       console.error('Error generating PDF:', error);
       toast({
-        title: "Error",
+        title: t('toasts.errorTitle'),
         description: "No se pudo generar el PDF. Intenta de nuevo.",
         variant: "destructive"
       });
@@ -997,7 +997,7 @@ const InvoiceCreator = () => {
   const handleSend = () => {
     if (!invoice.to.email) {
       toast({
-        title: "Email Requerido",
+        title: t('toasts.errorTitle'),
         description: "Por favor ingresa el email del cliente para enviar la factura",
         variant: "destructive"
       });
@@ -1006,7 +1006,7 @@ const InvoiceCreator = () => {
 
     // Simular envío de email
     toast({
-      title: "¡Factura Enviada!",
+      title: t('toasts.invoiceSent'),
       description: `La factura ha sido enviada a ${invoice.to.email}`,
     });
     
@@ -1408,8 +1408,8 @@ const InvoiceCreator = () => {
                           size="sm"
                           onClick={() => addItem(index)}
                           data-testid={`add-item-inline-btn-${index}`}
-                          aria-label="Agregar ítem debajo"
-                          title="Agregar ítem debajo"
+                          aria-label={t('toasts.addItemBelow')}
+                          title={t('toasts.addItemBelow')}
                           className="bg-black hover:bg-gray-800 text-white h-7 w-7 p-0 rounded-md shadow-sm"
                         >
                           <Plus className="w-4 h-4" />
@@ -1420,8 +1420,8 @@ const InvoiceCreator = () => {
                             size="sm"
                             onClick={() => removeItem(index)}
                             data-testid={`remove-item-btn-${index}`}
-                            aria-label="Eliminar ítem"
-                            title="Eliminar ítem"
+                            aria-label={t('toasts.deleteItem')}
+                            title={t('toasts.deleteItem')}
                             className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 h-7 w-7 p-0"
                           >
                             <Trash2 className="w-4 h-4" />

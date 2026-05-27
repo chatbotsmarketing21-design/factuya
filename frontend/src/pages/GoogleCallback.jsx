@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../hooks/use-toast';
 import api from '../services/api';
 
 const GoogleCallback = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { loginWithGoogle } = useAuth();
@@ -25,8 +27,8 @@ const GoogleCallback = () => {
       if (errorParam) {
         setError('Google authentication was cancelled');
         toast({
-          title: "Error",
-          description: "La autenticación con Google fue cancelada",
+          title: t('toasts.errorTitle'),
+          description: t('toasts.googleCancelled'),
           variant: "destructive"
         });
         setTimeout(() => navigate('/signin'), 2000);
@@ -36,8 +38,8 @@ const GoogleCallback = () => {
       if (!code) {
         setError('No authorization code received');
         toast({
-          title: "Error",
-          description: "No se recibió el código de autorización",
+          title: t('toasts.errorTitle'),
+          description: t('toasts.googleNoCode'),
           variant: "destructive"
         });
         setTimeout(() => navigate('/signin'), 2000);
@@ -61,7 +63,7 @@ const GoogleCallback = () => {
           await loginWithGoogle(user, token);
           
           toast({
-            title: "¡Bienvenido!",
+            title: t('toasts.welcomeBang'),
             description: `Hola ${user.name}, has iniciado sesión con Google`,
           });
           
@@ -73,8 +75,8 @@ const GoogleCallback = () => {
         console.error('Google auth error:', err);
         setError('Failed to complete authentication');
         toast({
-          title: "Error",
-          description: "No se pudo completar la autenticación con Google. Por favor intenta de nuevo.",
+          title: t('toasts.errorTitle'),
+          description: t('toasts.googleAuthFailed'),
           variant: "destructive"
         });
         setTimeout(() => navigate('/signin'), 2000);

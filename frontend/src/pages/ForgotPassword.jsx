@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -9,6 +10,7 @@ import { useToast } from '../hooks/use-toast';
 import api from '../services/api';
 
 const ForgotPassword = () => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,8 +21,8 @@ const ForgotPassword = () => {
     
     if (!email) {
       toast({
-        title: "Error",
-        description: "Por favor ingresa tu correo electrónico",
+        title: t('toasts.errorTitle'),
+        description: t('toasts.enterEmail'),
         variant: "destructive"
       });
       return;
@@ -31,13 +33,13 @@ const ForgotPassword = () => {
       await api.post('/password-reset/request', { email });
       setSent(true);
       toast({
-        title: "Correo Enviado",
-        description: "Si el email existe, recibirás un enlace de recuperación",
+        title: t('toasts.emailSent'),
+        description: t('toasts.recoveryLinkSent'),
       });
     } catch (error) {
       console.error('Error requesting reset:', error);
       toast({
-        title: "Error",
+        title: t('toasts.errorTitle'),
         description: "No se pudo enviar el correo. Intenta de nuevo.",
         variant: "destructive"
       });

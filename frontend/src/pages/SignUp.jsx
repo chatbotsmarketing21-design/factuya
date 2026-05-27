@@ -38,8 +38,8 @@ const SignUp = () => {
     // Validaciones
     if (formData.password !== formData.confirmPassword) {
       toast({
-        title: "Error",
-        description: "Las contraseñas no coinciden",
+        title: t('toasts.errorTitle'),
+        description: t('toasts.passwordsDontMatch'),
         variant: "destructive"
       });
       return;
@@ -47,8 +47,8 @@ const SignUp = () => {
 
     if (formData.password.length < 6) {
       toast({
-        title: "Error",
-        description: "La contraseña debe tener al menos 6 caracteres",
+        title: t('toasts.errorTitle'),
+        description: t('toasts.passwordTooShort'),
         variant: "destructive"
       });
       return;
@@ -65,13 +65,13 @@ const SignUp = () => {
     
     if (result.success) {
       toast({
-        title: "¡Registro Exitoso!",
-        description: "Tu cuenta ha sido creada. ¡Bienvenido a FactuYa!",
+        title: t('toasts.signupSuccess'),
+        description: t('toasts.signupSuccessDesc'),
       });
       navigate('/dashboard');
     } else {
       toast({
-        title: "Error en el Registro",
+        title: t('toasts.errorTitle'),
         description: result.error || "No se pudo crear la cuenta",
         variant: "destructive"
       });
@@ -106,54 +106,54 @@ const SignUp = () => {
       <div className="flex-1 flex items-center justify-center py-12 px-4">
         <Card className="w-full max-w-md p-8 dark:bg-card">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Crear Cuenta</h1>
-            <p className="text-gray-600 dark:text-gray-300">Comienza a crear facturas profesionales gratis</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{t('auth.createAccount')}</h1>
+            <p className="text-gray-600 dark:text-gray-300">{t('auth.signupSubtitle')}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="name">Nombre Completo *</Label>
+              <Label htmlFor="name">{t('auth.nameRequired')}</Label>
               <Input
                 id="name"
                 name="name"
                 type="text"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Tu nombre"
+                placeholder={t('auth.namePlaceholder')}
                 required
                 className="mt-1"
               />
             </div>
 
             <div>
-              <Label htmlFor="companyName">Nombre de la Empresa (Opcional)</Label>
+              <Label htmlFor="companyName">{t('auth.companyNameOptional')}</Label>
               <Input
                 id="companyName"
                 name="companyName"
                 type="text"
                 value={formData.companyName}
                 onChange={handleChange}
-                placeholder="Nombre de tu empresa"
+                placeholder={t('auth.companyNamePlaceholder')}
                 className="mt-1"
               />
             </div>
 
             <div>
-              <Label htmlFor="email">Correo Electrónico *</Label>
+              <Label htmlFor="email">{t('auth.emailRequired')}</Label>
               <Input
                 id="email"
                 name="email"
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="tu@email.com"
+                placeholder={t('auth.emailPlaceholder')}
                 required
                 className="mt-1"
               />
             </div>
 
             <div>
-              <Label htmlFor="password">Contraseña *</Label>
+              <Label htmlFor="password">{t('auth.passwordRequired')}</Label>
               <div className="relative mt-1">
                 <Input
                   id="password"
@@ -161,7 +161,7 @@ const SignUp = () => {
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Mínimo 6 caracteres"
+                  placeholder={t('auth.passwordMin6')}
                   required
                   className="pr-10"
                 />
@@ -180,7 +180,7 @@ const SignUp = () => {
             </div>
 
             <div>
-              <Label htmlFor="confirmPassword">Confirmar Contraseña *</Label>
+              <Label htmlFor="confirmPassword">{t('auth.confirmPasswordRequired')}</Label>
               <div className="relative mt-1">
                 <Input
                   id="confirmPassword"
@@ -188,7 +188,7 @@ const SignUp = () => {
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  placeholder="Repite tu contraseña"
+                  placeholder={t('auth.confirmPasswordPlaceholder')}
                   required
                   className="pr-10"
                 />
@@ -211,36 +211,36 @@ const SignUp = () => {
               className="w-full bg-lime-500 hover:bg-lime-600 text-white"
               disabled={loading}
             >
-              {loading ? 'Creando cuenta...' : 'Crear Cuenta Gratis'}
+              {loading ? t('auth.creatingAccount') : t('auth.createAccountFree')}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-300">
-              ¿Ya tienes una cuenta?{' '}
+              {t('auth.hasAccount')}{' '}
               <Link to="/signin" className="text-lime-600 hover:text-lime-700 dark:text-lime-400 dark:hover:text-lime-300 font-semibold">
-                Inicia sesión
+                {t('auth.signinShort')}
               </Link>
             </p>
           </div>
 
           <div className="mt-6 text-center">
             <p className="text-xs text-gray-500 dark:text-gray-400">
-              Al registrarte, aceptas nuestros{' '}
+              {t('auth.termsAgreement')}{' '}
               <Link
                 to="/terms"
                 data-testid="signup-terms-link"
                 className="text-primary hover:underline font-medium"
               >
-                términos de servicio
+                {t('auth.termsOfService')}
               </Link>
-              {' '}y{' '}
+              {' '}{t('auth.and')}{' '}
               <Link
                 to="/privacy"
                 data-testid="signup-privacy-link"
                 className="text-primary hover:underline font-medium"
               >
-                política de privacidad
+                {t('auth.privacyPolicy')}
               </Link>
             </p>
           </div>

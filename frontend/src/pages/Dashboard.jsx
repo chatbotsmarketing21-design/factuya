@@ -108,7 +108,7 @@ const Dashboard = () => {
     if (attempts >= maxAttempts) {
       setCheckingPayment(false);
       toast({
-        title: "Verificación de pago",
+        title: t('toasts.paymentVerifying'),
         description: "No se pudo verificar el estado del pago. Por favor revisa tu correo para confirmar.",
         variant: "destructive"
       });
@@ -124,8 +124,8 @@ const Dashboard = () => {
       if (data.paymentStatus === 'paid') {
         setCheckingPayment(false);
         toast({
-          title: "¡Pago exitoso!",
-          description: "Tu suscripción Premium está activa. ¡Ahora tienes facturas ilimitadas!",
+          title: t('toasts.paymentSuccess'),
+          description: t('toasts.premiumActive'),
         });
         // Clean URL params
         setSearchParams({});
@@ -133,8 +133,8 @@ const Dashboard = () => {
       } else if (data.status === 'expired') {
         setCheckingPayment(false);
         toast({
-          title: "Sesión expirada",
-          description: "La sesión de pago ha expirado. Por favor intenta de nuevo.",
+          title: t('toasts.sessionExpired'),
+          description: t('toasts.sessionExpiredDesc'),
           variant: "destructive"
         });
         setSearchParams({});
@@ -226,8 +226,8 @@ const Dashboard = () => {
       console.log('Attempting to delete invoice:', invoiceToDelete);
       await invoiceAPI.delete(invoiceToDelete);
       toast({
-        title: "¡Éxito!",
-        description: "Factura eliminada exitosamente"
+        title: t('toasts.successBang'),
+        description: t('messages.invoiceDeleted')
       });
       setDeleteDialogOpen(false);
       setInvoiceToDelete(null);
@@ -285,13 +285,13 @@ const Dashboard = () => {
       });
 
       toast({
-        title: "Documento copiado",
-        description: "Se copió el documento completo. Solo se generó un nuevo número.",
+        title: t('toasts.successBang'),
+        description: t('toasts.documentCopied'),
       });
     } catch (error) {
       console.error('Error copying invoice:', error);
       toast({
-        title: "Error",
+        title: t('toasts.errorTitle'),
         description: "No se pudo copiar el documento",
         variant: "destructive"
       });
@@ -467,8 +467,8 @@ const Dashboard = () => {
       
       if (!fullInvoice) {
         toast({
-          title: "Error",
-          description: "No se encontró la factura",
+          title: t('toasts.errorTitle'),
+          description: t('toasts.invoiceNotFound'),
           variant: "destructive"
         });
         return;
@@ -487,13 +487,13 @@ const Dashboard = () => {
       pdf.save(`${invoiceNumber}_${firstName}.pdf`);
 
       toast({
-        title: "¡Descarga Completa!",
+        title: t('toasts.downloadComplete'),
         description: "Tu factura PDF ha sido descargada",
       });
     } catch (error) {
       console.error('Error generating PDF:', error);
       toast({
-        title: "Error",
+        title: t('toasts.errorTitle'),
         description: "No se pudo generar el PDF",
         variant: "destructive"
       });
@@ -503,7 +503,7 @@ const Dashboard = () => {
   const handleSendEmail = async (invoice) => {
     if (!invoice.to?.email) {
       toast({
-        title: "Email No Disponible",
+        title: t('toasts.errorTitle'),
         description: "Esta factura no tiene email del cliente",
         variant: "destructive"
       });
@@ -511,7 +511,7 @@ const Dashboard = () => {
     }
 
     toast({
-      title: "¡Email Enviado!",
+      title: t('toasts.emailSent'),
       description: `Factura enviada a ${invoice.to.email}`,
     });
   };
@@ -597,8 +597,8 @@ const Dashboard = () => {
     const amount = getNumericAmount();
     if (isNaN(amount) || amount <= 0) {
       toast({
-        title: "Error",
-        description: "Ingresa un monto válido",
+        title: t('toasts.errorTitle'),
+        description: t('toasts.enterValidAmount'),
         variant: "destructive"
       });
       return;

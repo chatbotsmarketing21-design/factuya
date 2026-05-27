@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -9,6 +10,7 @@ import { useToast } from '../hooks/use-toast';
 import api from '../services/api';
 
 const ResetPassword = () => {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -50,8 +52,8 @@ const ResetPassword = () => {
 
     if (password.length < 6) {
       toast({
-        title: "Error",
-        description: "La contraseña debe tener al menos 6 caracteres",
+        title: t('toasts.errorTitle'),
+        description: t('toasts.passwordTooShort'),
         variant: "destructive"
       });
       return;
@@ -59,8 +61,8 @@ const ResetPassword = () => {
 
     if (password !== confirmPassword) {
       toast({
-        title: "Error",
-        description: "Las contraseñas no coinciden",
+        title: t('toasts.errorTitle'),
+        description: t('toasts.passwordsDontMatch'),
         variant: "destructive"
       });
       return;
@@ -74,8 +76,8 @@ const ResetPassword = () => {
       });
       setSuccess(true);
       toast({
-        title: "¡Contraseña Actualizada!",
-        description: "Ya puedes iniciar sesión con tu nueva contraseña",
+        title: t('toasts.passwordUpdated'),
+        description: t('toasts.canLoginNewPassword'),
       });
     } catch (error) {
       console.error('Error resetting password:', error);

@@ -39,13 +39,13 @@ const SignIn = () => {
     
     if (result.success) {
       toast({
-        title: "Inicio de Sesión Exitoso",
-        description: "¡Bienvenido de nuevo a FactuYa!",
+        title: t('toasts.signinSuccess'),
+        description: t('toasts.welcomeBackBang'),
       });
       navigate('/dashboard');
     } else {
       toast({
-        title: "Sign In Failed",
+        title: t('toasts.errorTitle'),
         description: result.error || "Invalid email or password",
         variant: "destructive"
       });
@@ -97,8 +97,8 @@ const SignIn = () => {
       <div className="flex-1 flex items-center justify-center py-12 px-4">
         <Card className="w-full max-w-md p-8 dark:bg-card">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Bienvenido de Nuevo</h1>
-            <p className="text-gray-600 dark:text-gray-400">Inicia sesión en tu cuenta de FactuYa!</p>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{t('auth.welcomeBack')}</h1>
+            <p className="text-gray-600 dark:text-gray-400">{t('auth.signinSubtitle')}</p>
           </div>
 
           {/* Google Sign In Button */}
@@ -126,7 +126,7 @@ const SignIn = () => {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            Continuar con Google
+            {t('auth.continueWithGoogle')}
           </Button>
 
           {/* Divider */}
@@ -135,13 +135,13 @@ const SignIn = () => {
               <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white dark:bg-card text-gray-500 dark:text-gray-400">o continúa con email</span>
+              <span className="px-2 bg-white dark:bg-card text-gray-500 dark:text-gray-400">{t('auth.orContinueWithEmail')}</span>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="email" className="dark:text-gray-300">Correo Electrónico</Label>
+              <Label htmlFor="email" className="dark:text-gray-300">{t('auth.email')}</Label>
               <Input
                 id="email"
                 type="email"
@@ -154,7 +154,7 @@ const SignIn = () => {
             </div>
 
             <div>
-              <Label htmlFor="password" className="dark:text-gray-300">Contraseña</Label>
+              <Label htmlFor="password" className="dark:text-gray-300">{t('auth.password')}</Label>
               <div className="relative mt-1">
                 <Input
                   id="password"
@@ -182,10 +182,10 @@ const SignIn = () => {
             <div className="flex items-center justify-between">
               <label className="flex items-center">
                 <input type="checkbox" className="mr-2" />
-                <span className="text-sm text-gray-600 dark:text-gray-400">Recordarme</span>
+                <span className="text-sm text-gray-600 dark:text-gray-400">{t('auth.rememberMe')}</span>
               </label>
               <Link to="/forgot-password" className="text-sm text-lime-600 hover:text-lime-700 hover:underline">
-                ¿Olvidaste tu contraseña?
+                {t('auth.forgotPassword')}
               </Link>
             </div>
 
@@ -194,15 +194,15 @@ const SignIn = () => {
               className="w-full bg-lime-500 hover:bg-lime-600 text-white"
               disabled={loading}
             >
-              {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+              {loading ? t('auth.signingIn') : t('auth.signin')}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              ¿No tienes cuenta?{' '}
+              {t('auth.noAccount')}{' '}
               <Link to="/signup" className="text-lime-600 hover:text-lime-700 font-semibold">
-                Regístrate gratis
+                {t('auth.signupFree')}
               </Link>
             </p>
           </div>
