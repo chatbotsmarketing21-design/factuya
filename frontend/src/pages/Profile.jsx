@@ -12,10 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-import { ArrowLeft, User, Building, Mail, Phone, MapPin, Save, Loader2, Landmark, Upload, RotateCw, Edit, Trash2, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, User, Building, Mail, Phone, MapPin, Save, Loader2, Landmark, Upload, RotateCw, Edit } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
-import api, { profileAPI, authAPI } from '../services/api';
+import api, { profileAPI } from '../services/api';
 import { COUNTRY_LIST, CURRENCY_LIST, getCountryConfig } from '../constants/countryConfig';
 import { formatPhoneAsYouType } from '../utils/phoneFormatter';
 
@@ -23,16 +23,11 @@ const Profile = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { toast } = useToast();
-  const { user, updateUser, logout } = useAuth();
+  const { user, updateUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [signature, setSignature] = useState('');
   const [signatureRotation, setSignatureRotation] = useState(0);
-  // Account deletion state
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-  const [deletePassword, setDeletePassword] = useState('');
-  const [deleteConfirmText, setDeleteConfirmText] = useState('');
-  const [deleting, setDeleting] = useState(false);
   const [profile, setProfile] = useState({
     name: '',
     email: '',
@@ -215,47 +210,6 @@ const Profile = () => {
     } catch (error) {
       console.error('Error deleting signature:', error);
       toast({ title: 'Error', description: 'No se pudo eliminar la firma', variant: 'destructive' });
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    if (deleteConfirmText.trim().toUpperCase() !== 'ELIMINAR') {
-      toast({
-        title: 'Confirmación requerida',
-        description: 'Debes escribir ELIMINAR para confirmar.',
-        variant: 'destructive'
-      });
-      return;
-    }
-    if (!deletePassword) {
-      toast({
-        title: 'Contraseña requerida',
-        description: 'Ingresa tu contraseña para confirmar la eliminación.',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    try {
-      setDeleting(true);
-      await authAPI.deleteAccount({
-        password: deletePassword,
-        confirmation: deleteConfirmText.trim().toUpperCase()
-      });
-      toast({
-        title: 'Cuenta eliminada',
-        description: 'Tu cuenta y todos tus datos han sido eliminados permanentemente.',
-      });
-      // Clear local storage & redirect to home
-      setTimeout(() => {
-        logout();
-        navigate('/');
-      }, 1500);
-    } catch (error) {
-      console.error('Error deleting account:', error);
-      const msg = error?.response?.data?.detail || 'No se pudo eliminar la cuenta. Intenta de nuevo.';
-      toast({ title: 'Error', description: msg, variant: 'destructive' });
-      setDeleting(false);
     }
   };
 
@@ -642,127 +596,6 @@ const Profile = () => {
             </Button>
           </div>
         </form>
-
-        {/* Danger Zone — Account Deletion (required by Google Play policy) */}
-        <Card
-          className="p-6 mt-8 border-2 border-red-200 bg-red-50/40 dark:bg-red-950/20"
-          data-testid="profile-danger-zone"
-        >
-          <div className="flex items-start gap-3 mb-4">
-            <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
-              <AlertTriangle className="w-5 h-5 text-red-600" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-red-900 dark:text-red-200">
-                Zona de Peligro
-              </h3>
-              <p className="text-sm text-red-700 dark:text-red-300">
-                Acciones permanentes que no se pueden deshacer.
-              </p>
-            </div>
-          </div>
-
-          {!showDeleteDialog ? (
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <div className="text-sm text-gray-700 dark:text-gray-300">
-                <p className="font-medium mb-1">Eliminar mi cuenta</p>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Borra permanentemente tu cuenta y todos tus documentos, clientes y suscripciones.
-                </p>
-              </div>
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={() => setShowDeleteDialog(true)}
-                data-testid="profile-delete-account-open-btn"
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Eliminar mi cuenta
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="bg-white dark:bg-gray-800 border border-red-200 rounded-lg p-4 space-y-3">
-                <p className="text-sm text-gray-800 dark:text-gray-200">
-                  <strong>Esta acción es irreversible.</strong> Al confirmar, se eliminarán:
-                </p>
-                <ul className="text-sm text-gray-700 dark:text-gray-300 list-disc list-inside space-y-1">
-                  <li>Tu cuenta de usuario y datos de empresa</li>
-                  <li>Todos los documentos creados (facturas, cotizaciones, etc.)</li>
-                  <li>Lista de clientes, productos y plantillas</li>
-                  <li>Suscripciones activas (PayPal/Wompi serán canceladas)</li>
-                </ul>
-              </div>
-
-              <div>
-                <Label htmlFor="delete-password" className="text-sm font-medium">
-                  Confirma tu contraseña
-                </Label>
-                <Input
-                  id="delete-password"
-                  type="password"
-                  value={deletePassword}
-                  onChange={(e) => setDeletePassword(e.target.value)}
-                  placeholder="Tu contraseña actual"
-                  className="mt-1"
-                  disabled={deleting}
-                  data-testid="profile-delete-account-password-input"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="delete-confirm" className="text-sm font-medium">
-                  Escribe <code className="bg-gray-200 dark:bg-gray-700 px-1.5 py-0.5 rounded text-red-700 dark:text-red-300">ELIMINAR</code> para confirmar
-                </Label>
-                <Input
-                  id="delete-confirm"
-                  type="text"
-                  value={deleteConfirmText}
-                  onChange={(e) => setDeleteConfirmText(e.target.value)}
-                  placeholder="ELIMINAR"
-                  className="mt-1"
-                  disabled={deleting}
-                  data-testid="profile-delete-account-confirm-input"
-                />
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-2 justify-end pt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setShowDeleteDialog(false);
-                    setDeletePassword('');
-                    setDeleteConfirmText('');
-                  }}
-                  disabled={deleting}
-                  data-testid="profile-delete-account-cancel-btn"
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  onClick={handleDeleteAccount}
-                  disabled={deleting || deleteConfirmText.trim().toUpperCase() !== 'ELIMINAR' || !deletePassword}
-                  data-testid="profile-delete-account-confirm-btn"
-                >
-                  {deleting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Eliminando...
-                    </>
-                  ) : (
-                    <>
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Sí, eliminar mi cuenta para siempre
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-          )}
-        </Card>
       </div>
     </div>
   );

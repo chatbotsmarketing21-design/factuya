@@ -18,6 +18,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import FAQ from "./pages/FAQ";
 import DeleteAccount from "./pages/DeleteAccount";
+import DeleteAccountConfirm from "./pages/DeleteAccountConfirm";
 import GoogleCallback from "./pages/GoogleCallback";
 import AuthCallback from "./components/AuthCallback";
 import AdminPanel from "./pages/AdminPanel";
@@ -117,6 +118,14 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             <ChangePassword />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/delete-account-confirm"
+        element={
+          <ProtectedRoute>
+            <DeleteAccountConfirm />
           </ProtectedRoute>
         }
       />

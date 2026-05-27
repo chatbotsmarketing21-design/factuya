@@ -96,7 +96,7 @@ const SpanishTerms = () => (
         electrónico con al menos 15 días de anticipación.
       </p>
       <p className="mt-2">
-        Los pagos son procesados por <strong>Wompi</strong> (Colombia) y <strong>Stripe</strong>
+        Los pagos son procesados por <strong>Wompi</strong> (Colombia), <strong>PayPal</strong> y <strong>Stripe</strong>
         (resto del mundo). FactuYa! nunca almacena datos de tarjetas.
       </p>
     </Section>
@@ -173,7 +173,7 @@ const SpanishTerms = () => (
       </p>
       <List items={[
         'Mantenimiento programado (con aviso previo cuando sea posible).',
-        'Fallos de proveedores externos (Wompi, Stripe, hosting).',
+        'Fallos de proveedores externos (Wompi, PayPal, Stripe, hosting).',
         'Causas de fuerza mayor.',
       ]} />
     </Section>
@@ -291,7 +291,7 @@ const EnglishTerms = () => (
       ]} />
       <p className="mt-2">
         Pricing may change with at least 15 days' email notice. Payments processed by
-        Wompi (Colombia) and Stripe (rest of the world). We never store card data.
+        Wompi (Colombia), PayPal and Stripe (rest of the world). We never store card data.
       </p>
     </Section>
 

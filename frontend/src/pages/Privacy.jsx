@@ -74,7 +74,7 @@ const SpanishPolicy = () => (
         <><strong>Información de cuenta:</strong> nombre, correo electrónico y contraseña encriptada cuando te registras.</>,
         <><strong>Información de empresa:</strong> nombre comercial, NIT/RUT, dirección, teléfono y logo que usas en tus facturas.</>,
         <><strong>Datos de facturación:</strong> información de tus clientes (nombre, identificación, contacto) y detalles de los documentos que generas.</>,
-        <><strong>Información de pago:</strong> procesada por <strong>Wompi</strong> (Colombia) y <strong>Stripe</strong> (resto del mundo). FactuYa! nunca almacena números de tarjeta ni CVV. Solo conservamos los últimos 4 dígitos para tu referencia.</>,
+        <><strong>Información de pago:</strong> procesada por <strong>Wompi</strong> (Colombia), <strong>PayPal</strong> y <strong>Stripe</strong> (resto del mundo). FactuYa! nunca almacena números de tarjeta ni CVV. Solo conservamos los últimos 4 dígitos para tu referencia.</>,
         <><strong>Datos técnicos:</strong> dirección IP, tipo de navegador, sistema operativo y fecha/hora de acceso. Usados únicamente para seguridad y prevención de fraude.</>,
         <><strong>Idioma y país:</strong> detectados automáticamente por IP para mostrarte la moneda y el idioma correctos.</>,
       ]} />
@@ -115,6 +115,7 @@ const SpanishPolicy = () => (
       <p>Compartimos datos exclusivamente con los siguientes proveedores, todos con políticas de privacidad robustas:</p>
       <List items={[
         <><strong>Wompi (Bancolombia):</strong> procesamiento de pagos en Colombia. <a href="https://wompi.co/es/legal" target="_blank" rel="noreferrer" className="text-lime-600 hover:underline">Ver política</a>.</>,
+        <><strong>PayPal Inc.:</strong> procesamiento de pagos y suscripciones internacionales. <a href="https://www.paypal.com/myaccount/privacy/privacyhub" target="_blank" rel="noreferrer" className="text-lime-600 hover:underline">Ver política</a>.</>,
         <><strong>Stripe Inc.:</strong> procesamiento de pagos internacionales. <a href="https://stripe.com/privacy" target="_blank" rel="noreferrer" className="text-lime-600 hover:underline">Ver política</a>.</>,
         <><strong>Resend Inc.:</strong> envío de correos transaccionales. <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noreferrer" className="text-lime-600 hover:underline">Ver política</a>.</>,
         <><strong>Google (Auth + Play):</strong> inicio de sesión opcional con Google y distribución de la app. <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer" className="text-lime-600 hover:underline">Ver política</a>.</>,
@@ -128,7 +129,7 @@ const SpanishPolicy = () => (
 
     <Section title="6. Transferencias Internacionales de Datos">
       <p>
-        Algunos proveedores (Stripe, Resend, Google) procesan información fuera de Colombia,
+        Algunos proveedores (Stripe, PayPal, Resend, Google) procesan información fuera de Colombia,
         principalmente en Estados Unidos y la Unión Europea. Estos países cuentan con
         estándares de protección equivalentes o superiores, y los contratos con ellos
         incluyen cláusulas tipo de protección de datos aprobadas internacionalmente.
@@ -152,7 +153,7 @@ const SpanishPolicy = () => (
         'Acceso al servidor restringido por SSH con clave pública.',
         'Copias de seguridad periódicas en almacenamiento aislado.',
         'Validación de firma criptográfica HMAC en webhooks de pago.',
-        'Sin almacenamiento de números de tarjeta (cumplimos PCI DSS por delegación a Wompi/Stripe).',
+        'Sin almacenamiento de números de tarjeta (cumplimos PCI DSS por delegación a Wompi/PayPal/Stripe).',
       ]} />
     </Section>
 
@@ -177,7 +178,7 @@ const SpanishPolicy = () => (
         Puedes eliminar tu cuenta y todos tus datos personales asociados en cualquier momento:
       </p>
       <List items={[
-        <>Desde la app: <em>Perfil → Zona de Peligro → Eliminar mi cuenta</em>.</>,
+        <>Desde la app: <em>Configuración ⚙️ → Eliminar mi cuenta</em> (justo encima de "Cerrar sesión").</>,
         <>Página pública con instrucciones detalladas: <a href="/delete-account" className="text-lime-600 hover:underline">factuya.site/delete-account</a></>,
         <>Por correo: envía un mensaje a <a href={`mailto:${CONTACT_EMAIL}?subject=Eliminar%20mi%20cuenta`} className="text-lime-600 hover:underline">{CONTACT_EMAIL}</a> desde el correo registrado en FactuYa! solicitando la eliminación.</>,
       ]} />
@@ -262,7 +263,7 @@ const EnglishPolicy = () => (
         <><strong>Account information:</strong> name, email, encrypted password.</>,
         <><strong>Company information:</strong> business name, tax ID, address, phone, and logo used on invoices.</>,
         <><strong>Billing data:</strong> client info (name, ID, contact) and invoice details you generate.</>,
-        <><strong>Payment information:</strong> processed by Wompi (Colombia) and Stripe (rest of the world). We never store full card numbers or CVV. Only the last 4 digits are retained for reference.</>,
+        <><strong>Payment information:</strong> processed by Wompi (Colombia), PayPal and Stripe (rest of the world). We never store full card numbers or CVV. Only the last 4 digits are retained for reference.</>,
         <><strong>Technical data:</strong> IP address, browser type, OS, access timestamps — used only for security and fraud prevention.</>,
         <><strong>Language and country:</strong> auto-detected via IP to display correct currency and language.</>,
       ]} />
@@ -298,6 +299,7 @@ const EnglishPolicy = () => (
     <Section title="5. Third Parties We Share Data With">
       <List items={[
         <><strong>Wompi (Bancolombia):</strong> payment processing in Colombia. <a href="https://wompi.co/es/legal" target="_blank" rel="noreferrer" className="text-lime-600 hover:underline">Policy</a>.</>,
+        <><strong>PayPal Inc.:</strong> international payment processing and subscriptions. <a href="https://www.paypal.com/myaccount/privacy/privacyhub" target="_blank" rel="noreferrer" className="text-lime-600 hover:underline">Policy</a>.</>,
         <><strong>Stripe Inc.:</strong> international payment processing. <a href="https://stripe.com/privacy" target="_blank" rel="noreferrer" className="text-lime-600 hover:underline">Policy</a>.</>,
         <><strong>Resend Inc.:</strong> transactional email delivery. <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noreferrer" className="text-lime-600 hover:underline">Policy</a>.</>,
         <><strong>Google (Auth + Play):</strong> optional Google sign-in and app distribution. <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer" className="text-lime-600 hover:underline">Policy</a>.</>,
@@ -307,7 +309,7 @@ const EnglishPolicy = () => (
 
     <Section title="6. International Data Transfers">
       <p>
-        Some providers (Stripe, Resend, Google) process data outside Colombia, primarily in
+        Some providers (Stripe, PayPal, Resend, Google) process data outside Colombia, primarily in
         the United States and the European Union, under equivalent or stronger protection
         standards and international standard contractual clauses.
       </p>
@@ -329,7 +331,7 @@ const EnglishPolicy = () => (
         'Server SSH access restricted by public key.',
         'Regular backups in isolated storage.',
         'HMAC cryptographic signature validation on payment webhooks.',
-        'No card data stored (PCI DSS compliance delegated to Wompi/Stripe).',
+        'No card data stored (PCI DSS compliance delegated to Wompi/PayPal/Stripe).',
       ]} />
     </Section>
 

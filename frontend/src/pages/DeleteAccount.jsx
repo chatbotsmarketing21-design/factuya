@@ -78,20 +78,20 @@ const DeleteAccount = () => {
               </a>.
             </li>
             <li>Inicia sesión con tu correo y contraseña.</li>
-            <li>Ve a <strong>Mi Perfil</strong> (esquina superior derecha).</li>
-            <li>Desplázate hasta la sección <strong>"Zona de Peligro"</strong> al final.</li>
-            <li>Toca <strong>"Eliminar mi cuenta"</strong>, ingresa tu contraseña y escribe <code className="bg-gray-100 px-2 py-0.5 rounded">ELIMINAR</code> para confirmar.</li>
+            <li>Toca el ícono de <strong>Configuración ⚙️</strong> (esquina superior derecha del Dashboard).</li>
+            <li>Desplázate hasta abajo y toca <strong>"Eliminar mi cuenta"</strong> (justo encima de "Cerrar sesión").</li>
+            <li>Ingresa tu contraseña y escribe <code className="bg-gray-100 px-2 py-0.5 rounded">ELIMINAR</code> para confirmar.</li>
           </ol>
 
           <div className="flex flex-col sm:flex-row gap-2 pt-2">
             {isAuthenticated ? (
               <Button
-                onClick={() => navigate('/profile?section=delete')}
+                onClick={() => navigate('/delete-account-confirm')}
                 className="bg-red-600 hover:bg-red-700 text-white"
                 data-testid="delete-account-go-profile"
               >
                 <Trash2 className="w-4 h-4 mr-2" />
-                Ir a mi perfil para eliminar
+                Ir a eliminar mi cuenta
               </Button>
             ) : (
               <Button

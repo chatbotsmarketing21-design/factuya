@@ -45,7 +45,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
-import { Plus, Search, Download, Send, Trash2, FileText, LogOut, CheckCircle, Clock, XCircle, FileEdit, Loader2, CreditCard, Settings, User, Key, Sun, Moon, Share2, MessageCircle, Mail, Copy, Globe, DollarSign } from 'lucide-react';
+import { Plus, Search, Download, Send, Trash2, FileText, LogOut, CheckCircle, Clock, XCircle, FileEdit, Loader2, CreditCard, Settings, User, Key, Sun, Moon, Share2, MessageCircle, Mail, Copy, Globe, DollarSign, UserX } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 import InvoicePreview from '../components/InvoicePreview';
@@ -818,6 +818,14 @@ const Dashboard = () => {
                     );
                   })}
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => navigate('/delete-account-confirm')}
+                    className="text-red-600 text-base py-3"
+                    data-testid="settings-delete-account-item"
+                  >
+                    <UserX className="w-5 h-5 mr-3" />
+                    Eliminar mi cuenta
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="text-red-600 text-base py-3">
                     <LogOut className="w-5 h-5 mr-3" />
                     {t('settings.logout')}
