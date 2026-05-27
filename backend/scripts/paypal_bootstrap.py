@@ -18,19 +18,19 @@ ROOT_DIR = Path(__file__).parent.parent
 load_dotenv(ROOT_DIR / '.env')
 
 PAYPAL_MODE = os.environ.get('PAYPAL_MODE', 'sandbox').lower()
-CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID', '')
-SECRET = os.environ.get('PAYPAL_SECRET', '')
-
-API_BASE = (
-    "https://api-m.sandbox.paypal.com"
-    if PAYPAL_MODE == 'sandbox'
-    else "https://api-m.paypal.com"
-)
+if PAYPAL_MODE == 'sandbox':
+    CLIENT_ID = os.environ.get('PAYPAL_SANDBOX_CLIENT_ID', '')
+    SECRET = os.environ.get('PAYPAL_SANDBOX_SECRET', '')
+    API_BASE = "https://api-m.sandbox.paypal.com"
+else:
+    CLIENT_ID = os.environ.get('PAYPAL_LIVE_CLIENT_ID', '')
+    SECRET = os.environ.get('PAYPAL_LIVE_SECRET', '')
+    API_BASE = "https://api-m.paypal.com"
 
 
 def get_token() -> str:
     if not CLIENT_ID or not SECRET:
-        sys.exit("ERROR: PAYPAL_CLIENT_ID and PAYPAL_SECRET must be set in backend/.env")
+        sys.exit(f"ERROR: PayPal {PAYPAL_MODE} credentials are not set in backend/.env")
     r = httpx.post(
         f"{API_BASE}/v1/oauth2/token",
         auth=(CLIENT_ID, SECRET),
@@ -111,7 +111,10 @@ def main():
     print(f"  plan_id    = {plan_id}")
     print()
     print("DONE. Add this to backend/.env:")
-    print(f"  PAYPAL_PLAN_ID={plan_id}")
+    if PAYPAL_MODE == 'sandbox':
+        print(f"  PAYPAL_SANDBOX_PLAN_ID={plan_id}")
+    else:
+        print(f"  PAYPAL_LIVE_PLAN_ID={plan_id}")
 
 
 if __name__ == "__main__":

@@ -42,18 +42,23 @@ mongo_url = os.environ['MONGO_URL']
 db_client = AsyncIOMotorClient(mongo_url)
 db = db_client[os.environ['DB_NAME']]
 
-# PayPal configuration
+# PayPal configuration. Like Wompi, we keep two sets of credentials
+# (sandbox + live) and pick the active one based on PAYPAL_MODE.
 PAYPAL_MODE = os.environ.get('PAYPAL_MODE', 'sandbox').lower()
-PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID', '')
-PAYPAL_SECRET = os.environ.get('PAYPAL_SECRET', '')
-PAYPAL_PLAN_ID = os.environ.get('PAYPAL_PLAN_ID', '')
-PAYPAL_WEBHOOK_ID = os.environ.get('PAYPAL_WEBHOOK_ID', '')
+IS_SANDBOX = PAYPAL_MODE == 'sandbox'
 
-PAYPAL_API_BASE = (
-    "https://api-m.sandbox.paypal.com"
-    if PAYPAL_MODE == 'sandbox'
-    else "https://api-m.paypal.com"
-)
+if IS_SANDBOX:
+    PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_SANDBOX_CLIENT_ID', '')
+    PAYPAL_SECRET = os.environ.get('PAYPAL_SANDBOX_SECRET', '')
+    PAYPAL_PLAN_ID = os.environ.get('PAYPAL_SANDBOX_PLAN_ID', '')
+    PAYPAL_WEBHOOK_ID = os.environ.get('PAYPAL_SANDBOX_WEBHOOK_ID', '')
+    PAYPAL_API_BASE = "https://api-m.sandbox.paypal.com"
+else:
+    PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_LIVE_CLIENT_ID', '')
+    PAYPAL_SECRET = os.environ.get('PAYPAL_LIVE_SECRET', '')
+    PAYPAL_PLAN_ID = os.environ.get('PAYPAL_LIVE_PLAN_ID', '')
+    PAYPAL_WEBHOOK_ID = os.environ.get('PAYPAL_LIVE_WEBHOOK_ID', '')
+    PAYPAL_API_BASE = "https://api-m.paypal.com"
 
 SUBSCRIPTION_PRICE_USD = 3.99
 
