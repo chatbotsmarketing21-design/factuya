@@ -21,9 +21,9 @@ const DeleteAccount = () => {
   const SUPPORT_EMAIL = 'soportefactuya@gmail.com';
 
   return (
-    <div className="min-h-screen bg-gray-50" data-testid="delete-account-page">
+    <div className="min-h-screen bg-gray-50 text-gray-900" data-testid="delete-account-page" style={{ colorScheme: 'light' }}>
       {/* Header */}
-      <header className="bg-white border-b sticky top-0 z-10">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link
             to="/"
@@ -33,7 +33,7 @@ const DeleteAccount = () => {
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm font-medium">Volver al inicio</span>
           </Link>
-          <div className="text-xl font-bold">
+          <div className="text-xl font-bold text-gray-900">
             Factu<span className="bg-[#7CB342] text-white px-2 py-0.5 rounded">Ya!</span>
           </div>
         </div>
@@ -63,12 +63,12 @@ const DeleteAccount = () => {
         </Card>
 
         {/* Option A: Self-service from app */}
-        <Card className="p-6 space-y-4" data-testid="delete-method-app">
+        <Card className="p-6 space-y-4 bg-white border-gray-200" data-testid="delete-method-app">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-[#7CB342] text-white flex items-center justify-center font-bold">
               A
             </div>
-            <h2 className="text-xl font-bold">Eliminar desde la app (recomendado)</h2>
+            <h2 className="text-xl font-bold text-gray-900">Eliminar desde la app (recomendado)</h2>
           </div>
 
           <ol className="space-y-3 text-gray-700 ml-2 list-decimal list-inside">
@@ -80,7 +80,7 @@ const DeleteAccount = () => {
             <li>Inicia sesión con tu correo y contraseña.</li>
             <li>Toca el ícono de <strong>Configuración ⚙️</strong> (esquina superior derecha del Dashboard).</li>
             <li>Desplázate hasta abajo y toca <strong>"Eliminar mi cuenta"</strong> (justo encima de "Cerrar sesión").</li>
-            <li>Ingresa tu contraseña y escribe <code className="bg-gray-100 px-2 py-0.5 rounded">ELIMINAR</code> para confirmar.</li>
+            <li>Ingresa tu contraseña y escribe <code className="bg-gray-100 text-gray-900 px-2 py-0.5 rounded">ELIMINAR</code> para confirmar.</li>
           </ol>
 
           <div className="flex flex-col sm:flex-row gap-2 pt-2">
@@ -107,12 +107,12 @@ const DeleteAccount = () => {
         </Card>
 
         {/* Option B: Email request */}
-        <Card className="p-6 space-y-4" data-testid="delete-method-email">
+        <Card className="p-6 space-y-4 bg-white border-gray-200" data-testid="delete-method-email">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-gray-700 text-white flex items-center justify-center font-bold">
               B
             </div>
-            <h2 className="text-xl font-bold">Solicitar por correo electrónico</h2>
+            <h2 className="text-xl font-bold text-gray-900">Solicitar por correo electrónico</h2>
           </div>
 
           <p className="text-gray-700">
@@ -143,10 +143,10 @@ const DeleteAccount = () => {
         </Card>
 
         {/* What gets deleted */}
-        <Card className="p-6 space-y-3" data-testid="delete-data-summary">
+        <Card className="p-6 space-y-3 bg-white border-gray-200" data-testid="delete-data-summary">
           <div className="flex items-center gap-3">
             <FileX className="w-6 h-6 text-red-600" />
-            <h2 className="text-xl font-bold">Qué se elimina</h2>
+            <h2 className="text-xl font-bold text-gray-900">Qué se elimina</h2>
           </div>
 
           <p className="text-gray-700">
@@ -165,10 +165,10 @@ const DeleteAccount = () => {
         </Card>
 
         {/* What we keep (legal) */}
-        <Card className="p-6 space-y-3" data-testid="delete-data-retained">
+        <Card className="p-6 space-y-3 bg-white border-gray-200" data-testid="delete-data-retained">
           <div className="flex items-center gap-3">
             <ShieldAlert className="w-6 h-6 text-blue-600" />
-            <h2 className="text-xl font-bold">Qué conservamos (por obligación legal)</h2>
+            <h2 className="text-xl font-bold text-gray-900">Qué conservamos (por obligación legal)</h2>
           </div>
 
           <p className="text-gray-700">
