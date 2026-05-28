@@ -1112,10 +1112,11 @@ const InvoiceCreator = () => {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    className="text-base px-3 font-semibold shadow-md hover:shadow-lg transition-shadow text-gray-900 border-gray-300"
+                    className="text-base px-3 font-semibold shadow-md hover:shadow-lg transition-all text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                     style={{
                       boxShadow: '0 4px 12px rgba(0, 0, 0, 0.18)'
                     }}
+                    data-testid="document-type-selector-mobile-btn"
                   >
                     {t('invoice.documentType')}
                   </Button>
