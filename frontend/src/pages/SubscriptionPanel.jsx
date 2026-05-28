@@ -41,9 +41,12 @@ import {
   Send,
   CheckCircle,
   XCircle,
-  Trophy
+  Trophy,
+  Gift
 } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
+import { couponAPI } from '../services/api';
+import { getPendingCoupon, savePendingCoupon, clearPendingCoupon } from '../utils/couponStorage';
 
 const SubscriptionPanel = () => {
   const navigate = useNavigate();
@@ -85,6 +88,48 @@ const SubscriptionPanel = () => {
   const [autoRenewInfo, setAutoRenewInfo] = useState(null);
   const [cancelingAutoRenew, setCancelingAutoRenew] = useState(false);
   const [paypalConfig, setPaypalConfig] = useState(null);
+
+  // Win-back coupon (persisted across navigation)
+  const [pendingCoupon, setPendingCoupon] = useState(() => getPendingCoupon());
+
+  /**
+   * On mount, pick up coupon from URL (?coupon=...) if present.
+   * URL takes precedence over previously-stored coupon (handles new code from email).
+   */
+  useEffect(() => {
+    const urlCode = (searchParams.get('coupon') || '').trim().toUpperCase();
+    if (!urlCode) return;
+    couponAPI.validate(urlCode)
+      .then((res) => {
+        savePendingCoupon(res.data);
+        setPendingCoupon(res.data);
+      })
+      .catch(() => {
+        // Invalid coupon in URL — silently ignore; existing stored coupon (if any) stays
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /**
+   * Redeem the pending coupon after a successful payment.
+   * Safe to call even when there is no coupon — it just no-ops.
+   */
+  const redeemPendingCoupon = async () => {
+    const current = getPendingCoupon();
+    if (!current?.code) return;
+    try {
+      await couponAPI.redeem(current.code);
+      toast({
+        title: '🎁 ¡Cupón canjeado!',
+        description: `Recibirás un ${current.discount_percent}% de descuento en tu próxima renovación.`,
+      });
+    } catch (_) {
+      // Coupon might already be used or expired — non-blocking
+    } finally {
+      clearPendingCoupon();
+      setPendingCoupon(null);
+    }
+  };
 
   useEffect(() => {
     // Allow QA to force a specific gateway via ?force_gateway=paypal in the URL
@@ -199,6 +244,8 @@ const SubscriptionPanel = () => {
           title: t('toasts.paymentSuccess'),
           description: t('toasts.premiumActivated'),
         });
+        // Redeem any pending winback coupon (50% off first renewal)
+        redeemPendingCoupon();
         loadSubscriptionStatus();
       } else {
         toast({
@@ -231,6 +278,8 @@ const SubscriptionPanel = () => {
           title: t('toasts.paymentSuccess'),
           description: t('toasts.premiumActivated'),
         });
+        // Redeem any pending winback coupon (50% off first renewal)
+        redeemPendingCoupon();
         // Reload subscription status
         loadSubscriptionStatus();
       } else {
@@ -395,6 +444,31 @@ const SubscriptionPanel = () => {
       </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Win-back Coupon Banner */}
+        {pendingCoupon && !isPremium && (
+          <Card
+            className="p-4 mb-6 border-2 border-dashed border-lime-400 bg-gradient-to-br from-lime-50 to-emerald-50 dark:from-lime-950/30 dark:to-emerald-950/30"
+            data-testid="subscription-coupon-banner"
+          >
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-lime-500 text-white flex items-center justify-center">
+                <Gift className="w-5 h-5" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-lime-800 dark:text-lime-200 mb-1">
+                  🎁 Cupón activo: {pendingCoupon.discount_percent}% OFF
+                </h3>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  Tu descuento se aplicará automáticamente cuando completes el pago.
+                </p>
+                <div className="font-mono text-xs bg-white dark:bg-gray-900 border border-lime-200 dark:border-lime-800 rounded px-2 py-1 inline-block mt-2 text-gray-700 dark:text-gray-300">
+                  {pendingCoupon.code}
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
+
         {/* Payment Result Banner */}
         {paymentResult && (
           <Card className={`p-4 mb-6 ${paymentResult.approved ? 'bg-green-50 dark:bg-green-900/20 border-green-500' : 'bg-red-50 dark:bg-red-900/20 border-red-500'}`}>

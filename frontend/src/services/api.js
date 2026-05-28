@@ -92,6 +92,12 @@ export const authAPI = {
   deleteAccount: (data) => requireOnlineWrite(() => api.delete('/auth/account', { data })),
 };
 
+// Coupon APIs
+export const couponAPI = {
+  validate: (code) => api.post('/coupons/validate', { code }),
+  redeem: (code) => requireOnlineWrite(() => api.post('/coupons/redeem', { code })),
+};
+
 // Invoice APIs
 export const invoiceAPI = {
   getAll: (params) =>
