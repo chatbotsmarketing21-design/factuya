@@ -46,6 +46,15 @@ async def register(user: UserCreate):
     user_in_db = UserInDB(**user_dict)
     await db.users.insert_one(user_in_db.dict())
     
+    # Fire-and-forget welcome email with LANZAMIENTO50 coupon
+    try:
+        from utils.email_notifications import send_signup_welcome_email
+        import asyncio
+        asyncio.create_task(send_signup_welcome_email(user_in_db.email, user_in_db.name))
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning("Welcome email scheduling failed: %s", e)
+    
     # Create token
     token = create_access_token({"sub": user_in_db.id})
     

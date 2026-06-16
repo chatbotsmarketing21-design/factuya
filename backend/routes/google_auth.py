@@ -152,6 +152,14 @@ async def google_token(request: TokenRequest):
             }
             await db.subscriptions.insert_one(subscription)
             logger.info(f"Created subscription for user: {user_id}")
+
+            # Fire-and-forget welcome email with LANZAMIENTO50 coupon (only for new Google signups)
+            try:
+                from utils.email_notifications import send_signup_welcome_email
+                import asyncio
+                asyncio.create_task(send_signup_welcome_email(new_user.get("email"), new_user.get("name")))
+            except Exception as e:
+                logger.warning(f"Welcome email scheduling failed for Google user {user_id}: {e}")
         
         # Create session token
         from utils.auth import create_access_token

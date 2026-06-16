@@ -271,6 +271,20 @@ async def validate_coupon(db: AsyncIOMotorDatabase, code: str) -> dict:
     if expires_at and now > expires_at:
         return {"status": "expired", "code": normalized}
 
+    # Multi-use coupons (e.g. LANZAMIENTO50): valid until expiration, no per-use lock
+    if coupon.get("multi_use"):
+        return {
+            "status": "valid",
+            "code": normalized,
+            "discount_percent": coupon.get("discount_percent", COUPON_DISCOUNT_PERCENT),
+            "applies_to": coupon.get("applies_to", COUPON_APPLIES_TO),
+            "expires_at": expires_at.isoformat() if expires_at else None,
+            "multi_use": True,
+        }
+
+    if coupon.get("used_at"):
+        return {"status": "already_used", "code": normalized}
+
     return {
         "status": "valid",
         "code": normalized,
@@ -285,12 +299,46 @@ async def redeem_coupon(
     code: str,
     user_id: str,
 ) -> bool:
-    """Mark a coupon as redeemed. Returns True if successful."""
+    """Mark a coupon as redeemed. Returns True if successful.
+
+    For single-use coupons: locks the coupon and records the redeemer.
+    For multi-use coupons (e.g. LANZAMIENTO50): appends user_id to used_by_user_ids
+        and rejects double-redemption by the SAME user.
+    """
     if not code:
         return False
     normalized = code.strip().upper()
     now = datetime.now(timezone.utc)
 
+    coupon = await db.reactivation_coupons.find_one({"code": normalized}, {"_id": 0})
+    if not coupon:
+        return False
+
+    expires_at = coupon.get("expires_at")
+    if expires_at and expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if expires_at and now > expires_at:
+        return False
+
+    # Multi-use path: a user can only redeem once but the coupon stays valid for others
+    if coupon.get("multi_use"):
+        already = await db.reactivation_coupons.find_one({
+            "code": normalized,
+            "used_by_user_ids": user_id,
+        })
+        if already:
+            return False
+        result = await db.reactivation_coupons.update_one(
+            {"code": normalized},
+            {
+                "$addToSet": {"used_by_user_ids": user_id},
+                "$inc": {"redeem_count": 1},
+                "$set": {"last_redeemed_at": now},
+            }
+        )
+        return result.modified_count > 0
+
+    # Single-use path (legacy win-back coupons)
     result = await db.reactivation_coupons.update_one(
         {"code": normalized, "used_at": None, "expires_at": {"$gt": now}},
         {"$set": {"used_at": now, "used_by_user_id": user_id, "status": "redeemed"}}
