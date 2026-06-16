@@ -54,7 +54,7 @@ else:
     WOMPI_API_URL = "https://production.wompi.co/v1"
 
 RENEWAL_CRON_TOKEN = os.environ.get('RENEWAL_CRON_TOKEN', '')
-APP_URL = os.environ.get('APP_PUBLIC_URL', 'https://factuya.app')
+APP_URL = os.environ.get('APP_PUBLIC_URL', 'https://factuya.site')
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
 resend.api_key = os.environ.get('RESEND_API_KEY')
 

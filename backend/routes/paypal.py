@@ -65,7 +65,7 @@ SUBSCRIPTION_PRICE_USD = 3.99
 
 # ---------- Pydantic models ----------
 class CreateSubscriptionRequest(BaseModel):
-    originUrl: str  # frontend origin (e.g., https://factuya.app)
+    originUrl: str  # frontend origin (e.g., https://factuya.site)
 
 
 # ---------- Helpers ----------

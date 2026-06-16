@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 resend.api_key = os.environ.get('RESEND_API_KEY')
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
-APP_URL = os.environ.get('APP_PUBLIC_URL', 'https://factuya.app')
+APP_URL = os.environ.get('APP_PUBLIC_URL', 'https://factuya.site')
 
 # Coupon configuration (matches user choices: 50% off / 15 days / all gateways)
 COUPON_DISCOUNT_PERCENT = 50

@@ -55,8 +55,8 @@ def create_product(token: str) -> str:
             "description": "Suscripción mensual a FactuYa! Premium con facturas ilimitadas.",
             "type": "SERVICE",
             "category": "SOFTWARE",
-            "image_url": "https://factuya.app/logo.png",
-            "home_url": "https://factuya.app",
+            "image_url": "https://factuya.site/logo.png",
+            "home_url": "https://factuya.site",
         },
         timeout=20,
     )

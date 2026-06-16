@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 resend.api_key = os.environ.get('RESEND_API_KEY')
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
-APP_URL = os.environ.get('APP_PUBLIC_URL', 'https://factuya.app')
+APP_URL = os.environ.get('APP_PUBLIC_URL', 'https://factuya.site')
 
 
 def _format_date_es(dt: datetime) -> str:
@@ -97,7 +97,7 @@ def _confirmation_html(user_name: str, gateway: str, period_end: datetime, amoun
 
         <hr style="border:none; border-top:1px solid #eee; margin: 24px 0;">
         <p style="color: #aaa; font-size: 12px; text-align: center;">
-            FactuYa! &middot; Innova App Solutions &middot; Soporte: contacto@factuya.app
+            FactuYa! &middot; Innova App Solutions &middot; Soporte: soportefactuya@gmail.com
         </p>
     </body>
     </html>

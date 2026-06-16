@@ -36,7 +36,7 @@ db = client[os.environ['DB_NAME']]
 resend.api_key = os.environ.get('RESEND_API_KEY')
 SENDER_EMAIL = os.environ.get('SENDER_EMAIL', 'onboarding@resend.dev')
 RENEWAL_CRON_TOKEN = os.environ.get('RENEWAL_CRON_TOKEN', '')
-APP_URL = os.environ.get('APP_PUBLIC_URL', 'https://factuya.app')
+APP_URL = os.environ.get('APP_PUBLIC_URL', 'https://factuya.site')
 
 DAYS_BEFORE_EXPIRY = 3  # Send "expiring soon" 3 days before
 GRACE_DAYS = 1          # Send "just expired" within 24 h after expiry
