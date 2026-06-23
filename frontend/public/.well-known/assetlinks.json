@@ -1,11 +1,15 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation": [
+      "delegate_permission/common.handle_all_urls",
+      "delegate_permission/common.get_login_creds"
+    ],
     "target": {
       "namespace": "android_app",
       "package_name": "site.factuya.twa",
       "sha256_cert_fingerprints": [
-        "EA:4D:4F:4E:DA:D3:52:B0:FF:75:53:F0:25:DA:21:E1:01:1F:5F:40:62:CD:0B:44:A1:23:17:2A:E4:B5:C8:60"
+        "EA:4D:4F:4E:DA:D3:52:B0:FF:75:53:F0:25:DA:21:E1:01:1F:5F:40:62:CD:0B:44:A1:23:17:2A:E4:B5:C8:60",
+        "C8:29:AD:05:E0:4E:2C:74:7D:86:9C:6A:C5:45:E5:EC:BD:D3:41:23:21:88:E1:82:62:F1:58:0C:EF:DF:14:82"
       ]
     }
   }
