@@ -166,6 +166,7 @@ async def calculate_subscription_price() -> dict:
 class CreateWompiCheckoutRequest(BaseModel):
     originUrl: str
     autoRenewOptIn: bool = False  # User consented to monthly auto-charge
+    couponCode: Optional[str] = None  # Optional winback/launch coupon
 
 class WompiWebhookPayload(BaseModel):
     event: str
@@ -215,6 +216,34 @@ async def create_wompi_checkout(
         # Compute the live COP price for $5 USD at the current exchange rate
         price = await calculate_subscription_price()
         amount_centavos = price["amount_centavos"]
+        amount_cop = price["amount_cop"]
+
+        # ---- Apply coupon discount if a valid coupon was passed ----
+        coupon_applied = None
+        if checkout_data.couponCode:
+            from utils.reactivation import validate_coupon
+            coupon_check = await validate_coupon(db, checkout_data.couponCode)
+            if coupon_check.get("status") == "valid":
+                # Block double-redemption for multi-use coupons (e.g. LANZAMIENTO50)
+                already_used = False
+                if coupon_check.get("multi_use"):
+                    existing = await db.reactivation_coupons.find_one({
+                        "code": coupon_check["code"],
+                        "used_by_user_ids": user_id,
+                    })
+                    already_used = bool(existing)
+
+                if not already_used and "wompi" in coupon_check.get("applies_to", []):
+                    pct = int(coupon_check.get("discount_percent", 0))
+                    if 0 < pct < 100:
+                        # Discount the amount, rounded to the nearest 100 COP for a clean charge
+                        discounted_cop = int(round(((amount_cop * (100 - pct) / 100)) / 100.0) * 100)
+                        amount_cop = discounted_cop
+                        amount_centavos = discounted_cop * 100
+                        coupon_applied = {
+                            "code": coupon_check["code"],
+                            "discount_percent": pct,
+                        }
 
         # Generate unique reference (alphanumeric, no special chars except - and _)
         reference = f"factuya{uuid.uuid4().hex[:12]}"
@@ -232,7 +261,7 @@ async def create_wompi_checkout(
             "userId": user_id,
             "reference": reference,
             "amount": amount_centavos,
-            "amountCOP": price["amount_cop"],
+            "amountCOP": amount_cop,
             "amountUSD": price["amount_usd"],
             "exchangeRate": price["exchange_rate"],
             "rateSource": price["rate_source"],
@@ -240,6 +269,7 @@ async def create_wompi_checkout(
             "status": "pending",
             "paymentGateway": "wompi",
             "autoRenewOptIn": bool(checkout_data.autoRenewOptIn),
+            "couponApplied": coupon_applied,  # None or {"code": "...", "discount_percent": 50}
             "metadata": {
                 "user_email": user.get("email", ""),
                 "plan": "premium_monthly"
@@ -269,13 +299,15 @@ async def create_wompi_checkout(
             "reference": reference,
             "publicKey": WOMPI_PUBLIC_KEY,
             "amountInCents": amount_centavos,
-            "amountCOP": price["amount_cop"],
+            "amountCOP": amount_cop,
+            "originalAmountCOP": price["amount_cop"],
             "amountUSD": price["amount_usd"],
             "exchangeRate": price["exchange_rate"],
             "rateSource": price["rate_source"],
             "currency": "COP",
             "integritySignature": integrity_signature,
-            "redirectUrl": redirect_url
+            "redirectUrl": redirect_url,
+            "couponApplied": coupon_applied,
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -416,6 +448,18 @@ async def activate_subscription(user_id: str, reference: str, wompi_transaction:
         {"$set": sub_update},
         upsert=True
     )
+
+    # ---- Redeem the coupon (server-side, idempotent) ----
+    # The frontend also calls redeem after a successful verify, but doing it
+    # here covers webhook-only activations and prevents drift if the user
+    # never returns to the redirect URL.
+    coupon_applied = (original_tx or {}).get("couponApplied")
+    if coupon_applied and coupon_applied.get("code"):
+        try:
+            from utils.reactivation import redeem_coupon
+            await redeem_coupon(db, coupon_applied["code"], user_id)
+        except Exception as e:
+            print(f"Wompi coupon redemption failed: {e}")
 
     # Fire-and-forget welcome email (first activation only)
     user = await db.users.find_one({"id": user_id})

@@ -329,7 +329,8 @@ const SubscriptionPanel = () => {
       const gateway = forceGateway || (geo?.gateway === 'wompi' ? 'wompi' : 'paypal');
 
       if (gateway === 'wompi') {
-        const response = await subscriptionAPI.createWompiCheckout(autoRenewOptIn);
+        const couponCode = pendingCoupon?.code || null;
+        const response = await subscriptionAPI.createWompiCheckout(autoRenewOptIn, couponCode);
         if (response.data.checkoutUrl) {
           window.location.href = response.data.checkoutUrl;
         }
@@ -583,14 +584,36 @@ const SubscriptionPanel = () => {
                   <Trophy className="w-3 h-3" />
                   Mejor precio del mercado
                 </div>
-                <p className="text-4xl font-bold text-gray-900 dark:text-white">$3.99 <span className="text-lg font-medium text-gray-500">USD</span></p>
+                <p className="text-4xl font-bold text-gray-900 dark:text-white" data-testid="price-usd">
+                  {pendingCoupon && !isPremium ? (
+                    <>
+                      <span className="text-2xl line-through text-gray-400 mr-2" data-testid="price-original">$3.99</span>
+                      <span data-testid="price-discounted">${(3.99 * (100 - (pendingCoupon.discount_percent || 0)) / 100).toFixed(2)}</span>
+                      <span className="text-lg font-medium text-gray-500"> USD</span>
+                    </>
+                  ) : (
+                    <>$3.99 <span className="text-lg font-medium text-gray-500">USD</span></>
+                  )}
+                </p>
                 <p className="text-gray-500 dark:text-gray-400">/{t('subscription.month')}</p>
+                {pendingCoupon && !isPremium && (
+                  <p className="text-xs font-semibold text-lime-600 dark:text-lime-400 mt-1" data-testid="coupon-discount-note">
+                    {pendingCoupon.discount_percent}% OFF aplicado con {pendingCoupon.code}
+                  </p>
+                )}
                 {/* Show COP equivalent only for Colombian users (Wompi gateway) */}
                 {geo?.gateway === 'wompi' && wompiPrice?.amountCOP && (
                   <div className="mt-2 mb-2 text-center" data-testid="wompi-cop-price">
-                    <p className="text-sm font-semibold text-lime-600 dark:text-lime-400">
-                      ≈ ${wompiPrice.amountCOP.toLocaleString('es-CO')} COP
-                    </p>
+                    {pendingCoupon && !isPremium ? (
+                      <p className="text-sm font-semibold text-lime-600 dark:text-lime-400">
+                        <span className="line-through text-gray-400 mr-1">${wompiPrice.amountCOP.toLocaleString('es-CO')}</span>
+                        ≈ ${Math.round(wompiPrice.amountCOP * (100 - (pendingCoupon.discount_percent || 0)) / 100 / 100) * 100} COP
+                      </p>
+                    ) : (
+                      <p className="text-sm font-semibold text-lime-600 dark:text-lime-400">
+                        ≈ ${wompiPrice.amountCOP.toLocaleString('es-CO')} COP
+                      </p>
+                    )}
                     <p className="text-[10px] text-gray-400 dark:text-gray-500">
                       TRM: ${Number(wompiPrice.exchangeRate).toLocaleString('es-CO', { maximumFractionDigits: 2 })} · {wompiPrice.rateSource}
                     </p>

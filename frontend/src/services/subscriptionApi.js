@@ -10,9 +10,10 @@ export const subscriptionAPI = {
   
   // Wompi integration
   getWompiConfig: () => api.get('/wompi/config'),
-  createWompiCheckout: (autoRenewOptIn = false) => api.post('/wompi/create-checkout', {
+  createWompiCheckout: (autoRenewOptIn = false, couponCode = null) => api.post('/wompi/create-checkout', {
     originUrl: window.location.origin,
     autoRenewOptIn,
+    couponCode: couponCode || null,
   }),
   verifyWompiPayment: (reference) => api.get(`/wompi/verify/${reference}`),
   getWompiTransactions: () => api.get('/wompi/transactions'),

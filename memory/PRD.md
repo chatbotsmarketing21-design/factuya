@@ -9,6 +9,35 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 - **PWA Offline Mode**: ACTIVE (Service Worker `#387 activated and running`, IndexedDB caching)
 
 ---
+## 🎟️ SESSION 2026-06-23 — DESCUENTO REAL 50% EN WOMPI (LANZAMIENTO50) ✅
+
+### What got DONE today
+1. **Frontend now envía `couponCode`** al crear el checkout Wompi (`subscriptionApi.createWompiCheckout(autoRenewOptIn, couponCode)`).
+2. **`SubscriptionPanel.jsx` pasa `pendingCoupon?.code`** automáticamente al pulsar "Suscribirme" cuando hay un cupón activo.
+3. **UI muestra precio tachado + precio con descuento** ($3.99 → $2.00 USD y $13.700 → $6.900 COP).
+4. **Backend ya aplica el descuento real** en `POST /api/wompi/create-checkout` y guarda `couponApplied` en `wompi_transactions`.
+5. **Redención server-side en `activate_subscription`**: cuando el pago se aprueba (vía `/verify/{reference}` o `/webhook`), el cupón se marca como redimido vía `redeem_coupon` (idempotente, cubre webhook-only flow).
+6. **Response del create-checkout** ahora devuelve `amountCOP` con el monto descontado, `originalAmountCOP` y `couponApplied`.
+7. **Tested with curl**:
+   - Sin cupón → `amountInCents: 1370000` ($13.700 COP)
+   - Cupón inválido → fallback al precio completo (`couponApplied: null`)
+   - `LANZAMIENTO50` → `amountInCents: 680000` ($6.800 COP, 50% real)
+8. **Multi-use coupon protection**: la lógica `used_by_user_ids` evita doble redención por el mismo usuario; el cupón sigue válido para otros usuarios hasta su expiración.
+
+### Files modified
+- `/app/backend/routes/wompi.py` (create-checkout + activate_subscription)
+- `/app/frontend/src/services/subscriptionApi.js`
+- `/app/frontend/src/pages/SubscriptionPanel.jsx`
+
+### Pending follow-ups
+- Aplicar el mismo flujo de descuento real a PayPal (deferred por el usuario)
+- Verificar dominio `factuya.site` en Resend (acción usuario en Hostinger DNS)
+- Rotar contraseña del keystore (`Cesar.2026` expuesta)
+- Recordar usuario hacer **"Save to GitHub"** + `git pull` en VPS
+
+---
+
+
 
 ## 🚀 SESSION 2026-05-27 — PAYPAL LIVE DEPLOYED TO VPS ✅
 
