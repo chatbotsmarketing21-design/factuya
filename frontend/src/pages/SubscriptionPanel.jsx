@@ -92,6 +92,46 @@ const SubscriptionPanel = () => {
   // Win-back coupon (persisted across navigation)
   const [pendingCoupon, setPendingCoupon] = useState(() => getPendingCoupon());
 
+  // Manual coupon input state
+  const [manualCouponCode, setManualCouponCode] = useState('');
+  const [validatingCoupon, setValidatingCoupon] = useState(false);
+  const [showCouponInput, setShowCouponInput] = useState(false);
+
+  const handleApplyCoupon = async () => {
+    const code = manualCouponCode.trim().toUpperCase();
+    if (!code) return;
+    setValidatingCoupon(true);
+    try {
+      const res = await couponAPI.validate(code);
+      savePendingCoupon(res.data);
+      setPendingCoupon(res.data);
+      setManualCouponCode('');
+      setShowCouponInput(false);
+      toast({
+        title: '🎁 ¡Cupón aplicado!',
+        description: `Recibirás un ${res.data.discount_percent}% de descuento al pagar.`,
+      });
+    } catch (err) {
+      const msg = err?.response?.data?.detail || 'Cupón inválido o expirado';
+      toast({
+        title: 'Cupón no válido',
+        description: msg,
+        variant: 'destructive',
+      });
+    } finally {
+      setValidatingCoupon(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    clearPendingCoupon();
+    setPendingCoupon(null);
+    toast({
+      title: 'Cupón removido',
+      description: 'Se aplicará el precio normal en tu próximo pago.',
+    });
+  };
+
   /**
    * On mount, pick up coupon from URL (?coupon=...) if present.
    * URL takes precedence over previously-stored coupon (handles new code from email).
@@ -462,13 +502,69 @@ const SubscriptionPanel = () => {
                 <p className="text-sm text-gray-700 dark:text-gray-300">
                   Tu descuento se aplicará automáticamente cuando completes el pago.
                 </p>
-                <div className="font-mono text-xs bg-white dark:bg-gray-900 border border-lime-200 dark:border-lime-800 rounded px-2 py-1 inline-block mt-2 text-gray-700 dark:text-gray-300">
-                  {pendingCoupon.code}
+                <div className="flex items-center gap-2 mt-2 flex-wrap">
+                  <div className="font-mono text-xs bg-white dark:bg-gray-900 border border-lime-200 dark:border-lime-800 rounded px-2 py-1 inline-block text-gray-700 dark:text-gray-300">
+                    {pendingCoupon.code}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveCoupon}
+                    className="text-xs text-gray-500 hover:text-red-500 underline"
+                    data-testid="remove-coupon-button"
+                  >
+                    Quitar cupón
+                  </button>
                 </div>
               </div>
             </div>
           </Card>
         )}
+
+        {/* Manual Coupon Input (only when no coupon active and not premium) */}
+        {!pendingCoupon && !isPremium && (
+          <Card className="p-4 mb-6 dark:bg-card" data-testid="manual-coupon-card">
+            {!showCouponInput ? (
+              <button
+                type="button"
+                onClick={() => setShowCouponInput(true)}
+                className="w-full flex items-center justify-center gap-2 text-sm text-lime-600 dark:text-lime-400 hover:text-lime-700 dark:hover:text-lime-300 font-medium"
+                data-testid="show-coupon-input-button"
+              >
+                <Gift className="w-4 h-4" />
+                ¿Tenés un cupón? Aplicarlo
+              </button>
+            ) : (
+              <div className="flex flex-col sm:flex-row gap-2 items-stretch">
+                <input
+                  type="text"
+                  value={manualCouponCode}
+                  onChange={(e) => setManualCouponCode(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => { if (e.key === 'Enter') handleApplyCoupon(); }}
+                  placeholder="Escribe tu cupón (ej: LANZAMIENTO50)"
+                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-white rounded-md text-sm uppercase tracking-wider font-mono focus:outline-none focus:ring-2 focus:ring-lime-500"
+                  data-testid="coupon-input"
+                  autoFocus
+                />
+                <Button
+                  onClick={handleApplyCoupon}
+                  disabled={validatingCoupon || !manualCouponCode.trim()}
+                  className="bg-lime-500 hover:bg-lime-600 text-white"
+                  data-testid="apply-coupon-button"
+                >
+                  {validatingCoupon ? 'Validando...' : 'Aplicar'}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => { setShowCouponInput(false); setManualCouponCode(''); }}
+                  data-testid="cancel-coupon-button"
+                >
+                  Cancelar
+                </Button>
+              </div>
+            )}
+          </Card>
+        )}
+
 
         {/* Payment Result Banner */}
         {paymentResult && (
