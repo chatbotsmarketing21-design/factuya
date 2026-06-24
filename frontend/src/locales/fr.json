@@ -1,4 +1,10 @@
 {
+  "launchBanner": {
+    "label": "Lancement :",
+    "fullText": "{{pct}}% DE RÉDUCTION sur votre premier mois avec",
+    "shortText": "{{pct}}% DE RÉDUCTION avec",
+    "close": "Fermer la bannière"
+  },
   "landing": {
     "signIn": "Connexion",
     "createInvoice": "Créer une Facture",

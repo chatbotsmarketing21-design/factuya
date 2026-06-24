@@ -1,4 +1,10 @@
 {
+  "launchBanner": {
+    "label": "Lanzamiento:",
+    "fullText": "{{pct}}% OFF tu primer mes con",
+    "shortText": "{{pct}}% OFF con",
+    "close": "Cerrar banner"
+  },
   "landing": {
     "signIn": "Iniciar Sesión",
     "createInvoice": "Crear Factura",

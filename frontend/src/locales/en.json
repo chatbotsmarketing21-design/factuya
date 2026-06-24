@@ -1,4 +1,10 @@
 {
+  "launchBanner": {
+    "label": "Launch:",
+    "fullText": "{{pct}}% OFF your first month with",
+    "shortText": "{{pct}}% OFF with",
+    "close": "Close banner"
+  },
   "landing": {
     "signIn": "Sign In",
     "createInvoice": "Create Invoice",

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Gift, X } from 'lucide-react';
 
 /**
@@ -34,6 +35,7 @@ function formatCountdown(expiresAt) {
 }
 
 const LaunchCouponBanner = () => {
+  const { t } = useTranslation();
   const [dismissed, setDismissed] = useState(() => {
     try {
       const raw = localStorage.getItem(DISMISS_KEY);
@@ -87,9 +89,9 @@ const LaunchCouponBanner = () => {
             <Gift className="w-5 h-5 shrink-0 hidden sm:block" aria-hidden="true" />
             <p className="text-xs sm:text-sm font-medium leading-tight truncate">
               <span className="hidden sm:inline">🎁&nbsp;</span>
-              <span className="font-bold">Lanzamiento:</span>{' '}
-              <span className="hidden md:inline">{COUPON_DISCOUNT_PCT}% OFF tu primer mes con</span>
-              <span className="md:hidden">{COUPON_DISCOUNT_PCT}% OFF con</span>{' '}
+              <span className="font-bold">{t('launchBanner.label')}</span>{' '}
+              <span className="hidden md:inline">{t('launchBanner.fullText', { pct: COUPON_DISCOUNT_PCT })}</span>
+              <span className="md:hidden">{t('launchBanner.shortText', { pct: COUPON_DISCOUNT_PCT })}</span>{' '}
               <span className="font-mono font-bold bg-gray-900 text-yellow-300 px-1.5 py-0.5 rounded">
                 {COUPON_CODE}
               </span>
@@ -110,7 +112,7 @@ const LaunchCouponBanner = () => {
             <button
               type="button"
               onClick={handleDismiss}
-              aria-label="Cerrar banner"
+              aria-label={t('launchBanner.close')}
               className="p-1 rounded hover:bg-gray-900/10 transition-colors"
               data-testid="launch-coupon-dismiss"
             >
