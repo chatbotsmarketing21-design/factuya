@@ -6,6 +6,7 @@ import { Button } from '../components/ui/button';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import { getCountryName } from '../constants/countryConfig';
+import LaunchCouponBanner from '../components/LaunchCouponBanner';
 
 const Home = () => {
   const { t, i18n } = useTranslation();
@@ -147,6 +148,9 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Sticky launch coupon banner (hidden after dismissal or expiry) */}
+      <LaunchCouponBanner />
+
       {/* Header */}
       <header className="border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
