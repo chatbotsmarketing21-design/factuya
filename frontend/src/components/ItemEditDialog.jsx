@@ -85,10 +85,24 @@ const ItemEditDialog = ({
     onOpenChange(false);
   };
 
+  // When the soft keyboard appears on mobile, scroll the focused input
+  // into view so it doesn't get hidden behind the keyboard.
+  const scrollIntoViewOnFocus = (e) => {
+    const target = e.currentTarget;
+    // Wait for the keyboard animation to finish before scrolling
+    setTimeout(() => {
+      try {
+        target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      } catch (_) {
+        /* noop */
+      }
+    }, 300);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-md sm:max-w-lg dark:bg-card"
+        className="max-w-md sm:max-w-lg dark:bg-card max-h-[90vh] overflow-y-auto"
         data-testid="item-edit-dialog"
       >
         <DialogHeader>
@@ -109,6 +123,7 @@ const ItemEditDialog = ({
               inputMode="decimal"
               autoFocus
               value={quantity}
+              onFocus={scrollIntoViewOnFocus}
               onChange={(e) => {
                 const v = e.target.value.replace(',', '.');
                 if (v === '' || /^\d*\.?\d*$/.test(v)) setQuantity(v);
@@ -131,6 +146,7 @@ const ItemEditDialog = ({
             <Textarea
               id="dlg-desc"
               value={description}
+              onFocus={scrollIntoViewOnFocus}
               onChange={(e) => setDescription(e.target.value.slice(0, 6000))}
               placeholder={t('invoice.descriptionPlaceholder', { defaultValue: 'Producto o servicio…' })}
               rows={4}
@@ -149,6 +165,7 @@ const ItemEditDialog = ({
               type="text"
               inputMode="decimal"
               value={rate}
+              onFocus={scrollIntoViewOnFocus}
               onChange={(e) => {
                 const raw = e.target.value.replace(/\./g, '').replace(/,/g, '.');
                 if (raw === '' || /^\d*\.?\d*$/.test(raw)) setRate(raw);
