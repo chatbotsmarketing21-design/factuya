@@ -74,7 +74,7 @@ const LaunchCouponBanner = () => {
 
   return (
     <div
-      className="sticky top-0 z-50 w-full bg-gradient-to-r from-lime-500 via-lime-600 to-emerald-500 text-white shadow-md"
+      className="sticky top-0 z-50 w-full bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 text-gray-900 shadow-md border-b-2 border-amber-600"
       data-testid="launch-coupon-banner"
     >
       <Link
@@ -90,7 +90,7 @@ const LaunchCouponBanner = () => {
               <span className="font-bold">Lanzamiento:</span>{' '}
               <span className="hidden md:inline">{COUPON_DISCOUNT_PCT}% OFF tu primer mes con</span>
               <span className="md:hidden">{COUPON_DISCOUNT_PCT}% OFF con</span>{' '}
-              <span className="font-mono font-bold bg-white/20 px-1.5 py-0.5 rounded">
+              <span className="font-mono font-bold bg-gray-900 text-yellow-300 px-1.5 py-0.5 rounded">
                 {COUPON_CODE}
               </span>
             </p>
@@ -98,11 +98,11 @@ const LaunchCouponBanner = () => {
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <span
-              className="text-xs sm:text-sm font-bold bg-white/20 px-2 py-1 rounded whitespace-nowrap tabular-nums flex items-center gap-1.5"
+              className="text-xs sm:text-sm font-bold bg-gray-900 text-yellow-300 px-2 py-1 rounded whitespace-nowrap tabular-nums flex items-center gap-1.5"
               data-testid="launch-coupon-countdown"
             >
               <span
-                className="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_6px_rgba(239,68,68,0.8)]"
+                className="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_6px_rgba(239,68,68,0.9)]"
                 aria-hidden="true"
               />
               {countdown}
@@ -111,7 +111,7 @@ const LaunchCouponBanner = () => {
               type="button"
               onClick={handleDismiss}
               aria-label="Cerrar banner"
-              className="p-1 rounded hover:bg-white/20 transition-colors"
+              className="p-1 rounded hover:bg-gray-900/10 transition-colors"
               data-testid="launch-coupon-dismiss"
             >
               <X className="w-4 h-4" />
