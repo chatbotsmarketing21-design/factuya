@@ -75,17 +75,31 @@ def create_plan(token: str, product_id: str) -> str:
         json={
             "product_id": product_id,
             "name": "FactuYa! Premium Monthly",
-            "description": "Plan mensual de $3.99 USD con renovación automática.",
+            "description": "Plan mensual de $3.99 USD con renovación automática. Soporta descuento de lanzamiento en el primer mes.",
             "status": "ACTIVE",
-            "billing_cycles": [{
-                "frequency": {"interval_unit": "MONTH", "interval_count": 1},
-                "tenure_type": "REGULAR",
-                "sequence": 1,
-                "total_cycles": 0,  # 0 = infinite
-                "pricing_scheme": {
-                    "fixed_price": {"value": "3.99", "currency_code": "USD"},
+            # Two-cycle structure: TRIAL (first month, overridable) + REGULAR (infinite).
+            # By default both cost the same ($3.99). When a launch coupon is applied,
+            # the backend overrides the TRIAL price to $1.99 for that subscription only.
+            "billing_cycles": [
+                {
+                    "tenure_type": "TRIAL",
+                    "sequence": 1,
+                    "total_cycles": 1,
+                    "frequency": {"interval_unit": "MONTH", "interval_count": 1},
+                    "pricing_scheme": {
+                        "fixed_price": {"value": "3.99", "currency_code": "USD"},
+                    },
                 },
-            }],
+                {
+                    "tenure_type": "REGULAR",
+                    "sequence": 2,
+                    "total_cycles": 0,  # 0 = infinite
+                    "frequency": {"interval_unit": "MONTH", "interval_count": 1},
+                    "pricing_scheme": {
+                        "fixed_price": {"value": "3.99", "currency_code": "USD"},
+                    },
+                },
+            ],
             "payment_preferences": {
                 "auto_bill_outstanding": True,
                 "setup_fee": {"value": "0", "currency_code": "USD"},

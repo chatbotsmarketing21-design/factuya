@@ -66,6 +66,7 @@ SUBSCRIPTION_PRICE_USD = 3.99
 # ---------- Pydantic models ----------
 class CreateSubscriptionRequest(BaseModel):
     originUrl: str  # frontend origin (e.g., https://factuya.site)
+    couponCode: Optional[str] = None  # Optional launch / win-back coupon
 
 
 # ---------- Helpers ----------
@@ -141,6 +142,47 @@ async def create_subscription(
     return_url = f"{origin}/subscription?paypal=success"
     cancel_url = f"{origin}/subscription?paypal=canceled"
 
+    # ---- Apply coupon discount if a valid code was passed ----
+    # PayPal plans are structured with TRIAL (cycle 1) + REGULAR (cycle 2 infinite).
+    # We override the TRIAL cycle's price for THIS subscription only — first month
+    # at the discounted rate, then $3.99 from month 2 onward automatically.
+    coupon_applied = None
+    plan_override = None
+    if body.couponCode:
+        from utils.reactivation import validate_coupon
+        coupon_check = await validate_coupon(db, body.couponCode)
+        if coupon_check.get("status") == "valid":
+            already_used = False
+            if coupon_check.get("multi_use"):
+                existing = await db.reactivation_coupons.find_one({
+                    "code": coupon_check["code"],
+                    "used_by_user_ids": user_id,
+                })
+                already_used = bool(existing)
+
+            if not already_used and "paypal" in coupon_check.get("applies_to", []):
+                pct = int(coupon_check.get("discount_percent", 0))
+                if 0 < pct < 100:
+                    discounted_usd = round(SUBSCRIPTION_PRICE_USD * (100 - pct) / 100, 2)
+                    coupon_applied = {
+                        "code": coupon_check["code"],
+                        "discount_percent": pct,
+                        "trial_price_usd": discounted_usd,
+                    }
+                    plan_override = {
+                        "billing_cycles": [
+                            {
+                                "sequence": 1,  # TRIAL — first month only
+                                "pricing_scheme": {
+                                    "fixed_price": {
+                                        "value": f"{discounted_usd:.2f}",
+                                        "currency_code": "USD",
+                                    }
+                                },
+                            }
+                        ]
+                    }
+
     payload = {
         "plan_id": PAYPAL_PLAN_ID,
         "custom_id": user_id,  # comes back in webhooks so we know which user
@@ -165,6 +207,10 @@ async def create_subscription(
         },
     }
 
+    # Add the plan override only when a discount actually applies.
+    if plan_override:
+        payload["plan"] = plan_override
+
     result = await paypal_request("POST", "/v1/billing/subscriptions", payload)
     subscription_id = result.get("id")
     approval_url = next(
@@ -181,12 +227,14 @@ async def create_subscription(
         "subscriptionId": subscription_id,
         "status": result.get("status", "APPROVAL_PENDING"),
         "planId": PAYPAL_PLAN_ID,
+        "couponApplied": coupon_applied,  # None or {code, discount_percent, trial_price_usd}
         "createdAt": datetime.now(timezone.utc),
     })
 
     return {
         "subscriptionId": subscription_id,
         "approvalUrl": approval_url,
+        "couponApplied": coupon_applied,
     }
 
 
@@ -366,18 +414,35 @@ async def _activate_local_subscription(user_id: str, subscription_id: str, data:
         upsert=True,
     )
 
+    # ---- Redeem the coupon server-side (idempotent) ----
+    # Mirrors the Wompi flow: when the subscription activates, mark the cupón
+    # as used for this user so the discount can't be re-applied.
+    pending = await db.paypal_subscriptions.find_one({"subscriptionId": subscription_id})
+    coupon_applied = (pending or {}).get("couponApplied")
+    if coupon_applied and coupon_applied.get("code"):
+        try:
+            from utils.reactivation import redeem_coupon
+            await redeem_coupon(db, coupon_applied["code"], user_id)
+        except Exception as e:
+            logger.error("PayPal coupon redemption failed: %s", e)
+
     # Fire-and-forget confirmation email (first activation only)
     if not was_already_active:
         user = await db.users.find_one({"id": user_id})
         if user and user.get("email"):
             try:
                 from utils.email_notifications import send_subscription_confirmation
+                # Reflect the actual first-cycle price (discounted if coupon applied)
+                if coupon_applied and coupon_applied.get("trial_price_usd"):
+                    amount_label = f"${coupon_applied['trial_price_usd']:.2f} USD (primer mes con cupón {coupon_applied['code']}, luego $3.99/mes)"
+                else:
+                    amount_label = "$3.99 USD"
                 await send_subscription_confirmation(
                     user_email=user["email"],
                     user_name=user.get("name", ""),
                     gateway="paypal",
                     period_end=period_end,
-                    amount_label="$3.99 USD",
+                    amount_label=amount_label,
                 )
             except Exception as e:
                 logger.error("PayPal confirmation email failed: %s", e)

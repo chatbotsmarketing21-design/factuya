@@ -29,8 +29,9 @@ export const subscriptionAPI = {
 
   // PayPal Subscriptions (international gateway)
   getPaypalConfig: () => api.get('/paypal/config'),
-  createPaypalSubscription: () => api.post('/paypal/create-subscription', {
+  createPaypalSubscription: (couponCode = null) => api.post('/paypal/create-subscription', {
     originUrl: window.location.origin,
+    couponCode: couponCode || null,
   }),
   verifyPaypalSubscription: (subscriptionId) => api.get(`/paypal/verify/${subscriptionId}`),
   verifyLatestPaypalSubscription: () => api.get('/paypal/verify-latest'),

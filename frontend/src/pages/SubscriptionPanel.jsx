@@ -386,7 +386,7 @@ const SubscriptionPanel = () => {
         });
         return;
       }
-      const response = await subscriptionAPI.createPaypalSubscription();
+      const response = await subscriptionAPI.createPaypalSubscription(pendingCoupon?.code || null);
       if (response.data.approvalUrl) {
         window.location.href = response.data.approvalUrl;
       }
