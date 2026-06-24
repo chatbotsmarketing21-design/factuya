@@ -26,9 +26,11 @@ function formatCountdown(expiresAt) {
   const days = Math.floor(ms / 86400000);
   const hours = Math.floor((ms % 86400000) / 3600000);
   const minutes = Math.floor((ms % 3600000) / 60000);
-  if (days > 0) return `${days}d ${hours}h`;
-  if (hours > 0) return `${hours}h ${minutes}m`;
-  return `${minutes}m`;
+  const seconds = Math.floor((ms % 60000) / 1000);
+  // Always include seconds so the countdown visibly ticks every second.
+  if (days > 0) return `${days}d ${hours}h ${minutes}m ${String(seconds).padStart(2, '0')}s`;
+  if (hours > 0) return `${hours}h ${minutes}m ${String(seconds).padStart(2, '0')}s`;
+  return `${minutes}m ${String(seconds).padStart(2, '0')}s`;
 }
 
 const LaunchCouponBanner = () => {
@@ -47,12 +49,12 @@ const LaunchCouponBanner = () => {
 
   const [countdown, setCountdown] = useState(() => formatCountdown(COUPON_EXPIRES_AT));
 
-  // Refresh countdown every minute so it stays accurate without re-renders elsewhere
+  // Refresh countdown every second so it visibly ticks in real time.
   useEffect(() => {
     if (dismissed) return;
     const id = setInterval(() => {
       setCountdown(formatCountdown(COUPON_EXPIRES_AT));
-    }, 60000);
+    }, 1000);
     return () => clearInterval(id);
   }, [dismissed]);
 
@@ -96,10 +98,14 @@ const LaunchCouponBanner = () => {
 
           <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <span
-              className="text-xs sm:text-sm font-bold bg-white/20 px-2 py-1 rounded whitespace-nowrap"
+              className="text-xs sm:text-sm font-bold bg-white/20 px-2 py-1 rounded whitespace-nowrap tabular-nums flex items-center gap-1.5"
               data-testid="launch-coupon-countdown"
             >
-              ⏰ {countdown}
+              <span
+                className="inline-block w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_6px_rgba(239,68,68,0.8)]"
+                aria-hidden="true"
+              />
+              {countdown}
             </span>
             <button
               type="button"
