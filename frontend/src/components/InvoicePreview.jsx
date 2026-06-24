@@ -149,7 +149,7 @@ const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
               {items.map((item, index) => (
                 <tr key={index} className="border-b border-gray-200">
                   <td className="py-3 text-center text-gray-500">{index + 1}</td>
-                  <td className="py-3 text-gray-900">{item?.description || ''}</td>
+                  <td className="py-3 text-gray-900" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>{item?.description || ''}</td>
                   <td className="py-3 text-center text-gray-700">{item?.quantity || 0}</td>
                   <td className="py-3 text-right text-gray-700">${formatCurrency(item?.rate)}</td>
                   <td className="py-3 text-right font-semibold text-gray-900">${formatCurrency(item?.amount)}</td>

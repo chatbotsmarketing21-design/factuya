@@ -147,7 +147,7 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
                   <td className="border border-gray-300 px-3 py-2 text-center text-sm text-gray-800">
                     {String(item.quantity || 0)}
                   </td>
-                  <td className="border border-gray-300 px-3 py-2 text-sm text-gray-800">
+                  <td className="border border-gray-300 px-3 py-2 text-sm text-gray-800" style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                     {String(item.description || 'Sin descripción')}
                   </td>
                   <td className="border border-gray-300 px-3 py-2 text-right text-sm text-gray-800">

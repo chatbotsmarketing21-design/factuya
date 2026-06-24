@@ -1448,7 +1448,10 @@ const InvoiceCreator = () => {
                               {hasContent ? t('invoice.tapToEdit', { defaultValue: 'Toca para editar' }) : t('invoice.tapToAddDetails', { defaultValue: 'Toca para añadir detalles' })}
                             </span>
                           </div>
-                          <p className={`text-sm sm:text-base font-medium truncate ${item.description ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500 italic'}`}>
+                          <p
+                            className={`text-sm sm:text-base font-medium ${item.description ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500 italic'}`}
+                            style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+                          >
                             {item.description || t('invoice.descriptionEmpty', { defaultValue: '(sin descripción)' })}
                           </p>
                           {hasContent && (
