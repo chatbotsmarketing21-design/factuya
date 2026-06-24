@@ -102,7 +102,8 @@ const ItemEditDialog = ({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-md sm:max-w-lg dark:bg-card max-h-[90vh] overflow-y-auto"
+        className="max-w-md sm:max-w-lg dark:bg-card !top-4 !translate-y-0 sm:!top-[50%] sm:!translate-y-[-50%] max-h-[calc(100dvh-2rem)] sm:max-h-[90vh] overflow-y-auto overscroll-contain"
+        style={{ WebkitOverflowScrolling: 'touch' }}
         data-testid="item-edit-dialog"
       >
         <DialogHeader>
