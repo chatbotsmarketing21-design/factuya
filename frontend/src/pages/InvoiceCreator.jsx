@@ -650,9 +650,12 @@ const InvoiceCreator = () => {
         rate: updatedItem.rate,
         amount: updatedItem.amount,
       };
-      // Recalculate the invoice totals with the new items array
-      recalculateTotal(newItems, prev.taxRate);
-      return { ...prev, items: newItems };
+      // Calculate totals inline so we update items + subtotal + tax + total atomically
+      // (avoiding a nested setInvoice that could clobber items on rerender).
+      const subtotal = newItems.reduce((sum, it) => sum + (it.amount || 0), 0);
+      const tax = prev.hasTax ? (subtotal * prev.taxRate) / 100 : 0;
+      const total = subtotal + tax;
+      return { ...prev, items: newItems, subtotal, tax, total };
     });
   };
 
