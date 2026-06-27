@@ -153,6 +153,21 @@ async def google_token(request: TokenRequest):
             await db.subscriptions.insert_one(subscription)
             logger.info(f"Created subscription for user: {user_id}")
 
+            # Welcome notification (in-app bell) with the launch coupon
+            try:
+                from routes.notifications import create_notification
+                await create_notification(
+                    user_id,
+                    type="welcome",
+                    title="🎁 ¡Bienvenido a FactuYa!",
+                    body="Activá tu Premium con el cupón LANZAMIENTO50 y pagá solo $2 USD el primer mes (50% OFF).",
+                    link="/subscription?coupon=LANZAMIENTO50",
+                    icon="gift",
+                    accent="amber",
+                )
+            except Exception as e:
+                logger.warning(f"Welcome notification failed for Google user {user_id}: {e}")
+
             # Fire-and-forget welcome email with LANZAMIENTO50 coupon (only for new Google signups)
             try:
                 from utils.email_notifications import send_signup_welcome_email

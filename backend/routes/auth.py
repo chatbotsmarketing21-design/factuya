@@ -45,7 +45,23 @@ async def register(user: UserCreate):
     
     user_in_db = UserInDB(**user_dict)
     await db.users.insert_one(user_in_db.dict())
-    
+
+    # Welcome notification (in-app bell) with the launch coupon
+    try:
+        from routes.notifications import create_notification
+        await create_notification(
+            user_in_db.id,
+            type="welcome",
+            title="🎁 ¡Bienvenido a FactuYa!",
+            body="Activá tu Premium con el cupón LANZAMIENTO50 y pagá solo $2 USD el primer mes (50% OFF).",
+            link="/subscription?coupon=LANZAMIENTO50",
+            icon="gift",
+            accent="amber",
+        )
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning("Welcome notification failed: %s", e)
+
     # Fire-and-forget welcome email with LANZAMIENTO50 coupon
     try:
         from utils.email_notifications import send_signup_welcome_email

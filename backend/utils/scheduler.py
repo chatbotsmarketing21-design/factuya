@@ -34,6 +34,58 @@ async def _renewal_job():
         logger.exception("[scheduler] renewal job crashed: %s", e)
 
 
+async def _expiry_notification_job():
+    """Daily job: in-app bell notification when a user's Premium expires tomorrow.
+
+    Idempotent — uses a per-period dedupe key so the user only sees one
+    'expires tomorrow' notification per billing cycle.
+    """
+    from datetime import datetime, timezone, timedelta
+    import os
+    from motor.motor_asyncio import AsyncIOMotorClient
+    from routes.notifications import create_notification
+
+    try:
+        client = AsyncIOMotorClient(os.environ['MONGO_URL'])
+        db = client[os.environ['DB_NAME']]
+
+        now = datetime.now(timezone.utc)
+        tomorrow_start = (now + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+        tomorrow_end = tomorrow_start + timedelta(days=1)
+
+        cursor = db.subscriptions.find({
+            "status": "active",
+            "currentPeriodEnd": {"$gte": tomorrow_start, "$lt": tomorrow_end},
+        })
+
+        created = 0
+        async for sub in cursor:
+            user_id = sub.get("userId")
+            if not user_id:
+                continue
+            # Skip admin lifetime plans
+            if sub.get("planId") == "admin_lifetime":
+                continue
+            period_end = sub.get("currentPeriodEnd")
+            dedupe = f"sub_expires_tomorrow:{period_end.isoformat() if hasattr(period_end, 'isoformat') else period_end}"
+            inserted = await create_notification(
+                user_id,
+                type="subscription_expires_tomorrow",
+                title="⚠️ Tu Premium vence mañana",
+                body="Renová ahora para no perder el acceso a tus facturas y plantillas.",
+                link="/subscription",
+                icon="alert-triangle",
+                accent="red",
+                dedupe_key=dedupe,
+            )
+            if inserted:
+                created += 1
+
+        logger.info("[scheduler] expiry-tomorrow notifications created=%s", created)
+    except Exception as e:
+        logger.exception("[scheduler] expiry-tomorrow job crashed: %s", e)
+
+
 def start_scheduler() -> None:
     global _scheduler
     if _scheduler and _scheduler.running:
@@ -44,6 +96,15 @@ def start_scheduler() -> None:
         _renewal_job,
         CronTrigger(hour=9, minute=0),
         id="renewal_notifications",
+        replace_existing=True,
+        max_instances=1,
+        coalesce=True,
+    )
+    # In-app "expires tomorrow" bell notifications — runs 09:30 UTC
+    _scheduler.add_job(
+        _expiry_notification_job,
+        CronTrigger(hour=9, minute=30),
+        id="expiry_tomorrow_notifications",
         replace_existing=True,
         max_instances=1,
         coalesce=True,

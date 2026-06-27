@@ -426,6 +426,26 @@ async def _activate_local_subscription(user_id: str, subscription_id: str, data:
         except Exception as e:
             logger.error("PayPal coupon redemption failed: %s", e)
 
+    # In-app "Pago recibido" notification
+    try:
+        from routes.notifications import create_notification
+        if coupon_applied and coupon_applied.get("trial_price_usd"):
+            body = f"Tu pago de ${coupon_applied['trial_price_usd']:.2f} USD fue confirmado. ¡Premium activado!"
+        else:
+            body = "Tu pago de $3.99 USD fue confirmado. ¡Premium activado!"
+        await create_notification(
+            user_id,
+            type="payment_received",
+            title="✅ Pago recibido",
+            body=body,
+            link="/subscription",
+            icon="check-circle",
+            accent="lime",
+            dedupe_key=f"payment_received:paypal:{subscription_id}",
+        )
+    except Exception as e:
+        logger.error("PayPal payment notification failed: %s", e)
+
     # Fire-and-forget confirmation email (first activation only)
     if not was_already_active:
         user = await db.users.find_one({"id": user_id})

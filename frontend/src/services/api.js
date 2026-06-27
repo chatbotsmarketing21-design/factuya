@@ -98,6 +98,15 @@ export const couponAPI = {
   redeem: (code) => requireOnlineWrite(() => api.post('/coupons/redeem', { code })),
 };
 
+// Notification APIs (in-app bell)
+export const notificationAPI = {
+  list: (limit = 50) => api.get(`/notifications/?limit=${limit}`),
+  unreadCount: () => api.get('/notifications/unread-count'),
+  markRead: (id) => api.post(`/notifications/${id}/read`),
+  markAllRead: () => api.post('/notifications/read-all'),
+  remove: (id) => api.delete(`/notifications/${id}`),
+};
+
 // Invoice APIs
 export const invoiceAPI = {
   getAll: (params) =>

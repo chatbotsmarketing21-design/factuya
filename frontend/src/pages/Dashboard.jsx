@@ -10,6 +10,7 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import SwipeableInvoiceCard from '../components/SwipeableInvoiceCard';
+import NotificationBell from '../components/NotificationBell';
 import {
   Table,
   TableBody,
@@ -833,7 +834,8 @@ const Dashboard = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-
+              {/* Notification Bell — sits to the right of the Settings button */}
+              <NotificationBell />
 
             </div>
           </div>

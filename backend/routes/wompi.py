@@ -461,6 +461,24 @@ async def activate_subscription(user_id: str, reference: str, wompi_transaction:
         except Exception as e:
             print(f"Wompi coupon redemption failed: {e}")
 
+    # In-app "Pago recibido" notification
+    try:
+        from routes.notifications import create_notification
+        amount_label = original_tx.get("amountCOP") if original_tx else None
+        body = f"Tu pago de ${amount_label:,.0f} COP fue confirmado. ¡Premium activado!" if amount_label else "Tu pago fue confirmado. ¡Premium activado!"
+        await create_notification(
+            user_id,
+            type="payment_received",
+            title="✅ Pago recibido",
+            body=body,
+            link="/subscription",
+            icon="check-circle",
+            accent="lime",
+            dedupe_key=f"payment_received:wompi:{transaction_id}",
+        )
+    except Exception as e:
+        print(f"Wompi payment notification failed: {e}")
+
     # Fire-and-forget welcome email (first activation only)
     user = await db.users.find_one({"id": user_id})
     if user and user.get("email"):
