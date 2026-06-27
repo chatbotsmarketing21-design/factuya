@@ -1,0 +1,30 @@
+{
+  "summary": "Tested /api/notifications/* and welcome trigger on /api/auth/register against the preview backend. 10/10 pytest cases pass. The admin-auth fix on /broadcast (role check → ADMIN_EMAIL match) works correctly: admin (soportefactuya@gmail.com) gets 200 with {ok:true, sent:N}, non-admin gets 403 'Admin only', and broadcast notifications are persisted per user and visible via GET /api/notifications/. Welcome notification with type='welcome' and link='/subscription?coupon=LANZAMIENTO50' is created on register.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/notifications/{id}/read", "issue": "Silently returns {ok:true} even when the notification id does not exist or belongs to another user (matched_count==0 ignored intentionally per code comment). Not a bug per current spec but worth confirming product intent — could be misleading to API consumers."}
+    ]
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_notifications.py",
+    "/app/test_reports/pytest/notifications_results.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "routes/notifications.py defines its own AsyncIOMotorClient via os.environ['MONGO_URL'] but does not call load_dotenv. This works only because server.py loads dotenv first; if this module is ever imported standalone it would KeyError. Consider centralising the db handle in a shared module.",
+    "Both routes/auth.py and routes/admin.py hard-code ADMIN_EMAIL = 'soportefactuya@gmail.com' (now also in notifications.py). DRY violation — extract to a single config constant (e.g. utils/admin.py or env var ADMIN_EMAIL) to avoid future drift.",
+    "routes/auth.py imports `from routes.notifications import create_notification` inside the register handler (lazy). Fine for avoiding circular imports but slightly inefficient on every register call — could be a module-level import.",
+    "routes/notifications.py uses `user=Depends(get_current_user)` where get_current_user is the same callable bound to GET /auth/me via @router.get decorator. FastAPI does not double-register because the decorator returns the original function, but reusing a route function as a dependency couples the two semantics. Consider extracting a pure get_current_user dependency separate from the /me endpoint.",
+    "Welcome trigger is wrapped in try/except that only logs at WARNING — silent failure: if create_notification crashes the user still gets registered with no notification and no visible error. Acceptable for UX, but ensure logs are monitored."
+  ],
+  "updated_files": ["/app/backend/tests/test_notifications.py"],
+  "success_rate": {"backend": "100%", "frontend": "not tested (per request)"},
+  "test_credentials": "Admin soportefactuya@gmail.com / 71361451 ; User test@test.com / Test123!",
+  "seed_data_creation": "Each test that needed an unread notification created a fresh broadcast titled TEST_* with a uuid suffix. The register test creates a TEST_welcome_*@example.com user and deletes it via DELETE /api/auth/account at the end (best-effort cleanup).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Notifications endpoints verified end-to-end on preview. Re-run with: pytest /app/backend/tests/test_notifications.py -v. Tests are idempotent and self-cleaning. If running repeatedly note that each run will add several TEST_ broadcast notifications to every user's inbox; safe but accumulative.",
+  "rca of the issue": "Original 403 in production: /api/notifications/broadcast checked `user.role == 'admin'`, but UserResponse pydantic model does not expose a `role` field (and the project's admin pattern is email match, see routes/admin.py:verify_admin). Fix applied in notifications.py L160-169 now fetches the current user document from db.users by id and compares its email to ADMIN_EMAIL='soportefactuya@gmail.com' (case-insensitive), matching the established pattern. Verified: admin login → broadcast returns 200; non-admin → 403."
+}

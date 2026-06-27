@@ -160,11 +160,12 @@ class BroadcastIn(BaseModel):
 async def broadcast_notification(body: BroadcastIn, user=Depends(get_current_user)):
     """Admin-only — push a promo notification to every user.
 
-    Identifies admin via the users.role == 'admin' field. Keeps it simple:
-    no role table, just a quick check on the current user document.
+    Uses the same identification pattern as routes/admin.py: a hard-coded
+    ADMIN_EMAIL match against the current user's email (case-insensitive).
     """
+    ADMIN_EMAIL = "soportefactuya@gmail.com"
     me = await db.users.find_one({"id": user.id})
-    if not me or me.get("role") != "admin":
+    if not me or (me.get("email") or "").lower() != ADMIN_EMAIL.lower():
         raise HTTPException(status_code=403, detail="Admin only")
 
     now = datetime.now(timezone.utc)
