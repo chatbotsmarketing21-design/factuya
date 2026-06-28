@@ -25,6 +25,7 @@ import {
   UserPlus,
   RefreshCw
 } from 'lucide-react';
+import AdminBroadcastCard from '../components/AdminBroadcastCard';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -308,6 +309,9 @@ const AdminPanel = () => {
             </div>
           </>
         )}
+
+        {/* Broadcast notification card */}
+        <AdminBroadcastCard />
 
         {/* Users Table */}
         <Card className="dark:bg-card">
