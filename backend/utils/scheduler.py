@@ -34,6 +34,60 @@ async def _renewal_job():
         logger.exception("[scheduler] renewal job crashed: %s", e)
 
 
+async def _rating_request_job():
+    """Daily job: ask Premium users for a Play Store review after 7+ days.
+
+    Idempotent — uses a per-user dedupe key so each user only ever receives
+    a single rating request notification (no spam).
+
+    Targets: active subscriptions whose currentPeriodStart is 7+ days old,
+    excluding admin_lifetime plans.
+    """
+    from datetime import datetime, timezone, timedelta
+    import os
+    from motor.motor_asyncio import AsyncIOMotorClient
+    from routes.notifications import create_notification
+
+    PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=site.factuya.twa"
+
+    try:
+        client = AsyncIOMotorClient(os.environ['MONGO_URL'])
+        db = client[os.environ['DB_NAME']]
+
+        now = datetime.now(timezone.utc)
+        seven_days_ago = now - timedelta(days=7)
+
+        cursor = db.subscriptions.find({
+            "status": "active",
+            "currentPeriodStart": {"$lte": seven_days_ago},
+        })
+
+        created = 0
+        async for sub in cursor:
+            user_id = sub.get("userId")
+            if not user_id:
+                continue
+            # Skip admin lifetime plans — they shouldn't rate as customers
+            if sub.get("planId") == "admin_lifetime":
+                continue
+            inserted = await create_notification(
+                user_id,
+                type="rating_request",
+                title="⭐ ¿Te gusta FactuYa!?",
+                body="Tu opinión nos ayuda a crecer. ¿Nos regalas 5 estrellas en Google Play? Solo te toma 10 segundos. 💚",
+                link=PLAY_STORE_URL,
+                icon="check-circle",
+                accent="amber",
+                dedupe_key=f"rating_request:{user_id}",
+            )
+            if inserted:
+                created += 1
+
+        logger.info("[scheduler] rating-request notifications created=%s", created)
+    except Exception as e:
+        logger.exception("[scheduler] rating-request job crashed: %s", e)
+
+
 async def _expiry_notification_job():
     """Daily job: in-app bell notification when a user's Premium expires tomorrow.
 
@@ -105,6 +159,15 @@ def start_scheduler() -> None:
         _expiry_notification_job,
         CronTrigger(hour=9, minute=30),
         id="expiry_tomorrow_notifications",
+        replace_existing=True,
+        max_instances=1,
+        coalesce=True,
+    )
+    # In-app rating-request notifications — runs 10:00 UTC (≈ 05:00 Bogotá)
+    _scheduler.add_job(
+        _rating_request_job,
+        CronTrigger(hour=10, minute=0),
+        id="rating_request_notifications",
         replace_existing=True,
         max_instances=1,
         coalesce=True,

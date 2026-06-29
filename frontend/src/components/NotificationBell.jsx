@@ -93,7 +93,12 @@ const NotificationBell = () => {
     }
     if (n.link) {
       setOpen(false);
-      navigate(n.link);
+      // External URL (Play Store, etc.) → open in new tab. Internal route → SPA navigate.
+      if (/^https?:\/\//i.test(n.link)) {
+        window.open(n.link, '_blank', 'noopener,noreferrer');
+      } else {
+        navigate(n.link);
+      }
     }
   };
 
