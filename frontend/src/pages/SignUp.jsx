@@ -20,8 +20,7 @@ const SignUp = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: '',
-    companyName: ''
+    password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -91,7 +90,7 @@ const SignUp = () => {
       name: formData.name,
       email: formData.email,
       password: formData.password,
-      companyName: formData.companyName || formData.name
+      companyName: formData.name
     });
     
     if (result.success) {
@@ -207,19 +206,6 @@ const SignUp = () => {
                 onChange={handleChange}
                 placeholder={t('auth.namePlaceholder')}
                 required
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="companyName">{t('auth.companyNameOptional')}</Label>
-              <Input
-                id="companyName"
-                name="companyName"
-                type="text"
-                value={formData.companyName}
-                onChange={handleChange}
-                placeholder={t('auth.companyNamePlaceholder')}
                 className="mt-1"
               />
             </div>
