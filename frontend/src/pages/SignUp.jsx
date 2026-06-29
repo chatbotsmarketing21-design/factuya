@@ -21,11 +21,9 @@ const SignUp = () => {
     name: '',
     email: '',
     password: '',
-    confirmPassword: '',
     companyName: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   // Win-back coupon state
@@ -77,16 +75,6 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validaciones
-    if (formData.password !== formData.confirmPassword) {
-      toast({
-        title: t('toasts.errorTitle'),
-        description: t('toasts.passwordsDontMatch'),
-        variant: "destructive"
-      });
-      return;
-    }
 
     if (formData.password.length < 6) {
       toast({
@@ -269,33 +257,6 @@ const SignUp = () => {
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="confirmPassword">{t('auth.confirmPasswordRequired')}</Label>
-              <div className="relative mt-1">
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type={showConfirmPassword ? 'text' : 'password'}
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  placeholder={t('auth.confirmPasswordPlaceholder')}
-                  required
-                  className="pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  {showConfirmPassword ? (
                     <EyeOff className="w-5 h-5" />
                   ) : (
                     <Eye className="w-5 h-5" />
