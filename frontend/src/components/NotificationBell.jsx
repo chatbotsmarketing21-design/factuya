@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bell, Gift, CheckCircle, AlertTriangle, Megaphone, Check, Trash2 } from 'lucide-react';
 import {
@@ -25,6 +25,9 @@ const ACCENT_BG = {
   blue: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300',
 };
 
+// Distance in px at which a swipe becomes a delete gesture
+const SWIPE_THRESHOLD = 90;
+
 function timeAgo(iso) {
   if (!iso) return '';
   const diff = (Date.now() - new Date(iso).getTime()) / 1000;
@@ -34,6 +37,142 @@ function timeAgo(iso) {
   if (diff < 604800) return `hace ${Math.floor(diff / 86400)} d`;
   return new Date(iso).toLocaleDateString();
 }
+
+// Individual notification row with swipe-to-delete gesture.
+const NotificationItem = ({ n, onClick, onDelete }) => {
+  const Icon = ICON_MAP[n.icon] || Bell;
+  const accent = ACCENT_BG[n.accent] || ACCENT_BG.lime;
+  const isUnread = !n.readAt;
+
+  const [drag, setDrag] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const startX = useRef(null);
+  const startY = useRef(null);
+  const swiped = useRef(false); // whether the user actually swiped (vs. just tapped)
+
+  const handleStart = (x, y) => {
+    startX.current = x;
+    startY.current = y;
+    swiped.current = false;
+    setDragging(true);
+  };
+
+  const handleMove = (x, y) => {
+    if (startX.current == null) return;
+    const dx = x - startX.current;
+    const dy = y - startY.current;
+    // If mostly vertical movement, let the list scroll normally.
+    if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 8) {
+      startX.current = null;
+      setDragging(false);
+      setDrag(0);
+      return;
+    }
+    if (Math.abs(dx) > 6) swiped.current = true;
+    setDrag(dx);
+  };
+
+  const handleEnd = () => {
+    if (startX.current == null) return;
+    setDragging(false);
+    if (Math.abs(drag) >= SWIPE_THRESHOLD) {
+      // Fling off-screen in the swiped direction, then remove.
+      const direction = drag > 0 ? 1 : -1;
+      setDismissed(true);
+      setDrag(direction * 500);
+      setTimeout(() => onDelete(n.id), 220);
+    } else {
+      setDrag(0);
+    }
+    startX.current = null;
+  };
+
+  const handleClick = (e) => {
+    // Ignore click when the user just performed a swipe.
+    if (swiped.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      swiped.current = false;
+      return;
+    }
+    onClick(n);
+  };
+
+  const bgIntensity = Math.min(1, Math.abs(drag) / SWIPE_THRESHOLD);
+
+  return (
+    <div className="relative overflow-hidden border-b dark:border-border">
+      {/* Red delete backdrop revealed as user swipes */}
+      <div
+        className="absolute inset-0 flex items-center justify-between px-6 pointer-events-none"
+        style={{
+          backgroundColor: `rgba(239, 68, 68, ${0.15 + bgIntensity * 0.75})`,
+          opacity: Math.abs(drag) > 4 ? 1 : 0,
+        }}
+        aria-hidden="true"
+      >
+        <Trash2
+          className="w-5 h-5 text-white transition-transform"
+          style={{ transform: `scale(${0.8 + bgIntensity * 0.4})`, opacity: drag > 0 ? bgIntensity : 0 }}
+        />
+        <Trash2
+          className="w-5 h-5 text-white transition-transform"
+          style={{ transform: `scale(${0.8 + bgIntensity * 0.4})`, opacity: drag < 0 ? bgIntensity : 0 }}
+        />
+      </div>
+
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={handleClick}
+        onTouchStart={(e) => handleStart(e.touches[0].clientX, e.touches[0].clientY)}
+        onTouchMove={(e) => handleMove(e.touches[0].clientX, e.touches[0].clientY)}
+        onTouchEnd={handleEnd}
+        onMouseDown={(e) => handleStart(e.clientX, e.clientY)}
+        onMouseMove={(e) => { if (dragging) handleMove(e.clientX, e.clientY); }}
+        onMouseUp={handleEnd}
+        onMouseLeave={() => { if (dragging) handleEnd(); }}
+        className={`group relative px-4 py-3 cursor-pointer bg-white dark:bg-card hover:bg-gray-50 dark:hover:bg-gray-900/40 ${isUnread ? 'bg-amber-50/40 dark:bg-amber-950/10' : ''}`}
+        style={{
+          transform: `translateX(${drag}px)`,
+          transition: dragging ? 'none' : dismissed ? 'transform 0.22s ease-out' : 'transform 0.2s ease-out',
+          touchAction: 'pan-y',
+        }}
+        data-testid={`notification-item-${n.id}`}
+      >
+        <div className="flex gap-3 items-start">
+          <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${accent}`}>
+            <Icon className="w-4 h-4" />
+          </div>
+          <div className="flex-1 min-w-0 pr-6">
+            <p className={`text-sm font-medium leading-tight ${isUnread ? 'text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'}`}>
+              {n.title}
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5 line-clamp-3">
+              {n.body}
+            </p>
+            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">
+              {timeAgo(n.createdAt)}
+            </p>
+          </div>
+          {isUnread && (
+            <span className="absolute right-9 top-4 w-2 h-2 rounded-full bg-red-500" />
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onDelete(n.id); }}
+          className="absolute right-3 top-3 p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+          aria-label="Eliminar"
+          data-testid={`notification-delete-${n.id}`}
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const NotificationBell = () => {
   const navigate = useNavigate();
@@ -110,12 +249,11 @@ const NotificationBell = () => {
     setUnreadCount(0);
   };
 
-  const handleDelete = async (e, id) => {
-    e.stopPropagation();
+  const handleDelete = useCallback(async (id) => {
     try { await notificationAPI.remove(id); } catch (_) { /* ignore */ }
     setItems((cur) => cur.filter((x) => x.id !== id));
     loadUnreadCount();
-  };
+  }, [loadUnreadCount]);
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
@@ -167,50 +305,14 @@ const NotificationBell = () => {
               <p className="text-sm text-gray-500 dark:text-gray-400">No tenés notificaciones</p>
             </div>
           ) : (
-            items.map((n) => {
-              const Icon = ICON_MAP[n.icon] || Bell;
-              const accent = ACCENT_BG[n.accent] || ACCENT_BG.lime;
-              const isUnread = !n.readAt;
-              return (
-                <div
-                  key={n.id}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => handleItemClick(n)}
-                  className={`group relative px-4 py-3 border-b dark:border-border cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-900/40 ${isUnread ? 'bg-amber-50/40 dark:bg-amber-950/10' : ''}`}
-                  data-testid={`notification-item-${n.id}`}
-                >
-                  <div className="flex gap-3 items-start">
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 ${accent}`}>
-                      <Icon className="w-4 h-4" />
-                    </div>
-                    <div className="flex-1 min-w-0 pr-6">
-                      <p className={`text-sm font-medium leading-tight ${isUnread ? 'text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'}`}>
-                        {n.title}
-                      </p>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-0.5 line-clamp-3">
-                        {n.body}
-                      </p>
-                      <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1">
-                        {timeAgo(n.createdAt)}
-                      </p>
-                    </div>
-                    {isUnread && (
-                      <span className="absolute right-9 top-4 w-2 h-2 rounded-full bg-red-500" />
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => handleDelete(e, n.id)}
-                    className="absolute right-3 top-3 p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-                    aria-label="Eliminar"
-                    data-testid={`notification-delete-${n.id}`}
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              );
-            })
+            items.map((n) => (
+              <NotificationItem
+                key={n.id}
+                n={n}
+                onClick={handleItemClick}
+                onDelete={handleDelete}
+              />
+            ))
           )}
         </div>
       </PopoverContent>
