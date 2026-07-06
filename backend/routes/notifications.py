@@ -145,6 +145,43 @@ async def delete_notification(notif_id: str, user=Depends(get_current_user)):
     return {"ok": True}
 
 
+# ----------------------- Rating feedback (smart filter) -----------------------
+
+class RatingFeedbackIn(BaseModel):
+    sentiment: str  # "positive" | "negative"
+    message: Optional[str] = None
+
+
+@router.post("/feedback")
+async def submit_rating_feedback(payload: RatingFeedbackIn, user=Depends(get_current_user)):
+    """Record user's response to the rating request.
+
+    • sentiment=positive  → happy user, front-end will redirect them to Play Store.
+    • sentiment=negative  → sad user, saves message so we can improve. Never goes public.
+
+    Either way, we stop pinging this user about ratings — the scheduler skips
+    anyone with a feedback record on file.
+    """
+    if payload.sentiment not in ("positive", "negative"):
+        raise HTTPException(status_code=400, detail="sentiment must be positive or negative")
+
+    doc = {
+        "id": str(uuid4()),
+        "userId": user.id,
+        "email": user.email,
+        "sentiment": payload.sentiment,
+        "message": (payload.message or "").strip()[:2000] or None,
+        "createdAt": datetime.now(timezone.utc),
+    }
+    # Upsert-like: keep only one record per user (latest wins)
+    await db.ratingFeedback.update_one(
+        {"userId": user.id},
+        {"$set": doc},
+        upsert=True,
+    )
+    return {"ok": True}
+
+
 # ----------------------- Admin broadcast -----------------------
 
 class BroadcastIn(BaseModel):

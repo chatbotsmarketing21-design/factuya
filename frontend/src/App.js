@@ -20,6 +20,7 @@ import FAQ from "./pages/FAQ";
 import DeleteAccount from "./pages/DeleteAccount";
 import DeleteAccountConfirm from "./pages/DeleteAccountConfirm";
 import GoogleCallback from "./pages/GoogleCallback";
+import Feedback from "./pages/Feedback";
 import AuthCallback from "./components/AuthCallback";
 import AdminPanel from "./pages/AdminPanel";
 import AdminBalance from "./pages/AdminBalance";
@@ -56,6 +57,14 @@ function AppRouter() {
       <Route path="/faq" element={<FAQ />} />
       <Route path="/delete-account" element={<DeleteAccount />} />
       <Route path="/auth/google/callback" element={<GoogleCallback />} />
+      <Route
+        path="/feedback"
+        element={
+          <ProtectedRoute>
+            <Feedback />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/templates" element={<Templates />} />
       <Route
         path="/logos"
