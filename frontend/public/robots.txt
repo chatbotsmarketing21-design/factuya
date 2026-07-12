@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /create
+Disallow: /invoice
+Disallow: /profile
+Disallow: /admin
+Disallow: /subscription
+Disallow: /change-password
+Disallow: /delete-account-confirm
+Disallow: /auth/
+
+Sitemap: https://factuya.site/sitemap.xml
