@@ -9,6 +9,25 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 - **PWA Offline Mode**: ACTIVE (Service Worker `#387 activated and running`, IndexedDB caching)
 
 ---
+## 🔍 SESSION 2026-07-12 — SEO + AJUSTE SIGNUP ✅
+
+### What got DONE today
+1. **Label "Nombre Completo" → "Nombre"** en registro (claves `auth.name` y `auth.nameRequired` en los 4 locales: es, en, pt, fr).
+2. **Meta tag Google Search Console** agregado en `frontend/public/index.html`: `google-site-verification` content=`hJ-e3Hwr5M9U9X9Wg4g4VdzXf7iObpilzoKphUa16I0`.
+3. Verificado con screenshot + curl (meta presente en HTML servido).
+
+### Pending follow-ups (RECORDAR AL USUARIO)
+- **Google Analytics (GA4)**: usuario aún NO proporcionó el ID de medición `G-XXXXXXXXXX`. Cuando lo tenga, agregar script gtag en index.html.
+- **Search Console**: tras desplegar en VPS (`yarn build`), el usuario debe hacer clic en "Verificar" en Search Console. Luego enviar sitemap.
+- **P0 Catálogo de Productos**: usuario pidió recordárselo más tarde. Arquitectura Nivel 2 ya acordada (CRUD `/api/products`, página `/products`, autocomplete en `ItemEditDialog.jsx`).
+- Rotar contraseña keystore Android (expuesta).
+- Verificar dominio factuya.site en Resend (DNS Hostinger).
+
+### Files modified
+- `/app/frontend/src/locales/{es,en,pt,fr}.json`
+- `/app/frontend/public/index.html`
+
+---
 ## 🎟️ SESSION 2026-06-23 — DESCUENTO REAL 50% EN WOMPI (LANZAMIENTO50) ✅
 
 ### What got DONE today
