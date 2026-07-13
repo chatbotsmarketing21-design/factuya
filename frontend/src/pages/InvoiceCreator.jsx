@@ -1088,6 +1088,19 @@ const InvoiceCreator = () => {
             <div className="flex items-center gap-2 sm:gap-3">
               {/* Desktop actions */}
               <div className="hidden md:flex items-center gap-3">
+                {/* Mis Productos */}
+                <Link to="/products">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 text-base font-semibold shadow-md hover:shadow-lg transition-all text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.18)' }}
+                    data-testid="my-products-btn-desktop"
+                  >
+                    <Package className="w-4 h-4 text-lime-600" />
+                    {t('invoice.myProducts')}
+                  </Button>
+                </Link>
                 {/* Selector de Tipo de Documento */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
