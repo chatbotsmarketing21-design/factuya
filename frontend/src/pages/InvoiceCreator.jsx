@@ -1544,10 +1544,10 @@ const InvoiceCreator = () => {
                         <Input
                           type="text"
                           inputMode="decimal"
-                          value={item.quantity === 0 || item.quantity === '0' ? '' : item.quantity}
+                          value={formatRateDisplay(item.quantity)}
                           onChange={(e) => {
-                            const v = e.target.value.replace(',', '.');
-                            if (v === '' || /^\d*\.?\d*$/.test(v)) updateItem(index, 'quantity', v);
+                            const raw = e.target.value.replace(/\./g, '').replace(/,/g, '.');
+                            if (raw === '' || /^\d*\.?\d*$/.test(raw)) updateItem(index, 'quantity', raw);
                           }}
                           placeholder="0"
                           className="dark:bg-secondary dark:border-border dark:text-white mt-1 px-2"
