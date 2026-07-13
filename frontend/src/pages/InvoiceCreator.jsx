@@ -1120,11 +1120,19 @@ const InvoiceCreator = () => {
             <DropdownMenuTrigger asChild>
               <Button 
                 variant="outline" 
-                className="w-full text-base font-semibold shadow-sm text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center gap-2"
+                className="w-full text-base font-semibold shadow-sm text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-between gap-2 px-3"
                 data-testid="document-type-selector-mobile-btn"
               >
-                {t('invoice.documentType')}
-                <ChevronDown className="w-4 h-4 opacity-70" />
+                <span className="flex items-center gap-2">
+                  <span style={{ color: getDocumentInfo(invoice.documentType).color }}>
+                    {getDocumentInfo(invoice.documentType).icon}
+                  </span>
+                  {t('invoice.documentType')}
+                </span>
+                <span className="flex items-center gap-1 text-sm font-medium text-gray-500 dark:text-gray-400" data-testid="current-doctype-label">
+                  {getDocumentInfo(invoice.documentType).name}
+                  <ChevronDown className="w-4 h-4 opacity-70" />
+                </span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" className="w-[calc(100vw-1.5rem)] max-h-[70vh] overflow-y-auto">
