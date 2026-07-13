@@ -271,92 +271,45 @@ const Home = () => {
               Precios simples y transparentes
             </h2>
             <p className="text-xl text-gray-600">
-              Empieza gratis. Hazte Premium cuando lo necesites.
+              Empieza gratis, sin compromiso.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="max-w-md mx-auto">
             {/* Free Plan */}
             <div
-              className="border-2 border-gray-200 rounded-xl p-8 bg-white flex flex-col"
+              className="relative border-2 border-lime-500 rounded-xl p-8 bg-gradient-to-br from-lime-50 to-green-50 flex flex-col shadow-lg"
               data-testid="pricing-card-free"
             >
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Gratis</h3>
-              <p className="text-gray-500 mb-6">Para empezar sin compromiso</p>
+              <p className="text-gray-600 mb-6">Para empezar sin compromiso</p>
               <div className="mb-6">
                 <span className="text-5xl font-bold text-gray-900">$0</span>
                 <span className="text-gray-500 ml-2">/ siempre</span>
               </div>
               <ul className="space-y-3 mb-8 flex-1">
                 <li className="flex items-center gap-2 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-lime-500 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-lime-600 flex-shrink-0" />
                   <span>10 facturas de prueba</span>
                 </li>
                 <li className="flex items-center gap-2 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-lime-500 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-lime-600 flex-shrink-0" />
                   <span>Plantillas profesionales</span>
                 </li>
                 <li className="flex items-center gap-2 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-lime-500 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-lime-600 flex-shrink-0" />
                   <span>Exportar PDF</span>
                 </li>
                 <li className="flex items-center gap-2 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-lime-500 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-lime-600 flex-shrink-0" />
                   <span>Acceso desde móvil y web</span>
                 </li>
               </ul>
               <Link to={user ? '/dashboard' : '/signup'}>
                 <Button
-                  variant="outline"
-                  className="w-full border-gray-300 text-gray-900 hover:bg-gray-50 font-semibold py-3"
+                  className="w-full bg-lime-500 hover:bg-lime-600 text-white font-semibold py-3"
                   data-testid="pricing-free-btn"
                 >
                   Empezar gratis
-                </Button>
-              </Link>
-            </div>
-
-            {/* Premium Plan */}
-            <div
-              className="relative border-2 border-lime-500 rounded-xl p-8 bg-gradient-to-br from-lime-50 to-green-50 flex flex-col shadow-lg"
-              data-testid="pricing-card-premium"
-            >
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 text-white text-[11px] font-bold uppercase tracking-wide px-3 py-1 rounded-full shadow-lg whitespace-nowrap">
-                Mejor precio del mercado
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Premium</h3>
-              <p className="text-gray-600 mb-6">Todo lo que necesitas para tu negocio</p>
-              <div className="mb-6">
-                <span className="text-5xl font-bold text-gray-900">$3.99</span>
-                <span className="text-gray-500 ml-2">USD / mes</span>
-              </div>
-              <ul className="space-y-3 mb-8 flex-1">
-                <li className="flex items-center gap-2 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-lime-600 flex-shrink-0" />
-                  <span>Facturas ilimitadas</span>
-                </li>
-                <li className="flex items-center gap-2 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-lime-600 flex-shrink-0" />
-                  <span>Todas las plantillas y colores</span>
-                </li>
-                <li className="flex items-center gap-2 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-lime-600 flex-shrink-0" />
-                  <span>Multi-moneda y multi-logo</span>
-                </li>
-                <li className="flex items-center gap-2 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-lime-600 flex-shrink-0" />
-                  <span>Modo offline y respaldo en la nube</span>
-                </li>
-                <li className="flex items-center gap-2 text-gray-700">
-                  <CheckCircle className="w-5 h-5 text-lime-600 flex-shrink-0" />
-                  <span>Soporte prioritario</span>
-                </li>
-              </ul>
-              <Link to={user ? '/subscription' : '/signup'}>
-                <Button
-                  className="w-full bg-lime-500 hover:bg-lime-600 text-white font-semibold py-3"
-                  data-testid="pricing-premium-btn"
-                >
-                  Hazte Premium
                 </Button>
               </Link>
             </div>
