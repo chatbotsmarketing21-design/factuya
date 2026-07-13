@@ -21,7 +21,6 @@ import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 import InvoicePreview from '../components/InvoicePreview';
 import SubscriptionDialog from '../components/SubscriptionDialog';
-import ItemEditDialog from '../components/ItemEditDialog';
 import {
   Dialog,
   DialogContent,
@@ -61,9 +60,6 @@ const InvoiceCreator = () => {
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
-  // Item edit dialog state (modal flow — replaces inline editing)
-  const [editingItemIndex, setEditingItemIndex] = useState(null);
-  
   // Estados para secciones colapsables - cargar desde localStorage
   const [sectionsOpen, setSectionsOpen] = useState(() => {
     // Detectar si es móvil o escritorio
@@ -620,43 +616,15 @@ const InvoiceCreator = () => {
 
     // Si nos pasaron un índice, insertamos el nuevo item justo después del que tocaron.
     // Si no, lo añadimos al final (comportamiento clásico del botón "Agregar item").
-    let newIndex;
     if (insertAfterIndex !== null && insertAfterIndex >= 0) {
-      newIndex = insertAfterIndex + 1;
       setInvoice(prev => {
         const newItems = [...prev.items];
-        newItems.splice(newIndex, 0, newItem);
+        newItems.splice(insertAfterIndex + 1, 0, newItem);
         return { ...prev, items: newItems };
       });
     } else {
-      newIndex = invoice.items.length;
       setInvoice(prev => ({ ...prev, items: [...prev.items, newItem] }));
     }
-
-    // Abrir el modal de edición para el ítem recién creado
-    setTimeout(() => {
-      setEditingItemIndex(newIndex);
-    }, 50);
-  };
-
-  // Apply a fully-edited item from the modal to the current invoice state.
-  const applyItemFromDialog = (index, updatedItem) => {
-    setInvoice(prev => {
-      const newItems = [...prev.items];
-      newItems[index] = {
-        ...newItems[index],
-        description: updatedItem.description,
-        quantity: updatedItem.quantity,
-        rate: updatedItem.rate,
-        amount: updatedItem.amount,
-      };
-      // Calculate totals inline so we update items + subtotal + tax + total atomically
-      // (avoiding a nested setInvoice that could clobber items on rerender).
-      const subtotal = newItems.reduce((sum, it) => sum + (it.amount || 0), 0);
-      const tax = prev.hasTax ? (subtotal * prev.taxRate) / 100 : 0;
-      const total = subtotal + tax;
-      return { ...prev, items: newItems, subtotal, tax, total };
-    });
   };
 
   const removeItem = (index) => {
@@ -1421,69 +1389,95 @@ const InvoiceCreator = () => {
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('invoice.items')}</h2>
               </div>
               <div className="space-y-3">
-                {invoice.items.map((item, index) => {
-                  const hasContent = !!(item.description || item.rate || item.amount);
-                  return (
-                    <div
-                      key={index}
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => setEditingItemIndex(index)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          setEditingItemIndex(index);
-                        }
-                      }}
-                      className="border border-gray-200 dark:border-border rounded-lg p-3 sm:p-4 cursor-pointer hover:border-lime-400 hover:bg-lime-50/30 dark:hover:bg-lime-950/10 hover:shadow-sm transition-all active:scale-[0.99]"
-                      data-testid={`item-row-${index}`}
-                    >
-                      <div className="flex justify-between items-start gap-3">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-lime-500 text-white text-xs font-bold">
-                              {index + 1}
-                            </span>
-                            <span className="text-xs text-gray-400 dark:text-gray-500">
-                              {hasContent ? t('invoice.tapToEdit', { defaultValue: 'Toca para editar' }) : t('invoice.tapToAddDetails', { defaultValue: 'Toca para añadir detalles' })}
-                            </span>
-                          </div>
-                          <p
-                            className={`text-sm sm:text-base font-medium ${item.description ? 'text-gray-900 dark:text-white' : 'text-gray-400 dark:text-gray-500 italic'}`}
-                            style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-                          >
-                            {item.description || t('invoice.descriptionEmpty', { defaultValue: '(sin descripción)' })}
-                          </p>
-                          {hasContent && (
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                              {Number(item.quantity || 0).toLocaleString('es-CO', { maximumFractionDigits: 2 })}
-                              {' × '}
-                              ${Number(item.rate || 0).toLocaleString('es-CO', { maximumFractionDigits: 2 })}
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex flex-col items-end gap-1 shrink-0">
-                          <span className="text-base sm:text-lg font-bold text-lime-700 dark:text-lime-400 whitespace-nowrap">
-                            ${Number(item.amount || 0).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-                          </span>
-                          {invoice.items.length > 1 && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={(e) => { e.stopPropagation(); removeItem(index); }}
-                              data-testid={`remove-item-btn-${index}`}
-                              aria-label={t('toasts.deleteItem')}
-                              title={t('toasts.deleteItem')}
-                              className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 h-7 w-7 p-0"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          )}
+                {invoice.items.map((item, index) => (
+                  <div
+                    key={index}
+                    className="border border-gray-200 dark:border-border rounded-lg p-3 sm:p-4 focus-within:border-lime-400 focus-within:ring-1 focus-within:ring-lime-300 dark:focus-within:ring-lime-800 transition-all"
+                    data-testid={`item-row-${index}`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-lime-500 text-white text-xs font-bold">
+                        {index + 1}
+                      </span>
+                      {invoice.items.length > 1 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeItem(index)}
+                          data-testid={`remove-item-btn-${index}`}
+                          aria-label={t('toasts.deleteItem')}
+                          title={t('toasts.deleteItem')}
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 h-7 w-7 p-0"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+
+                    {/* Descripción */}
+                    <div>
+                      <Label className="dark:text-gray-300 text-xs font-medium text-gray-500">
+                        {t('invoice.description', { defaultValue: 'Descripción' })}
+                      </Label>
+                      <Textarea
+                        value={item.description}
+                        onChange={(e) => updateItem(index, 'description', e.target.value.slice(0, 6000))}
+                        placeholder={t('invoice.descriptionPlaceholder', { defaultValue: 'Producto o servicio…' })}
+                        rows={2}
+                        className="dark:bg-secondary dark:border-border dark:text-white resize-none mt-1"
+                        data-testid={`item-description-${index}`}
+                      />
+                    </div>
+
+                    {/* Cantidad / Precio / Importe */}
+                    <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-3">
+                      <div>
+                        <Label className="dark:text-gray-300 text-xs font-medium text-gray-500">
+                          {t('invoice.quantity', { defaultValue: 'Cantidad' })}
+                        </Label>
+                        <Input
+                          type="text"
+                          inputMode="decimal"
+                          value={item.quantity}
+                          onChange={(e) => {
+                            const v = e.target.value.replace(',', '.');
+                            if (v === '' || /^\d*\.?\d*$/.test(v)) updateItem(index, 'quantity', v);
+                          }}
+                          className="dark:bg-secondary dark:border-border dark:text-white mt-1"
+                          data-testid={`item-quantity-${index}`}
+                        />
+                      </div>
+                      <div>
+                        <Label className="dark:text-gray-300 text-xs font-medium text-gray-500">
+                          {t('invoice.rate', { defaultValue: 'Precio' })}
+                        </Label>
+                        <Input
+                          type="text"
+                          inputMode="decimal"
+                          value={item.rate === 0 ? '' : item.rate}
+                          onChange={(e) => {
+                            const v = e.target.value.replace(/,/g, '.');
+                            if (v === '' || /^\d*\.?\d*$/.test(v)) updateItem(index, 'rate', v);
+                          }}
+                          placeholder="0"
+                          className="dark:bg-secondary dark:border-border dark:text-white mt-1"
+                          data-testid={`item-rate-${index}`}
+                        />
+                      </div>
+                      <div>
+                        <Label className="dark:text-gray-300 text-xs font-medium text-gray-500">
+                          {t('invoice.amount', { defaultValue: 'Importe' })}
+                        </Label>
+                        <div
+                          className="mt-1 h-9 flex items-center justify-end px-2 rounded-md bg-lime-50 dark:bg-lime-950/30 border border-lime-200 dark:border-lime-900 text-sm sm:text-base font-bold text-lime-700 dark:text-lime-400 whitespace-nowrap overflow-hidden"
+                          data-testid={`item-amount-${index}`}
+                        >
+                          ${Number(item.amount || 0).toLocaleString('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                         </div>
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
 
                 {/* Add item button — large, prominent at the end of the list */}
                 <Button
@@ -1704,26 +1698,6 @@ const InvoiceCreator = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Item Edit Dialog (modal-based item editor) */}
-      <ItemEditDialog
-        open={editingItemIndex !== null}
-        onOpenChange={(isOpen) => {
-          if (!isOpen) setEditingItemIndex(null);
-        }}
-        item={editingItemIndex !== null ? invoice.items[editingItemIndex] : null}
-        itemNumber={(editingItemIndex ?? 0) + 1}
-        canDelete={invoice.items.length > 1}
-        onSave={(updatedItem) => {
-          if (editingItemIndex !== null) {
-            applyItemFromDialog(editingItemIndex, updatedItem);
-          }
-        }}
-        onDelete={() => {
-          if (editingItemIndex !== null) {
-            removeItem(editingItemIndex);
-          }
-        }}
-      />
     </div>
   );
 };
