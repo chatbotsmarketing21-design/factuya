@@ -46,13 +46,27 @@ const Home = () => {
 
   // Listen for the beforeinstallprompt event
   useEffect(() => {
-    // Check if app is already installed (running in standalone mode)
+    // Check if app is already installed (running in standalone mode or TWA)
+    const isTWA = document.referrer.startsWith('android-app://') || sessionStorage.getItem('isTWA') === 'true';
+    if (document.referrer.startsWith('android-app://')) {
+      sessionStorage.setItem('isTWA', 'true');
+    }
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches 
-      || window.navigator.standalone === true; // iOS Safari
+      || window.navigator.standalone === true // iOS Safari
+      || isTWA;
     
     if (isStandalone) {
       setShowInstallButton(false);
       return;
+    }
+
+    // Hide install button if the Play Store app is already installed
+    if (navigator.getInstalledRelatedApps) {
+      navigator.getInstalledRelatedApps().then((apps) => {
+        if (apps.length > 0) {
+          setShowInstallButton(false);
+        }
+      }).catch(() => {});
     }
 
     const handleBeforeInstallPrompt = (e) => {
@@ -78,6 +92,13 @@ const Home = () => {
   }, []);
 
   const handleInstallClick = async () => {
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    if (isAndroid) {
+      // Send Android users to the official Play Store listing
+      window.open('https://play.google.com/store/apps/details?id=site.factuya.twa', '_blank');
+      return;
+    }
+
     if (!deferredPrompt) {
       // If no deferred prompt, show instructions based on device
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
