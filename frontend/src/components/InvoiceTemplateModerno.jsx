@@ -139,7 +139,7 @@ const InvoiceTemplateModerno = ({ invoice, template, templateColor }) => {
 
         {/* Items Table */}
         <div className="mb-6">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm table-fixed">
             <thead>
               <tr style={{ backgroundColor: primaryColor }}>
                 <th className="text-center py-3 px-2 text-white font-semibold" style={{ width: '8%' }}>Item</th>

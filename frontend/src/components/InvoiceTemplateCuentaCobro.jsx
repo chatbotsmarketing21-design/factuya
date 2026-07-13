@@ -132,7 +132,7 @@ const InvoiceTemplateCuentaCobro = ({ invoice, companyInfo, template, templateCo
           <div className="text-white px-4 py-2 font-semibold" style={{ backgroundColor: primaryColor }}>
             POR CONCEPTO DE:
           </div>
-          <table className="w-full border-collapse">
+          <table className="w-full border-collapse table-fixed">
             <thead>
               <tr className="bg-gray-100">
                 <th className="border border-gray-300 px-3 py-2 text-left text-sm font-semibold text-gray-700 w-16">CANT.</th>

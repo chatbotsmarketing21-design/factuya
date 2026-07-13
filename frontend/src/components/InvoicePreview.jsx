@@ -135,14 +135,14 @@ const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
 
         {/* Items Table */}
         <div>
-          <table className="w-full text-sm">
+          <table className="w-full text-sm table-fixed">
             <thead>
               <tr className="border-b-2" style={{ borderColor: displayColor }}>
-                <th className="text-center py-2 font-semibold text-gray-700 w-12">Item</th>
+                <th className="text-center py-2 font-semibold text-gray-700 w-10">Item</th>
                 <th className="text-left py-2 font-semibold text-gray-700">{t('preview.description')}</th>
-                <th className="text-center py-2 font-semibold text-gray-700">{t('preview.qty')}</th>
-                <th className="text-right py-2 font-semibold text-gray-700">{t('preview.rate')}</th>
-                <th className="text-right py-2 font-semibold text-gray-700">{t('preview.amount')}</th>
+                <th className="text-center py-2 font-semibold text-gray-700 w-14">{t('preview.qty')}</th>
+                <th className="text-right py-2 font-semibold text-gray-700 w-24">{t('preview.rate')}</th>
+                <th className="text-right py-2 font-semibold text-gray-700 w-28">{t('preview.amount')}</th>
               </tr>
             </thead>
             <tbody>
