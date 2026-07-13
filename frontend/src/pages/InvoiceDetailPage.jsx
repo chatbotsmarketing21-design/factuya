@@ -354,8 +354,6 @@ const InvoiceDetailPage = () => {
       const pdfFile = new File([pdfBlob], `${invoiceNumber}_${firstNameForFile}.pdf`, { type: 'application/pdf' });
       
       const shareData = {
-        title: `Factura ${invoiceNumber}`,
-        text: `Hola ${clientName}, le comparto su factura N° ${invoiceNumber} por un total de $${total}.\n\n¡Gracias por su preferencia!\n- FactuYa!`,
         files: [pdfFile]
       };
       
