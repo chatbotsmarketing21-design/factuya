@@ -623,15 +623,27 @@ const InvoiceCreator = () => {
 
     // Si nos pasaron un índice, insertamos el nuevo item justo después del que tocaron.
     // Si no, lo añadimos al final (comportamiento clásico del botón "Agregar item").
+    let newIndex;
     if (insertAfterIndex !== null && insertAfterIndex >= 0) {
+      newIndex = insertAfterIndex + 1;
       setInvoice(prev => {
         const newItems = [...prev.items];
-        newItems.splice(insertAfterIndex + 1, 0, newItem);
+        newItems.splice(newIndex, 0, newItem);
         return { ...prev, items: newItems };
       });
     } else {
+      newIndex = invoice.items.length;
       setInvoice(prev => ({ ...prev, items: [...prev.items, newItem] }));
     }
+
+    // Enfocar automáticamente la descripción del nuevo ítem
+    setTimeout(() => {
+      const el = document.querySelector(`[data-testid="item-description-${newIndex}"]`);
+      if (el) {
+        el.focus();
+        el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+    }, 80);
   };
 
   const removeItem = (index) => {
