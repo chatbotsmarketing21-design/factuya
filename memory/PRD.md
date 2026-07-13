@@ -9,6 +9,20 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 - **PWA Offline Mode**: ACTIVE (Service Worker `#387 activated and running`, IndexedDB caching)
 
 ---
+---
+## 🛠️ SESSION 2026-07-13 — REDISEÑO CUADRO DE ÍTEMS + FIX PDF iOS ✅ (TODO DESPLEGADO)
+
+### What got DONE (verificado en factuya.site)
+1. **Modal de ítems ELIMINADO** (`ItemEditDialog.jsx` borrado): edición 100% inline en cada tarjeta de ítem (Descripción textarea + Cantidad | Precio | Importe en grid de 3 columnas). Focus ring verde lima.
+2. **Cantidad default 0 como placeholder** — se escribe sin borrar el cero (igual que precio).
+3. **Separador de miles en vivo en Precio** — `formatRateDisplay()` en InvoiceCreator: escribe 1250000 → muestra 1.250.000 (es-CO), acepta coma decimal.
+4. **Autofocus en Descripción al agregar ítem** — setTimeout + focus + scrollIntoView.
+5. **Fix PDF en iPhone**: iOS bloqueaba `window.open(blobUrl)` tras async. Creado `/frontend/src/utils/openPdf.js` (`openPdfBlob`): iOS → `navigator.share` con File (hoja nativa: Vista Rápida/Archivos/WhatsApp); Android/desktop → window.open como antes. Aplicado en InvoiceCreator, InvoiceDetail e InvoiceDetailPage.
+   ⚠️ Ruta iOS pendiente de verificación por el usuario en iPhone real.
+
+### data-testids nuevos (para testing)
+`item-row-{i}`, `item-description-{i}`, `item-quantity-{i}`, `item-rate-{i}`, `item-amount-{i}`, `add-item-button`, `remove-item-btn-{i}`
+
 ## 🔍 SESSION 2026-07-12 — SEO + AJUSTE SIGNUP ✅
 
 ### What got DONE today (parte 2 — DESPLEGADO EN PRODUCCIÓN ✅)
