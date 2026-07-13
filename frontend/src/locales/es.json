@@ -187,7 +187,7 @@
     "changesAutoSaved": "Los cambios se guardan automáticamente",
     "invoiceLoaded": "Factura Cargada",
     "invoiceLoadedDesc": "Ahora puedes editar la factura",
-    "documentType": "Tipo de Documento",
+    "documentType": "Cambiar Documento",
     "docTypeChanged": "Tipo de Documento Cambiado",
     "docTypeChangedDesc": "Ahora estás creando"
   },
