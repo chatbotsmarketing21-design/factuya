@@ -149,7 +149,8 @@
     "noResults": "Aucun résultat pour votre recherche",
     "saved": "Produit enregistré",
     "deleted": "Produit supprimé",
-    "descriptionRequired": "La description est obligatoire"
+    "descriptionRequired": "La description est obligatoire",
+    "back": "Retour"
   },
   "invoice": {
     "invoice": "Facture",

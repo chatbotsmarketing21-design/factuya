@@ -235,6 +235,19 @@ export default function Products() {
         )}
       </div>
 
+      {/* Floating back button (same style as InvoiceCreator save button) */}
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/create'))}
+        data-testid="products-floating-back-btn"
+        className="fixed bottom-4 right-4 z-[100] flex items-center gap-2 bg-lime-500 hover:bg-lime-600 text-white font-semibold px-4 py-3 rounded-full shadow-lg transition-all text-base cursor-pointer"
+        style={{ boxShadow: '0 4px 14px rgba(132, 204, 22, 0.4)' }}
+      >
+        <ArrowLeft className="w-5 h-5" />
+        <span>{t('products.back')}</span>
+      </div>
+
       {/* Add / Edit dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-md dark:bg-card" data-testid="product-dialog">

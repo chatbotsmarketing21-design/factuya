@@ -149,7 +149,8 @@
     "noResults": "No results for your search",
     "saved": "Product saved",
     "deleted": "Product deleted",
-    "descriptionRequired": "Description is required"
+    "descriptionRequired": "Description is required",
+    "back": "Back"
   },
   "invoice": {
     "invoice": "Invoice",

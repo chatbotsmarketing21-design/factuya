@@ -149,7 +149,8 @@
     "noResults": "Sin resultados para tu búsqueda",
     "saved": "Producto guardado",
     "deleted": "Producto eliminado",
-    "descriptionRequired": "La descripción es obligatoria"
+    "descriptionRequired": "La descripción es obligatoria",
+    "back": "Volver"
   },
   "invoice": {
     "invoice": "Factura",

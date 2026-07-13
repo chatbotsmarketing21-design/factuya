@@ -149,7 +149,8 @@
     "noResults": "Sem resultados para sua busca",
     "saved": "Produto salvo",
     "deleted": "Produto excluído",
-    "descriptionRequired": "A descrição é obrigatória"
+    "descriptionRequired": "A descrição é obrigatória",
+    "back": "Voltar"
   },
   "invoice": {
     "invoice": "Fatura",
