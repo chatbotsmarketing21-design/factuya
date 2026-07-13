@@ -104,7 +104,6 @@ export default function Products() {
     if (!window.confirm(t('products.deleteConfirm'))) return;
     try {
       await productAPI.remove(p.id);
-      toast({ title: t('products.deleted') });
       setProducts((prev) => prev.filter((x) => x.id !== p.id));
     } catch (e) {
       toast({ title: 'Error', description: 'No se pudo eliminar', variant: 'destructive' });
