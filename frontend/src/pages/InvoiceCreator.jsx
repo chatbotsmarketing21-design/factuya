@@ -847,11 +847,6 @@ const InvoiceCreator = () => {
 
   const changeDocumentType = async (type) => {
     await handleDocumentTypeChange(type);
-    const docInfo = getDocumentInfo(type);
-    toast({
-      title: t('invoice.docTypeChanged'),
-      description: `${t('invoice.docTypeChangedDesc')}: ${docInfo.name}`,
-    });
   };
 
   const handleSave = async () => {
