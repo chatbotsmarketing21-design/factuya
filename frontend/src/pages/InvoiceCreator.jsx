@@ -609,7 +609,7 @@ const InvoiceCreator = () => {
   const addItem = (insertAfterIndex = null) => {
     const newItem = {
       description: '',
-      quantity: 1,
+      quantity: 0,
       rate: 0,
       amount: 0
     };
