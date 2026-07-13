@@ -218,8 +218,11 @@ const Home = () => {
           <div className="mt-16 relative">
             <div className="mx-auto max-w-5xl">
               <img 
-                src="https://static.prod-images.emergentagent.com/jobs/380f7905-e22e-4890-bf32-ad048c328c8c/images/cbf8c9555a7e26db470683536696b0a4fbbc534b686234bd784866245496b92b.png" 
+                src="/hero-invoice.webp" 
                 alt="Professional invoice templates"
+                width="1280"
+                height="896"
+                fetchpriority="high"
                 className="w-full rounded-lg shadow-2xl"
                 data-testid="landing-hero-image"
               />
