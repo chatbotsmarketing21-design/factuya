@@ -11,7 +11,14 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 ---
 ## 🔍 SESSION 2026-07-12 — SEO + AJUSTE SIGNUP ✅
 
-### What got DONE today
+### What got DONE today (parte 2 — DESPLEGADO EN PRODUCCIÓN ✅)
+6. **Google Analytics GA4** integrado (`G-QB9C3353NK`) en index.html — LIVE en factuya.site.
+7. **Pricing simplificado**: eliminado cuadro Premium del landing; solo cuadro "Gratis" con estilo verde (borde lime, fondo degradado, botón verde).
+8. **Hero image optimizada**: PNG 1.3MB externo → WebP 88KB local (`/hero-invoice.webp`), con `fetchpriority=high` y dimensiones fijas.
+9. **Fix app duplicada (TWA vs PWA)**: `manifest.json` con `prefer_related_applications: true` + `related_applications` (play id `site.factuya.twa`); detección TWA vía referrer `android-app://` en Home.jsx; botón "Descargar App" en Android abre Play Store directo; `getInstalledRelatedApps()` oculta botón si la app ya está instalada.
+10. **Sitemap.xml + robots.txt** creados y LIVE. Usuario verificó Search Console y envió sitemap.
+
+### What got DONE today (parte 1)
 1. **Label "Nombre Completo" → "Nombre"** en registro (claves `auth.name` y `auth.nameRequired` en los 4 locales: es, en, pt, fr).
 2. **Meta tag Google Search Console** agregado en `frontend/public/index.html`: `google-site-verification` content=`hJ-e3Hwr5M9U9X9Wg4g4VdzXf7iObpilzoKphUa16I0`.
 3. Verificado con screenshot + curl (meta presente en HTML servido).
