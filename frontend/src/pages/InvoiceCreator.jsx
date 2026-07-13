@@ -1110,56 +1110,55 @@ const InvoiceCreator = () => {
                 <Save className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline">{loading ? t('invoice.saving') : isEditMode ? t('invoice.updateInvoice') : t('invoice.saveInvoice')}</span>
               </Button>
-              
-              {/* Mobile menu button - Shows document type selector */}
-              <DropdownMenu open={showMobileMenu} onOpenChange={setShowMobileMenu}>
-                <DropdownMenuTrigger asChild className="md:hidden">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="text-base px-3 font-semibold shadow-md hover:shadow-lg transition-all text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    style={{
-                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.18)'
-                    }}
-                    data-testid="document-type-selector-mobile-btn"
-                  >
-                    {t('invoice.documentType')}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 max-h-[70vh] overflow-y-auto">
-                  {['invoice','tax_invoice','proforma','quotation','bill','receipt','sales_receipt','cash_receipt','offer','credit_note','order','delivery_note'].map((dt) => {
-                    const info = getDocumentInfo(dt);
-                    return (
-                      <DropdownMenuItem
-                        key={dt}
-                        onClick={() => { changeDocumentType(dt); setShowMobileMenu(false); }}
-                        data-testid={`doctype-opt-mobile-${dt}`}
-                      >
-                        <span className="mr-2" style={{ color: info.color }}>{info.icon}</span>
-                        {info.name}
-                      </DropdownMenuItem>
-                    );
-                  })}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    asChild
-                    className="bg-lime-500 focus:bg-lime-600 hover:bg-lime-600 text-white focus:text-white data-[highlighted]:bg-lime-600 data-[highlighted]:text-white mt-1 rounded-md"
-                  >
-                    <Link
-                      to="/templates"
-                      className="w-full flex items-center gap-2 font-semibold text-white focus:text-white py-2"
-                      onClick={(e) => { e.preventDefault(); setShowMobileMenu(false); goToTemplates(); }}
-                      data-testid="change-template-btn-mobile"
-                    >
-                      <Palette className="w-4 h-4 text-white" />
-                      {t('invoice.changeTemplate')}
-                      <Sparkles className="w-3.5 h-3.5 ml-auto text-white" />
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
           </div>
+        </div>
+
+        {/* Mobile: Full-width "Cambiar Documento" bar below the header (sticky with header) */}
+        <div className="md:hidden border-t border-gray-200 dark:border-border px-3 py-2">
+          <DropdownMenu open={showMobileMenu} onOpenChange={setShowMobileMenu}>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="outline" 
+                className="w-full text-base font-semibold shadow-sm text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center justify-center gap-2"
+                data-testid="document-type-selector-mobile-btn"
+              >
+                {t('invoice.documentType')}
+                <ChevronDown className="w-4 h-4 opacity-70" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="center" className="w-[calc(100vw-1.5rem)] max-h-[70vh] overflow-y-auto">
+              {['invoice','tax_invoice','proforma','quotation','bill','receipt','sales_receipt','cash_receipt','offer','credit_note','order','delivery_note'].map((dt) => {
+                const info = getDocumentInfo(dt);
+                return (
+                  <DropdownMenuItem
+                    key={dt}
+                    onClick={() => { changeDocumentType(dt); setShowMobileMenu(false); }}
+                    data-testid={`doctype-opt-mobile-${dt}`}
+                  >
+                    <span className="mr-2" style={{ color: info.color }}>{info.icon}</span>
+                    {info.name}
+                  </DropdownMenuItem>
+                );
+              })}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                asChild
+                className="bg-lime-500 focus:bg-lime-600 hover:bg-lime-600 text-white focus:text-white data-[highlighted]:bg-lime-600 data-[highlighted]:text-white mt-1 rounded-md"
+              >
+                <Link
+                  to="/templates"
+                  className="w-full flex items-center gap-2 font-semibold text-white focus:text-white py-2"
+                  onClick={(e) => { e.preventDefault(); setShowMobileMenu(false); goToTemplates(); }}
+                  data-testid="change-template-btn-mobile"
+                >
+                  <Palette className="w-4 h-4 text-white" />
+                  {t('invoice.changeTemplate')}
+                  <Sparkles className="w-3.5 h-3.5 ml-auto text-white" />
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
