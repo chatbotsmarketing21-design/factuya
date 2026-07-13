@@ -606,6 +606,13 @@ const InvoiceCreator = () => {
     recalculateTotal(newItems, invoice.taxRate);
   };
 
+  const formatRateDisplay = (v) => {
+    if (v === '' || v === null || v === undefined || v === 0 || v === '0') return '';
+    const [intPart, decPart] = String(v).split('.');
+    const formattedInt = intPart === '' ? '' : Number(intPart).toLocaleString('es-CO');
+    return decPart !== undefined ? `${formattedInt},${decPart}` : formattedInt;
+  };
+
   const addItem = (insertAfterIndex = null) => {
     const newItem = {
       description: '',
@@ -1455,10 +1462,10 @@ const InvoiceCreator = () => {
                         <Input
                           type="text"
                           inputMode="decimal"
-                          value={item.rate === 0 ? '' : item.rate}
+                          value={formatRateDisplay(item.rate)}
                           onChange={(e) => {
-                            const v = e.target.value.replace(/,/g, '.');
-                            if (v === '' || /^\d*\.?\d*$/.test(v)) updateItem(index, 'rate', v);
+                            const raw = e.target.value.replace(/\./g, '').replace(/,/g, '.');
+                            if (raw === '' || /^\d*\.?\d*$/.test(raw)) updateItem(index, 'rate', raw);
                           }}
                           placeholder="0"
                           className="dark:bg-secondary dark:border-border dark:text-white mt-1"
