@@ -91,7 +91,6 @@ export default function Products() {
       } else {
         await productAPI.create(payload);
       }
-      toast({ title: t('products.saved') });
       setDialogOpen(false);
       loadProducts();
     } catch (e) {
