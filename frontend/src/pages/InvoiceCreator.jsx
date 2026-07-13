@@ -1438,11 +1438,12 @@ const InvoiceCreator = () => {
                         <Input
                           type="text"
                           inputMode="decimal"
-                          value={item.quantity}
+                          value={item.quantity === 0 || item.quantity === '0' ? '' : item.quantity}
                           onChange={(e) => {
                             const v = e.target.value.replace(',', '.');
                             if (v === '' || /^\d*\.?\d*$/.test(v)) updateItem(index, 'quantity', v);
                           }}
+                          placeholder="0"
                           className="dark:bg-secondary dark:border-border dark:text-white mt-1"
                           data-testid={`item-quantity-${index}`}
                         />
