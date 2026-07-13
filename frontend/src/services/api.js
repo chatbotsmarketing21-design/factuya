@@ -85,6 +85,13 @@ function requireOnlineWrite(networkFn) {
 }
 
 // Auth APIs
+export const productAPI = {
+  list: (search = '') => api.get('/products', { params: search ? { search } : {} }),
+  create: (data) => api.post('/products', data),
+  update: (id, data) => api.put(`/products/${id}`, data),
+  remove: (id) => api.delete(`/products/${id}`),
+};
+
 export const authAPI = {
   register: (data) => requireOnlineWrite(() => api.post('/auth/register', data)),
   login: (data) => requireOnlineWrite(() => api.post('/auth/login', data)),

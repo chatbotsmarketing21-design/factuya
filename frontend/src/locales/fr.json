@@ -129,6 +129,28 @@
     "copy": "Copier",
     "share": "Partager"
   },
+  "products": {
+    "title": "Mes Produits",
+    "searchPlaceholder": "Rechercher par code ou description…",
+    "addProduct": "Ajouter un Produit",
+    "addShort": "Ajouter",
+    "editProduct": "Modifier le Produit",
+    "description": "Description",
+    "descriptionPlaceholder": "Ex : Polo taille M",
+    "price": "Prix",
+    "codeOptional": "Code (facultatif)",
+    "codePlaceholder": "Ex : CAM-01",
+    "unitOptional": "Unité (facultatif)",
+    "unitPlaceholder": "Ex : unité, heure, kg",
+    "save": "Enregistrer",
+    "deleteConfirm": "Supprimer ce produit ?",
+    "empty": "Vous n'avez pas encore de produits",
+    "emptyDesc": "Ajoutez vos produits ou services pour les utiliser rapidement dans vos factures",
+    "noResults": "Aucun résultat pour votre recherche",
+    "saved": "Produit enregistré",
+    "deleted": "Produit supprimé",
+    "descriptionRequired": "La description est obligatoire"
+  },
   "invoice": {
     "invoice": "Facture",
     "invoiceNumber": "Numéro de Facture",

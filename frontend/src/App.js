@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import Home from "./pages/Home";
 import Templates from "./pages/Templates";
+import Products from "./pages/Products";
 import InvoiceCreator from "./pages/InvoiceCreator";
 import Dashboard from "./pages/Dashboard";
 import InvoiceDetailPage from "./pages/InvoiceDetailPage";
@@ -66,6 +67,14 @@ function AppRouter() {
         }
       />
       <Route path="/templates" element={<Templates />} />
+      <Route
+        path="/products"
+        element={
+          <ProtectedRoute>
+            <Products />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/logos"
         element={

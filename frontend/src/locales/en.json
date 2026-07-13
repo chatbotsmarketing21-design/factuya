@@ -129,6 +129,28 @@
     "copy": "Copy",
     "share": "Share"
   },
+  "products": {
+    "title": "My Products",
+    "searchPlaceholder": "Search by code or description…",
+    "addProduct": "Add Product",
+    "addShort": "Add",
+    "editProduct": "Edit Product",
+    "description": "Description",
+    "descriptionPlaceholder": "E.g.: Polo shirt size M",
+    "price": "Price",
+    "codeOptional": "Code (optional)",
+    "codePlaceholder": "E.g.: CAM-01",
+    "unitOptional": "Unit (optional)",
+    "unitPlaceholder": "E.g.: unit, hour, kg",
+    "save": "Save",
+    "deleteConfirm": "Delete this product?",
+    "empty": "You don't have products yet",
+    "emptyDesc": "Add your products or services to use them quickly in your invoices",
+    "noResults": "No results for your search",
+    "saved": "Product saved",
+    "deleted": "Product deleted",
+    "descriptionRequired": "Description is required"
+  },
   "invoice": {
     "invoice": "Invoice",
     "invoiceNumber": "Invoice Number",

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { getTemplateById, mockTemplates } from '../mock/invoiceData';
-import { invoiceAPI, profileAPI } from '../services/api';
+import { invoiceAPI, profileAPI, productAPI } from '../services/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -60,6 +60,10 @@ const InvoiceCreator = () => {
   const invoicePreviewRef = useRef(null);
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+
+  // Catálogo de productos (autocompletado en ítems)
+  const [catalogProducts, setCatalogProducts] = useState([]);
+  const [suggestIndex, setSuggestIndex] = useState(null);
 
   // Estados para secciones colapsables - cargar desde localStorage
   const [sectionsOpen, setSectionsOpen] = useState(() => {
@@ -612,6 +616,38 @@ const InvoiceCreator = () => {
     const [intPart, decPart] = String(v).split('.');
     const formattedInt = intPart === '' ? '' : Number(intPart).toLocaleString('es-CO');
     return decPart !== undefined ? `${formattedInt},${decPart}` : formattedInt;
+  };
+
+  // Cargar catálogo de productos una sola vez
+  useEffect(() => {
+    productAPI.list().then((res) => setCatalogProducts(res.data)).catch(() => {});
+  }, []);
+
+  const getProductSuggestions = (text) => {
+    const q = (text || '').trim().toLowerCase();
+    if (!q || catalogProducts.length === 0) return [];
+    return catalogProducts
+      .filter((p) =>
+        (p.code || '').toLowerCase().includes(q) ||
+        (p.description || '').toLowerCase().includes(q))
+      .slice(0, 6);
+  };
+
+  const applyProductToItem = (index, product) => {
+    setInvoice(prev => {
+      const newItems = [...prev.items];
+      const qty = parseFloat(newItems[index].quantity) || 0;
+      newItems[index] = {
+        ...newItems[index],
+        description: product.description,
+        rate: product.price || 0,
+        amount: qty * (product.price || 0),
+      };
+      const subtotal = newItems.reduce((s, it) => s + (it.amount || 0), 0);
+      const tax = prev.hasTax ? (subtotal * prev.taxRate) / 100 : 0;
+      return { ...prev, items: newItems, subtotal, tax, total: subtotal + tax };
+    });
+    setSuggestIndex(null);
   };
 
   const addItem = (insertAfterIndex = null) => {
@@ -1452,19 +1488,56 @@ const InvoiceCreator = () => {
                       )}
                     </div>
 
-                    {/* Descripción */}
-                    <div>
+                    {/* Descripción con autocompletado del catálogo */}
+                    <div className="relative">
                       <Label className="dark:text-gray-300 text-xs font-medium text-gray-500">
                         {t('invoice.description', { defaultValue: 'Descripción' })}
                       </Label>
                       <Textarea
                         value={item.description}
-                        onChange={(e) => updateItem(index, 'description', e.target.value.slice(0, 6000))}
+                        onChange={(e) => {
+                          updateItem(index, 'description', e.target.value.slice(0, 6000));
+                          setSuggestIndex(index);
+                        }}
+                        onFocus={() => setSuggestIndex(index)}
+                        onBlur={() => setTimeout(() => setSuggestIndex((cur) => (cur === index ? null : cur)), 200)}
                         placeholder={t('invoice.descriptionPlaceholder', { defaultValue: 'Producto o servicio…' })}
                         rows={2}
                         className="dark:bg-secondary dark:border-border dark:text-white resize-none mt-1"
                         data-testid={`item-description-${index}`}
                       />
+                      {suggestIndex === index && (() => {
+                        const suggestions = getProductSuggestions(item.description);
+                        if (suggestions.length === 0) return null;
+                        return (
+                          <div
+                            className="absolute z-[110] left-0 right-0 top-full mt-1 bg-white dark:bg-card border border-gray-200 dark:border-border rounded-lg shadow-xl max-h-56 overflow-y-auto"
+                            data-testid={`product-suggestions-${index}`}
+                          >
+                            {suggestions.map((p) => (
+                              <button
+                                key={p.id}
+                                type="button"
+                                onMouseDown={(e) => { e.preventDefault(); applyProductToItem(index, p); }}
+                                className="w-full text-left px-3 py-2.5 hover:bg-lime-50 dark:hover:bg-lime-950/20 border-b border-gray-100 dark:border-border last:border-b-0 flex items-center justify-between gap-2"
+                                data-testid={`product-suggestion-${p.id}`}
+                              >
+                                <span className="flex items-center gap-2 min-w-0">
+                                  {p.code && (
+                                    <span className="text-[10px] font-bold uppercase bg-lime-100 dark:bg-lime-950/40 text-lime-700 dark:text-lime-400 px-1.5 py-0.5 rounded shrink-0">
+                                      {p.code}
+                                    </span>
+                                  )}
+                                  <span className="text-sm text-gray-900 dark:text-white truncate">{p.description}</span>
+                                </span>
+                                <span className="text-sm font-bold text-lime-700 dark:text-lime-400 shrink-0">
+                                  ${Number(p.price || 0).toLocaleString('es-CO', { maximumFractionDigits: 2 })}
+                                </span>
+                              </button>
+                            ))}
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     {/* Cantidad / Precio / Importe */}

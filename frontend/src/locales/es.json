@@ -129,6 +129,28 @@
     "copy": "Copiar",
     "share": "Compartir"
   },
+  "products": {
+    "title": "Mis Productos",
+    "searchPlaceholder": "Buscar por código o descripción…",
+    "addProduct": "Agregar Producto",
+    "addShort": "Agregar",
+    "editProduct": "Editar Producto",
+    "description": "Descripción",
+    "descriptionPlaceholder": "Ej: Camiseta polo talla M",
+    "price": "Precio",
+    "codeOptional": "Código (opcional)",
+    "codePlaceholder": "Ej: CAM-01",
+    "unitOptional": "Unidad (opcional)",
+    "unitPlaceholder": "Ej: unidad, hora, kg",
+    "save": "Guardar",
+    "deleteConfirm": "¿Eliminar este producto?",
+    "empty": "Aún no tienes productos",
+    "emptyDesc": "Agrega tus productos o servicios para usarlos rápidamente en tus facturas",
+    "noResults": "Sin resultados para tu búsqueda",
+    "saved": "Producto guardado",
+    "deleted": "Producto eliminado",
+    "descriptionRequired": "La descripción es obligatoria"
+  },
   "invoice": {
     "invoice": "Factura",
     "invoiceNumber": "Número de Factura",
