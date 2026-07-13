@@ -32,6 +32,7 @@ import {
 import { Checkbox } from '../components/ui/checkbox';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { openPdfBlob } from '../utils/openPdf';
 import { getDefaultFooter } from '../constants/defaultFooters';
 import { getCountryConfig } from '../constants/countryConfig';
 
@@ -980,12 +981,9 @@ const InvoiceCreator = () => {
         }
       }
       
-      // Crear blob y abrir directamente en el navegador/visor del sistema
+      // Crear blob del PDF y abrirlo de forma compatible con iOS/Android
       const pdfBlob = pdf.output('blob');
-      const blobUrl = URL.createObjectURL(pdfBlob);
-      
-      // Abrir en nueva pestaña - esto activa el visor del sistema en móvil
-      window.open(blobUrl, '_blank');
+      await openPdfBlob(pdfBlob, `Factura-${invoice.number || 'documento'}.pdf`);
 
       toast({
         title: t('toasts.pdfReady'),

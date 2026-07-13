@@ -8,6 +8,7 @@ import InvoicePreview from '../components/InvoicePreview';
 import { getTemplateById } from '../mock/invoiceData';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { openPdfBlob } from '../utils/openPdf';
 
 const InvoiceDetail = () => {
   const { id } = useParams();
@@ -160,8 +161,7 @@ const InvoiceDetail = () => {
       }
       
       const pdfBlob = pdf.output('blob');
-      const blobUrl = URL.createObjectURL(pdfBlob);
-      window.open(blobUrl, '_blank');
+      await openPdfBlob(pdfBlob, 'factura.pdf');
 
       toast({
         title: "¡PDF Listo!",

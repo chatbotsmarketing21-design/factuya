@@ -42,6 +42,7 @@ import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { openPdfBlob } from '../utils/openPdf';
 
 const InvoiceDetailPage = () => {
   const { id } = useParams();
@@ -308,10 +309,9 @@ const InvoiceDetailPage = () => {
       const invoiceNumber = invoice.invoiceNumber || invoice.number || 'documento';
       const clientName = invoice.clientName || invoice.to?.name || invoice.toAddress?.name || 'cliente';
       
-      // Open in new tab for mobile viewing
+      // Open PDF compatible with iOS/Android
       const pdfBlob = pdf.output('blob');
-      const blobUrl = URL.createObjectURL(pdfBlob);
-      window.open(blobUrl, '_blank');
+      await openPdfBlob(pdfBlob, `${invoiceNumber}_${clientName.split(/[\s\n]/)[0] || 'cliente'}.pdf`);
 
       toast({
         title: "PDF Listo",
