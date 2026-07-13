@@ -186,6 +186,7 @@
     "taxRate": "Tasa (%)",
     "changesAutoSaved": "Los cambios se guardan automáticamente",
     "invoiceLoaded": "Factura Cargada",
+    "myProducts": "Mis Productos",
     "invoiceLoadedDesc": "Ahora puedes editar la factura",
     "documentType": "Cambiar Documento",
     "docTypeChanged": "Tipo de Documento Cambiado",

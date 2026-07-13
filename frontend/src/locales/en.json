@@ -186,6 +186,7 @@
     "taxRate": "Rate (%)",
     "changesAutoSaved": "Changes are saved automatically",
     "invoiceLoaded": "Invoice Loaded",
+    "myProducts": "My Products",
     "invoiceLoadedDesc": "You can now edit the invoice",
     "documentType": "Change Document",
     "docTypeChanged": "Document Type Changed",

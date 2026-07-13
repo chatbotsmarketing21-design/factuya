@@ -16,7 +16,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
-import { ArrowLeft, Plus, Trash2, Download, Send, Save, FileText, FileCheck, Calculator, Receipt, DollarSign, Percent, ChevronDown, ChevronUp, Eye, X, Menu, Upload, RotateCw, Palette, Sparkles } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Download, Send, Save, FileText, FileCheck, Calculator, Receipt, DollarSign, Percent, ChevronDown, ChevronUp, Eye, X, Menu, Upload, RotateCw, Palette, Sparkles, Package } from 'lucide-react';
 import { useToast } from '../hooks/use-toast';
 import { useAuth } from '../context/AuthContext';
 import InvoicePreview from '../components/InvoicePreview';
@@ -1110,6 +1110,20 @@ const InvoiceCreator = () => {
                 <Save className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline">{loading ? t('invoice.saving') : isEditMode ? t('invoice.updateInvoice') : t('invoice.saveInvoice')}</span>
               </Button>
+
+              {/* Mobile: Mis Productos button (where the doc-type button used to be) */}
+              <Link to="/products" className="md:hidden">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-sm px-3 font-semibold shadow-md text-gray-900 dark:text-white border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 gap-1.5"
+                  style={{ boxShadow: '0 4px 12px rgba(0, 0, 0, 0.18)' }}
+                  data-testid="my-products-btn-mobile"
+                >
+                  <Package className="w-4 h-4 text-lime-600" />
+                  {t('invoice.myProducts')}
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
