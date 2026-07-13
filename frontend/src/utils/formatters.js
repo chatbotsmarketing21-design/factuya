@@ -44,7 +44,7 @@ export const getUserLocale = (countryOrCode) => {
  *   formatCurrency(1234567.89, { country: 'US' }) -> "1,234,567.89"
  *   formatCurrency(1234567.89, { country: 'BR' }) -> "1.234.567,89"
  */
-export const formatCurrency = (value, { country, locale, minimumFractionDigits = 2, maximumFractionDigits = 2 } = {}) => {
+export const formatCurrency = (value, { country, locale, minimumFractionDigits = 0, maximumFractionDigits = 2 } = {}) => {
   const num = Number(value) || 0;
   const lc = locale || getUserLocale(country);
   return num.toLocaleString(lc, { minimumFractionDigits, maximumFractionDigits });
