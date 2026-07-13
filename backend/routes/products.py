@@ -1,7 +1,7 @@
 """Product catalog CRUD — per-user products/services reusable in invoices."""
 
 from fastapi import APIRouter, HTTPException, Depends, Query
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime, timezone
 import os
@@ -25,7 +25,7 @@ db = client[os.environ['DB_NAME']]
 class ProductCreate(BaseModel):
     code: Optional[str] = ""
     description: str
-    price: float = 0
+    price: float = Field(default=0, ge=0)
     unit: Optional[str] = ""
 
 

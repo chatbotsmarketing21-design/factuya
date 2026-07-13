@@ -10,6 +10,22 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 ---
+## 📦 SESSION 2026-07-13 (parte 2) — CATÁLOGO DE PRODUCTOS COMPLETO ✅ (testing agent 100%)
+
+### What got DONE (probado con testing agent — iteration_10.json, 100% backend y frontend)
+1. **Backend CRUD** `/app/backend/routes/products.py`: GET/POST/PUT/DELETE `/api/products` (+ search por código/descripción, userId scoping, price ge=0, uuid ids, colección `db.products`). Registrado en server.py. Tests en `/app/backend/tests/test_products.py`.
+2. **Página `/products` (Mis Productos)** `/app/frontend/src/pages/Products.jsx`: lista, búsqueda, agregar/editar (dialog), eliminar (confirm). Ruta protegida en App.js. `productAPI` en services/api.js.
+3. **Autocompletado en InvoiceCreator**: al escribir en descripción del ítem aparecen sugerencias del catálogo (por código o descripción); al seleccionar llena descripción+precio y recalcula importe. z-[110] (sobre botón flotante Guardar z-[100]).
+4. **Header /create móvil**: botón "Cambiar Documento" movido a barra full-width sticky debajo del header (icono doc a la izq, tipo actual a la der con current-doctype-label). Botón "Mis Productos" (my-products-btn-mobile) en el lugar del antiguo botón.
+5. **Compartir WhatsApp**: eliminado texto/caption — solo se envía el PDF (iPhone mostraba la descripción). DESPLEGADO.
+6. Traducciones `products.*` y `invoice.myProducts` en es/en/pt/fr.
+
+### PENDIENTE DESPLIEGUE VPS
+Los cambios del catálogo (items 1-4, 6) NO están desplegados aún en factuya.site — recordar Save to GitHub + git pull + yarn build + **sudo systemctl restart factuya** (backend cambió: nueva ruta products).
+
+### Deuda técnica menor (del code review)
+- InvoicePreview: `<span data-ve-dynamic>` dentro de `<tbody>` genera warnings de hidratación React (preexistente, sin impacto funcional).
+
 ## 🛠️ SESSION 2026-07-13 — REDISEÑO CUADRO DE ÍTEMS + FIX PDF iOS ✅ (TODO DESPLEGADO)
 
 ### What got DONE (verificado en factuya.site)
