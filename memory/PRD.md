@@ -38,7 +38,7 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 3. Verificado con screenshot + curl (meta presente en HTML servido).
 
 ### Pending follow-ups (RECORDAR AL USUARIO)
-- **Google Analytics (GA4)**: usuario aún NO proporcionó el ID de medición `G-XXXXXXXXXX`. Cuando lo tenga, agregar script gtag en index.html.
+- ~~**Google Analytics (GA4)**~~ ✅ COMPLETADO: ID `G-QB9C3353NK` integrado, usuario verificó visitas en "Tiempo real" — FUNCIONA.
 - **Search Console**: tras desplegar en VPS (`yarn build`), el usuario debe hacer clic en "Verificar" en Search Console. Luego enviar sitemap.
 - **P0 Catálogo de Productos**: usuario pidió recordárselo más tarde. Arquitectura Nivel 2 ya acordada (CRUD `/api/products`, página `/products`, autocomplete en `ItemEditDialog.jsx`).
 - Rotar contraseña keystore Android (expuesta).
