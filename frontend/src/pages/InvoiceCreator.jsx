@@ -1536,8 +1536,8 @@ const InvoiceCreator = () => {
                     </div>
 
                     {/* Cantidad / Precio / Importe */}
-                    <div className="grid grid-cols-3 gap-2 sm:gap-3 mt-3">
-                      <div>
+                    <div className="grid grid-cols-5 gap-2 sm:gap-3 mt-3">
+                      <div className="col-span-1">
                         <Label className="dark:text-gray-300 text-xs font-medium text-gray-500">
                           {t('invoice.quantity', { defaultValue: 'Cantidad' })}
                         </Label>
@@ -1550,11 +1550,11 @@ const InvoiceCreator = () => {
                             if (v === '' || /^\d*\.?\d*$/.test(v)) updateItem(index, 'quantity', v);
                           }}
                           placeholder="0"
-                          className="dark:bg-secondary dark:border-border dark:text-white mt-1"
+                          className="dark:bg-secondary dark:border-border dark:text-white mt-1 px-2"
                           data-testid={`item-quantity-${index}`}
                         />
                       </div>
-                      <div>
+                      <div className="col-span-2">
                         <Label className="dark:text-gray-300 text-xs font-medium text-gray-500">
                           {t('invoice.rate', { defaultValue: 'Precio' })}
                         </Label>
@@ -1571,7 +1571,7 @@ const InvoiceCreator = () => {
                           data-testid={`item-rate-${index}`}
                         />
                       </div>
-                      <div>
+                      <div className="col-span-2">
                         <Label className="dark:text-gray-300 text-xs font-medium text-gray-500">
                           {t('invoice.amount', { defaultValue: 'Importe' })}
                         </Label>
