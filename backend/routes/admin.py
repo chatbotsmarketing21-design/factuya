@@ -95,7 +95,7 @@ async def get_all_users(user_id: str = Depends(verify_admin)):
     
     users = await db.users.find(
         {},
-        {"_id": 0, "id": 1, "email": 1, "name": 1, "createdAt": 1}
+        {"_id": 0, "id": 1, "email": 1, "name": 1, "createdAt": 1, "lastSeenAt": 1, "lastSeenSource": 1}
     ).sort("createdAt", -1).to_list(1000)
     
     # Get subscription status for each user

@@ -23,7 +23,9 @@ import {
   TrendingUp,
   Calendar,
   UserPlus,
-  RefreshCw
+  RefreshCw,
+  Smartphone,
+  Globe
 } from 'lucide-react';
 import AdminBroadcastCard from '../components/AdminBroadcastCard';
 
@@ -131,6 +133,26 @@ const AdminPanel = () => {
       default:
         return <Badge className="bg-gray-500">Gratis</Badge>;
     }
+  };
+
+  const getActivityBadge = (user) => {
+    if (!user.lastSeenAt) {
+      return <span className="text-xs text-gray-400">Sin datos</span>;
+    }
+    const days = Math.floor((Date.now() - new Date(user.lastSeenAt).getTime()) / 86400000);
+    const label = days === 0 ? 'Hoy' : days === 1 ? 'Ayer' : `Hace ${days} días`;
+    const color = days <= 7
+      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+      : days <= 30
+        ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+        : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400';
+    const SourceIcon = user.lastSeenSource === 'app' ? Smartphone : Globe;
+    return (
+      <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap ${color}`} data-testid={`activity-badge-${user.id}`}>
+        <SourceIcon className="w-3 h-3" />
+        {label}
+      </span>
+    );
   };
 
   if (loading) {
@@ -353,6 +375,9 @@ const AdminPanel = () => {
                         </TableCell>
                         <TableCell>
                           {getSubscriptionBadge(user.subscriptionStatus)}
+                        </TableCell>
+                        <TableCell>
+                          {getActivityBadge(user)}
                         </TableCell>
                       </TableRow>
                     ))}

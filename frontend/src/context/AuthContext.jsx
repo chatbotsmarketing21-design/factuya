@@ -37,6 +37,16 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       loadUser();
+      // Registrar última actividad (app instalada vs web) una vez por sesión
+      if (!sessionStorage.getItem('heartbeatSent')) {
+        const isApp = document.referrer.startsWith('android-app://')
+          || sessionStorage.getItem('isTWA') === 'true'
+          || window.matchMedia('(display-mode: standalone)').matches
+          || window.navigator.standalone === true;
+        authAPI.heartbeat(isApp ? 'app' : 'web')
+          .then(() => sessionStorage.setItem('heartbeatSent', 'true'))
+          .catch(() => {});
+      }
     } else {
       setLoading(false);
     }
