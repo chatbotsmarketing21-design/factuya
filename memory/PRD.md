@@ -10,6 +10,31 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 
 ---
 ---
+---
+## 🧹 SESSION 2026-07-13 (parte 3) + 2026-08-06 — AJUSTES UX + RASTREO DE ACTIVIDAD ✅ (TODO DESPLEGADO Y VERIFICADO)
+
+### Ajustes UX (todos desplegados en factuya.site)
+1. Placeholder producto: "Ej: su producto o servicio" (4 idiomas).
+2. Eliminados toasts: "Documento cambiado", "Producto guardado", "Producto eliminado".
+3. Flechita atrás en /products → navigate(-1) con fallback /create.
+4. Botón flotante "Volver" en /products (mismo estilo que Guardar documento, products-floating-back-btn).
+5. Grid ítems móvil: cantidad col-span-1, precio/monto col-span-2 c/u (grid-cols-5) — precios grandes caben.
+6. Punto de mil también en cuadro Cantidad (formatRateDisplay).
+7. formatCurrency default minimumFractionDigits 0 (PDF sin ",00"; centavos reales sí se muestran) — aplica a las 5 plantillas.
+8. Botón "Mis Productos" en escritorio (/create header, my-products-btn-desktop).
+9. Tablas PDF con table-fixed + anchos fijos (InvoicePreview w-10/desc/w-14/w-24/w-28; Wave, Moderno, Dexter, CuentaCobro) — descripción larga ya no aplasta Cant/Precio/Importe; columna Importe alineada con bloque Subtotal.
+10. Botón "Cambiar Documento" (renombrado de "Tipo de Documento"): barra full-width sticky bajo header móvil, ícono + tipo actual a la derecha.
+
+### Rastreo de actividad (Opción A — detección indirecta de desinstalación)
+- `POST /api/auth/heartbeat {source: 'app'|'web'}` en auth.py → guarda lastSeenAt/lastSeenSource en users.
+- AuthContext envía heartbeat 1 vez por sesión (detección TWA: referrer android-app://, display-mode standalone).
+- Admin /users incluye lastSeenAt/lastSeenSource; AdminPanel muestra badge "Última actividad" (verde ≤7d, amarillo ≤30d, rojo >30d, ícono Smartphone/Globe). Usuarios antiguos muestran "Sin datos" hasta que abran la app.
+- Futuro: detección exacta con FCM push (token inválido = desinstalada) — en backlog.
+
+### Pendiente usuario
+- Probar en iPhone: PDF preview (hoja compartir) + WhatsApp sin texto.
+- Mejoras admin adicionales sugeridas (buscador usuarios, tabs, stats) — usuario no eligió aún.
+
 ## 📦 SESSION 2026-07-13 (parte 2) — CATÁLOGO DE PRODUCTOS COMPLETO ✅ (testing agent 100%)
 
 ### What got DONE (probado con testing agent — iteration_10.json, 100% backend y frontend)
