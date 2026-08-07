@@ -67,6 +67,15 @@ export const mockTemplates = [
     type: "cuenta_cobro",
     supportsColor: true,
     documentTypeOnly: "Cuenta de Cobro"
+  },
+  {
+    id: 6,
+    name: "Ejecutiva",
+    thumbnail: "/templates/ejecutiva-thumb.png",
+    color: "#B45309",
+    style: "ejecutiva",
+    type: "ejecutiva",
+    supportsColor: true
   }
 ];
 

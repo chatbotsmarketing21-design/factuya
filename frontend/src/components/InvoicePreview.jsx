@@ -5,6 +5,7 @@ import InvoiceTemplateWave from './InvoiceTemplateWave';
 import InvoiceTemplateDexter from './InvoiceTemplateDexter';
 import InvoiceTemplateModerno from './InvoiceTemplateModerno';
 import InvoiceTemplateCuentaCobro from './InvoiceTemplateCuentaCobro';
+import InvoiceTemplateEjecutiva from './InvoiceTemplateEjecutiva';
 import { formatCurrency as formatCurrencyFn, formatDate as formatDateFn } from '../utils/formatters';
 
 const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
@@ -31,6 +32,11 @@ const InvoicePreview = ({ invoice, template, companyInfo, templateColor }) => {
   // Si la plantilla es de tipo "moderno", usar el componente Moderno
   if (template?.type === 'moderno') {
     return <InvoiceTemplateModerno invoice={invoice} template={template} templateColor={activeColor} />;
+  }
+
+  // Si la plantilla es de tipo "ejecutiva", usar el componente Ejecutiva
+  if (template?.type === 'ejecutiva') {
+    return <InvoiceTemplateEjecutiva invoice={invoice} template={template} templateColor={activeColor} />;
   }
 
   // Safe access to nested properties
