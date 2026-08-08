@@ -174,6 +174,17 @@ async def _expiry_notification_job():
         logger.exception("[scheduler] expiry-tomorrow job crashed: %s", e)
 
 
+async def _launch_coupon_job():
+    """Mantiene activo el cupón LANZAMIENTO50: lo renueva 30 días cada vez que
+    expira, mientras la ventana de campaña (~6 meses) siga vigente."""
+    try:
+        from routes.coupons import ensure_launch_coupon_active
+        result = await ensure_launch_coupon_active()
+        logger.info("[scheduler] launch coupon job: %s", result)
+    except Exception as e:
+        logger.exception("[scheduler] launch coupon job crashed: %s", e)
+
+
 def start_scheduler() -> None:
     global _scheduler
     if _scheduler and _scheduler.running:
@@ -205,6 +216,17 @@ def start_scheduler() -> None:
         replace_existing=True,
         max_instances=1,
         coalesce=True,
+    )
+    # Renovación automática del cupón de lanzamiento — 08:45 UTC + al arrancar
+    from datetime import datetime as _dt, timezone as _tz
+    _scheduler.add_job(
+        _launch_coupon_job,
+        CronTrigger(hour=8, minute=45),
+        id="launch_coupon_renewal",
+        replace_existing=True,
+        max_instances=1,
+        coalesce=True,
+        next_run_time=_dt.now(_tz.utc),
     )
     _scheduler.start()
     logger.info("[scheduler] started; jobs=%s", [j.id for j in _scheduler.get_jobs()])

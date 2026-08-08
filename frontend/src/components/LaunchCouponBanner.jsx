@@ -2,25 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Gift, X } from 'lucide-react';
+import { couponAPI } from '../services/api';
 
 /**
  * Sticky launch coupon banner shown at the top of the public Home page.
  *
  * - Pinned with `sticky top-0 z-50`
  * - Lime gradient with countdown to coupon expiry
+ * - Expiry date comes from GET /api/coupons/launch (auto-renewed monthly by the
+ *   backend scheduler), so the banner reappears automatically on each cycle.
  * - Clicking the banner goes to /signup?coupon=LANZAMIENTO50 (pre-fills the code)
  * - Dismissible (✕). Hidden for 7 days via localStorage so we don't pester users.
- *
- * To change coupon details, update the `COUPON_*` constants below.
  */
 const COUPON_CODE = 'LANZAMIENTO50';
-const COUPON_DISCOUNT_PCT = 50;
-// Coupon expires 2026-07-23 21:49 UTC (set by seed_launch_coupon.py)
-const COUPON_EXPIRES_AT = new Date('2026-07-23T21:49:00Z');
 const DISMISS_KEY = 'factuya:dismiss-launch-banner';
 const DISMISS_DAYS = 7;
 
 function formatCountdown(expiresAt) {
+  if (!expiresAt) return null;
   const now = new Date();
   const ms = expiresAt.getTime() - now.getTime();
   if (ms <= 0) return null;
@@ -49,16 +48,29 @@ const LaunchCouponBanner = () => {
     }
   });
 
-  const [countdown, setCountdown] = useState(() => formatCountdown(COUPON_EXPIRES_AT));
+  const [couponInfo, setCouponInfo] = useState(null); // {active, discount_percent, expires_at}
+  const [countdown, setCountdown] = useState(null);
+
+  // Load real coupon status/expiry from backend
+  useEffect(() => {
+    couponAPI.launchStatus()
+      .then((res) => {
+        if (res.data?.active && res.data?.expires_at) {
+          setCouponInfo({ ...res.data, expiresDate: new Date(res.data.expires_at) });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Refresh countdown every second so it visibly ticks in real time.
   useEffect(() => {
-    if (dismissed) return;
+    if (dismissed || !couponInfo) return;
+    setCountdown(formatCountdown(couponInfo.expiresDate));
     const id = setInterval(() => {
-      setCountdown(formatCountdown(COUPON_EXPIRES_AT));
+      setCountdown(formatCountdown(couponInfo.expiresDate));
     }, 1000);
     return () => clearInterval(id);
-  }, [dismissed]);
+  }, [dismissed, couponInfo]);
 
   const handleDismiss = (e) => {
     e.preventDefault();
@@ -90,8 +102,8 @@ const LaunchCouponBanner = () => {
             <p className="text-xs sm:text-sm font-medium leading-tight truncate">
               <span className="hidden sm:inline">🎁&nbsp;</span>
               <span className="font-bold">{t('launchBanner.label')}</span>{' '}
-              <span className="hidden md:inline">{t('launchBanner.fullText', { pct: COUPON_DISCOUNT_PCT })}</span>
-              <span className="md:hidden">{t('launchBanner.shortText', { pct: COUPON_DISCOUNT_PCT })}</span>{' '}
+              <span className="hidden md:inline">{t('launchBanner.fullText', { pct: couponInfo?.discount_percent || 50 })}</span>
+              <span className="md:hidden">{t('launchBanner.shortText', { pct: couponInfo?.discount_percent || 50 })}</span>{' '}
               <span className="font-mono font-bold bg-gray-900 text-yellow-300 px-1.5 py-0.5 rounded">
                 {COUPON_CODE}
               </span>

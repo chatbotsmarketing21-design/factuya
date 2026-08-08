@@ -104,6 +104,7 @@ export const authAPI = {
 export const couponAPI = {
   validate: (code) => api.post('/coupons/validate', { code }),
   redeem: (code) => requireOnlineWrite(() => api.post('/coupons/redeem', { code })),
+  launchStatus: () => api.get('/coupons/launch'),
 };
 
 // Notification APIs (in-app bell)
