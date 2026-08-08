@@ -243,7 +243,7 @@ const Home = () => {
                 alt="Professional invoice templates"
                 width="1280"
                 height="896"
-                fetchpriority="high"
+                fetchPriority="high"
                 className="w-full rounded-lg shadow-2xl"
                 data-testid="landing-hero-image"
               />
