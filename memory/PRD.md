@@ -12,6 +12,29 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 ---
 ---
 ---
+## 🔄 SESSION 2026-08-08 (parte 2) — PLAN ANUAL + FIX ROTACIÓN ✅ (DESPLEGADO)
+
+### Plan Anual Wompi (LIVE en producción)
+- $35.99 USD/año (~$113.600 COP a TRM live) = 25% ahorro vs $47.88. Solo Wompi/Colombia.
+- Backend: `calculate_subscription_price(plan)`, request `plan` en create-checkout, cupón SOLO mensual, activación 12 meses (`premium_annual`), autoRenew forzado off en anual. Config expone `annual:{amountCOP,amountUSD}`.
+- Frontend: toggle Mensual|Anual (plan-toggle, solo geo wompi), precio tachado $47.88→$35.99, PayPal oculto en anual.
+- Probado: checkout anual ignora cupón ✓, mensual+cupón 50% ✓, activación 12 meses ✓, regresión mensual ✓.
+- Bug preexistente arreglado: notificación "Pago recibido" fallaba (transaction_id undefined → wompi_transaction.get('id')).
+- ⚠️ LECCIÓN: NO hacer search_replace paralelos sobre el MISMO archivo (una edición planId se perdió por conflicto y hubo que reaplicarla).
+
+### Fix rotación móvil (bug reportado por usuario) — VERIFICADO testing agent iteration_11.json (100%)
+- Causa: manifest.json `"orientation": "any"` → TWA fullSensor (ignora bloqueo de giro del usuario).
+- Fix: clave orientation ELIMINADA del manifest. LIVE en factuya.site.
+- ⚠️ La app de Play Store necesita AAB nuevo: al regenerar en PWABuilder usar **Orientation: default**.
+
+### AAB v1.0.2 EN PROCESO (usuario trabajando en ello)
+- PWABuilder: package site.factuya.twa, version 1.0.2, versionCode 3, Orientation default, keystore existente ("Use mine").
+- DEBE apuntar a API 36 (Android 16) — fecha límite Google: 31 AGO 2026.
+- Al recibir el ZIP del usuario: verificar target API 36 antes de subir a Play Console.
+
+### Credenciales test nuevas
+- free-test@test.com / Test123! — creado para probar UI de suscripción (quedó PREMIUM ANUAL tras pruebas de activación, planId premium_annual hasta 2027-08).
+
 ## 🎟️ SESSION 2026-08-08 — CUPÓN LANZAMIENTO50 AUTO-RENOVABLE + PLANTILLA EJECUTIVA ✅ (DESPLEGADO Y VERIFICADO EN PRODUCCIÓN)
 
 ### Cupón LANZAMIENTO50 reactivado con renovación automática

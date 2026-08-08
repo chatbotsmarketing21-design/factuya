@@ -15,3 +15,8 @@
 - ⚠️ Currently in SANDBOX mode: only sends to `chatbotsmarketing21@gmail.com`.
 - To enable sending to all users, verify a domain at https://resend.com/domains
   and update `SENDER_EMAIL` in `/app/backend/.env` to an address on that domain.
+
+## Usuario gratuito de prueba (creado 2026-08-08, quedó Premium ANUAL tras pruebas)
+- Email: free-test@test.com
+- Password: Test123!
+- Nota: planId premium_annual hasta 2027-08 (usado para probar activación del plan anual)
