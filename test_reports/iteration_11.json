@@ -1,0 +1,29 @@
+{
+  "summary": "Verified fix for TWA rotation bug: manifest.json no longer contains the 'orientation' key. Served manifest at GET /manifest.json is valid JSON with all critical keys intact (name, short_name, start_url, display=standalone, theme_color, icons, prefer_related_applications=true, related_applications with id 'site.factuya.twa'). Regression tested Home + login flow: home hero renders, login (via /signin) succeeds and dashboard loads with existing data. No manifest or service-worker-related console errors during load, navigation, or login.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Global (all pages)", "issues": ["Minor React warning in console: 'Invalid DOM property fetchpriority. Did you mean fetchPriority?' — cosmetic React 18 casing warning, unrelated to manifest fix."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Regenerate the TWA AAB via PWABuilder and re-publish to Google Play so the manifest change takes effect on installed Android app (out of scope of this env)."
+  ],
+  "critical_code_review_comments": [
+    "manifest.json fix looks correct and minimal: removing 'orientation' lets Chrome/TWA respect the OS auto-rotate lock (previously 'any' mapped to fullSensor in TWA which ignores the user's system rotation lock).",
+    "display_override lists 'window-controls-overlay' first which is desktop-PWA only; harmless on Android but consider ordering ['standalone','minimal-ui','window-controls-overlay'] to be more idiomatic.",
+    "Fix a benign React warning: use JSX prop fetchPriority (camelCase) instead of fetchpriority to remove console error noise."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (not tested per request)", "frontend": "100%"},
+  "test_credentials": "test@test.com / Test123! (used; note: session showed pre-existing signed-in user 'CESAR GUZMÁN' after login — session persisted via cookies/SW cache from prior test — login flow itself completed and dashboard rendered without errors)",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Frontend served manifest is fetched from https://factuya-invoices.preview.emergentagent.com/manifest.json. Landing 'Sign In' button data-testid='landing-signin-btn'; on /signin the submit is 'button[type=submit]' (note: 'signin-back-link' testid is on a button with type=submit — main agent should fix that Back link to type='button' and add explicit data-testid like 'signin-submit-btn' to the actual submit button).",
+  "rca of the issue": "Original bug: manifest had 'orientation':'any' which Chrome Custom Tabs / TWA maps to ScreenOrientation.LOCK_FULL_SENSOR, forcing the app to allow rotation regardless of the device's system-level auto-rotate setting. Fix: removed the 'orientation' key entirely so TWA falls back to default (LOCK_DEFAULT / respect user preference). Verified served manifest no longer includes the key. Full user-facing verification on Android Play Store requires rebuilding and republishing the AAB from PWABuilder."
+}
