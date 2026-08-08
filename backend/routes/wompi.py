@@ -49,6 +49,7 @@ RENEWAL_CRON_TOKEN = os.environ.get('RENEWAL_CRON_TOKEN', '')
 # Subscription pricing configuration
 # Source of truth: $5 USD per month, converted to COP at the live exchange rate
 SUBSCRIPTION_PRICE_USD = 3.99
+ANNUAL_PRICE_USD = 35.99  # Plan anual: 25% de ahorro vs 12 meses ($47.88)
 FALLBACK_USD_TO_COP_RATE = 4200  # Used only if all exchange rate APIs fail
 
 # In-memory cache for the USD->COP exchange rate (1 hour TTL)
@@ -139,7 +140,7 @@ async def get_usd_to_cop_rate() -> dict:
         "cached": False,
     }
 
-async def calculate_subscription_price() -> dict:
+async def calculate_subscription_price(plan: str = "monthly") -> dict:
     """Compute current subscription price in COP based on live USD->COP rate.
 
     Returns the amount in centavos (Wompi format) and additional metadata for transparency.
@@ -147,15 +148,18 @@ async def calculate_subscription_price() -> dict:
     rate_info = await get_usd_to_cop_rate()
     rate = rate_info["rate"]
 
-    # $5 USD * rate -> COP, rounded to the nearest 100 COP for a clean amount
-    cop_raw = SUBSCRIPTION_PRICE_USD * rate
+    usd = ANNUAL_PRICE_USD if plan == "annual" else SUBSCRIPTION_PRICE_USD
+
+    # USD * rate -> COP, rounded to the nearest 100 COP for a clean amount
+    cop_raw = usd * rate
     cop_rounded = int(round(cop_raw / 100.0) * 100)
     centavos = cop_rounded * 100  # Wompi expects centavos
 
     return {
         "amount_centavos": centavos,
         "amount_cop": cop_rounded,
-        "amount_usd": SUBSCRIPTION_PRICE_USD,
+        "amount_usd": usd,
+        "plan": plan,
         "exchange_rate": rate,
         "rate_source": rate_info["source"],
         "rate_fetched_at": rate_info["fetched_at"],
@@ -167,6 +171,7 @@ class CreateWompiCheckoutRequest(BaseModel):
     originUrl: str
     autoRenewOptIn: bool = False  # User consented to monthly auto-charge
     couponCode: Optional[str] = None  # Optional winback/launch coupon
+    plan: str = "monthly"  # 'monthly' | 'annual'
 
 class WompiWebhookPayload(BaseModel):
     event: str
@@ -184,6 +189,7 @@ def generate_integrity_signature(reference: str, amount_cents: int, currency: st
 async def get_wompi_config():
     """Get Wompi public configuration for frontend, with live USD->COP price."""
     price = await calculate_subscription_price()
+    annual = await calculate_subscription_price("annual")
     return {
         "publicKey": WOMPI_PUBLIC_KEY,
         "currency": "COP",
@@ -193,6 +199,11 @@ async def get_wompi_config():
         "exchangeRate": price["exchange_rate"],
         "rateSource": price["rate_source"],
         "rateFetchedAt": price["rate_fetched_at"],
+        "annual": {
+            "amountInCents": annual["amount_centavos"],
+            "amountCOP": annual["amount_cop"],
+            "amountUSD": annual["amount_usd"],
+        },
     }
 
 @router.get("/exchange-rate")
@@ -213,14 +224,18 @@ async def create_wompi_checkout(
         if not user:
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-        # Compute the live COP price for $5 USD at the current exchange rate
-        price = await calculate_subscription_price()
+        # Plan: mensual o anual
+        plan = checkout_data.plan if checkout_data.plan in ("monthly", "annual") else "monthly"
+
+        # Compute the live COP price at the current exchange rate
+        price = await calculate_subscription_price(plan)
         amount_centavos = price["amount_centavos"]
         amount_cop = price["amount_cop"]
 
         # ---- Apply coupon discount if a valid coupon was passed ----
+        # El cupón SOLO aplica al plan mensual (decisión de negocio).
         coupon_applied = None
-        if checkout_data.couponCode:
+        if checkout_data.couponCode and plan == "monthly":
             from utils.reactivation import validate_coupon
             coupon_check = await validate_coupon(db, checkout_data.couponCode)
             if coupon_check.get("status") == "valid":
@@ -268,11 +283,12 @@ async def create_wompi_checkout(
             "currency": "COP",
             "status": "pending",
             "paymentGateway": "wompi",
-            "autoRenewOptIn": bool(checkout_data.autoRenewOptIn),
+            "plan": plan,
+            "autoRenewOptIn": bool(checkout_data.autoRenewOptIn) if plan == "monthly" else False,
             "couponApplied": coupon_applied,  # None or {"code": "...", "discount_percent": 50}
             "metadata": {
                 "user_email": user.get("email", ""),
-                "plan": "premium_monthly"
+                "plan": "premium_annual" if plan == "annual" else "premium_monthly"
             },
             "createdAt": datetime.now(timezone.utc),
             "updatedAt": datetime.now(timezone.utc)
@@ -308,6 +324,7 @@ async def create_wompi_checkout(
             "integritySignature": integrity_signature,
             "redirectUrl": redirect_url,
             "couponApplied": coupon_applied,
+            "plan": plan,
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -401,13 +418,15 @@ async def activate_subscription(user_id: str, reference: str, wompi_transaction:
     if existing:
         return  # Already activated
     
-    # Compute the next billing date as a CALENDAR month, not 30 days.
-    period_start = datetime.now(timezone.utc)
-    period_end = period_start + relativedelta(months=1)
-
-    # Check the original checkout record for auto-renew opt-in
+    # Check the original checkout record for auto-renew opt-in and plan
     original_tx = await db.wompi_transactions.find_one({"reference": reference})
-    auto_renew_opt_in = bool(original_tx and original_tx.get("autoRenewOptIn"))
+    plan = (original_tx or {}).get("plan", "monthly")
+    is_annual = plan == "annual"
+    auto_renew_opt_in = bool(original_tx and original_tx.get("autoRenewOptIn")) and not is_annual
+
+    # Compute the next billing date as a CALENDAR month (or 12 for annual plan).
+    period_start = datetime.now(timezone.utc)
+    period_end = period_start + relativedelta(months=12 if is_annual else 1)
 
     # Extract the permanent Wompi token (payment_source_id) from the transaction
     # This only exists when the card was tokenized (and the opt-in flag was on).
@@ -422,7 +441,7 @@ async def activate_subscription(user_id: str, reference: str, wompi_transaction:
 
     sub_update = {
         "status": "active",
-        "planId": "premium_monthly",
+        "planId": "premium_annual" if is_annual else "premium_monthly",
         "wompiReference": reference,
         "wompiTransactionId": wompi_transaction.get("id"),
         "paymentMethod": wompi_transaction.get("payment_method_type"),
@@ -474,7 +493,7 @@ async def activate_subscription(user_id: str, reference: str, wompi_transaction:
             link="/subscription",
             icon="check-circle",
             accent="lime",
-            dedupe_key=f"payment_received:wompi:{transaction_id}",
+            dedupe_key=f"payment_received:wompi:{wompi_transaction.get('id')}",
         )
     except Exception as e:
         print(f"Wompi payment notification failed: {e}")

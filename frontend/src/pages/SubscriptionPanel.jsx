@@ -68,6 +68,7 @@ const SubscriptionPanel = () => {
   const [verifyingPayment, setVerifyingPayment] = useState(false);
   const [paymentResult, setPaymentResult] = useState(null);
   const [wompiPrice, setWompiPrice] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState('monthly'); // 'monthly' | 'annual' (anual solo Wompi/Colombia)
   const [geo, setGeo] = useState(null);
   const [autoRenewOptIn, setAutoRenewOptInState] = useState(() => {
     // Restore the user's preference across navigation (persisted in localStorage)
@@ -369,8 +370,8 @@ const SubscriptionPanel = () => {
       const gateway = forceGateway || (geo?.gateway === 'wompi' ? 'wompi' : 'paypal');
 
       if (gateway === 'wompi') {
-        const couponCode = pendingCoupon?.code || null;
-        const response = await subscriptionAPI.createWompiCheckout(autoRenewOptIn, couponCode);
+        const couponCode = selectedPlan === 'monthly' ? (pendingCoupon?.code || null) : null;
+        const response = await subscriptionAPI.createWompiCheckout(autoRenewOptIn, couponCode, selectedPlan);
         if (response.data.checkoutUrl) {
           window.location.href = response.data.checkoutUrl;
         }
@@ -680,40 +681,91 @@ const SubscriptionPanel = () => {
                   <Trophy className="w-3 h-3" />
                   Mejor precio del mercado
                 </div>
-                <p className="text-4xl font-bold text-gray-900 dark:text-white" data-testid="price-usd">
-                  {pendingCoupon && !isPremium ? (
-                    <>
-                      <span className="text-2xl line-through text-gray-400 mr-2" data-testid="price-original">$3.99</span>
-                      <span data-testid="price-discounted">${(3.99 * (100 - (pendingCoupon.discount_percent || 0)) / 100).toFixed(2)}</span>
-                      <span className="text-lg font-medium text-gray-500"> USD</span>
-                    </>
-                  ) : (
-                    <>$3.99 <span className="text-lg font-medium text-gray-500">USD</span></>
-                  )}
-                </p>
-                <p className="text-gray-500 dark:text-gray-400">/{t('subscription.month')}</p>
-                {pendingCoupon && !isPremium && (
-                  <p className="text-xs font-semibold text-lime-600 dark:text-lime-400 mt-1" data-testid="coupon-discount-note">
-                    {pendingCoupon.discount_percent}% OFF aplicado con {pendingCoupon.code}
-                  </p>
+                {/* Selector Mensual / Anual — plan anual disponible con Wompi (Colombia) */}
+                {geo?.gateway === 'wompi' && !isPremium && (
+                  <div className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-full p-1 mb-4" data-testid="plan-toggle">
+                    <button
+                      onClick={() => setSelectedPlan('monthly')}
+                      className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${selectedPlan === 'monthly' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow' : 'text-gray-500 dark:text-gray-400'}`}
+                      data-testid="plan-monthly-btn"
+                    >
+                      Mensual
+                    </button>
+                    <button
+                      onClick={() => setSelectedPlan('annual')}
+                      className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all flex items-center gap-1.5 ${selectedPlan === 'annual' ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow' : 'text-gray-500 dark:text-gray-400'}`}
+                      data-testid="plan-annual-btn"
+                    >
+                      Anual
+                      <span className="text-[10px] font-bold bg-lime-500 text-white px-1.5 py-0.5 rounded-full">-25%</span>
+                    </button>
+                  </div>
                 )}
-                {/* Show COP equivalent only for Colombian users (Wompi gateway) */}
-                {geo?.gateway === 'wompi' && wompiPrice?.amountCOP && (
-                  <div className="mt-2 mb-2 text-center" data-testid="wompi-cop-price">
-                    {pendingCoupon && !isPremium ? (
-                      <p className="text-sm font-semibold text-lime-600 dark:text-lime-400">
-                        <span className="line-through text-gray-400 mr-1">${wompiPrice.amountCOP.toLocaleString('es-CO')}</span>
-                        ≈ ${Math.round(wompiPrice.amountCOP * (100 - (pendingCoupon.discount_percent || 0)) / 100 / 100) * 100} COP
-                      </p>
-                    ) : (
-                      <p className="text-sm font-semibold text-lime-600 dark:text-lime-400">
-                        ≈ ${wompiPrice.amountCOP.toLocaleString('es-CO')} COP
+
+                {selectedPlan === 'annual' && geo?.gateway === 'wompi' ? (
+                  <>
+                    <p className="text-4xl font-bold text-gray-900 dark:text-white" data-testid="price-usd">
+                      <span className="text-2xl line-through text-gray-400 mr-2">$47.88</span>
+                      $35.99 <span className="text-lg font-medium text-gray-500">USD</span>
+                    </p>
+                    <p className="text-gray-500 dark:text-gray-400">/año</p>
+                    <p className="text-xs font-semibold text-lime-600 dark:text-lime-400 mt-1" data-testid="annual-savings-note">
+                      Equivale a $3.00 USD/mes · Ahorras 25%
+                    </p>
+                    {wompiPrice?.annual?.amountCOP && (
+                      <div className="mt-2 mb-2 text-center" data-testid="wompi-cop-price">
+                        <p className="text-sm font-semibold text-lime-600 dark:text-lime-400">
+                          ≈ ${wompiPrice.annual.amountCOP.toLocaleString('es-CO')} COP
+                        </p>
+                        <p className="text-[10px] text-gray-400 dark:text-gray-500">
+                          TRM: ${Number(wompiPrice.exchangeRate).toLocaleString('es-CO', { maximumFractionDigits: 2 })} · {wompiPrice.rateSource}
+                        </p>
+                      </div>
+                    )}
+                    {pendingCoupon && !isPremium && (
+                      <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1" data-testid="coupon-annual-note">
+                        El cupón {pendingCoupon.code} aplica solo al plan mensual
                       </p>
                     )}
-                    <p className="text-[10px] text-gray-400 dark:text-gray-500">
-                      TRM: ${Number(wompiPrice.exchangeRate).toLocaleString('es-CO', { maximumFractionDigits: 2 })} · {wompiPrice.rateSource}
+                  </>
+                ) : (
+                  <>
+                    <p className="text-4xl font-bold text-gray-900 dark:text-white" data-testid="price-usd">
+                      {pendingCoupon && !isPremium ? (
+                        <>
+                          <span className="text-2xl line-through text-gray-400 mr-2" data-testid="price-original">$3.99</span>
+                          <span data-testid="price-discounted">${(3.99 * (100 - (pendingCoupon.discount_percent || 0)) / 100).toFixed(2)}</span>
+                          <span className="text-lg font-medium text-gray-500"> USD</span>
+                        </>
+                      ) : (
+                        <>$3.99 <span className="text-lg font-medium text-gray-500">USD</span></>
+                      )}
                     </p>
-                  </div>
+                    <p className="text-gray-500 dark:text-gray-400">/{t('subscription.month')}</p>
+                    {pendingCoupon && !isPremium && (
+                      <p className="text-xs font-semibold text-lime-600 dark:text-lime-400 mt-1" data-testid="coupon-discount-note">
+                        {pendingCoupon.discount_percent}% OFF aplicado con {pendingCoupon.code}
+                      </p>
+                    )}
+                    {/* Show COP equivalent only for Colombian users (Wompi gateway) */}
+                    {geo?.gateway === 'wompi' && wompiPrice?.amountCOP && (
+                      <div className="mt-2 mb-2 text-center" data-testid="wompi-cop-price">
+                        {pendingCoupon && !isPremium ? (
+                          <p className="text-sm font-semibold text-lime-600 dark:text-lime-400">
+                            <span className="line-through text-gray-400 mr-1">${wompiPrice.amountCOP.toLocaleString('es-CO')}</span>
+                            ≈ ${Math.round(wompiPrice.amountCOP * (100 - (pendingCoupon.discount_percent || 0)) / 100 / 100) * 100} COP
+                          </p>
+                        ) : (
+                          <p className="text-sm font-semibold text-lime-600 dark:text-lime-400">
+                            ≈ ${wompiPrice.amountCOP.toLocaleString('es-CO')} COP
+                          </p>
+                        )}
+                        <p className="text-[10px] text-gray-400 dark:text-gray-500">
+                          TRM: ${Number(wompiPrice.exchangeRate).toLocaleString('es-CO', { maximumFractionDigits: 2 })} · {wompiPrice.rateSource}
+                        </p>
+                      </div>
+                    )}
+                  </>
                 )}
                 {/* International users (PayPal) - mention auto-renewal */}
                 {geo && geo.gateway !== 'wompi' && (
@@ -735,8 +787,9 @@ const SubscriptionPanel = () => {
                 </Button>
 
                 {/* Colombia users get a secondary PayPal button so people
-                    without a local card can still subscribe via PayPal Balance. */}
-                {geo?.gateway === 'wompi' && paypalConfig?.configured && (
+                    without a local card can still subscribe via PayPal Balance.
+                    (Solo plan mensual — el anual es exclusivo de Wompi) */}
+                {geo?.gateway === 'wompi' && paypalConfig?.configured && selectedPlan === 'monthly' && (
                   <div className="mt-3 space-y-2" data-testid="paypal-secondary-block">
                     <div className="flex items-center gap-3">
                       <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700"></div>
