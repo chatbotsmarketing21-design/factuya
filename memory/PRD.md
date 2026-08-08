@@ -11,6 +11,27 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 ---
 ---
 ---
+---
+## 🎟️ SESSION 2026-08-08 — CUPÓN LANZAMIENTO50 AUTO-RENOVABLE + PLANTILLA EJECUTIVA ✅ (DESPLEGADO Y VERIFICADO EN PRODUCCIÓN)
+
+### Cupón LANZAMIENTO50 reactivado con renovación automática
+- `ensure_launch_coupon_active()` en `routes/coupons.py`: crea/renueva el cupón (30 días de vigencia, campaña `auto_renew_until` ~6 meses = hasta 2027-02-07).
+- Job APScheduler `launch_coupon_renewal` (08:45 UTC diario + al arrancar con next_run_time=now) — al reiniciar el backend en el VPS el cupón se reactiva SOLO, sin scripts manuales.
+- Endpoint público `GET /api/coupons/launch` → {active, code, discount_percent, expires_at}.
+- `LaunchCouponBanner.jsx` ya NO tiene fecha hardcodeada: lee expires_at real del backend (couponAPI.launchStatus). Banner reaparece automáticamente en cada ciclo mensual.
+- Probado: renovación tras expiración ✓, fin de campaña no renueva ✓, banner producción con countdown 29d ✓, validate multi_use wompi/paypal/stripe ✓.
+- Vence actual: 2026-09-07; campaña hasta ~2027-02-07.
+
+### Plantilla "Ejecutiva" (6ª plantilla) — DESPLEGADA
+- `InvoiceTemplateEjecutiva.jsx`: header oscuro (#111827) + serif Georgia, acento bronce #B45309 (personalizable), bloque Facturar a con borde lateral, tabla minimalista, TOTAL en caja oscura, pie "GRACIAS POR SU CONFIANZA".
+- Registrada: type 'ejecutiva' en InvoicePreview, id 6 en mockTemplates, thumbnail real en /templates/ejecutiva-thumb.png (generada por screenshot).
+- Nota: quedó un `thumb_ejecutiva.png` suelto en la raíz del repo (limpieza menor pendiente).
+
+### Recordatorios de sesión
+- 🔴 **PLAY STORE API 36**: regenerar AAB con PWABuilder (target Android 16 / API 36) ANTES DEL 31 AGO 2026. Guía paso a paso ya entregada al usuario (package site.factuya.twa, keystore existente, version 1.0.2 code 3). Usuario lo hará "mañana".
+- 🟡 Verificación de desarrollador Play Console antes del 30 sep 2026.
+- El usuario iba a contar una "nueva función" y terminó siendo el cupón. Preguntar si había algo más.
+
 ## 🧹 SESSION 2026-07-13 (parte 3) + 2026-08-06 — AJUSTES UX + RASTREO DE ACTIVIDAD ✅ (TODO DESPLEGADO Y VERIFICADO)
 
 ### Ajustes UX (todos desplegados en factuya.site)
