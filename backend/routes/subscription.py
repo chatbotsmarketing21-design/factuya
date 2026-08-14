@@ -46,6 +46,28 @@ class CreateCheckoutRequest(BaseModel):
 @router.get("/status", response_model=SubscriptionStatus)
 async def get_subscription_status(user_id: str = Depends(get_current_user_id)):
     """Get user's subscription status"""
+    # La cuenta ADMIN siempre es Premium (se auto-repara si no lo está)
+    ADMIN_EMAIL = "soportefactuya@gmail.com"
+    admin_user = await db.users.find_one({"id": user_id})
+    if admin_user and admin_user.get("email", "").lower() == ADMIN_EMAIL:
+        existing = await db.subscriptions.find_one({"userId": user_id})
+        if not existing or existing.get("status") != "active":
+            now = datetime.now(timezone.utc)
+            await db.subscriptions.update_one(
+                {"userId": user_id},
+                {"$set": {
+                    "userId": user_id,
+                    "status": "active",
+                    "planId": "premium_gift",
+                    "currentPeriodStart": now,
+                    "currentPeriodEnd": now + timedelta(days=36500),
+                    "autoRenewEnabled": False,
+                    "giftedBy": "system:admin_auto",
+                    "updatedAt": now,
+                }},
+                upsert=True,
+            )
+
     # Get user's subscription
     subscription = await db.subscriptions.find_one({"userId": user_id})
     

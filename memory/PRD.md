@@ -12,6 +12,26 @@ Clone of "Invoice Home" application - a full-stack invoicing application named "
 ---
 ---
 ---
+## 🎁 SESSION 2026-08-14 — REGALAR PREMIUM + ADMIN SIEMPRE PREMIUM ✅ (testing agent iteration_12: 100%)
+
+### Función "Regalar Premium" (admin)
+- `POST /api/admin/grant-premium {email, duration: 1m|6m|1y|permanent}` — solo admin (verify_admin). Upsert suscripción planId `premium_gift`, autoRenew off, notificación in-app "🎁 ¡Tienes Premium de regalo!".
+- `AdminGiftPremiumCard.jsx` en AdminPanel: input correo + select duración + botón (testids: gift-premium-card, gift-email-input, gift-duration-select, gift-grant-btn).
+- El correo debe estar REGISTRADO primero. Pendiente usuario: regalar a innovaappsolutions@gmail.com tras registro.
+
+### Bug fix: admin veía paywall (verificado testing agent 100%)
+- `GET /api/subscription/status` auto-repara: si el usuario es soportefactuya@gmail.com y no está active → upsert premium_gift +36500 días. Admin SIEMPRE Premium, auto-sanador en cada llamada.
+- Test de regresión creado: `/app/backend/tests/test_admin_subscription_fix.py` (6/6 PASS) — usar antes de tocar subscription.py/admin.py.
+- Fix colateral previo: IndentationError en admin.py (docstring de get_admin_stats quedó en la misma línea al insertar el endpoint).
+
+### PENDIENTE DESPLIEGUE VPS (backend cambió → systemctl restart)
+- grant-premium + admin auto-premium + tarjeta admin NO están en producción aún.
+
+### Deuda técnica (menor, preexistente)
+- InvoicePreview.jsx ~línea 154: hydration warning `<span data-ve-dynamic>` dentro de `<tbody>`.
+- /signin: submit sin data-testid propio.
+- ADMIN_EMAIL duplicado en admin.py y subscription.py (mover a env/config algún día).
+
 ## 🔄 SESSION 2026-08-08 (parte 2) — PLAN ANUAL + FIX ROTACIÓN ✅ (DESPLEGADO)
 
 ### Plan Anual Wompi (LIVE en producción)

@@ -1,0 +1,32 @@
+{
+  "summary": "Verified admin subscription auto-repair fix in GET /api/subscription/status and regression on /api/admin/grant-premium. Ran 6 pytest cases (all PASS) plus an end-to-end Playwright flow logging in as admin (soportefactuya@gmail.com) and as normal user (test@test.com). Backend: deleting admin's subscription doc in Mongo and calling /api/subscription/status auto-recreates it as {status:active, planId:premium_gift, ~36500 days}. UI: admin's /subscription shows 'Premium Plan ACTIVE - 36499 days remaining' and /create loads the invoice creator without any subscription paywall. Normal user's subscription is not altered by the admin fix (no giftedBy:system:admin_auto). grant-premium works for admin, returns 403 for non-admin, 403/401 for unauthenticated.",
+  "backend_issues": { "critical": [], "minor": [] },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "InvoicePreview (/create)", "issues": ["React hydration console error: <span> cannot be a child of <tbody>, and <tr> cannot be a child of <span>. Non-blocking but pollutes console (InvoicePreview.jsx line 154-156, likely a stray fragment/span wrapper around the items map)."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_admin_subscription_fix.py",
+    "/app/test_reports/pytest/admin_sub_fix.xml"
+  ],
+  "action_items": [
+    "OPTIONAL: fix InvoicePreview.jsx (~line 154) hydration warning where a <span data-ve-dynamic> wraps <tr> inside <tbody>.",
+    "PRE-EXISTING (from iteration_11, not part of this bug): /signin submit button still lacks data-testid — noting for future testing convenience."
+  ],
+  "critical_code_review_comments": [
+    "routes/subscription.py: auto-repair block matches admin by users.email == ADMIN_EMAIL (lowercased). Constant duplicated with routes/admin.py; consider moving ADMIN_EMAIL to config/env for single source of truth.",
+    "Auto-repair uses currentPeriodEnd = now + 36500 days (~100 years) which is fine, but note that the AUTO-EXPIRE block below (lines 101-111) still runs after; harmless since end is far in the future.",
+    "Trial fallback creates 999-day trial and 10-invoice limit — inconsistent with the 'plan gratuito' naming; verify this matches product PRD."
+  ],
+  "updated_files": ["/app/backend/tests/test_admin_subscription_fix.py"],
+  "success_rate": {"backend": "100% (6/6)", "frontend": "100% for tested flows"},
+  "test_credentials": "Admin: soportefactuya@gmail.com / 71361451 ; Normal: test@test.com / Test123! ; Gift target: free-test@test.com",
+  "seed_data_creation": "Test deletes and re-inserts admin subscription via the endpoint itself (idempotent). Also grants Premium 1m to free-test@test.com via /api/admin/grant-premium (idempotent upsert).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "The new pytest file /app/backend/tests/test_admin_subscription_fix.py covers admin auto-repair + grant-premium regression. Reuse it as regression before touching subscription.py or admin.py. Note test@test.com currently sits with an admin-gifted premium (36107 days remaining) from prior sessions — the regression test tolerates this and just checks giftedBy != 'system:admin_auto'.",
+  "rca of the issue": "Bug reported: admin account was on trial plan and hit paywall. Fix (routes/subscription.py lines 49-69): inside GET /api/subscription/status, if authenticated user's email matches ADMIN_EMAIL and their subscription is missing/not-active, upsert {status:active, planId:premium_gift, currentPeriodEnd:+36500d}. Verified: deleted admin subscription → single call to /api/subscription/status returned status='active' with daysRemaining=36499 and DB re-created the doc with planId='premium_gift'. Mitigation is self-healing on every status call, so no manual intervention needed."
+}
