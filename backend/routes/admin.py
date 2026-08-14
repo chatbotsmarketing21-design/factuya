@@ -4,6 +4,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 from pathlib import Path
 from datetime import datetime, timezone
+from dateutil.relativedelta import relativedelta
+from pydantic import BaseModel
 from utils.auth import get_current_user_id
 
 # Load environment variables
@@ -30,6 +32,71 @@ async def verify_admin(user_id: str = Depends(get_current_user_id)):
         raise HTTPException(status_code=403, detail="Acceso denegado. Solo administradores.")
     
     return user_id
+
+class GrantPremiumRequest(BaseModel):
+    email: str
+    duration: str  # '1m' | '6m' | '1y' | 'permanent'
+
+
+@router.post("/grant-premium")
+async def grant_premium(request: GrantPremiumRequest, user_id: str = Depends(verify_admin)):
+    """Regala Premium a un usuario por su correo (solo admin)."""
+    email = request.email.strip().lower()
+    target = await db.users.find_one({"email": email})
+    if not target:
+        raise HTTPException(status_code=404, detail=f"No existe un usuario registrado con el correo {email}")
+
+    durations = {
+        "1m": relativedelta(months=1),
+        "6m": relativedelta(months=6),
+        "1y": relativedelta(years=1),
+        "permanent": relativedelta(years=100),
+    }
+    if request.duration not in durations:
+        raise HTTPException(status_code=400, detail="Duración inválida")
+
+    now = datetime.now(timezone.utc)
+    period_end = now + durations[request.duration]
+
+    await db.subscriptions.update_one(
+        {"userId": target["id"]},
+        {"$set": {
+            "userId": target["id"],
+            "status": "active",
+            "planId": "premium_gift",
+            "currentPeriodStart": now,
+            "currentPeriodEnd": period_end,
+            "autoRenewEnabled": False,
+            "giftedBy": ADMIN_EMAIL,
+            "giftedAt": now,
+            "updatedAt": now,
+        }},
+        upsert=True
+    )
+
+    try:
+        from routes.notifications import create_notification
+        await create_notification(
+            target["id"],
+            type="premium_gift",
+            title="🎁 ¡Tienes Premium de regalo!",
+            body="Te activamos FactuYa! Premium sin costo. Disfruta facturas ilimitadas y todas las plantillas.",
+            link="/subscription",
+            icon="gift",
+            accent="lime",
+            dedupe_key=f"premium_gift:{target['id']}:{now.date().isoformat()}",
+        )
+    except Exception as e:
+        print(f"Gift notification failed: {e}")
+
+    return {
+        "success": True,
+        "email": email,
+        "name": target.get("name", ""),
+        "duration": request.duration,
+        "premiumUntil": None if request.duration == "permanent" else period_end.isoformat(),
+    }
+
 
 @router.get("/stats")
 async def get_admin_stats(user_id: str = Depends(verify_admin)):

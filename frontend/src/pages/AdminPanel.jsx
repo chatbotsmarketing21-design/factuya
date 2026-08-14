@@ -28,6 +28,7 @@ import {
   Globe
 } from 'lucide-react';
 import AdminBroadcastCard from '../components/AdminBroadcastCard';
+import AdminGiftPremiumCard from '../components/AdminGiftPremiumCard';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -334,6 +335,9 @@ const AdminPanel = () => {
 
         {/* Broadcast notification card */}
         <AdminBroadcastCard />
+
+        {/* Gift premium card */}
+        <AdminGiftPremiumCard />
 
         {/* Users Table */}
         <Card className="dark:bg-card">
