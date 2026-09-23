@@ -1227,3 +1227,11 @@ Premium subscription.
 - [ ] Call `POST /api/coupons/redeem` from frontend after successful payment
 - [ ] Optional: pass coupon code into Wompi/PayPal as metadata so a webhook can redeem server-side
 
+
+## Incidente Producción — 2026-06 (Backend VPS caído, 502)
+- Síntoma: usuario no veía documentos ni podía hacer login (web + Android). factuya.site devolvía 502 en /api.
+- Causa raíz: unattended-upgrades de Ubuntu 24.04 actualizó `cryptography` (50.0.1) dejando el `pyOpenSSL` del sistema (23.2.0 en /usr/lib/python3/dist-packages) incompatible → `AttributeError: module 'lib' has no attribute 'GEN_EMAIL'` al importar pymongo → uvicorn crash-loop.
+- Fix (en el VPS, NO requirió cambios de código ni GitHub): `pip3 install --upgrade pyopenssl cryptography --break-system-packages` + `sudo systemctl restart factuya`.
+- Verificado: login admin OK, 10 documentos intactos vía API. Usuario confirmó web y móvil funcionando.
+- Pendiente usuario: `sudo reboot` (kernel updates) y verificar `systemctl status factuya mongod nginx` tras reinicio.
+- Lección: si el VPS devuelve 502, revisar `journalctl -u factuya` antes de asumir bug de código.
