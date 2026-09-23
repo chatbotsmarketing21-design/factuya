@@ -1235,3 +1235,10 @@ Premium subscription.
 - Verificado: login admin OK, 10 documentos intactos vía API. Usuario confirmó web y móvil funcionando.
 - Pendiente usuario: `sudo reboot` (kernel updates) y verificar `systemctl status factuya mongod nginx` tras reinicio.
 - Lección: si el VPS devuelve 502, revisar `journalctl -u factuya` antes de asumir bug de código.
+
+## Monitor de Servidor (Watchdog) — 2026-06 (IMPLEMENTADO Y VERIFICADO EN VPS)
+- `scripts/factuya-watchdog.sh`: cada 5 min (cron /etc/cron.d/factuya-watchdog) verifica https://factuya.site/api/. Si falla: levanta mongod si está apagado → reinicia factuya → correo vía Resend (reiniciado/caído/recuperado, anti-spam 1/hora, estado en /var/tmp/factuya-watchdog.state).
+- `scripts/install-watchdog.sh`: instalador one-shot (ya ejecutado por el usuario en el VPS, prueba manual OK).
+- Alertas van a chatbotsmarketing21@gmail.com (dueña de la cuenta Resend; sandbox solo permite ese destinatario). Al verificar dominio factuya.site en Resend, se puede cambiar con WATCHDOG_ALERT_EMAIL en backend/.env.
+- Capa 2 sugerida al usuario: UptimeRobot externo (pendiente que el usuario lo configure).
+- Nota: Resend API detrás de Cloudflare bloquea urllib de Python (error 1010) → el script usa curl para enviar.
