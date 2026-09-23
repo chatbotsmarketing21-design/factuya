@@ -76,7 +76,7 @@ async def get_next_invoice_number(
             try:
                 last_num = int(existing[0]["number"].split("-")[1])
                 next_number = last_num + 1
-            except:
+            except (ValueError, IndexError):
                 next_number = 1
         else:
             next_number = 1
@@ -231,7 +231,7 @@ async def create_invoice(
                     {"$set": {"lastNumber": sequence, "updatedAt": datetime.utcnow()}},
                     upsert=True
                 )
-            except:
+            except (ValueError, IndexError):
                 pass
     
     invoice_in_db = InvoiceInDB(**invoice_dict)
