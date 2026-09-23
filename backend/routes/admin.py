@@ -22,6 +22,29 @@ db = client[os.environ['DB_NAME']]
 # Admin email - only this email can access admin panel
 ADMIN_EMAIL = "soportefactuya@gmail.com"
 
+# Normalización de nombres de país (texto libre del perfil) a código ISO
+COUNTRY_NAME_TO_ISO = {
+    "colombia": "CO", "estados unidos": "US", "united states": "US", "usa": "US",
+    "eeuu": "US", "ee.uu.": "US", "mexico": "MX", "méxico": "MX", "espana": "ES",
+    "españa": "ES", "spain": "ES", "argentina": "AR", "chile": "CL", "peru": "PE",
+    "perú": "PE", "ecuador": "EC", "venezuela": "VE", "bolivia": "BO", "brasil": "BR",
+    "brazil": "BR", "panama": "PA", "panamá": "PA", "costa rica": "CR", "guatemala": "GT",
+    "honduras": "HN", "el salvador": "SV", "nicaragua": "NI", "paraguay": "PY",
+    "uruguay": "UY", "republica dominicana": "DO", "república dominicana": "DO",
+    "puerto rico": "PR", "cuba": "CU", "canada": "CA", "canadá": "CA", "francia": "FR",
+    "france": "FR", "portugal": "PT", "italia": "IT", "italy": "IT", "alemania": "DE",
+    "germany": "DE", "reino unido": "GB", "united kingdom": "GB", "uk": "GB",
+}
+
+def normalize_country(value):
+    """Devuelve código ISO de 2 letras a partir de código o nombre libre."""
+    if not value:
+        return None
+    v = value.strip()
+    if len(v) == 2 and v.isalpha():
+        return v.upper()
+    return COUNTRY_NAME_TO_ISO.get(v.lower(), v)
+
 async def verify_admin(user_id: str = Depends(get_current_user_id)):
     """Verify that the current user is an admin"""
     user = await db.users.find_one({"id": user_id})
@@ -162,11 +185,15 @@ async def get_all_users(user_id: str = Depends(verify_admin)):
     
     users = await db.users.find(
         {},
-        {"_id": 0, "id": 1, "email": 1, "name": 1, "createdAt": 1, "lastSeenAt": 1, "lastSeenSource": 1}
+        {"_id": 0, "id": 1, "email": 1, "name": 1, "createdAt": 1, "lastSeenAt": 1, "lastSeenSource": 1, "country": 1, "countryName": 1, "companyInfo.country": 1}
     ).sort("createdAt", -1).to_list(1000)
     
     # Get subscription status for each user
     for user in users:
+        # Country: geo-detected first, profile (companyInfo) as fallback
+        raw_country = user.get("country") or (user.get("companyInfo") or {}).get("country")
+        user["country"] = normalize_country(raw_country)
+        user.pop("companyInfo", None)
         subscription = await db.subscriptions.find_one(
             {"userId": user.get("id")},
             {"_id": 0, "status": 1}
@@ -183,6 +210,37 @@ async def get_all_users(user_id: str = Depends(verify_admin)):
                 user["createdAt"] = user["createdAt"].isoformat()
     
     return {"users": users, "total": len(users)}
+
+@router.delete("/users/{target_user_id}")
+async def admin_delete_user(target_user_id: str, user_id: str = Depends(verify_admin)):
+    """Elimina permanentemente a un usuario y todos sus datos (solo admin)."""
+    target = await db.users.find_one({"id": target_user_id})
+    if not target:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    if target.get("email", "").lower() == ADMIN_EMAIL.lower():
+        raise HTTPException(status_code=400, detail="No puedes eliminar la cuenta de administrador")
+
+    target_email = target.get("email")
+    collections = [
+        "invoices", "invoice_counters", "products", "notifications",
+        "paypal_subscriptions", "wompi_subscriptions", "wompi_payments",
+        "subscriptions", "password_resets", "renewal_notifications",
+        "company_logos", "reactivation_coupons",
+    ]
+    for coll in collections:
+        try:
+            await db[coll].delete_many({"$or": [{"userId": target_user_id}, {"user_id": target_user_id}]})
+        except Exception:
+            pass
+    if target_email:
+        for coll in ["password_resets", "contact_messages"]:
+            try:
+                await db[coll].delete_many({"email": target_email})
+            except Exception:
+                pass
+
+    await db.users.delete_one({"id": target_user_id})
+    return {"success": True, "email": target_email}
 
 @router.get("/check")
 async def check_admin_access(user_id: str = Depends(get_current_user_id)):

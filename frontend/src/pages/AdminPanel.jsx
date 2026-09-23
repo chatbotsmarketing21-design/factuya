@@ -12,6 +12,17 @@ import {
   TableHeader,
   TableRow,
 } from '../components/ui/table';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '../components/ui/alert-dialog';
+import { useToast } from '../hooks/use-toast';
 import { 
   ArrowLeft, 
   Users, 
@@ -25,7 +36,8 @@ import {
   UserPlus,
   RefreshCw,
   Smartphone,
-  Globe
+  Globe,
+  Trash2
 } from 'lucide-react';
 import AdminBroadcastCard from '../components/AdminBroadcastCard';
 import AdminGiftPremiumCard from '../components/AdminGiftPremiumCard';
@@ -35,10 +47,13 @@ const API_URL = process.env.REACT_APP_BACKEND_URL;
 const AdminPanel = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     checkAdminAccess();
@@ -123,6 +138,52 @@ const AdminPanel = () => {
       month: 'short',
       day: 'numeric'
     });
+  };
+
+  const countryFlag = (code) => {
+    if (!code || code.length !== 2 || !/^[A-Za-z]{2}$/.test(code)) return null;
+    return String.fromCodePoint(...code.toUpperCase().split('').map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
+  };
+
+  const getCountryCell = (u) => {
+    const c = u.country;
+    if (!c) return <span className="text-xs text-gray-400">—</span>;
+    const flag = countryFlag(c);
+    return (
+      <span className="whitespace-nowrap text-sm dark:text-gray-300" data-testid={`country-${u.id}`}>
+        {flag ? `${flag} ${c.toUpperCase()}` : c}
+      </span>
+    );
+  };
+
+  const countrySummary = React.useMemo(() => {
+    const counts = {};
+    users.forEach((u) => {
+      const key = u.country ? u.country.toUpperCase() : '—';
+      counts[key] = (counts[key] || 0) + 1;
+    });
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  }, [users]);
+
+  const handleDeleteUser = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_URL}/api/admin/users/${deleteTarget.id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Error al eliminar');
+      setUsers((prev) => prev.filter((u) => u.id !== deleteTarget.id));
+      toast({ title: 'Usuario eliminado', description: `${deleteTarget.email} y todos sus datos fueron eliminados.` });
+    } catch (error) {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
+    }
   };
 
   const getSubscriptionBadge = (status) => {
@@ -345,6 +406,18 @@ const AdminPanel = () => {
             <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
               Usuarios Registrados ({users.length})
             </h2>
+
+            {/* Resumen por país */}
+            {users.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-4" data-testid="country-summary">
+                {countrySummary.map(([code, count]) => (
+                  <span key={code} className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                    {code !== '—' && countryFlag(code) ? `${countryFlag(code)} ${code}` : code === '—' ? 'Sin país' : code}
+                    <span className="font-bold">{count}</span>
+                  </span>
+                ))}
+              </div>
+            )}
             
             {users.length === 0 ? (
               <p className="text-gray-500 dark:text-gray-400 text-center py-8">
@@ -357,9 +430,12 @@ const AdminPanel = () => {
                     <TableRow>
                       <TableHead>Email</TableHead>
                       <TableHead>Nombre</TableHead>
+                      <TableHead>País</TableHead>
                       <TableHead>Registro</TableHead>
                       <TableHead>Facturas</TableHead>
                       <TableHead>Plan</TableHead>
+                      <TableHead>Actividad</TableHead>
+                      <TableHead></TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -370,6 +446,9 @@ const AdminPanel = () => {
                         </TableCell>
                         <TableCell className="dark:text-gray-300">
                           {user.name || 'Sin nombre'}
+                        </TableCell>
+                        <TableCell>
+                          {getCountryCell(user)}
                         </TableCell>
                         <TableCell className="dark:text-gray-300">
                           {formatDate(user.createdAt)}
@@ -383,6 +462,19 @@ const AdminPanel = () => {
                         <TableCell>
                           {getActivityBadge(user)}
                         </TableCell>
+                        <TableCell>
+                          {user.email?.toLowerCase() !== 'soportefactuya@gmail.com' && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                              onClick={() => setDeleteTarget(user)}
+                              data-testid={`delete-user-btn-${user.id}`}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -392,6 +484,31 @@ const AdminPanel = () => {
           </div>
         </Card>
       </div>
+
+      {/* Confirmación de eliminación */}
+      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+        <AlertDialogContent data-testid="delete-user-dialog">
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar este usuario?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Se eliminará permanentemente la cuenta <strong>{deleteTarget?.email}</strong> junto con
+              todos sus documentos ({deleteTarget?.invoiceCount || 0} facturas), productos, suscripciones
+              y notificaciones. Esta acción no se puede deshacer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting} data-testid="delete-user-cancel">Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => { e.preventDefault(); handleDeleteUser(); }}
+              disabled={deleting}
+              className="bg-red-600 hover:bg-red-700"
+              data-testid="delete-user-confirm"
+            >
+              {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sí, eliminar'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

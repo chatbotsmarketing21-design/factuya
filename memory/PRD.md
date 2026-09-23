@@ -1242,3 +1242,9 @@ Premium subscription.
 - Alertas van a chatbotsmarketing21@gmail.com (dueña de la cuenta Resend; sandbox solo permite ese destinatario). Al verificar dominio factuya.site en Resend, se puede cambiar con WATCHDOG_ALERT_EMAIL en backend/.env.
 - Capa 2 sugerida al usuario: UptimeRobot externo (pendiente que el usuario lo configure).
 - Nota: Resend API detrás de Cloudflare bloquea urllib de Python (error 1010) → el script usa curl para enviar.
+
+## Admin: Columna País + Eliminar Usuario — 2026-06 (IMPLEMENTADO Y VERIFICADO)
+- Heartbeat (`auth.py`) detecta país por IP (helper `lookup_country` en `geo.py`, ipapi.co + ip-api.com) y lo guarda una sola vez en `users.country`/`countryName`. Usuarios existentes se llenan al volver a entrar; fallback: `companyInfo.country` del perfil (normalizado a ISO con `normalize_country` en admin.py).
+- `GET /api/admin/users` ahora devuelve `country`. Nuevo `DELETE /api/admin/users/{id}`: elimina usuario + datos (invoices, products, notifications, subscripciones, etc., por userId y user_id). Protegido: no permite borrar al admin.
+- AdminPanel.jsx: columna "País" (bandera emoji + código) tras Nombre, resumen de países arriba de la tabla, botón eliminar (Trash2) con AlertDialog de confirmación. data-testids: country-summary, country-{id}, delete-user-btn-{id}, delete-user-dialog/confirm/cancel.
+- Verificado: curl (borrado, protección admin, país normalizado) + screenshot UI con diálogo.

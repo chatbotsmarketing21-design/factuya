@@ -64,6 +64,34 @@ def _client_ip(request: Request) -> str:
     return request.client.host if request.client else ""
 
 
+async def lookup_country(ip: str):
+    """Return (country_code, country_name) for an IP, or (None, None)."""
+    if not ip or ip.startswith(("127.", "10.", "192.168.", "172.")) or ip == "::1":
+        return None, None
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.get(f"https://ipapi.co/{ip}/json/")
+            if resp.status_code == 200:
+                data = resp.json()
+                code = (data.get("country_code") or "").upper()
+                if code:
+                    return code, data.get("country_name") or code
+    except Exception:
+        pass
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.get(f"http://ip-api.com/json/{ip}?fields=status,countryCode,country")
+            if resp.status_code == 200:
+                data = resp.json()
+                if data.get("status") == "success":
+                    code = (data.get("countryCode") or "").upper()
+                    if code:
+                        return code, data.get("country") or code
+    except Exception:
+        pass
+    return None, None
+
+
 @router.get("/detect")
 async def detect_country(request: Request):
     """Detect the user's country from their IP address.

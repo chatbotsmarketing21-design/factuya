@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from models.user import UserCreate, UserLogin, UserInDB, UserResponse, AuthResponse
 from utils.auth import hash_password, verify_password, create_access_token, get_current_user_id
@@ -130,17 +130,26 @@ class HeartbeatRequest(BaseModel):
     source: str = "web"
 
 @router.post("/heartbeat")
-async def heartbeat(request: HeartbeatRequest, user_id: str = Depends(get_current_user_id)):
+async def heartbeat(request: HeartbeatRequest, http_request: Request, user_id: str = Depends(get_current_user_id)):
     """Registra la última actividad del usuario y desde dónde entró (app/web)"""
     from datetime import datetime, timezone
     source = request.source if request.source in ("app", "web") else "web"
-    await db.users.update_one(
-        {"id": user_id},
-        {"$set": {
-            "lastSeenAt": datetime.now(timezone.utc).isoformat(),
-            "lastSeenSource": source,
-        }}
-    )
+    update = {
+        "lastSeenAt": datetime.now(timezone.utc).isoformat(),
+        "lastSeenSource": source,
+    }
+    # Detect and store the user's country (once) from their IP
+    try:
+        existing = await db.users.find_one({"id": user_id}, {"_id": 0, "country": 1})
+        if existing is not None and not existing.get("country"):
+            from routes.geo import lookup_country, _client_ip
+            code, name = await lookup_country(_client_ip(http_request))
+            if code:
+                update["country"] = code
+                update["countryName"] = name
+    except Exception:
+        pass
+    await db.users.update_one({"id": user_id}, {"$set": update})
     return {"success": True}
 
 class ChangePasswordRequest(BaseModel):
