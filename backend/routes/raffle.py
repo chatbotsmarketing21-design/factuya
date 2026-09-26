@@ -113,6 +113,134 @@ async def my_entry(user_id: str = Depends(get_current_user_id)):
     return {"active": True, "eligible": True, "number": entry["number"] if entry else None}
 
 
+async def _premium_user_ids(now):
+    """IDs de usuarios con premium activo (no expirado)."""
+    ids = set()
+    subs = await db.subscriptions.find({"status": "active"}).to_list(5000)
+    for sub in subs:
+        end = sub.get("currentPeriodEnd")
+        if isinstance(end, str):
+            try:
+                end = datetime.fromisoformat(end.replace("Z", "+00:00"))
+            except ValueError:
+                end = None
+        if isinstance(end, datetime):
+            if end.tzinfo is None:
+                end = end.replace(tzinfo=timezone.utc)
+            if end < now:
+                continue
+        if sub.get("userId"):
+            ids.add(sub["userId"])
+    return ids
+
+
+def _reminder_subject_body(days_left: int):
+    if days_left <= 1:
+        subject = '🎃 ¡ÚLTIMO DÍA! Gana un TV KALLEY 60" QLED 4K con FactuYa'
+        urgency = "¡HOY es tu última oportunidad!"
+    else:
+        subject = f'⏳ Faltan {days_left} días: Gana un TV KALLEY 60" QLED 4K 🎃'
+        urgency = f"Solo quedan {days_left} días para el sorteo."
+    body = (
+        f"{urgency}\n"
+        "Suscríbete a Premium en FactuYa y recibe tu número de la suerte de 4 cifras.\n"
+        "Ganas el televisor si tu número coincide con el Sorteo #4859 de la Lotería de Medellín este viernes 30 de octubre en la noche.\n"
+        "Además, con Premium tienes facturas ilimitadas y todas las plantillas. ¡No te quedes por fuera!"
+    )
+    return subject, body
+
+
+async def run_raffle_reminders(force: bool = False, dry_run: bool = False):
+    """Envía el recordatorio del sorteo (correo + notificación) a usuarios sin Premium.
+    Solo actúa durante la última semana antes del sorteo. Idempotente (1 por usuario)."""
+    import asyncio as _asyncio
+    import resend as _resend
+    from routes.admin import _broadcast_email_html
+    from routes.notifications import create_notification
+
+    now = datetime.now(timezone.utc)
+    if not promo_active():
+        return {"status": "skipped", "reason": "promo_inactive"}
+    ends_at = datetime.fromisoformat(PROMO["endsAt"])
+    days_left = max(0, (ends_at - now).days + (1 if (ends_at - now).seconds > 0 else 0))
+    if days_left > 7 and not force:
+        return {"status": "skipped", "reason": f"faltan {days_left} días (>7)"}
+
+    premium_ids = await _premium_user_ids(now)
+    already = set()
+    async for r in db.raffle_reminders.find({"promoId": PROMO["id"]}, {"userId": 1}):
+        already.add(r.get("userId"))
+
+    targets = []
+    async for u in db.users.find({}, {"_id": 0, "id": 1, "email": 1, "name": 1}):
+        uid = u.get("id")
+        if not uid or not u.get("email") or uid in premium_ids or uid in already:
+            continue
+        targets.append(u)
+
+    if dry_run:
+        return {"status": "dry_run", "would_send": len(targets), "days_left": days_left}
+
+    _resend.api_key = os.environ.get("RESEND_API_KEY")
+    subject, body = _reminder_subject_body(days_left)
+    sender = os.environ.get("SENDER_EMAIL", "onboarding@resend.dev")
+    sent, failed = 0, 0
+    for u in targets:
+        try:
+            html = _broadcast_email_html(u.get("name"), body, include_banner=True)
+            await _asyncio.to_thread(_resend.Emails.send, {
+                "from": sender,
+                "to": [u["email"]],
+                "subject": subject,
+                "html": html,
+            })
+            sent += 1
+        except Exception:
+            failed += 1
+        try:
+            await create_notification(
+                u["id"],
+                type="promo",
+                title="🎃 ¡Última semana del sorteo!",
+                body=f"Quedan {days_left} día(s). Suscríbete a Premium y participa por el TV KALLEY 60\".",
+                link="/subscription",
+                icon="gift",
+                accent="amber",
+                dedupe_key=f"raffle_reminder:{PROMO['id']}:{u['id']}",
+            )
+        except Exception:
+            pass
+        await db.raffle_reminders.insert_one({
+            "promoId": PROMO["id"],
+            "userId": u["id"],
+            "email": u["email"],
+            "sentAt": now.isoformat(),
+        })
+        await _asyncio.sleep(0.6)
+
+    return {"status": "done", "sent": sent, "failed": failed, "days_left": days_left}
+
+
+@router.post("/send-reminders")
+async def send_reminders(user_id: str = Depends(get_current_user_id), dry_run: bool = False, force: bool = False, test_email: str = None):
+    """Dispara manualmente el recordatorio (solo admin). test_email envía 1 muestra."""
+    from routes.admin import verify_admin
+    await verify_admin(user_id)
+    if test_email:
+        import resend as _resend
+        from routes.admin import _broadcast_email_html
+        _resend.api_key = os.environ.get("RESEND_API_KEY")
+        subject, body = _reminder_subject_body(3)
+        _resend.Emails.send({
+            "from": os.environ.get("SENDER_EMAIL", "onboarding@resend.dev"),
+            "to": [test_email],
+            "subject": f"[PRUEBA] {subject}",
+            "html": _broadcast_email_html("Prueba", body, include_banner=True),
+        })
+        return {"status": "test_sent", "to": test_email}
+    return await run_raffle_reminders(force=force, dry_run=dry_run)
+
+
 @router.get("/participants")
 async def participants(user_id: str = Depends(get_current_user_id)):
     """Lista de participantes (solo admin). Asigna números a premium activos sin entrada."""

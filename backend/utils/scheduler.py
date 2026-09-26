@@ -185,6 +185,17 @@ async def _launch_coupon_job():
         logger.exception("[scheduler] launch coupon job crashed: %s", e)
 
 
+async def _raffle_reminder_job():
+    """Diario: en la última semana del sorteo, recuerda por correo + notificación
+    a los usuarios SIN Premium que aún pueden participar. 1 vez por usuario."""
+    try:
+        from routes.raffle import run_raffle_reminders
+        result = await run_raffle_reminders()
+        logger.info("[scheduler] raffle reminder job: %s", result)
+    except Exception as e:
+        logger.exception("[scheduler] raffle reminder job crashed: %s", e)
+
+
 def start_scheduler() -> None:
     global _scheduler
     if _scheduler and _scheduler.running:
@@ -227,6 +238,15 @@ def start_scheduler() -> None:
         max_instances=1,
         coalesce=True,
         next_run_time=_dt.now(_tz.utc),
+    )
+    # Recordatorio del sorteo Halloween (última semana) — 15:00 UTC ≈ 10:00 Bogotá
+    _scheduler.add_job(
+        _raffle_reminder_job,
+        CronTrigger(hour=15, minute=0),
+        id="raffle_reminder",
+        replace_existing=True,
+        max_instances=1,
+        coalesce=True,
     )
     _scheduler.start()
     logger.info("[scheduler] started; jobs=%s", [j.id for j in _scheduler.get_jobs()])

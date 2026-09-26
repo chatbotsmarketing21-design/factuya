@@ -1288,3 +1288,9 @@ Premium subscription.
 - Fix: SENDER_EMAIL=notificaciones@factuya.site en .env (preview + VPS). Probado: envío real a soportefactuya@gmail.com HTTP 200.
 - WATCHDOG_ALERT_EMAIL=soportefactuya@gmail.com agregado al .env del VPS (alertas del guardián ya van al correo principal).
 - Correo masivo DESBLOQUEADO: el botón "Enviar correo a todos" del admin ya funciona para todos los usuarios en producción.
+
+## Recordatorio Automático Semana del Sorteo — 2026-06 (IMPLEMENTADO Y VERIFICADO)
+- `run_raffle_reminders()` en raffle.py: solo actúa si faltan ≤7 días para el sorteo (endsAt). Envía correo (banner + CTA, asunto con urgencia según días: "¡ÚLTIMO DÍA!" si ≤1) + notificación in-app a usuarios SIN premium activo. Idempotente: colección `raffle_reminders` {promoId, userId} = 1 envío por usuario. 0.6s entre envíos.
+- Job APScheduler `raffle_reminder` diario 15:00 UTC (10:00 Bogotá) en utils/scheduler.py.
+- Endpoint admin POST /api/raffle/send-reminders?dry_run&force&test_email para probar/forzar.
+- Verificado: skip fuera de semana (35 días), dry_run force = 56 destinatarios (60-4 premium), correo muestra real enviado desde notificaciones@factuya.site.
