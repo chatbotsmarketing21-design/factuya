@@ -140,6 +140,28 @@ const AdminPanel = () => {
     });
   };
 
+  const COUNTRY_NAMES = {
+    CO: 'Colombia', US: 'USA', MX: 'México', ES: 'España', AR: 'Argentina',
+    CL: 'Chile', PE: 'Perú', EC: 'Ecuador', VE: 'Venezuela', BO: 'Bolivia',
+    BR: 'Brasil', PA: 'Panamá', CR: 'Costa Rica', GT: 'Guatemala', HN: 'Honduras',
+    SV: 'El Salvador', NI: 'Nicaragua', PY: 'Paraguay', UY: 'Uruguay',
+    DO: 'Dominicana', PR: 'Puerto Rico', CU: 'Cuba', CA: 'Canadá', FR: 'Francia',
+    PT: 'Portugal', IT: 'Italia', DE: 'Alemania', GB: 'Reino Unido',
+  };
+
+  const countryName = (code) => {
+    if (!code) return null;
+    const upper = code.toUpperCase();
+    if (COUNTRY_NAMES[upper]) return COUNTRY_NAMES[upper];
+    if (code.length === 2) {
+      try {
+        const name = new Intl.DisplayNames(['es'], { type: 'region' }).of(upper);
+        if (name && name !== upper) return name;
+      } catch (e) { /* ignore */ }
+    }
+    return code;
+  };
+
   const countryFlag = (code) => {
     if (!code || code.length !== 2 || !/^[A-Za-z]{2}$/.test(code)) return null;
     return String.fromCodePoint(...code.toUpperCase().split('').map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
@@ -151,7 +173,7 @@ const AdminPanel = () => {
     const flag = countryFlag(c);
     return (
       <span className="whitespace-nowrap text-sm dark:text-gray-300" data-testid={`country-${u.id}`}>
-        {flag ? `${flag} ${c.toUpperCase()}` : c}
+        {flag ? `${flag} ${countryName(c)}` : countryName(c)}
       </span>
     );
   };
@@ -412,7 +434,7 @@ const AdminPanel = () => {
               <div className="flex flex-wrap gap-2 mb-4" data-testid="country-summary">
                 {countrySummary.map(([code, count]) => (
                   <span key={code} className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                    {code !== '—' && countryFlag(code) ? `${countryFlag(code)} ${code}` : code === '—' ? 'Sin país' : code}
+                    {code === '—' ? 'Sin país' : `${countryFlag(code) ? countryFlag(code) + ' ' : ''}${countryName(code)}`}
                     <span className="font-bold">{count}</span>
                   </span>
                 ))}
