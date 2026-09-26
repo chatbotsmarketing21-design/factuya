@@ -1261,3 +1261,8 @@ Premium subscription.
 - RafflePromoBanner.jsx reescrito: imagen + franja inferior (premium → número 4 cifras; free → CTA "¡Quiero participar!"). max-w-2xl en dashboard/subscription, max-w-4xl en landing. Clickeable → /subscription o /signup.
 - Premio oficial: TV KALLEY 60" QLED 4K UHD Google TV (60GQ400).
 - Verificado con screenshots desktop + mobile (sin overflow).
+
+## Cuenta Regresiva + Mensaje Motivador en Banner Sorteo — 2026-06 (IMPLEMENTADO Y VERIFICADO)
+- RafflePromoBanner.jsx: badge absoluto arriba-derecha "⏳ Faltan X días" (animate-pulse; "¡Falta 1 día!" / "¡HOY es el sorteo!"), calculado desde promo.endsAt.
+- Overlay inferior sobre la imagen "👉 ¡Pásate a Premium y participa!" (solo para no-participantes). data-testids: raffle-countdown, raffle-motivation.
+- Verificado con screenshots desktop + mobile.

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Ticket } from 'lucide-react';
+import { Ticket, Hourglass } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -29,12 +29,14 @@ export const RafflePromoBanner = ({ variant = 'dashboard' }) => {
 
   const hasNumber = entry?.eligible && entry?.number;
   const ctaTarget = token ? '/subscription' : '/signup';
+  const daysLeft = Math.max(0, Math.ceil((new Date(promo.endsAt) - new Date()) / 86400000));
+  const countdownLabel = daysLeft === 0 ? '¡HOY es el sorteo!' : daysLeft === 1 ? '¡Falta 1 día!' : `Faltan ${daysLeft} días`;
 
   return (
     <div className={`${variant === 'landing' ? 'max-w-4xl' : 'max-w-2xl'} mx-auto mb-6 rounded-xl overflow-hidden border border-orange-500/40 shadow-lg bg-[#1c0f2e]`} data-testid="raffle-banner">
       <button
         onClick={() => !hasNumber && navigate(ctaTarget)}
-        className={`block w-full p-0 border-0 ${hasNumber ? 'cursor-default' : 'cursor-pointer'} group`}
+        className={`relative block w-full p-0 border-0 ${hasNumber ? 'cursor-default' : 'cursor-pointer'} group`}
         data-testid="raffle-cta"
         aria-label="Sorteo de Halloween: gana un TV KALLEY 60 pulgadas QLED 4K"
       >
@@ -44,6 +46,23 @@ export const RafflePromoBanner = ({ variant = 'dashboard' }) => {
           className={`w-full h-auto block ${hasNumber ? '' : 'transition-transform duration-300 group-hover:scale-[1.02]'}`}
           loading="lazy"
         />
+
+        {/* Cuenta regresiva */}
+        <span
+          className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 inline-flex items-center gap-1.5 bg-black/75 backdrop-blur-sm border border-orange-400 text-orange-300 font-bold text-xs sm:text-sm rounded-full px-3 py-1.5 shadow-lg animate-pulse"
+          data-testid="raffle-countdown"
+        >
+          <Hourglass className="w-3.5 h-3.5" /> {countdownLabel}
+        </span>
+
+        {/* Mensaje motivador sobre la imagen (solo si aún no participa) */}
+        {!hasNumber && (
+          <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-8 pb-2.5 px-3 text-center">
+            <span className="text-white font-extrabold text-sm sm:text-lg drop-shadow-md" data-testid="raffle-motivation">
+              👉 ¡Pásate a <span className="text-orange-400">Premium</span> y participa!
+            </span>
+          </span>
+        )}
       </button>
 
       <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 px-4 py-2.5 bg-gradient-to-r from-[#1c0f2e] via-[#2d1445] to-[#1c0f2e]">
