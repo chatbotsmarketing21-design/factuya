@@ -1266,3 +1266,8 @@ Premium subscription.
 - RafflePromoBanner.jsx: badge absoluto arriba-derecha "⏳ Faltan X días" (animate-pulse; "¡Falta 1 día!" / "¡HOY es el sorteo!"), calculado desde promo.endsAt.
 - Overlay inferior sobre la imagen "👉 ¡Pásate a Premium y participa!" (solo para no-participantes). data-testids: raffle-countdown, raffle-motivation.
 - Verificado con screenshots desktop + mobile.
+
+## Broadcast Sorteo en Producción — 2026-06 (EJECUTADO)
+- Notificación in-app del sorteo enviada a los 60 usuarios de factuya.site vía POST /api/notifications/broadcast (link /subscription, icon gift).
+- Backfill ejecutado en producción: 5 premium reales con número asignado.
+- Usuario preguntó por envío masivo por CORREO: BLOQUEADO por sandbox Resend (solo chatbotsmarketing21@gmail.com) hasta verificar dominio factuya.site. Tras verificar: construir "Enviar correo a todos" en admin.
