@@ -1278,3 +1278,7 @@ Premium subscription.
 - AdminEmailBroadcastCard.jsx en AdminPanel (tras AdminRaffleCard): asunto/mensaje prellenados del sorteo, checkbox incluir banner, confirmación AlertDialog, polling de progreso. data-testids: admin-email-broadcast-card, email-broadcast-subject/body/send-btn/confirm/status.
 - Probado en preview: broadcast a 60 usuarios → sent:1 (chatbotsmarketing21, real), failed:59 (sandbox Resend esperado). UI verificada desktop+mobile sin overflow.
 - RECORDATORIO: correo masivo REAL requiere verificar dominio factuya.site en Resend primero.
+
+## Selección de texto en Admin Panel — 2026-06 (FIX VERIFICADO)
+- Causa: index.css tiene `user-select: none` global en body (UX táctil app nativa).
+- Fix: clase `.allow-select` en index.css aplicada al div raíz de AdminPanel.jsx. Verificado con triple-click seleccionando texto de la tabla.
