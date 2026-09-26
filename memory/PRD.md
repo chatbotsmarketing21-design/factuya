@@ -1282,3 +1282,9 @@ Premium subscription.
 ## Selección de texto en Admin Panel — 2026-06 (FIX VERIFICADO)
 - Causa: index.css tiene `user-select: none` global en body (UX táctil app nativa).
 - Fix: clase `.allow-select` en index.css aplicada al div raíz de AdminPanel.jsx. Verificado con triple-click seleccionando texto de la tabla.
+
+## Correo desde dominio verificado — 2026-06 (RESUELTO Y DESPLEGADO)
+- HALLAZGO: factuya.site YA estaba verificado en Resend (hace 7 meses). El bloqueo era porque SENDER_EMAIL=onboarding@resend.dev (remitente sandbox).
+- Fix: SENDER_EMAIL=notificaciones@factuya.site en .env (preview + VPS). Probado: envío real a soportefactuya@gmail.com HTTP 200.
+- WATCHDOG_ALERT_EMAIL=soportefactuya@gmail.com agregado al .env del VPS (alertas del guardián ya van al correo principal).
+- Correo masivo DESBLOQUEADO: el botón "Enviar correo a todos" del admin ya funciona para todos los usuarios en producción.
