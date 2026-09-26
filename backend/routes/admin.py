@@ -1,5 +1,7 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 import os
+import asyncio
+from uuid import uuid4
 from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 from pathlib import Path
@@ -241,6 +243,104 @@ async def admin_delete_user(target_user_id: str, user_id: str = Depends(verify_a
 
     await db.users.delete_one({"id": target_user_id})
     return {"success": True, "email": target_email}
+
+
+class EmailBroadcastIn(BaseModel):
+    subject: str
+    body: str
+    include_raffle_banner: bool = True
+
+
+def _broadcast_email_html(name: str, body_text: str, include_banner: bool) -> str:
+    from utils.email_notifications import APP_URL
+    greeting = (name or "").strip() or "Amigo/a"
+    paragraphs = "".join(
+        f'<p style="color:#444; line-height:1.7; margin: 0 0 14px;">{line}</p>'
+        for line in body_text.split("\n") if line.strip()
+    )
+    banner_html = ""
+    if include_banner:
+        banner_html = f"""
+        <a href="{APP_URL}/subscription" style="display:block; margin: 20px 0;">
+            <img src="https://factuya.site/raffle-banner.webp" alt="Sorteo Halloween: Gana un TV KALLEY 60 QLED 4K"
+                 style="width:100%; height:auto; border-radius: 10px; display:block;">
+        </a>
+        """
+    return f"""
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="UTF-8"></head>
+    <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background:#f9fafb;">
+        <div style="text-align: center; margin-bottom: 24px;">
+            <h1 style="color: #0a0a0a; margin: 0;">Factu<span style="background-color: #84cc16; color: white; padding: 2px 8px;">Ya!</span></h1>
+        </div>
+        <p style="color:#444; line-height:1.7;">Hola <strong>{greeting}</strong>,</p>
+        {paragraphs}
+        {banner_html}
+        <div style="text-align: center; margin: 26px 0;">
+            <a href="{APP_URL}/subscription"
+               style="background-color: #f97316; color: white; padding: 14px 32px;
+                      text-decoration: none; border-radius: 999px; font-weight: bold;
+                      display: inline-block; font-size: 16px;">
+                🎃 ¡Quiero participar!
+            </a>
+        </div>
+        <hr style="border:none; border-top:1px solid #eee; margin: 24px 0;">
+        <p style="color: #aaa; font-size: 12px; text-align: center;">
+            FactuYa! &middot; Innova App Solutions &middot; Soporte: soportefactuya@gmail.com
+        </p>
+    </body>
+    </html>
+    """
+
+
+async def _run_email_broadcast(broadcast_id: str, subject: str, body: str, include_banner: bool, recipients: list):
+    import resend
+    from utils.email_notifications import SENDER_EMAIL
+    resend.api_key = os.environ.get("RESEND_API_KEY")
+    for r in recipients:
+        try:
+            html = _broadcast_email_html(r.get("name"), body, include_banner)
+            await asyncio.to_thread(resend.Emails.send, {
+                "from": SENDER_EMAIL,
+                "to": [r["email"]],
+                "subject": subject,
+                "html": html,
+            })
+            await db.email_broadcasts.update_one({"id": broadcast_id}, {"$inc": {"sent": 1}})
+        except Exception:
+            await db.email_broadcasts.update_one({"id": broadcast_id}, {"$inc": {"failed": 1}})
+        await asyncio.sleep(0.6)
+    await db.email_broadcasts.update_one({"id": broadcast_id}, {"$set": {"status": "done"}})
+
+
+@router.post("/email-broadcast")
+async def email_broadcast(payload: EmailBroadcastIn, background_tasks: BackgroundTasks, user_id: str = Depends(verify_admin)):
+    """Envía un correo a todos los usuarios registrados (en segundo plano)."""
+    if not os.environ.get("RESEND_API_KEY"):
+        raise HTTPException(status_code=400, detail="RESEND_API_KEY no configurada")
+    users = await db.users.find({}, {"_id": 0, "email": 1, "name": 1}).to_list(5000)
+    recipients = [u for u in users if u.get("email")]
+    broadcast_id = str(uuid4())
+    await db.email_broadcasts.insert_one({
+        "id": broadcast_id,
+        "subject": payload.subject,
+        "total": len(recipients),
+        "sent": 0,
+        "failed": 0,
+        "status": "sending",
+        "createdAt": datetime.now(timezone.utc).isoformat(),
+    })
+    background_tasks.add_task(_run_email_broadcast, broadcast_id, payload.subject, payload.body, payload.include_raffle_banner, recipients)
+    return {"ok": True, "broadcastId": broadcast_id, "total": len(recipients)}
+
+
+@router.get("/email-broadcast/{broadcast_id}")
+async def email_broadcast_status(broadcast_id: str, user_id: str = Depends(verify_admin)):
+    doc = await db.email_broadcasts.find_one({"id": broadcast_id}, {"_id": 0})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Broadcast no encontrado")
+    return doc
 
 @router.get("/check")
 async def check_admin_access(user_id: str = Depends(get_current_user_id)):

@@ -42,6 +42,7 @@ import {
 import AdminBroadcastCard from '../components/AdminBroadcastCard';
 import AdminGiftPremiumCard from '../components/AdminGiftPremiumCard';
 import AdminRaffleCard from '../components/AdminRaffleCard';
+import AdminEmailBroadcastCard from '../components/AdminEmailBroadcastCard';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -431,6 +432,8 @@ const AdminPanel = () => {
         <AdminGiftPremiumCard />
 
         <AdminRaffleCard />
+
+        <AdminEmailBroadcastCard />
 
         {/* Users Table */}
         <Card className="dark:bg-card">

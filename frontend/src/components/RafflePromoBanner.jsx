@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Ticket, Hourglass } from 'lucide-react';
+import { Ticket, Hourglass, Share2 } from 'lucide-react';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -31,6 +31,25 @@ export const RafflePromoBanner = ({ variant = 'dashboard' }) => {
   const ctaTarget = token ? '/subscription' : '/signup';
   const daysLeft = Math.max(0, Math.ceil((new Date(promo.endsAt) - new Date()) / 86400000));
   const countdownLabel = daysLeft === 0 ? '¡HOY es el sorteo!' : daysLeft === 1 ? '¡Falta 1 día!' : `Faltan ${daysLeft} días`;
+
+  const shareRaffle = async (e) => {
+    e.stopPropagation();
+    const text = `🎃 ¡Sorteo de Halloween en FactuYa! Gana un TV KALLEY 60" QLED 4K. Suscríbete a Premium y participa con tu número de la suerte. Sorteo #${promo.drawNumber} Lotería de Medellín — ${promo.drawDateLabel} 📺`;
+    const url = 'https://factuya.site';
+    try {
+      const resp = await fetch('/raffle-banner.webp');
+      const blob = await resp.blob();
+      const file = new File([blob], 'sorteo-halloween-factuya.webp', { type: blob.type });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], text: `${text} ${url}` });
+        return;
+      }
+    } catch (err) { /* continue to fallback */ }
+    if (navigator.share) {
+      try { await navigator.share({ text, url }); return; } catch (err) { if (err.name === 'AbortError') return; }
+    }
+    window.open(`https://wa.me/?text=${encodeURIComponent(`${text} ${url}`)}`, '_blank');
+  };
 
   return (
     <div className={`${variant === 'landing' ? 'max-w-4xl' : 'max-w-2xl'} mx-auto mb-6 rounded-xl overflow-hidden border border-orange-500/40 shadow-lg bg-[#1c0f2e]`} data-testid="raffle-banner">
@@ -89,6 +108,14 @@ export const RafflePromoBanner = ({ variant = 'dashboard' }) => {
             </button>
           </>
         )}
+        <button
+          onClick={shareRaffle}
+          className="flex-shrink-0 inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#1ebe5b] text-white text-sm font-bold rounded-full px-4 py-1.5 transition-colors"
+          data-testid="raffle-share-btn"
+          title="Compartir el sorteo"
+        >
+          <Share2 className="w-4 h-4" /> Compartir
+        </button>
       </div>
     </div>
   );

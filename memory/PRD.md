@@ -1271,3 +1271,10 @@ Premium subscription.
 - Notificación in-app del sorteo enviada a los 60 usuarios de factuya.site vía POST /api/notifications/broadcast (link /subscription, icon gift).
 - Backfill ejecutado en producción: 5 premium reales con número asignado.
 - Usuario preguntó por envío masivo por CORREO: BLOQUEADO por sandbox Resend (solo chatbotsmarketing21@gmail.com) hasta verificar dominio factuya.site. Tras verificar: construir "Enviar correo a todos" en admin.
+
+## Compartir Sorteo (WhatsApp) + Correo Masivo Admin — 2026-06 (IMPLEMENTADO Y VERIFICADO)
+- RafflePromoBanner.jsx: botón verde "Compartir" (data-testid raffle-share-btn) — Web Share API con imagen del banner (móvil), fallback navigator.share texto, fallback wa.me. Texto promocional + link factuya.site.
+- Backend admin.py: POST /api/admin/email-broadcast (BackgroundTasks, 0.6s entre envíos, contadores sent/failed en colección `email_broadcasts`) + GET /api/admin/email-broadcast/{id} para polling. HTML con banner del sorteo (img https://factuya.site/raffle-banner.webp) y CTA a /subscription.
+- AdminEmailBroadcastCard.jsx en AdminPanel (tras AdminRaffleCard): asunto/mensaje prellenados del sorteo, checkbox incluir banner, confirmación AlertDialog, polling de progreso. data-testids: admin-email-broadcast-card, email-broadcast-subject/body/send-btn/confirm/status.
+- Probado en preview: broadcast a 60 usuarios → sent:1 (chatbotsmarketing21, real), failed:59 (sandbox Resend esperado). UI verificada desktop+mobile sin overflow.
+- RECORDATORIO: correo masivo REAL requiere verificar dominio factuya.site en Resend primero.
