@@ -1255,3 +1255,9 @@ Premium subscription.
 - `RafflePromoBanner.jsx` (variant landing/dashboard/subscription): en Home.jsx (tras hero), Dashboard.jsx (arriba de stats), SubscriptionPanel.jsx (arriba del cupón). Premium → muestra su número; free/anónimo → CTA. data-testids: raffle-banner, raffle-number, raffle-cta.
 - `AdminRaffleCard.jsx` en AdminPanel (tras Regalar Premium): tabla de participantes con números.
 - Verificado: curl (promo/my-entry/participants), correo real de prueba enviado, screenshots desktop+mobile sin overflow.
+
+## Banner Imagen Sorteo Halloween — 2026-06 (IMPLEMENTADO Y VERIFICADO)
+- Imagen publicitaria generada (bruja + TV KALLEY 60" QLED 4K con interfaz streaming) en `frontend/public/raffle-banner.webp` (127KB).
+- RafflePromoBanner.jsx reescrito: imagen + franja inferior (premium → número 4 cifras; free → CTA "¡Quiero participar!"). max-w-2xl en dashboard/subscription, max-w-4xl en landing. Clickeable → /subscription o /signup.
+- Premio oficial: TV KALLEY 60" QLED 4K UHD Google TV (60GQ400).
+- Verificado con screenshots desktop + mobile (sin overflow).
