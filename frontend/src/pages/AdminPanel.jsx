@@ -162,18 +162,25 @@ const AdminPanel = () => {
     return code;
   };
 
-  const countryFlag = (code) => {
+  const FlagImg = ({ code }) => {
     if (!code || code.length !== 2 || !/^[A-Za-z]{2}$/.test(code)) return null;
-    return String.fromCodePoint(...code.toUpperCase().split('').map(c => 0x1F1E6 + c.charCodeAt(0) - 65));
+    return (
+      <img
+        src={`https://flagcdn.com/w20/${code.toLowerCase()}.png`}
+        srcSet={`https://flagcdn.com/w40/${code.toLowerCase()}.png 2x`}
+        alt={code.toUpperCase()}
+        className="inline-block w-5 h-auto rounded-[2px] align-[-2px]"
+        onError={(e) => { e.target.style.display = 'none'; }}
+      />
+    );
   };
 
   const getCountryCell = (u) => {
     const c = u.country;
     if (!c) return <span className="text-xs text-gray-400">—</span>;
-    const flag = countryFlag(c);
     return (
-      <span className="whitespace-nowrap text-sm dark:text-gray-300" data-testid={`country-${u.id}`}>
-        {flag ? `${flag} ${countryName(c)}` : countryName(c)}
+      <span className="whitespace-nowrap text-sm dark:text-gray-300 inline-flex items-center gap-1.5" data-testid={`country-${u.id}`}>
+        <FlagImg code={c} />{countryName(c)}
       </span>
     );
   };
@@ -433,8 +440,8 @@ const AdminPanel = () => {
             {users.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4" data-testid="country-summary">
                 {countrySummary.map(([code, count]) => (
-                  <span key={code} className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                    {code === '—' ? 'Sin país' : `${countryFlag(code) ? countryFlag(code) + ' ' : ''}${countryName(code)}`}
+                  <span key={code} className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+                    {code === '—' ? 'Sin país' : (<><FlagImg code={code} />{countryName(code)}</>)}
                     <span className="font-bold">{count}</span>
                   </span>
                 ))}
