@@ -1294,3 +1294,21 @@ Premium subscription.
 - Job APScheduler `raffle_reminder` diario 15:00 UTC (10:00 Bogotá) en utils/scheduler.py.
 - Endpoint admin POST /api/raffle/send-reminders?dry_run&force&test_email para probar/forzar.
 - Verificado: skip fuera de semana (35 días), dry_run force = 56 destinatarios (60-4 premium), correo muestra real enviado desde notificaciones@factuya.site.
+
+## CIERRE DE SESIÓN — Estado y pendientes para la próxima sesión
+### Completado y desplegado en producción (factuya.site):
+- Guardián watchdog VPS (cron 5 min, auto-restart + alertas a soportefactuya@gmail.com vía WATCHDOG_ALERT_EMAIL)
+- Panel Admin: columna País (banderas flagcdn + nombres completos), eliminar usuario, selección de texto habilitada
+- Sorteo Halloween completo: números 4 cifras, banner imagen (TV KALLEY 60" QLED 4K), countdown, compartir WhatsApp, participantes en admin, correo masivo admin, recordatorio automático semana del sorteo (job 15:00 UTC)
+- SENDER_EMAIL=notificaciones@factuya.site (dominio verificado, correo masivo desbloqueado)
+- Broadcast in-app del sorteo enviado a 60 usuarios; 5 premium reales con número asignado
+
+### Pendiente de desplegar por el usuario (verificar al inicio de próxima sesión):
+- Último cambio backend (recordatorio automático): git pull + sudo systemctl restart factuya — usuario dijo "ya está funcionando bien", probablemente desplegado; confirmar con curl -s https://factuya.site/api/raffle/send-reminders (requiere auth) o revisando journalctl job raffle_reminder.
+
+### Próximas tareas (prioridad):
+1. P0: AAB v1.0.2 Play Store (Target API 36 + fix rotación) — vence 31 ago 2026. Guiar con PWABuilder + signing.keystore.
+2. Usuario quizá quiera enviar el correo masivo del sorteo (botón "Enviar correo a todos" ya funcional).
+3. Página del Ganador (30 oct, confeti + número).
+4. Sección de Reportes con gráficas.
+5. Seguridad: keystore password expuesto (keytool -storepasswd).
