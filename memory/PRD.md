@@ -1248,3 +1248,10 @@ Premium subscription.
 - `GET /api/admin/users` ahora devuelve `country`. Nuevo `DELETE /api/admin/users/{id}`: elimina usuario + datos (invoices, products, notifications, subscripciones, etc., por userId y user_id). Protegido: no permite borrar al admin.
 - AdminPanel.jsx: columna "País" (bandera emoji + código) tras Nombre, resumen de países arriba de la tabla, botón eliminar (Trash2) con AlertDialog de confirmación. data-testids: country-summary, country-{id}, delete-user-btn-{id}, delete-user-dialog/confirm/cancel.
 - Verificado: curl (borrado, protección admin, país normalizado) + screenshot UI con diálogo.
+
+## Sorteo Halloween TV (Lotería de Medellín #4859) — 2026-06 (IMPLEMENTADO Y VERIFICADO)
+- `backend/routes/raffle.py`: PROMO halloween2026 (termina 30 oct 23:59 Bogotá, auto-oculta después). Colección `raffle_entries` {promoId, userId, email, name, plan, number(4 cifras único), assignedAt}. Endpoints: GET /api/raffle/promo (público), /my-entry (auth, asigna si premium activo), /participants (admin, hace backfill de todos los premium activos).
+- Correo de confirmación de pago (`email_notifications.py`): bloque Halloween con el número de 4 cifras (param raffle_number). Call sites: wompi.py, paypal.py, subscription.py vía helper `_get_raffle_number` → `get_raffle_number_for_email` (nunca lanza).
+- `RafflePromoBanner.jsx` (variant landing/dashboard/subscription): en Home.jsx (tras hero), Dashboard.jsx (arriba de stats), SubscriptionPanel.jsx (arriba del cupón). Premium → muestra su número; free/anónimo → CTA. data-testids: raffle-banner, raffle-number, raffle-cta.
+- `AdminRaffleCard.jsx` en AdminPanel (tras Regalar Premium): tabla de participantes con números.
+- Verificado: curl (promo/my-entry/participants), correo real de prueba enviado, screenshots desktop+mobile sin overflow.

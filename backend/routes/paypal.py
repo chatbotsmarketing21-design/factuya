@@ -37,6 +37,10 @@ load_dotenv(ROOT_DIR / '.env')
 
 router = APIRouter(prefix="/paypal", tags=["PayPal Subscriptions"])
 
+async def _get_raffle_number(user_id: str, user: dict):
+    from routes.raffle import get_raffle_number_for_email
+    return await get_raffle_number_for_email(user_id, user)
+
 # Database
 mongo_url = os.environ['MONGO_URL']
 db_client = AsyncIOMotorClient(mongo_url)
@@ -463,6 +467,7 @@ async def _activate_local_subscription(user_id: str, subscription_id: str, data:
                     gateway="paypal",
                     period_end=period_end,
                     amount_label=amount_label,
+                    raffle_number=await _get_raffle_number(user_id, user),
                 )
             except Exception as e:
                 logger.error("PayPal confirmation email failed: %s", e)

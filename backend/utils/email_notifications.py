@@ -30,7 +30,7 @@ def _format_date_es(dt: datetime) -> str:
     return f"{dt.day} de {months[dt.month - 1]} de {dt.year}"
 
 
-def _confirmation_html(user_name: str, gateway: str, period_end: datetime, amount_label: str) -> str:
+def _confirmation_html(user_name: str, gateway: str, period_end: datetime, amount_label: str, raffle_number: str | None = None) -> str:
     name = user_name or 'Usuario'
     next_date = _format_date_es(period_end)
     gateway_label = {
@@ -43,6 +43,19 @@ def _confirmation_html(user_name: str, gateway: str, period_end: datetime, amoun
         if gateway == 'paypal' else
         "Te enviaremos un recordatorio por email 3 días antes de tu próximo vencimiento."
     )
+    raffle_block = ""
+    if raffle_number:
+        raffle_block = f"""
+        <div style="background:#1c0f2e; border:2px dashed #f97316; padding: 22px 24px; margin: 24px 0; border-radius: 10px; text-align:center;">
+            <p style="color:#fdba74; font-size: 18px; font-weight: bold; margin: 0 0 6px;">🎃 Sorteo de Halloween: ¡Estás participando por un Televisor Pantalla Plana! 📺</p>
+            <p style="color:#d8b4fe; margin: 0 0 12px; font-size: 14px;">Tu número de la suerte es:</p>
+            <p style="color:#fb923c; font-size: 42px; font-weight: 900; letter-spacing: 8px; margin: 0 0 12px; font-family: monospace;">{raffle_number}</p>
+            <p style="color:#d8b4fe; margin: 0; font-size: 13px;">
+                Ganas si tu número coincide con el <strong style="color:#fdba74;">Sorteo #4859 de la Lotería de Medellín</strong><br>
+                viernes 30 de octubre en la noche. ¡Mucha suerte! 👻
+            </p>
+        </div>
+        """
     return f"""
     <!DOCTYPE html>
     <html>
@@ -81,6 +94,8 @@ def _confirmation_html(user_name: str, gateway: str, period_end: datetime, amoun
             {auto_renew_note}
         </p>
 
+        {raffle_block}
+
         <div style="text-align: center; margin: 30px 0;">
             <a href="{APP_URL}/dashboard"
                style="background-color: #84cc16; color: white; padding: 14px 32px;
@@ -110,6 +125,7 @@ async def send_subscription_confirmation(
     gateway: str,
     period_end: datetime,
     amount_label: str = "$3.99 USD",
+    raffle_number: str | None = None,
 ) -> bool:
     """Send a subscription confirmation email. Never raises."""
     if not user_email:
@@ -118,7 +134,7 @@ async def send_subscription_confirmation(
         logger.warning("RESEND_API_KEY not set; skipping confirmation email")
         return False
     try:
-        html = _confirmation_html(user_name, gateway, period_end, amount_label)
+        html = _confirmation_html(user_name, gateway, period_end, amount_label, raffle_number)
         await asyncio.to_thread(resend.Emails.send, {
             "from": SENDER_EMAIL,
             "to": [user_email],

@@ -54,6 +54,7 @@ import { getTemplateById } from '../mock/invoiceData';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { formatCurrency as formatCurrencyFn } from '../utils/formatters';
+import RafflePromoBanner from '../components/RafflePromoBanner';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -843,6 +844,9 @@ const Dashboard = () => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        {/* Sorteo Halloween */}
+        <RafflePromoBanner variant="dashboard" />
+
         {/* Stats - Hidden on mobile when search is focused (more space for results) */}
         {stats && (
           <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8 ${searchFocused ? 'hidden sm:grid' : ''}`}>

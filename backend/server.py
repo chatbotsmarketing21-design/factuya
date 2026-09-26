@@ -23,6 +23,7 @@ from routes.paypal import router as paypal_router
 from routes.coupons import router as coupons_router
 from routes.notifications import router as notifications_router
 from routes.products import router as products_router
+from routes.raffle import router as raffle_router
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -60,6 +61,7 @@ api_router.include_router(paypal_router)
 api_router.include_router(coupons_router)
 api_router.include_router(notifications_router)
 api_router.include_router(products_router)
+api_router.include_router(raffle_router)
 
 # Include the router in the main app
 app.include_router(api_router)

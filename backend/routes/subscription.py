@@ -19,6 +19,10 @@ load_dotenv(ROOT_DIR / '.env')
 
 router = APIRouter(prefix="/subscription", tags=["Subscription"])
 
+async def _get_raffle_number(user_id: str, user: dict):
+    from routes.raffle import get_raffle_number_for_email
+    return await get_raffle_number_for_email(user_id, user)
+
 # Database connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
@@ -301,6 +305,7 @@ async def get_checkout_status(
                             gateway="stripe",
                             period_end=period_end,
                             amount_label="$3.99 USD",
+                            raffle_number=await _get_raffle_number(user_id, user),
                         )
                     except Exception as e:
                         print(f"Stripe confirmation email failed: {e}")

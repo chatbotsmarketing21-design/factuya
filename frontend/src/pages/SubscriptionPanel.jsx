@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
+import RafflePromoBanner from '../components/RafflePromoBanner';
 import { Progress } from '../components/ui/progress';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
@@ -486,6 +487,9 @@ const SubscriptionPanel = () => {
       </header>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Sorteo Halloween */}
+        <RafflePromoBanner variant="subscription" />
+
         {/* Win-back Coupon Banner */}
         {pendingCoupon && !isPremium && (
           <Card

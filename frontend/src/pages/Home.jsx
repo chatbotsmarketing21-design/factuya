@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import { getCountryName } from '../constants/countryConfig';
 import LaunchCouponBanner from '../components/LaunchCouponBanner';
+import RafflePromoBanner from '../components/RafflePromoBanner';
 
 const Home = () => {
   const { t, i18n } = useTranslation();
@@ -251,6 +252,11 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Sorteo Halloween */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 mb-4">
+        <RafflePromoBanner variant="landing" />
+      </div>
 
       {/* Features Section */}
       <section id="features" className="py-20 bg-white">

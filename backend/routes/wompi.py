@@ -516,9 +516,14 @@ async def activate_subscription(user_id: str, reference: str, wompi_transaction:
                 gateway="wompi",
                 period_end=period_end,
                 amount_label=amount_label,
+                raffle_number=await _get_raffle_number(user_id, user),
             )
         except Exception as e:
             print(f"Wompi confirmation email failed: {e}")
+
+async def _get_raffle_number(user_id: str, user: dict):
+    from routes.raffle import get_raffle_number_for_email
+    return await get_raffle_number_for_email(user_id, user)
 
 def _verify_wompi_event_signature(payload: dict) -> bool:
     """Verify that a webhook event was really emitted by Wompi.

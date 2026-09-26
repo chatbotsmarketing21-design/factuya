@@ -41,6 +41,7 @@ import {
 } from 'lucide-react';
 import AdminBroadcastCard from '../components/AdminBroadcastCard';
 import AdminGiftPremiumCard from '../components/AdminGiftPremiumCard';
+import AdminRaffleCard from '../components/AdminRaffleCard';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -428,6 +429,8 @@ const AdminPanel = () => {
 
         {/* Gift premium card */}
         <AdminGiftPremiumCard />
+
+        <AdminRaffleCard />
 
         {/* Users Table */}
         <Card className="dark:bg-card">
